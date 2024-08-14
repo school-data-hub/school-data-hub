@@ -29,13 +29,14 @@ def add_support_category_status(current_user, internal_id, category_id, json_dat
         abort(400, message="Diese/r Schüler/in existiert nicht!")
     pupil_id = internal_id
     this_category = get_support_category_by_id(category_id)
+
     if this_category == None:
         abort(400, message="Diese Kategorie existiert nicht!")
-
+    goal_category_id = this_category.category_id
     # category_status_exists = db.session.query(SupportCategoryStatus).filter(SupportCategoryStatus.pupil_id == internal_id, SupportCategoryStatus.goal_category_id == category_id ).first() is not None
     # if category_status_exists == True :
     #     return jsonify( {"message": "This category status exists already - please update instead!"}), 400
-    goal_category_id = category_id
+    
     status_id = uuid.uuid4().hex
     data = json_data
     state = data['state']
@@ -43,7 +44,8 @@ def add_support_category_status(current_user, internal_id, category_id, json_dat
     created_at = datetime.strptime(datetime.now().strftime('%Y-%m-%d'), '%Y-%m-%d').date() 
     created_by = current_user.name
     # created_at = datetime.strptime(created_at, '%Y-%m-%d').date()
-    new_category_status = SupportCategoryStatus(pupil_id, goal_category_id, status_id, state, created_by, created_at, comment, None)
+    print(goal_category_id)
+    new_category_status = SupportCategoryStatus(pupil_id= pupil_id, support_category_id= goal_category_id, status_id= status_id, state= state, created_by= created_by, created_at= created_at, comment= comment, file_url= None)
     db.session.add(new_category_status)
     #- LOG ENTRY
     create_log_entry(current_user, request, json_data)

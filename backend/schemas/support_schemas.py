@@ -83,7 +83,6 @@ support_category_status_in_schema = SupportCategoryStatusInSchema()
 support_category_statuses_in_schema = SupportCategoryStatusInSchema(many= True)
 
 class SupportCategoryStatusSchema(Schema):
-    id = fields.Integer()
     support_category_id = fields.Integer()
     status_id = fields.String()
     state = fields.String()
@@ -92,7 +91,7 @@ class SupportCategoryStatusSchema(Schema):
     created_by = fields.String()
     created_at = fields.Date()    
     class Meta:
-        fields = ('id', 'support_category_id', 'status_id', 'state', 'comment', 'file_url', 
+        fields = ( 'support_category_id', 'status_id', 'state', 'comment', 'file_url', 
                   'created_by', 'created_at')    
 
 support_category_status_schema = SupportCategoryStatusSchema()

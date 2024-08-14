@@ -19,9 +19,9 @@ class SupportCategoryStatus(db.Model):
                                  db.ForeignKey('support_category.id'))
     support_category = db.relationship('SupportCategory', back_populates='support_category_statuses')
 
-    def __init__(self, pupil_id, goal_category_id, status_id, state, created_by, created_at, comment, file_url):
+    def __init__(self, pupil_id, support_category_id, status_id, state, created_by, created_at, comment, file_url):
         self.pupil_id = pupil_id
-        self.goal_category_id = goal_category_id
+        self.support_category_id = support_category_id
         self.status_id = status_id
         self.state = state
         self.created_by = created_by

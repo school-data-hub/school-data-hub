@@ -53,7 +53,7 @@ class LearningSupportApiService {
   //- STATUSES ---------------------------------------------------------
 
   String _postCategoryStatusUrl(int pupilId, int categoryId) {
-    return '/category/statuses/$pupilId/$categoryId';
+    return '/support_category/statuses/$pupilId/$categoryId';
   }
 
   Future<PupilData> postSupportCategoryStatus(
@@ -92,7 +92,7 @@ class LearningSupportApiService {
 
   //- update category status
   String _patchCategoryStatusUrl(String categoryStatusId) {
-    return '/category/statuses/$categoryStatusId';
+    return '/support_category/statuses/$categoryStatusId';
   }
 
   Future<PupilData> updateCategoryStatusProperty(
@@ -132,11 +132,11 @@ class LearningSupportApiService {
   }
 
   String postFileForCategoryStatus(String categoryStatusId) {
-    return '/category/statuses/$categoryStatusId/file';
+    return '/support_category/statuses/$categoryStatusId/file';
   }
 
   String _deleteCategoryStatusUrl(String categoryStatusId) {
-    return '/pupil/category/statuses/$categoryStatusId/delete';
+    return '/support_category/statuses/$categoryStatusId/delete';
   }
 
   Future deleteCategoryStatus(String statusId) async {
