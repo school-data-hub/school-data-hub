@@ -108,14 +108,7 @@ List<Widget> pupilLearningSupportContentList(
     ),
     const Gap(5),
     ...pupilCategoryStatusesList(pupil, context),
-    const Row(
-      children: [
-        Text(
-          'Förderziele',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-        ),
-      ],
-    ),
+
     const Gap(5),
     SupportGoalsList(pupil: pupil),
 

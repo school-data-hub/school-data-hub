@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/constants/colors.dart';
+import 'package:schuldaten_hub/common/constants/styles.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/utils/logger.dart';
 import 'package:schuldaten_hub/common/utils/extensions.dart';
@@ -40,74 +41,101 @@ List<Widget> pupilCategoryStatusesList(PupilProxy pupil, BuildContext context) {
         //- GECHECKT
         //- This one is returning a unique status for this category
         statusesWidgetList.add(
-          Card(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0),
-                side: BorderSide(
-                  color: pupil.supportCategoryStatuses!.any((element) =>
-                          element.supportCategoryId == status.supportCategoryId)
-                      ? Colors.green
-                      : accentColor,
-                  width: 2,
-                )),
-            child: Column(
-              children: [
-                const Gap(10),
-                Row(
-                  children: [
-                    const Gap(10),
-                    Expanded(
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5.0),
-                          color: locator<LearningSupportManager>()
-                              .getCategoryColor(status.supportCategoryId),
-                        ),
-                        child: InkWell(
-                          onLongPress: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (ctx) => NewCategoryItem(
-                                      appBarTitle: 'Neuer Förderbereich',
-                                      pupilId: pupil.internalId,
-                                      goalCategoryId: status.supportCategoryId,
-                                      elementType: 'status',
-                                    )));
-                          },
-                          child: Column(children: [
-                            const Gap(5),
-                            ...categoryTreeAncestorsNames(
-                              status.supportCategoryId,
-                            ),
-                          ]),
-                        ),
-                      ),
-                    ),
-                    const Gap(10),
-                  ],
-                ),
-                Row(
-                  children: [
-                    const Gap(15),
-                    Flexible(
-                      child: Text(
-                        locator<LearningSupportManager>()
-                            .getSupportCategory(status.supportCategoryId)
-                            .categoryName,
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8.0),
+            child: Card(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                  side: BorderSide(
+                    color: pupil.supportCategoryStatuses!.any((element) =>
+                            element.supportCategoryId ==
+                            status.supportCategoryId)
+                        ? Colors.green
+                        : accentColor,
+                    width: 2,
+                  )),
+              child: Column(
+                children: [
+                  const Gap(10),
+                  Row(
+                    children: [
+                      const Gap(10),
+                      Expanded(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5.0),
                             color: locator<LearningSupportManager>()
-                                .getCategoryColor(status.supportCategoryId)),
+                                .getCategoryColor(status.supportCategoryId),
+                          ),
+                          child: InkWell(
+                            onLongPress: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (ctx) => NewCategoryItem(
+                                        appBarTitle: 'Neuer Förderbereich',
+                                        pupilId: pupil.internalId,
+                                        goalCategoryId:
+                                            status.supportCategoryId,
+                                        elementType: 'status',
+                                      )));
+                            },
+                            child: Column(children: [
+                              const Gap(5),
+                              ...categoryTreeAncestorsNames(
+                                status.supportCategoryId,
+                              ),
+                            ]),
+                          ),
+                        ),
+                      ),
+                      const Gap(10),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      const Gap(15),
+                      Flexible(
+                        child: Text(
+                          locator<LearningSupportManager>()
+                              .getSupportCategory(status.supportCategoryId)
+                              .categoryName,
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                              color: locator<LearningSupportManager>()
+                                  .getCategoryColor(status.supportCategoryId)),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const Gap(10),
+                  SupportCategoryStatusEntry(
+                    pupil: pupil,
+                    status: status,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: ElevatedButton(
+                      style: actionButtonStyle,
+                      onPressed: () async {
+                        await Navigator.of(context).push(MaterialPageRoute(
+                            builder: (ctx) => NewCategoryItem(
+                                  appBarTitle: 'Neues Förderziel',
+                                  pupilId: pupil.internalId,
+                                  goalCategoryId: status.supportCategoryId,
+                                  elementType: 'goal',
+                                )));
+                      },
+                      child: const Text(
+                        "NEUES FÖRDERZIEL",
+                        style: TextStyle(
+                            fontSize: 17.0,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold),
                       ),
                     ),
-                  ],
-                ),
-                const Gap(10),
-                SupportCategoryStatusEntry(
-                  pupil: pupil,
-                  status: status,
-                ),
-              ],
+                  ),
+                ],
+              ),
             ),
           ),
         );

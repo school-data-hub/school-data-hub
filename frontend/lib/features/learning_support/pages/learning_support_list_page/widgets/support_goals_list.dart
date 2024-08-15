@@ -13,29 +13,38 @@ class SupportGoalsList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: ElevatedButton(
-            style: actionButtonStyle,
-            onPressed: () async {
-              await Navigator.of(context).push(MaterialPageRoute(
-                  builder: (ctx) => NewCategoryItem(
-                        appBarTitle: 'Neues Förderziel',
-                        pupilId: pupil.internalId,
-                        goalCategoryId: 0,
-                        elementType: 'goal',
-                      )));
-            },
-            child: const Text(
-              "NEUES FÖRDERZIEL",
-              style: TextStyle(
-                  fontSize: 17.0,
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold),
-            ),
-          ),
-        ),
+        // Padding(
+        //   padding: const EdgeInsets.all(10.0),
+        //   child: ElevatedButton(
+        //     style: actionButtonStyle,
+        //     onPressed: () async {
+        //       await Navigator.of(context).push(MaterialPageRoute(
+        //           builder: (ctx) => NewCategoryItem(
+        //                 appBarTitle: 'Neues Förderziel',
+        //                 pupilId: pupil.internalId,
+        //                 goalCategoryId: 0,
+        //                 elementType: 'goal',
+        //               )));
+        //     },
+        //     child: const Text(
+        //       "NEUES FÖRDERZIEL",
+        //       style: TextStyle(
+        //           fontSize: 17.0,
+        //           color: Colors.white,
+        //           fontWeight: FontWeight.bold),
+        //     ),
+        //   ),
+        // ),
         const Gap(5),
+        const Row(
+          children: [
+            Text(
+              'Förderziele',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
+        const Gap(10),
         pupil.pupilGoals!.isNotEmpty
             ? ListView.builder(
                 padding: const EdgeInsets.all(0),
@@ -45,7 +54,11 @@ class SupportGoalsList extends StatelessWidget {
                 itemBuilder: (context, int index) {
                   return SupportGoalCard(pupil: pupil, goalIndex: index);
                 })
-            : const SizedBox.shrink(),
+            : const Column(
+                children: [
+                  Text('Noch keine Förderziele festgelegt!'),
+                ],
+              ),
         const Gap(10),
       ],
     );

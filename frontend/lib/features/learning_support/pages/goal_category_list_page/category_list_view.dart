@@ -28,11 +28,9 @@ class CategoryListView extends WatchingWidget {
               const EdgeInsets.only(top: 8.0, left: 10, right: 10, bottom: 10),
           child: Center(
             child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 800),
-              child: Column(children: [
-                ...buildCategoryTree(null, 0, null),
-              ]),
-            ),
+                constraints: const BoxConstraints(maxWidth: 800),
+                child: const SupportCategoryTree(
+                    parentId: null, indentation: 0, backGroundColor: null)),
           ),
         ),
       ),
