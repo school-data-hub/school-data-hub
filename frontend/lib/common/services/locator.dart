@@ -213,12 +213,10 @@ Future unregisterDependentManagers() async {
   locator.unregister<AttendanceManager>();
   locator.unregister<SchooldayEventManager>();
   locator.unregister<SchooldayEventFilterManager>();
-  locator.unregister<MatrixPolicyManager>();
-  locator.unregister<MatrixPolicyFilterManager>();
-  locator.unregister<PupilsFilter>();
 
   if (locator.isRegistered<MatrixPolicyManager>()) {
     locator.unregister<MatrixPolicyManager>();
     locator.unregister<MatrixPolicyFilterManager>();
   }
+  locator.unregister<PupilsFilter>();
 }
