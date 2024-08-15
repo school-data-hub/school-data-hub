@@ -8,7 +8,6 @@ import 'package:schuldaten_hub/common/services/schoolday_manager.dart';
 import 'package:schuldaten_hub/common/utils/extensions.dart';
 import 'package:schuldaten_hub/common/widgets/date_picker.dart';
 import 'package:schuldaten_hub/common/widgets/dialogues/information_dialog.dart';
-import 'package:schuldaten_hub/features/schoolday_events/models/schoolday_event.dart';
 import 'package:schuldaten_hub/features/schoolday_events/models/schoolday_event_enums.dart';
 import 'package:schuldaten_hub/features/schoolday_events/pages/new_schoolday_event_page/widgets/schoolday_event_filter_chip.dart';
 import 'package:schuldaten_hub/features/schoolday_events/services/schoolday_event_manager.dart';

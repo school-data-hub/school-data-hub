@@ -127,7 +127,7 @@ class _SchooldayEventListCardState extends State<SchooldayEventListCard> {
                           if (schooldayEvents.isNotEmpty)
                             Text(
                               SchoolDayEventHelper.getLastSchoolEventDate(
-                                      schooldayEvents)!
+                                      schooldayEvents)
                                   .formatForUser(),
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
