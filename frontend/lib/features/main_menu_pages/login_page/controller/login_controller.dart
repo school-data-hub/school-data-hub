@@ -46,7 +46,7 @@ class LoginController extends State<Login> {
     final locale = AppLocalizations.of(context)!;
     final String? scanResponse = await scanner(context, locale.scanSchoolId);
     if (scanResponse != null) {
-      locator<EnvManager>().setEnv(scanResponse);
+      locator<EnvManager>().addEnv(scanResponse);
       locator<NotificationManager>().showSnackBar(NotificationType.success, '');
       return;
     } else {
@@ -70,7 +70,7 @@ class LoginController extends State<Login> {
     if (result != null) {
       File file = File(result.files.single.path!);
       String rawTextResult = await file.readAsString();
-      locator<EnvManager>().setEnv(rawTextResult);
+      locator<EnvManager>().addEnv(rawTextResult);
       return;
     }
   }

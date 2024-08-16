@@ -6,14 +6,12 @@ import 'package:schuldaten_hub/common/services/schoolday_manager.dart';
 import 'package:schuldaten_hub/common/services/notification_manager.dart';
 import 'package:schuldaten_hub/features/pupil/services/pupil_manager.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_data.dart';
-
-import '../../../api/services/api_manager.dart';
-import '../../../common/services/locator.dart';
+import 'package:schuldaten_hub/common/services/locator.dart';
 
 class SchooldayEventManager {
   final pupilManager = locator<PupilManager>();
   final schooldayManager = locator<SchooldayManager>();
-  final client = locator<ApiManager>().dioClient.value;
+
   final endpoints = ApiSettings();
 
   final apiSchooldayEventService = SchooldayEventApiService();

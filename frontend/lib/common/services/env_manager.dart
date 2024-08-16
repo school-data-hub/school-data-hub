@@ -11,12 +11,14 @@ import 'package:schuldaten_hub/features/main_menu_pages/widgets/landing_bottom_n
 
 class EnvManager {
   ValueListenable<Env> get env => _env;
-  ValueListenable<Env> get testEnv => _testEnv;
+  ValueListenable<Map<String, Env>> get envs => _envs;
+  ValueListenable<String> get defaultEnv => _defaultEnv;
   ValueListenable<bool> get envReady => _envReady;
   ValueListenable<PackageInfo> get packageInfo => _packageInfo;
 
   final _env = ValueNotifier<Env>(Env());
-  final _testEnv = ValueNotifier<Env>(Env());
+  final _envs = ValueNotifier<Map<String, Env>>({});
+  final _defaultEnv = ValueNotifier<String>('');
   final _envReady = ValueNotifier<bool>(false);
   final _packageInfo = ValueNotifier<PackageInfo>(PackageInfo(
     appName: '',
@@ -35,17 +37,21 @@ class EnvManager {
   }
 
   Future<void> checkStoredEnv() async {
-    bool isStoredEnv = await secureStorageContains('env');
+    bool isStoredEnv = await secureStorageContains('environments');
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     _packageInfo.value = packageInfo;
     if (isStoredEnv == true) {
-      final String? storedSession = await secureStorageRead('env');
-      logger.i('env found!');
+      _defaultEnv.value = await secureStorageRead('defaultEnv') ?? '';
+      final String? storedSession = await secureStorageRead('environments');
+      logger.i('environment(s) found!');
       try {
-        final env = Env.fromJson(
-          json.decode(storedSession!) as Map<String, dynamic>,
-        );
-        _env.value = env;
+        final Map<String, Env> environmentsMap =
+            (json.decode(storedSession!) as Map<String, dynamic>).map(
+                (key, value) =>
+                    MapEntry(key, Env.fromJson(value as Map<String, dynamic>)));
+        _envs.value = environmentsMap;
+        // if there are environments stored, the default environment is already set
+        _env.value = environmentsMap[_defaultEnv.value] ?? Env();
         _envReady.value = true;
 
         return;
@@ -53,7 +59,7 @@ class EnvManager {
         logger.f('Error reading env from secureStorage!',
             stackTrace: StackTrace.current);
 
-        await secureStorageDelete('env');
+        await secureStorageDelete('environments');
 
         return;
       }
@@ -64,59 +70,42 @@ class EnvManager {
     }
   }
 
-  Future<void> checkStoredTestEnv() async {
-    bool isStoredEnv = await secureStorageContains('testEnv');
-    if (isStoredEnv == true) {
-      final String? storedSession = await secureStorageRead('testEnv');
-      logger.i('testEnv found!');
-
-      final env = Env.fromJson(
-        json.decode(storedSession!) as Map<String, dynamic>,
-      );
-      _testEnv.value = env;
-    }
-  }
-
-  // set the test environment
-  void setTestEnv(String scanResult) async {
-    final Env env =
-        Env.fromJson(json.decode(scanResult) as Map<String, dynamic>);
-    _testEnv.value = env;
-
-    final jsonEnv = json.encode(env.toJson());
-    await secureStorageWrite('testEnv', jsonEnv);
-    _envReady.value = true;
-    logger.i('Test Env stored');
-    logger.i(jsonEnv);
-  }
-
   // set the environment from a string
-  void setEnv(String scanResult) async {
+  void addEnv(String scanResult) async {
     final Env env =
         Env.fromJson(json.decode(scanResult) as Map<String, dynamic>);
     _env.value = env;
+    _envs.value = {..._envs.value, env.serverUrl!: env};
+    _defaultEnv.value = env.serverUrl!;
 
-    final jsonEnv = json.encode(env.toJson());
-    await secureStorageWrite('env', jsonEnv);
+    final jsonEnvs = json.encode(_envs.value);
+    await secureStorageWrite('environments', jsonEnvs);
+    await secureStorageWrite('defaultEnv', env.serverUrl!);
 
     _envReady.value = true;
     logger.i('Env stored');
-    logger.i(jsonEnv);
+    logger.i(jsonEnvs);
     return;
   }
 
-  deleteTestEnv() async {
-    _testEnv.value = Env();
-    await secureStorageDelete('testEnv');
-    //await secureStorageDelete('pupilIdentities');
-    locator.get<BottomNavManager>().setBottomNavPage(0);
-  }
-
   deleteEnv() async {
-    _env.value = Env();
-    _envReady.value = false;
-    await secureStorageDelete('env');
-    //await secureStorageDelete('pupilIdentities');
+    // delete _env.value from _envs.value
+    _envs.value.remove(_env.value.serverUrl);
+    // write _envs.value to secure storage
+    final jsonEnvs = json.encode(_envs.value);
+    await secureStorageWrite('environments', jsonEnvs);
+    // if there are environments left in _envs.value, set the last one as _env.value
+    if (_envs.value.isNotEmpty) {
+      _env.value = _envs.value.values.last;
+      _defaultEnv.value = _envs.value.keys.last;
+    } else {
+      // if there are no environments left, delete the environments from secure storage
+      await secureStorageDelete('environments');
+      _env.value = Env();
+      _defaultEnv.value = '';
+      _envReady.value = false;
+    }
+
     locator.get<BottomNavManager>().setBottomNavPage(0);
   }
 }

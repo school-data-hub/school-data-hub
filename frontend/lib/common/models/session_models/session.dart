@@ -7,6 +7,8 @@ class Session {
     this.role,
     this.credit,
     this.timeUnits,
+    this.contact,
+    this.tutoring,
   });
 
   Session copyWith({
@@ -17,29 +19,43 @@ class Session {
     String? role,
     int? credit,
     int? timeUnits,
+    String? contact,
+    String? tutoring,
   }) =>
       Session(
         username: username ?? this.username,
+        publicId: publicId ?? this.publicId,
         jwt: jwt ?? this.jwt,
         isAdmin: isAdmin ?? this.isAdmin,
         role: role ?? this.role,
         credit: credit ?? this.credit,
+        timeUnits: timeUnits ?? this.timeUnits,
+        contact: contact ?? this.contact,
+        tutoring: tutoring ?? this.tutoring,
       );
 
   factory Session.fromJson(final Map<String, dynamic> json) => Session(
-        username: json["username"],
+        username: json["name"],
+        publicId: json["public_id"],
         jwt: json["token"],
         isAdmin: json["admin"],
         role: json["role"],
         credit: json["credit"],
+        timeUnits: json["time_units"],
+        contact: json["contact"],
+        tutoring: json["tutoring"],
       );
 
   Map<String, dynamic> toJson() => {
-        "username": username,
+        "name": username,
+        "public_id": publicId,
         "token": jwt,
         "admin": isAdmin,
         "role": role,
         "credit": credit,
+        "time_units": timeUnits,
+        "contact": contact,
+        "tutoring": tutoring,
       };
 
   final String? username;
@@ -49,6 +65,8 @@ class Session {
   final String? role;
   final int? credit;
   final int? timeUnits;
+  final String? contact;
+  final String? tutoring;
 
   bool get isAuthenticated => username != null && jwt != null;
 }

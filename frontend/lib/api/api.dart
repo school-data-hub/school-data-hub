@@ -7,7 +7,7 @@ export 'endpoints/pupil_data_api_service.dart';
 export 'endpoints/pupil_workbook_api_service.dart';
 export 'endpoints/school_list_api_service.dart';
 export 'endpoints/schoolday_api_service.dart';
-export 'endpoints/user_endpoints.dart';
+export 'endpoints/user_api_service.dart';
 export 'endpoints/workbook_api_service.dart';
 
 class ApiSettings {

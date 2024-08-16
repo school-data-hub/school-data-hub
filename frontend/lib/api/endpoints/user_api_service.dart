@@ -1,3 +1,7 @@
+import 'package:schuldaten_hub/api/dio/dio_client.dart';
+
+import 'package:schuldaten_hub/common/services/locator.dart';
+
 class EndpointsUser {
   static const login = '/users/login';
   //- GET

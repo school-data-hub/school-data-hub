@@ -52,8 +52,8 @@ def get_flat_categories(current_user):
     all_categories = SupportCategory.query.all()
     if all_categories == None:
         return jsonify({'error': 'No categories found!'})
-    result = support_categories_flat_schema.dump(all_categories)
-    return jsonify(result)    
+    # result = support_categories_flat_schema.dump(all_categories)
+    return all_categories    
 
 
 #! TODO: Add rest of categories API

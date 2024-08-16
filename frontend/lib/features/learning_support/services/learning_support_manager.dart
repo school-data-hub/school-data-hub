@@ -2,7 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:schuldaten_hub/api/api.dart';
-import 'package:schuldaten_hub/api/services/api_manager.dart';
+
 import 'package:schuldaten_hub/common/constants/colors.dart';
 import 'package:schuldaten_hub/common/constants/enums.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
@@ -30,8 +30,6 @@ class LearningSupportManager {
     await fetchGoalCategories();
     return this;
   }
-
-  final client = locator.get<ApiManager>().dioClient.value;
 
   final notificationManager = locator<NotificationManager>();
 

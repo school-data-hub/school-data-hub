@@ -3,7 +3,8 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:schuldaten_hub/api/api.dart';
-import 'package:schuldaten_hub/api/services/api_manager.dart';
+import 'package:schuldaten_hub/api/dio/dio_client.dart';
+
 import 'package:schuldaten_hub/common/constants/enums.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_manager.dart';
@@ -11,7 +12,7 @@ import 'package:schuldaten_hub/common/utils/custom_encrypter.dart';
 import 'package:schuldaten_hub/features/workbooks/models/workbook.dart';
 
 class WorkbookApiService {
-  final _client = locator<ApiManager>().dioClient.value;
+  final DioClient _client = locator<DioClient>();
   final notificationManager = locator<NotificationManager>();
 
   //- get workbooks

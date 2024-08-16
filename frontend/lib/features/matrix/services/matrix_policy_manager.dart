@@ -6,7 +6,6 @@ import 'package:listenable_collections/listenable_collections.dart';
 import 'package:schuldaten_hub/api/api.dart';
 import 'package:schuldaten_hub/api/dio/dio_client.dart';
 import 'package:schuldaten_hub/api/endpoints/matrix_endpoints.dart';
-import 'package:schuldaten_hub/api/services/api_manager.dart';
 import 'package:schuldaten_hub/common/constants/enums.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_manager.dart';
@@ -18,6 +17,7 @@ import 'package:schuldaten_hub/features/matrix/models/matrix_user.dart';
 import 'package:schuldaten_hub/features/matrix/models/policy.dart';
 import 'package:schuldaten_hub/features/matrix/services/matrix_policy_helper_functions.dart';
 import 'package:schuldaten_hub/features/matrix/services/pdf_printer/matrix_credentials_printer.dart';
+import 'package:watch_it/watch_it.dart';
 
 class MatrixCredentials {
   final String url;
@@ -52,23 +52,23 @@ class MatrixPolicyManager {
   ValueListenable<List<MatrixUser>> get matrixUsers => _matrixUsers;
   ValueListenable<List<MatrixRoom>> get matrixRooms => _matrixRooms;
   String get matrixUrl => _matrixUrl;
-  ValueListenable<String> get matrixToken => _matrixToken;
+  ValueListenable<String> get synapseToken => _synapseToken;
   ValueListenable<String> get matrixAdmin => _matrixAdminId;
-  ValueListenable<String> get policyToken => _policyToken;
+  ValueListenable<String> get corporalToken => _corporalToken;
 
   final _matrixAdminId = ValueNotifier<String>('');
   final _matrixPolicy = ValueNotifier<Policy?>(null);
   final _pendingChanges = ValueNotifier<bool>(false);
-  final _matrixToken = ValueNotifier<String>('');
+  final _synapseToken = ValueNotifier<String>('');
   final _matrixUsers = ListNotifier<MatrixUser>();
   final _matrixRooms = ListNotifier<MatrixRoom>();
   late final String _matrixUrl;
-  final _policyToken = ValueNotifier<String>('');
+  final _corporalToken = ValueNotifier<String>('');
 
   MatrixPolicyManager() {
     logger.i('MatrixPolicyManager constructor called');
   }
-
+  final dioClient = locator<DioClient>();
   final notificationManager = locator<NotificationManager>();
 
   Future<MatrixPolicyManager> init() async {
@@ -82,8 +82,8 @@ class MatrixPolicyManager {
           final MatrixCredentials credentials =
               MatrixCredentials.fromJson(jsonDecode(matrixStoredValues));
           _matrixUrl = credentials.url;
-          _matrixToken.value = credentials.matrixToken;
-          _policyToken.value = credentials.policyToken;
+          _synapseToken.value = credentials.matrixToken;
+          _corporalToken.value = credentials.policyToken;
           notificationManager.showSnackBar(NotificationType.success,
               'Matrix-Räumeverwaltung wird geladen...');
           await fetchMatrixPolicy();
@@ -102,10 +102,10 @@ class MatrixPolicyManager {
     _matrixAdminId.value = '';
     _matrixPolicy.value = null;
     _pendingChanges.value = false;
-    _matrixToken.value = '';
+    _synapseToken.value = '';
     _matrixUsers.clear();
     _matrixRooms.clear();
-    _policyToken.value = '';
+    _corporalToken.value = '';
     await secureStorageDelete('matrix');
     locator<SessionManager>()
         .changeMatrixPolicyManagerRegistrationStatus(false);
@@ -124,8 +124,8 @@ class MatrixPolicyManager {
       required String policyToken,
       required String matrixToken}) async {
     _matrixUrl = url;
-    _policyToken.value = policyToken;
-    _matrixToken.value = matrixToken;
+    _corporalToken.value = policyToken;
+    _synapseToken.value = matrixToken;
     secureStorageWrite(
         'matrix',
         jsonEncode(MatrixCredentials(
@@ -134,19 +134,15 @@ class MatrixPolicyManager {
     await fetchMatrixPolicy();
   }
 
-  //- SETUP MATRIX CLIENT
-  DioClient matrixClient(String token) {
-    locator<ApiManager>().setCustomDioClientOptions(
-        _matrixUrl, 'Authorization', 'Bearer $token', false);
-    return locator<ApiManager>().dioClient.value;
-  }
-
   //- MATRIX POLICY
   Future<void> fetchMatrixPolicy() async {
     // use a custom client with the right token to fetch the policy
-    final client = matrixClient(_policyToken.value);
+    dioClient.setCustomDioClientOptions(
+        baseUrl: _matrixUrl,
+        tokenKey: 'Authorization',
+        token: 'Bearer ${_corporalToken.value}');
 
-    final response = await client.get(
+    final response = await dioClient.get(
       '${_matrixUrl}_matrix/corporal/policy',
     );
 
@@ -160,8 +156,7 @@ class MatrixPolicyManager {
         NotificationType.success, 'Matrix-Räumeverwaltung geladen');
 
     List<MatrixRoom> rooms = [];
-    locator<ApiManager>().setCustomDioClientOptions(
-        _matrixUrl, 'Authorization', 'Bearer ${_matrixToken.value}', false);
+    dioClient.setCustomDioClientOptions(token: 'Bearer ${_synapseToken.value}');
 
     notificationManager.showSnackBar(
         NotificationType.success, 'Matrix-Räume werden geladen...');
@@ -181,7 +176,7 @@ class MatrixPolicyManager {
     logger.i('Fetched Matrix policy!');
 
     locator<SessionManager>().changeMatrixPolicyManagerRegistrationStatus(true);
-    locator.get<ApiManager>().setDefaultDioClientOptions();
+    dioClient.setDefaultDioClientOptions();
     return;
   }
 
@@ -189,7 +184,11 @@ class MatrixPolicyManager {
 
   Future<void> createNewRoom(
       String name, String topic, String? aliasName) async {
-    final client = matrixClient(_matrixToken.value);
+    dioClient.setCustomDioClientOptions(
+        baseUrl: _matrixUrl,
+        tokenKey: 'Authorization',
+        token: 'Bearer ${_synapseToken.value}');
+
     final data = jsonEncode({
       {
         "creation_content": {"m.federate": false},
@@ -201,14 +200,14 @@ class MatrixPolicyManager {
     });
 
     final Response response =
-        await client.post(MatrixEndpoints.createRoom, data: data);
+        await dioClient.post(MatrixEndpoints.createRoom, data: data);
     if (response.statusCode == 200) {
       // extract the value of "room_id" out of the response
       final String roomId = jsonDecode(response.data)['room_id'];
       final room = await _fetchAdditionalRoomInfos(roomId);
       addManagedRoom(room);
     }
-    locator.get<ApiManager>().setDefaultDioClientOptions();
+    dioClient.setDefaultDioClientOptions();
   }
 
   void addManagedRoom(MatrixRoom newRoom) {
@@ -224,7 +223,11 @@ class MatrixPolicyManager {
 
   Future setRoomPowerLevels(String roomId, List<RoomAdmin>? adminPowerLevels,
       int eventsDefault, int reactions) async {
-    final client = matrixClient('Bearer ${_matrixToken.value}');
+    dioClient.setCustomDioClientOptions(
+        baseUrl: _matrixUrl,
+        tokenKey: 'Authorization',
+        token: 'Bearer ${_synapseToken.value}');
+
     final data = jsonEncode({
       "ban": 50,
       "events": {
@@ -257,22 +260,26 @@ class MatrixPolicyManager {
       "users_default": 0
     });
 
-    final response = await client.put(
+    final response = await dioClient.put(
         '$_matrixUrl${MatrixEndpoints().putRoomPowerLevels(roomId)}',
         data: data);
     logger.i('Response: ${response.data}');
-    locator.get<ApiManager>().setDefaultDioClientOptions();
+    dioClient.setDefaultDioClientOptions();
   }
 
   Future<MatrixRoom> _fetchAdditionalRoomInfos(String roomId) async {
-    final client = locator<ApiManager>().dioClient.value;
+    dioClient.setCustomDioClientOptions(
+        baseUrl: _matrixUrl,
+        tokenKey: 'Authorization',
+        token: 'Bearer ${_synapseToken.value}');
+
     late String name;
     late int powerLevelReactions;
     late int eventsDefault;
     late List<RoomAdmin> roomAdmins;
 
     // First API call
-    final responseRoomSPowerLevels = await client.get(
+    final responseRoomSPowerLevels = await dioClient.get(
       '$_matrixUrl${MatrixEndpoints().fetchRoomPowerLevels(roomId)}',
     );
 
@@ -292,7 +299,7 @@ class MatrixPolicyManager {
     }
 
     // Second API call
-    final responseRoomName = await client.get(
+    final responseRoomName = await dioClient.get(
       '$_matrixUrl${MatrixEndpoints().fetchRoomName(roomId)}',
     );
 
@@ -307,13 +314,17 @@ class MatrixPolicyManager {
       eventsDefault: eventsDefault,
       roomAdmins: roomAdmins,
     );
-
+    dioClient.setDefaultDioClientOptions();
     return roomWithAdditionalInfos;
   }
   //- USER REPOSITORY
 
   Future createNewMatrixUser(String matrixId, String displayName) async {
-    final client = matrixClient(_matrixToken.value);
+    dioClient.setCustomDioClientOptions(
+        baseUrl: _matrixUrl,
+        tokenKey: 'Authorization ',
+        token: 'Bearer ${_synapseToken.value}');
+
     final password = generatePassword();
     final data = jsonEncode({
       "user_id": matrixId,
@@ -324,7 +335,7 @@ class MatrixPolicyManager {
       "avatar_url": ""
     });
 
-    final Response response = await client.put(
+    final Response response = await dioClient.put(
       MatrixEndpoints().createMatrixUser(matrixId),
       data: data,
     );
@@ -336,24 +347,29 @@ class MatrixPolicyManager {
       _matrixUsers.add(newUser);
       await printMatrixCredentials(_matrixUrl, newUser, password);
     }
-    locator.get<ApiManager>().setDefaultDioClientOptions();
+    dioClient.setDefaultDioClientOptions();
+
     _pendingChanges.value = true;
     return;
   }
 
   Future deleteUser(String userId) async {
-    final client = matrixClient(_matrixToken.value);
+    dioClient.setCustomDioClientOptions(
+        baseUrl: _matrixUrl,
+        tokenKey: 'Authorization',
+        token: 'Bearer ${_synapseToken.value}');
+
     final data = jsonEncode({
       "erase": true,
     });
-    final Response response = await client
+    final Response response = await dioClient
         .delete(MatrixEndpoints().deleteMatrixUser(userId), data: data);
 
     if (response.statusCode == 200) {
       _matrixUsers.removeWhere((user) => user.id == userId);
     }
     _pendingChanges.value = true;
-    locator.get<ApiManager>().setDefaultDioClientOptions();
+    dioClient.setDefaultDioClientOptions();
   }
 
   Future addMatrixUserToRooms(String matrixUserId, List<String> roomIds) async {

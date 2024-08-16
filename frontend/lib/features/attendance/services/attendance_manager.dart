@@ -1,7 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:schuldaten_hub/api/api.dart';
-import 'package:schuldaten_hub/api/services/api_manager.dart';
 import 'package:schuldaten_hub/common/constants/enums.dart';
 import 'package:schuldaten_hub/common/models/schoolday_models/schoolday.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
@@ -39,7 +38,7 @@ class AttendanceManager {
   final pupilManager = locator<PupilManager>();
   final schooldayManager = locator<SchooldayManager>();
   final notificationManager = locator<NotificationManager>();
-  final client = locator<ApiManager>().dioClient.value;
+
   final apiAttendanceService = AttendanceApiService();
 
   ValueListenable<List<MissedClass>> get missedClasses => _missedClasses;

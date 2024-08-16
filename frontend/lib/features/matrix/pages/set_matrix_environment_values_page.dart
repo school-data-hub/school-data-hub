@@ -18,16 +18,18 @@ class SetMatrixEnvironmentValuesPage extends StatefulWidget {
 
 class SetMatrixEnvironmentValuesPageState
     extends State<SetMatrixEnvironmentValuesPage> {
-  final TextEditingController textField1Controller = TextEditingController();
-  final TextEditingController textField2Controller = TextEditingController();
-  final TextEditingController textField3Controller = TextEditingController();
+  final TextEditingController urlTextFieldController = TextEditingController();
+  final TextEditingController matrixTokenTextFieldController =
+      TextEditingController();
+  final TextEditingController policyTokenTextFieldController =
+      TextEditingController();
   Set<String> roomIds = {};
   //Set<int> pupilIds = {};
   void setMatrixEnvironment() async {
     final bool managerIsReady = await registerMatrixPolicyManager();
-    String url = textField1Controller.text;
-    String matrixToken = textField2Controller.text;
-    String policyToken = textField3Controller.text;
+    String url = urlTextFieldController.text;
+    String matrixToken = matrixTokenTextFieldController.text;
+    String policyToken = policyTokenTextFieldController.text;
     await locator.allReady();
     if (managerIsReady) {
       locator<MatrixPolicyManager>().setMatrixEnvironmentValues(
@@ -82,7 +84,7 @@ class SetMatrixEnvironmentValuesPageState
                       child: TextField(
                         minLines: 1,
                         maxLines: 3,
-                        controller: textField1Controller,
+                        controller: urlTextFieldController,
                         decoration: const InputDecoration(
                           contentPadding: EdgeInsets.all(10),
                           border: OutlineInputBorder(
@@ -104,7 +106,7 @@ class SetMatrixEnvironmentValuesPageState
                 TextField(
                   minLines: 1,
                   maxLines: 2,
-                  controller: textField2Controller,
+                  controller: matrixTokenTextFieldController,
                   decoration: const InputDecoration(
                     contentPadding: EdgeInsets.all(10),
                     border: OutlineInputBorder(
@@ -121,7 +123,7 @@ class SetMatrixEnvironmentValuesPageState
                 TextField(
                   minLines: 1,
                   maxLines: 2,
-                  controller: textField3Controller,
+                  controller: policyTokenTextFieldController,
                   decoration: const InputDecoration(
                     contentPadding: EdgeInsets.all(10),
                     border: OutlineInputBorder(
@@ -157,10 +159,10 @@ class SetMatrixEnvironmentValuesPageState
                       final matrixCredentialsMap = jsonDecode(scanResult);
                       // final MatrixCredentials matrixCredentials =
                       //     MatrixCredentials.fromJson(matrixCredentialsMap);
-                      textField1Controller.text = matrixCredentialsMap['url'];
-                      textField2Controller.text =
+                      urlTextFieldController.text = matrixCredentialsMap['url'];
+                      matrixTokenTextFieldController.text =
                           matrixCredentialsMap['matrixToken'];
-                      textField3Controller.text =
+                      policyTokenTextFieldController.text =
                           matrixCredentialsMap['policyToken'];
                       setMatrixEnvironment();
                       if (context.mounted) {
@@ -195,9 +197,9 @@ class SetMatrixEnvironmentValuesPageState
   @override
   void dispose() {
     // Clean up the controller when the widget is removed from the tree
-    textField1Controller.dispose();
-    textField2Controller.dispose();
-    textField3Controller.dispose();
+    urlTextFieldController.dispose();
+    matrixTokenTextFieldController.dispose();
+    policyTokenTextFieldController.dispose();
     super.dispose();
   }
 }

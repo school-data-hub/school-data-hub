@@ -9,7 +9,6 @@ import 'package:schuldaten_hub/common/constants/enums.dart';
 import 'package:schuldaten_hub/common/services/notification_manager.dart';
 import 'package:schuldaten_hub/common/utils/logger.dart';
 import 'package:schuldaten_hub/features/competence/models/competence.dart';
-import 'package:schuldaten_hub/api/services/api_manager.dart';
 import 'package:schuldaten_hub/features/competence/filters/competence_filter_manager.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/features/competence/models/competence_check.dart';
@@ -21,7 +20,7 @@ class CompetenceManager {
 
   final _competences = ValueNotifier<List<Competence>>([]);
   final _isRunning = ValueNotifier<bool>(false);
-  final client = locator.get<ApiManager>().dioClient.value;
+
   final snackBarManager = locator<NotificationManager>();
   CompetenceManager() {
     logger.i('CompetenceManager constructor called');

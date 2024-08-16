@@ -17,6 +17,7 @@ import 'package:schuldaten_hub/common/widgets/dialogues/short_textfield_dialog.d
 import 'package:schuldaten_hub/common/widgets/qr_views.dart';
 import 'package:schuldaten_hub/features/calendar/schooldays_calendar_page.dart';
 import 'package:schuldaten_hub/features/main_menu_pages/login_page/controller/login_controller.dart';
+import 'package:schuldaten_hub/features/main_menu_pages/widgets/dialogues/change_env_dialog.dart';
 import 'package:schuldaten_hub/features/matrix/services/matrix_policy_helper_functions.dart';
 import 'package:schuldaten_hub/features/matrix/pages/set_matrix_environment_values_page.dart';
 import 'package:schuldaten_hub/features/matrix/services/matrix_policy_manager.dart';
@@ -65,6 +66,8 @@ class SettingsPage extends WatchingWidget {
                 ),
                 tiles: <SettingsTile>[
                   SettingsTile.navigation(
+                    onPressed: (context) =>
+                        changeEnvironmentDialog(context: context),
                     leading: const Icon(Icons.home),
                     title: const Text('Instanz:'),
                     value: Text(

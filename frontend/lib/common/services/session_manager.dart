@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:schuldaten_hub/api/dio/dio_client.dart';
 import 'package:schuldaten_hub/api/dio/dio_exceptions.dart';
 import 'package:schuldaten_hub/api/api.dart';
 import 'package:schuldaten_hub/common/constants/enums.dart';
@@ -14,23 +15,23 @@ import 'package:schuldaten_hub/common/services/notification_manager.dart';
 import 'package:schuldaten_hub/common/utils/logger.dart';
 import 'package:schuldaten_hub/common/utils/secure_storage.dart';
 import 'package:schuldaten_hub/common/models/session_models/session.dart';
-import 'package:schuldaten_hub/api/services/api_manager.dart';
+
 import 'package:schuldaten_hub/common/services/locator.dart';
 
 import 'package:schuldaten_hub/features/main_menu_pages/widgets/landing_bottom_nav_bar.dart';
 
 class SessionManager {
-  ValueListenable<bool> get matrixPolicyManagerRegistrationStatus =>
-      _matrixPolicyManagerRegistrationStatus;
   ValueListenable<Session> get credentials => _credentials;
   ValueListenable<bool> get isAuthenticated => _isAuthenticated;
   ValueListenable<bool> get isAdmin => _isAdmin;
+  ValueListenable<bool> get matrixPolicyManagerRegistrationStatus =>
+      _matrixPolicyManagerRegistrationStatus;
   // ValueListenable<int> get credit => _credit;
 
-  final _matrixPolicyManagerRegistrationStatus = ValueNotifier<bool>(false);
   final _credentials = ValueNotifier<Session>(Session());
   final _isAuthenticated = ValueNotifier<bool>(false);
   final _isAdmin = ValueNotifier<bool>(false);
+  final _matrixPolicyManagerRegistrationStatus = ValueNotifier<bool>(false);
   // final _credit = ValueNotifier<int>(0);
 
   late final Dio _dio = Dio(
@@ -64,7 +65,7 @@ class SessionManager {
   }
 
   Future<void> updateSessionData(Session session) async {
-    final client = locator.get<ApiManager>().dioClient.value;
+    final client = locator<DioClient>();
     try {
       final response = await client.get(EndpointsUser.getSelfUser);
       if (response.statusCode == 200) {
@@ -84,7 +85,6 @@ class SessionManager {
   }
 
   Future<void> checkStoredCredentials() async {
-    locator<NotificationManager>().isRunningValue(true);
     if (await secureStorageContains('session') == true) {
       final String? storedSession = await secureStorageRead('session');
       logger.i('Session found!');
@@ -104,13 +104,14 @@ class SessionManager {
           locator<NotificationManager>().isRunningValue(false);
           return;
         }
+
         logger.i('Stored session is valid!');
         authenticate(session);
         logger.i(
             'SessionManager: isAuthenticated is ${_isAuthenticated.value.toString()}');
         logger.i('Calling ApiManager instance');
         registerDependentManagers(_credentials.value.jwt!);
-        locator<NotificationManager>().isRunningValue(false);
+
         return;
       } catch (e) {
         logger.f(
@@ -138,7 +139,11 @@ class SessionManager {
           Session.fromJson(response.data).copyWith(username: username);
       authenticate(session);
       await saveSession(_credentials.value);
-      locator<ApiManager>().refreshToken(_credentials.value.jwt!);
+      locator<DioClient>().setHeaders(
+        tokenKey: 'x-access-token',
+        token: _credentials.value.jwt!,
+      );
+
       return response.statusCode!;
     }
     return response.statusCode!;

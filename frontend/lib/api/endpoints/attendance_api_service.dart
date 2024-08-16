@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:schuldaten_hub/api/api.dart';
 import 'package:schuldaten_hub/api/dio/dio_client.dart';
-import 'package:schuldaten_hub/api/services/api_manager.dart';
 import 'package:schuldaten_hub/common/constants/enums.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_manager.dart';
@@ -14,7 +13,7 @@ import 'package:schuldaten_hub/features/pupil/services/pupil_manager.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_data.dart';
 
 class AttendanceApiService {
-  late final DioClient _client = locator<ApiManager>().dioClient.value;
+  final DioClient _client = locator<DioClient>();
   final pupilManager = locator<PupilManager>();
   final notificationManager = locator<NotificationManager>();
 

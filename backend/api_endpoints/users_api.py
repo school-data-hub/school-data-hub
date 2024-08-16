@@ -33,13 +33,14 @@ def login():
         token = jwt.encode({'public_id' : user.public_id, 'exp' :
                             datetime.now() + timedelta(hours=120)},
                            current_app.config['SECRET_KEY'])
-        return jsonify({'token' : token,
+        return jsonify({'name': user.name,
+                        'public_id': user.public_id,
+                        'token' : token,
                         'admin': isAdmin,
                         'role': user.role,
                         'credit': user.credit,
+                        'tutoring': user.tutoring,
                         'time_units': user.time_units,
-                        'name': user.name,
-                        'role': user.role,
                         'contact': user.contact}), 200
     return jsonify({'message' : 'Falsches Passwort!'}), 401
 

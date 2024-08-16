@@ -53,8 +53,8 @@ def get_flat_competences(current_user):
     all_competences = Competence.query.all()
     if all_competences == None:
         return jsonify({'error': 'No competences found!'})
-    result = competences_flat_schema.dump(all_competences)
-    return jsonify(result)    
+    # result = competences_flat_schema.dump(all_competences)
+    return all_competences
 
 #- POST NEW COMPETENCE
 ######################

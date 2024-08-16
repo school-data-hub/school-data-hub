@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:schuldaten_hub/api/api.dart';
-import 'package:schuldaten_hub/api/services/api_manager.dart';
 import 'package:schuldaten_hub/common/constants/enums.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_manager.dart';
@@ -19,7 +18,6 @@ class WorkbookManager {
   final _workbooks = ValueNotifier<List<Workbook>>([]);
 
   WorkbookManager();
-  final client = locator.get<ApiManager>().dioClient.value;
   final session = locator.get<SessionManager>().credentials.value;
   final apiPupilWorkbookService = PupilWorkbookApiService();
 
