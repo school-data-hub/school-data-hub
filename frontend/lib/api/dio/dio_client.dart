@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:dio/dio.dart';
 import 'package:schuldaten_hub/api/api.dart';
 import 'package:schuldaten_hub/api/dio/dio_interceptor.dart';
@@ -19,14 +21,15 @@ class DioClient {
 
       ..options.receiveTimeout = ApiSettings.receiveTimeout
       ..options.responseType = ResponseType.json
-      ..interceptors.add(DioInterceptor())
-      ..interceptors.add(LogInterceptor(
-        request: true,
-        requestHeader: true,
-        // requestBody: true,
-        // responseHeader: true,
-        // responseBody: true,
-      ));
+      ..interceptors.add(DioInterceptor());
+    // ..interceptors.add(LogInterceptor(
+    //   request: true,
+    //   requestHeader: true,
+    //   // requestBody: true,
+    //   // responseHeader: true,
+    //   // responseBody: true,
+    // )
+    // );
   }
 
   setCustomDioClientOptions(
@@ -56,7 +59,7 @@ class DioClient {
     _dio.options.baseUrl = baseUrl;
   }
 
-  //- GET:-----------------------------------------------------------------------
+  //- GET:
 
   Future<Response> get(
     String uri, {
@@ -72,11 +75,11 @@ class DioClient {
       cancelToken: cancelToken,
       onReceiveProgress: onReceiveProgress,
     );
-
+    log("Response[GET] ${response.statusCode} => PATH: $uri");
     return response;
   }
 
-//- PATCH:-----------------------------------------------------------------------
+//- PATCH:
 
   Future<Response> patch(
     String uri, {
@@ -94,10 +97,11 @@ class DioClient {
       cancelToken: cancelToken,
       onReceiveProgress: onReceiveProgress,
     );
+    log("Response[PATCH] ${response.statusCode} => PATH: $uri");
     return response;
   }
 
-  //- POST:----------------------------------------------------------------------
+  //- POST:
 
   Future<Response> post(
     String uri, {
@@ -117,11 +121,11 @@ class DioClient {
       onSendProgress: onSendProgress,
       onReceiveProgress: onReceiveProgress,
     );
-
+    log("Response[POST] ${response.statusCode} => PATH: $uri");
     return response;
   }
 
-  //- PUT:-----------------------------------------------------------------------
+  //- PUT:
 
   Future<Response> put(
     String uri, {
@@ -144,7 +148,7 @@ class DioClient {
     return response;
   }
 
-  //- DELETE:--------------------------------------------------------------------
+  //- DELETE:
 
   Future<Response> delete(
     String uri, {
@@ -162,6 +166,7 @@ class DioClient {
       options: options,
       cancelToken: cancelToken,
     );
+    log("Response[DELETE] ${response.statusCode} => PATH: $uri");
     return response;
   }
 }

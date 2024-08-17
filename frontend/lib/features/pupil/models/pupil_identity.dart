@@ -1,6 +1,7 @@
 // ignore_for_file: invalid_annotation_target
 
 import 'package:json_annotation/json_annotation.dart';
+import 'package:schuldaten_hub/common/utils/extensions.dart';
 
 part 'pupil_identity.g.dart';
 

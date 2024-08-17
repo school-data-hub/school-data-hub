@@ -71,7 +71,7 @@ class SettingsPage extends WatchingWidget {
                     leading: const Icon(Icons.home),
                     title: const Text('Instanz:'),
                     value: Text(
-                      locator<EnvManager>().env.value.serverUrl!,
+                      locator<EnvManager>().env.value.server!,
                     ),
                     trailing: null,
                   ),
@@ -202,7 +202,7 @@ class SettingsPage extends WatchingWidget {
                         locator<NotificationManager>().showSnackBar(
                             NotificationType.success,
                             'Instanz-ID-Schlüssel gelöscht');
-                        final cacheManager = DefaultCacheManager();
+                        final cacheManager = locator<DefaultCacheManager>();
                         await cacheManager.emptyCache();
                         if (context.mounted) {
                           Navigator.of(context).pushAndRemoveUntil(
@@ -228,7 +228,7 @@ class SettingsPage extends WatchingWidget {
                               title: 'Bilder-Cache löschen',
                               message: 'Cached Bilder löschen?');
                           if (confirm == true && context.mounted) {
-                            final cacheManager = DefaultCacheManager();
+                            final cacheManager = locator<DefaultCacheManager>();
                             await cacheManager.emptyCache();
                             locator<NotificationManager>().showSnackBar(
                                 NotificationType.success,

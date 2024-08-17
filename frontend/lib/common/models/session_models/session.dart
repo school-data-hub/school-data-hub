@@ -1,5 +1,6 @@
 class Session {
   Session({
+    this.server,
     this.username,
     this.publicId,
     this.jwt,
@@ -12,6 +13,7 @@ class Session {
   });
 
   Session copyWith({
+    String? server,
     String? username,
     String? publicId,
     String? jwt,
@@ -23,6 +25,7 @@ class Session {
     String? tutoring,
   }) =>
       Session(
+        server: server ?? this.server,
         username: username ?? this.username,
         publicId: publicId ?? this.publicId,
         jwt: jwt ?? this.jwt,
@@ -35,6 +38,7 @@ class Session {
       );
 
   factory Session.fromJson(final Map<String, dynamic> json) => Session(
+        server: json["server"],
         username: json["name"],
         publicId: json["public_id"],
         jwt: json["token"],
@@ -47,6 +51,7 @@ class Session {
       );
 
   Map<String, dynamic> toJson() => {
+        "server": server,
         "name": username,
         "public_id": publicId,
         "token": jwt,
@@ -58,6 +63,7 @@ class Session {
         "tutoring": tutoring,
       };
 
+  final String? server;
   final String? username;
   final String? publicId;
   final String? jwt;

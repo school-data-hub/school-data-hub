@@ -5,6 +5,7 @@ import 'package:schuldaten_hub/common/constants/paddings.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/widgets/dialogues/long_textfield_dialog.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
+import 'package:schuldaten_hub/features/pupil/services/pupil_manager.dart';
 import 'package:schuldaten_hub/features/school_lists/services/school_list_manager.dart';
 import 'package:schuldaten_hub/features/school_lists/pages/school_list_pupils_page/school_list_pupils_page.dart';
 import 'package:schuldaten_hub/features/school_lists/pages/school_lists_page/school_lists_page.dart';
@@ -60,8 +61,10 @@ class PupilSchoolListContentList extends WatchingWidget {
   @override
   Widget build(BuildContext context) {
     final schoolListLocator = locator<SchoolListManager>();
-    final allPupilLists =
-        watchValue((SchoolListManager x) => x.pupilSchoolLists);
+    //-TODO: lists are not updating
+    final PupilProxy watchedPupil =
+        watch(locator<PupilManager>().findPupilById(pupil.internalId)!);
+    final allPupilLists = watchValue((SchoolListManager x) => x.pupilListMap);
     final pupilLists =
         schoolListLocator.getPupilListsFromPupilByPupilId(pupil.internalId);
     return Column(
@@ -74,9 +77,9 @@ class PupilSchoolListContentList extends WatchingWidget {
           itemBuilder: (BuildContext context, int index) {
             final schoolList = schoolListLocator
                 .getSchoolListById(pupilLists[index].originList);
-            final pupilListEntry = schoolListLocator.getPupilSchoolListEntry(
-                pupilId: pupil.internalId,
-                listId: pupilLists[index].originList)!;
+            final pupilListEntry = allPupilLists[pupil.internalId]!.firstWhere(
+                (element) =>
+                    element.originList == pupilLists[index].originList);
             return GestureDetector(
               onTap: () {},
               onLongPress: () async {},

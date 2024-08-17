@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:schuldaten_hub/api/dio/dio_client.dart';
 import 'package:schuldaten_hub/common/constants/enums.dart';
 import 'package:schuldaten_hub/common/services/env_manager.dart';
@@ -65,7 +66,8 @@ void registerBaseManagers() {
     await pupilBaseManager.init();
     logger.i('PupilIdentityManager initialized');
     return pupilBaseManager;
-  });
+  }, dependsOn: [EnvManager]);
+  locator.registerSingleton<DefaultCacheManager>(DefaultCacheManager());
   locator.registerSingleton<NotificationManager>(NotificationManager());
   locator.registerSingleton<BottomNavManager>(BottomNavManager());
   locator.registerSingleton<SearchManager>(SearchManager());
@@ -76,16 +78,7 @@ Future registerDependentManagers(String token) async {
 
   locator.registerSingleton<DioClient>(
       DioClient(Dio(), locator<EnvManager>().env.value.serverUrl!));
-  // locator.registerSingletonAsync<DioClient>(
-  //   () async {
-  //     logger.i('Registering DioClient');
-  //     final DioClient = DioClient();
-  //     await DioClient.init(token);
-  //     logger.i('DioClient initialized');
-  //     return DioClient;
-  //   },
-  //   dependsOn: [EnvManager, SessionManager, ConnectionManager],
-  // );
+
   locator<DioClient>().setHeaders(tokenKey: 'x-access-token', token: token);
   locator.registerSingletonAsync<SchooldayManager>(() async {
     logger.i('Registering SchooldayManager');
@@ -209,7 +202,7 @@ Future unregisterDependentManagers() async {
   locator.unregister<SchooldayManager>();
   locator.unregister<WorkbookManager>();
   locator.unregister<LearningSupportManager>();
-  locator.unregister<PupilManager>();
+
   locator.unregister<PupilFilterManager>();
   locator.unregister<CompetenceFilterManager>();
   locator.unregister<CompetenceManager>();
@@ -219,6 +212,7 @@ Future unregisterDependentManagers() async {
   locator.unregister<AttendanceManager>();
   locator.unregister<SchooldayEventManager>();
   locator.unregister<SchooldayEventFilterManager>();
+  locator.unregister<PupilManager>();
 
   if (locator.isRegistered<MatrixPolicyManager>()) {
     locator.unregister<MatrixPolicyManager>();

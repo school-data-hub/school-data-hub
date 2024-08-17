@@ -2,6 +2,17 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 const secureStorage = FlutterSecureStorage();
 
+enum SecureStorageKey {
+  environments('environments'),
+  defaultEnv('defaultEnv'),
+  sessions('sessions'),
+  pupilIdentities('pupilIdentities'),
+  ;
+
+  final String value;
+  const SecureStorageKey(this.value);
+}
+
 Future<bool> secureStorageContains(String key) async {
   if (await secureStorage.containsKey(key: key)) {
     return true;

@@ -40,6 +40,13 @@ class PupilsFilterImplementation with ChangeNotifier implements PupilsFilter {
     super.dispose();
   }
 
+  @override
+  void clearFilteredPupils() {
+    _filteredPupils.value = [];
+    _filteredPupilIds.value = [];
+    notifyListeners();
+  }
+
   final PupilManager _pupilsManager;
 
   @override

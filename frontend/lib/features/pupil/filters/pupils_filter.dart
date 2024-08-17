@@ -105,6 +105,8 @@ abstract class PupilsFilter implements Listenable {
   // and sort mode
   void refreshs();
 
+  void clearFilteredPupils();
+
   // reset the filters to its initial state
   void resetFilters();
 

@@ -35,7 +35,7 @@ Map<String, dynamic> _$PupilIdentityToJson(PupilIdentity instance) =>
       'gender': instance.gender,
       'language': instance.language,
       'family': instance.family,
-      'birthday': instance.birthday.toIso8601String(),
-      'migrationSupportEnds': instance.migrationSupportEnds?.toIso8601String(),
-      'pupilSince': instance.pupilSince.toIso8601String(),
+      'birthday': instance.birthday.formatForJson(),
+      'migrationSupportEnds': instance.migrationSupportEnds?.formatForJson(),
+      'pupilSince': instance.pupilSince.formatForJson(),
     };

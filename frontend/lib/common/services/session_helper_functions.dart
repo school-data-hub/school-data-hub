@@ -28,7 +28,7 @@ void logoutAndDeleteAllData(BuildContext context) async {
   await locator<PupilIdentityManager>().deleteAllPupilIdentities();
   await locator<EnvManager>().deleteEnv();
   await locator<SessionManager>().logout();
-  final cacheManager = DefaultCacheManager();
+  final cacheManager = locator<DefaultCacheManager>();
 
   await cacheManager.emptyCache();
 

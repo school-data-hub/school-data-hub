@@ -55,17 +55,19 @@ class LoginController extends State<Login> {
     }
   }
 
-  loginWithTextCredentials() {
+  Future<void> loginWithTextCredentials() async {
     final String username = usernameController.text;
     final String password = passwordController.text;
-    attemptLogin(username: username, password: password);
+    await attemptLogin(username: username, password: password);
   }
 
-  attemptLogin({required String username, required String password}) async {
-    await locator<SessionManager>().attemptLogin(username, password);
+  Future<void> attemptLogin(
+      {required String username, required String password}) async {
+    await locator<SessionManager>()
+        .attemptLogin(username: username, password: password);
   }
 
-  importEnvFromTxt() async {
+  Future<void> importEnvFromTxt() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles();
     if (result != null) {
       File file = File(result.files.single.path!);

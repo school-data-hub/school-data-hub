@@ -28,6 +28,7 @@ class PupilManager extends ChangeNotifier {
 
   void clearData() {
     _pupils.clear();
+    //locator<PupilsFilterImplementation>().filteredPupils
   }
 
   PupilProxy? findPupilById(int id) {
@@ -235,7 +236,7 @@ class PupilManager extends ChangeNotifier {
 
     // Delete the outdated encrypted file.
 
-    final cacheManager = DefaultCacheManager();
+    final cacheManager = locator<DefaultCacheManager>();
     final cacheKey = pupilProxy.internalId;
 
     cacheManager.removeFile(cacheKey.toString());
@@ -249,7 +250,7 @@ class PupilManager extends ChangeNotifier {
 
     // Delete the outdated encrypted file in the cache.
 
-    final cacheManager = DefaultCacheManager();
+    final cacheManager = locator<DefaultCacheManager>();
     await cacheManager.removeFile(cacheKey);
 
     // and update the repository

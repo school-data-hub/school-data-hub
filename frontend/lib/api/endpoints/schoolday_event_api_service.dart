@@ -260,7 +260,7 @@ class SchooldayEventApiService {
     final PupilData responsePupil = PupilData.fromJson(response.data);
 
     // Delete the file from the cache
-    final cacheManager = DefaultCacheManager();
+    final cacheManager = locator<DefaultCacheManager>();
     await cacheManager.removeFile(cacheKey);
 
     notificationManager.isRunningValue(false);

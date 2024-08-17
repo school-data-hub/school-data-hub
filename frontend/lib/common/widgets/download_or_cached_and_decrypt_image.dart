@@ -30,7 +30,7 @@ Future<Widget> downloadOrCachedAndDecryptImage(
     return const Icon(Icons.camera_alt_rounded);
   }
 
-  final cacheManager = DefaultCacheManager();
+  final cacheManager = locator<DefaultCacheManager>();
   final cacheKey = tag!;
 
   final fileInfo = await cacheManager.getFileFromCache(cacheKey);

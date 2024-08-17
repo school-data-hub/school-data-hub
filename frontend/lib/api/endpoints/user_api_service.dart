@@ -1,7 +1,3 @@
-import 'package:schuldaten_hub/api/dio/dio_client.dart';
-
-import 'package:schuldaten_hub/common/services/locator.dart';
-
 class EndpointsUser {
   static const login = '/users/login';
   //- GET
@@ -24,3 +20,6 @@ class EndpointsUser {
   //- increase credit
   static const increaseCredit = '/users/all/credit';
 }
+
+//- TODO: Implement UserApiService and migrate api calls from SessionManager
+class UserApiService {}

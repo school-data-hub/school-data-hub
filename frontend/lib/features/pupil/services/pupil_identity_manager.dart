@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:collection/collection.dart';
@@ -7,6 +8,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:schuldaten_hub/api/api.dart';
 import 'package:schuldaten_hub/common/constants/enums.dart';
+import 'package:schuldaten_hub/common/services/env_manager.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_manager.dart';
 import 'package:schuldaten_hub/common/utils/custom_encrypter.dart';
@@ -15,13 +17,14 @@ import 'package:schuldaten_hub/common/utils/extensions.dart';
 import 'package:schuldaten_hub/common/utils/scanner.dart';
 import 'package:schuldaten_hub/common/utils/secure_storage.dart';
 import 'package:schuldaten_hub/features/main_menu_pages/widgets/landing_bottom_nav_bar.dart';
+import 'package:schuldaten_hub/features/pupil/filters/pupils_filter.dart';
 import 'package:schuldaten_hub/features/pupil/services/pupil_identity_helper_functions.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_data.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_identity.dart';
 import 'package:schuldaten_hub/features/pupil/services/pupil_manager.dart';
 
 class PupilIdentityManager {
-  final Map<int, PupilIdentity> _pupilIdentities = {};
+  Map<int, PupilIdentity> _pupilIdentities = {};
   List<int> get availablePupilIds => _pupilIdentities.keys.toList();
 
   PupilIdentity getPupilIdentity(int pupilId) {
@@ -39,28 +42,26 @@ class PupilIdentityManager {
   Future<void> deleteAllPupilIdentities() async {
     await secureStorageDelete('pupilIdentities');
     _pupilIdentities.clear();
+    locator<PupilsFilter>().clearFilteredPupils();
     locator<PupilManager>().clearData();
   }
 
   Future<void> getStoredPupilIdentities() async {
-    bool storedPupilIdentitiesExist =
-        await secureStorage.containsKey(key: 'pupilIdentities');
+    bool storedPupilIdentitiesExist = await secureStorage.containsKey(
+        key:
+            '${SecureStorageKey.pupilIdentities.value}_${locator<EnvManager>().defaultEnv.value}');
 
     if (storedPupilIdentitiesExist == false) {
+      logger.w(
+          'No stored pupil identities found for ${SecureStorageKey.pupilIdentities.value}_${locator<EnvManager>().defaultEnv.value}}');
       return;
     }
 
-    List<PupilIdentity> storedPupilIdentities = [];
+    _pupilIdentities = await readPupilIdentitiesFromStorage(
+        envKey: locator<EnvManager>().defaultEnv.value);
 
-    String? storedPupilIdentitiesJson =
-        await secureStorageRead('pupilIdentities');
-
-    storedPupilIdentities = (json.decode(storedPupilIdentitiesJson!) as List)
-        .map((element) => PupilIdentity.fromJson(element))
-        .toList();
-
-    for (PupilIdentity pupil in storedPupilIdentities) {
-      _pupilIdentities[pupil.id] = pupil;
+    if (_pupilIdentities.isNotEmpty) {
+      logger.d('Pupil identities loaded from secure storage');
     }
 
     return;
@@ -78,15 +79,15 @@ class PupilIdentityManager {
     }
   }
 
-  Future<void> setNewPupilIdentities(
-      List<PupilIdentity> personalIdentitiesList) async {
-    _pupilIdentities.clear();
-    for (PupilIdentity pupilIdentity in personalIdentitiesList) {
-      _pupilIdentities[pupilIdentity.id] = pupilIdentity;
-    }
-    await secureStorageWrite(
-        'pupilIdentities', jsonEncode(personalIdentitiesList));
-  }
+  // Future<void> setNewPupilIdentities(
+  //     List<PupilIdentity> personalIdentitiesList) async {
+  //   _pupilIdentities.clear();
+  //   for (PupilIdentity pupilIdentity in personalIdentitiesList) {
+  //     _pupilIdentities[pupilIdentity.id] = pupilIdentity;
+  //   }
+  //   await secureStorageWrite(
+  //       'pupilIdentities', jsonEncode(personalIdentitiesList));
+  // }
 
   Future<void> addNewPupilIdentities(
       {required String identitiesFromStringLines}) async {
@@ -109,26 +110,58 @@ class PupilIdentityManager {
         final newPupilIdentity =
             PupilIdentityHelper.pupilIdentityFromString(data);
         _pupilIdentities[newPupilIdentity.id] = newPupilIdentity;
-        if (locator<PupilManager>().findPupilById(newPupilIdentity.id) !=
-            null) {
-          final pupil =
-              locator<PupilManager>().findPupilById(newPupilIdentity.id)!;
-          pupil.updatePupilIdentityFromSchoolDatabase(newPupilIdentity);
-        } else {
-          locator<PupilManager>()
-              .fetchPupilsByInternalId([newPupilIdentity.id]);
-        }
+        // if (locator<PupilManager>().findPupilById(newPupilIdentity.id) !=
+        //     null) {
+        //   final pupil =
+        //       locator<PupilManager>().findPupilById(newPupilIdentity.id)!;
+        //   pupil.updatePupilIdentityFromSchoolDatabase(newPupilIdentity);
+        // } else {
+        //   locator<PupilManager>()
+        //       .fetchPupilsByInternalId([newPupilIdentity.id]);
+        // }
       }
     }
 
-    final List<PupilIdentity> newPupilIdentitiesList =
-        _pupilIdentities.values.toList();
-    await secureStorageWrite(
-        'pupilIdentities', jsonEncode(newPupilIdentitiesList));
+    writePupilIdentitiesToStorage(
+        envKey: locator<EnvManager>().defaultEnv.value);
 
     await locator<PupilManager>().fetchAllPupils();
 
     locator<BottomNavManager>().setBottomNavPage(0);
+  }
+
+  Future<Map<int, PupilIdentity>> readPupilIdentitiesFromStorage(
+      {required String envKey}) async {
+    final pupilsJson = await secureStorageRead(
+        '${SecureStorageKey.pupilIdentities.value}_$envKey');
+    if (pupilsJson == null) return {};
+
+    final Map<String, dynamic> decoded = jsonDecode(pupilsJson);
+    return decoded.map((key, value) =>
+        MapEntry(int.parse(key), PupilIdentity.fromJson(value)));
+  }
+
+  Future<void> writePupilIdentitiesToStorage({required String envKey}) async {
+    final Map<String, Map<String, dynamic>> jsonMap = _pupilIdentities.map(
+      (key, value) => MapEntry(key.toString(), value.toJson()),
+    );
+
+    final jsonPupilIdentities = json.encode(jsonMap);
+    await secureStorageWrite(
+        '${SecureStorageKey.pupilIdentities.value}_$envKey',
+        jsonPupilIdentities);
+    logger.d(
+        'Pupil identities written to secure storage for ${SecureStorageKey.pupilIdentities.value}_$envKey');
+
+    final written = await secureStorage.containsKey(
+        key:
+            '${SecureStorageKey.pupilIdentities.value}_${locator<EnvManager>().defaultEnv.value}');
+    logger.d(
+        'Written: $written with key ${SecureStorageKey.pupilIdentities.value}_$envKey');
+
+    final writtenMap = await readPupilIdentitiesFromStorage(envKey: envKey);
+
+    logger.d('Written map: ${writtenMap.toString()}');
   }
 
   Future<void> updateBackendPupilsFromSchoolPupilIdentitySource(
@@ -261,18 +294,20 @@ class PupilIdentityManager {
   }
 
   Future<String> deletePupilIdentities(List<int> toBeDeletedPupilIds) async {
-    locator<NotificationManager>().isRunningValue(true);
     List<String> toBeDeletedPupilIdentities = [];
 
     for (int id in toBeDeletedPupilIds) {
       toBeDeletedPupilIdentities.add(_pupilIdentities[id]!.firstName);
+      if (toBeDeletedPupilIds.indexOf(id) != 0) {
+        toBeDeletedPupilIdentities.add(', ');
+      }
       _pupilIdentities.remove(id);
     }
 
-    await secureStorageWrite(
-        'pupilIdentities', jsonEncode(_pupilIdentities.values.toList()));
-    locator<NotificationManager>().isRunningValue(false);
-    logger.i(
+    writePupilIdentitiesToStorage(
+        envKey: locator<EnvManager>().defaultEnv.value);
+
+    logger.w(
         ' ${toBeDeletedPupilIds.length} SuS sind nicht mehr in der Datenbank und wurden gelöscht!');
 
     return toBeDeletedPupilIdentities.join(', ');

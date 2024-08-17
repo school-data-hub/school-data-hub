@@ -72,6 +72,16 @@ class LoginPage extends WatchingWidget {
                           fontSize: 30,
                         ),
                       ),
+                      const Gap(10),
+                      if (locator<EnvManager>().env.value.server != null)
+                        Text(
+                          locator<EnvManager>().env.value.server!,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15,
+                          ),
+                        ),
                       keyboardOn
                           ? const SizedBox(
                               height: 15,

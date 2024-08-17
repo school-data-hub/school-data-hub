@@ -14,7 +14,6 @@ import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
 import 'package:schuldaten_hub/features/pupil/services/pupil_manager.dart';
 import 'package:schuldaten_hub/features/pupil/pages/pupil_profile_page/pupil_profile_page.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:url_launcher/url_launcher_string.dart';
 
 class PupilInfosContent extends StatelessWidget {
   final PupilProxy pupil;
@@ -148,11 +147,11 @@ class PupilInfosContent extends StatelessWidget {
                 const Text('Kontakt:', style: TextStyle(fontSize: 18.0)),
                 const Gap(10),
                 InkWell(
-                  // onTap: () {
-                  //   if (pupil.contact != null) {
-                  //     launchMatrixUrl(context, pupil.contact!);
-                  //   }
-                  // },
+                  onTap: () {
+                    if (pupil.contact != null && pupil.contact!.isNotEmpty) {
+                      launchMatrixUrl(context, pupil.contact!);
+                    }
+                  },
                   onLongPress: () async {
                     final String? contact = await longTextFieldDialog(
                         'Kontakt', pupil.contact, context);
@@ -160,7 +159,10 @@ class PupilInfosContent extends StatelessWidget {
                     await locator<PupilManager>()
                         .patchPupil(pupil.internalId, 'contact', contact);
                   },
-                  child: Text(pupil.contact ?? 'keine Angabe',
+                  child: Text(
+                      pupil.contact?.isNotEmpty == true
+                          ? pupil.contact!
+                          : 'keine Angabe',
                       style: const TextStyle(
                           fontSize: 18.0,
                           fontWeight: FontWeight.bold,

@@ -18,7 +18,7 @@ class DioInterceptor extends Interceptor {
       return;
     }
 
-    log("Response Status Code: [${response.statusCode}]");
+    //log("Response Status Code: [${response.statusCode}]");
     super.onResponse(response, handler);
   }
 

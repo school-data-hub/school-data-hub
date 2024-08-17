@@ -265,7 +265,7 @@ class AuthorizationApiService {
     }
 
     // First we delete the cached image
-    final cacheManager = DefaultCacheManager();
+    final cacheManager = locator<DefaultCacheManager>();
     await cacheManager.removeFile(cacheKey);
 
     return Authorization.fromJson(response.data);
