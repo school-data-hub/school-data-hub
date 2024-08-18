@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:schuldaten_hub/api/api.dart';
-import 'package:schuldaten_hub/api/dio/dio_client.dart';
+import 'package:schuldaten_hub/api/services/dio/dio_client.dart';
 
 import 'package:schuldaten_hub/common/constants/enums.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';

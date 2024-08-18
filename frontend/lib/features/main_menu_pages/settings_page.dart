@@ -11,6 +11,7 @@ import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/session_helper_functions.dart';
 import 'package:schuldaten_hub/common/services/session_manager.dart';
 import 'package:schuldaten_hub/common/services/notification_manager.dart';
+import 'package:schuldaten_hub/features/users/services/user_manager.dart';
 import 'package:schuldaten_hub/common/utils/secure_storage.dart';
 import 'package:schuldaten_hub/common/widgets/dialogues/confirmation_dialog.dart';
 import 'package:schuldaten_hub/common/widgets/dialogues/short_textfield_dialog.dart';
@@ -27,6 +28,7 @@ import 'package:schuldaten_hub/features/pupil/pages/select_pupils_list_page/sele
 import 'package:schuldaten_hub/features/pupil/pages/birthdays_page.dart';
 import 'package:schuldaten_hub/features/statistics/statistics_page/controller/statistics.dart';
 import 'package:flutter_settings_ui/flutter_settings_ui.dart';
+import 'package:schuldaten_hub/features/users/pages/users_list_page/users_list_page.dart';
 import 'package:watch_it/watch_it.dart';
 
 class SettingsPage extends WatchingWidget {
@@ -34,6 +36,7 @@ class SettingsPage extends WatchingWidget {
 
   @override
   Widget build(BuildContext context) {
+    final SessionManager sessionManager = locator<SessionManager>();
     final locale = AppLocalizations.of(context)!;
     final Session session = watchValue((SessionManager x) => x.credentials);
     final bool matrixPolicyManagerIsRegistered = watchValue(
@@ -120,18 +123,7 @@ class SettingsPage extends WatchingWidget {
                         if (password == null) {
                           return;
                         }
-
-                        int success = await locator<SessionManager>()
-                            .refreshToken(password);
-
-                        if (success == 401) {
-                          locator<NotificationManager>().showSnackBar(
-                              NotificationType.error, 'Falsches Passwort');
-                          return;
-                        } else if (success == 200) {
-                          locator<NotificationManager>().showSnackBar(
-                              NotificationType.success, 'Token erneuert!');
-                        }
+                        await locator<SessionManager>().refreshToken(password);
                       } catch (e) {
                         locator<NotificationManager>().showSnackBar(
                             NotificationType.error, 'Unbekannter Fehler: $e');
@@ -147,7 +139,7 @@ class SettingsPage extends WatchingWidget {
                           title: 'Ausloggen',
                           message: 'Wirklich ausloggen?');
                       if (confirm == true && context.mounted) {
-                        logout(context);
+                        sessionManager.logout();
                         locator<NotificationManager>().showSnackBar(
                             NotificationType.success,
                             'Erfolgreich ausgeloggt!');
@@ -284,6 +276,14 @@ class SettingsPage extends WatchingWidget {
                     ),
                     tiles: <SettingsTile>[
                       SettingsTile.navigation(
+                          title: const Text('User-Verwaltung'),
+                          leading: const Icon(Icons.account_circle_rounded),
+                          onPressed: (context) async {
+                            Navigator.of(context).push(MaterialPageRoute(
+                              builder: (ctx) => const UsersListPage(),
+                            ));
+                          }),
+                      SettingsTile.navigation(
                         leading: const Icon(Icons.attach_money_rounded),
                         title: const Text('Guthaben überweisen'),
                         onPressed: (context) async {
@@ -294,19 +294,7 @@ class SettingsPage extends WatchingWidget {
                           if (confirmed != true) {
                             return;
                           }
-                          final bool success = await locator<SessionManager>()
-                              .increaseUsersCredit();
-                          if (context.mounted) {
-                            if (success) {
-                              locator<NotificationManager>().showSnackBar(
-                                  NotificationType.success,
-                                  'Transaktion erfolgreich!');
-                            } else {
-                              locator<NotificationManager>().showSnackBar(
-                                  NotificationType.error,
-                                  'Fehler bei der Überweisung');
-                            }
-                          }
+                          await locator<UserManager>().increaseUsersCredit();
                         },
                       ),
                       SettingsTile.navigation(

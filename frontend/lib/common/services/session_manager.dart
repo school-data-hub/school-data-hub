@@ -1,23 +1,18 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
-import 'package:schuldaten_hub/api/dio/dio_client.dart';
-import 'package:schuldaten_hub/api/dio/dio_exceptions.dart';
 import 'package:schuldaten_hub/api/api.dart';
+import 'package:schuldaten_hub/api/services/dio/dio_client.dart';
 import 'package:schuldaten_hub/common/constants/enums.dart';
-
+import 'package:schuldaten_hub/common/models/session_models/session.dart';
 import 'package:schuldaten_hub/common/services/env_manager.dart';
 import 'package:schuldaten_hub/common/services/notification_manager.dart';
-
+import 'package:schuldaten_hub/common/services/schoolday_manager.dart';
+import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/utils/logger.dart';
 import 'package:schuldaten_hub/common/utils/secure_storage.dart';
-import 'package:schuldaten_hub/common/models/session_models/session.dart';
-
-import 'package:schuldaten_hub/common/services/locator.dart';
-
 import 'package:schuldaten_hub/features/main_menu_pages/widgets/landing_bottom_nav_bar.dart';
 
 class SessionManager {
@@ -27,24 +22,14 @@ class SessionManager {
   ValueListenable<bool> get isAdmin => _isAdmin;
   ValueListenable<bool> get matrixPolicyManagerRegistrationStatus =>
       _matrixPolicyManagerRegistrationStatus;
-  // ValueListenable<int> get credit => _credit;
 
   final _sessions = ValueNotifier<Map<String, Session>>({});
   final _credentials = ValueNotifier<Session>(Session());
   final _isAuthenticated = ValueNotifier<bool>(false);
   final _isAdmin = ValueNotifier<bool>(false);
   final _matrixPolicyManagerRegistrationStatus = ValueNotifier<bool>(false);
-  // final _credit = ValueNotifier<int>(0);
 
-  late final Dio _dio = Dio(
-    BaseOptions(
-      baseUrl: locator<EnvManager>().env.value.serverUrl!,
-      connectTimeout: ApiSettings.connectionTimeout,
-      receiveTimeout: ApiSettings.receiveTimeout,
-      responseType: ResponseType.json,
-    ),
-  );
-
+  final userApiService = UserApiService();
   SessionManager();
   Future<SessionManager> init() async {
     await checkStoredCredentials();
@@ -61,6 +46,8 @@ class SessionManager {
     _credentials.value = session;
     _isAdmin.value = _credentials.value.isAdmin!;
     _isAuthenticated.value = true;
+    locator<DioClient>()
+        .setHeaders(tokenKey: 'x-access-token', token: session.jwt!);
   }
 
   void changeSessionCredit(int value) async {
@@ -72,33 +59,17 @@ class SessionManager {
   }
 
   Future<void> updateSessionData(Session session) async {
-    final client = locator<DioClient>();
-    try {
-      final response = await client.get(EndpointsUser.getSelfUser);
-      if (response.statusCode == 200) {
-        final jsonData = response.data;
-        Map<String, dynamic> data = jsonDecode(jsonData);
-        _credentials.value = _credentials.value.copyWith(
-          username: data['name'],
-          publicId: data['public_id'],
-          credit: data['credit'],
-          isAdmin: data['admin'],
-          role: data['role'],
-          timeUnits: data['time_units'],
-          contact: data['contact'],
-          tutoring: data['tutoring'],
-        );
-      }
-    } on DioException catch (e) {
-      final errorMessage = DioExceptions.fromDioError(e);
-      logger.f('Dio error: ${errorMessage.toString()} | ${StackTrace.current}');
-    }
+    final Session updatedSession =
+        await userApiService.updateSessionData(session);
+    _credentials.value = updatedSession.copyWith(jwt: _credentials.value.jwt);
+
+    await saveSession(updatedSession);
   }
 
   Future<void> checkStoredCredentials() async {
     if (locator<EnvManager>().env.value.serverUrl == null) {
       logger.w('No environment found!', stackTrace: StackTrace.current);
-      locator<NotificationManager>().isRunningValue(false);
+
       return;
     }
     if (_sessions.value.isEmpty) {
@@ -115,12 +86,12 @@ class SessionManager {
                 MapEntry(key, Session.fromJson(value as Map<String, dynamic>)));
         // check if the sessions in the secure storage are empty
         if (sessions.isEmpty) {
-          logger.i('No session found');
+          logger.w('No session found');
           return;
         }
         //read the default server from the secure storage
-        final String? defaultServer =
-            await secureStorageRead(SecureStorageKey.defaultEnv.value);
+        // final String? defaultServer =
+        //     await secureStorageRead(SecureStorageKey.defaultEnv.value);
         // set the sessions to the value notifier
         _sessions.value = sessions;
       }
@@ -131,7 +102,7 @@ class SessionManager {
       final Session? linkedSession =
           _sessions.value[locator<EnvManager>().env.value.server!];
       if (linkedSession == null) {
-        logger.i(
+        logger.w(
             'No session found for ${locator<EnvManager>().env.value.server!}');
 
         return;
@@ -155,12 +126,12 @@ class SessionManager {
         }
         logger.w('Session was not valid - deleted!',
             stackTrace: StackTrace.current);
-        locator<NotificationManager>().isRunningValue(false);
+
         return;
       }
       if (locator<EnvManager>().env.value.serverUrl == null) {
         logger.w('No environment found!', stackTrace: StackTrace.current);
-        locator<NotificationManager>().isRunningValue(false);
+
         return;
       }
 
@@ -169,8 +140,8 @@ class SessionManager {
       logger.i(
           'SessionManager: isAuthenticated is ${_isAuthenticated.value.toString()}');
 
-      if (!locator.isRegistered<DioClient>()) {
-        registerDependentManagers(_credentials.value.jwt!);
+      if (!locator.isRegistered<SchooldayManager>()) {
+        await registerDependentManagers();
       }
 
       return;
@@ -185,63 +156,35 @@ class SessionManager {
     }
   }
 
-  Future<int> refreshToken(String password) async {
-    final String username = _credentials.value.username!;
-    String auth = 'Basic ${base64Encode(utf8.encode('$username:$password'))}';
-    final response = await _dio.get(EndpointsUser.login,
-        options: Options(headers: <String, String>{'Authorization': auth}));
-    if (response.statusCode == 200) {
-      final Session session =
-          Session.fromJson(response.data).copyWith(username: username);
-      authenticate(session);
-      await saveSession(_credentials.value);
-      locator<DioClient>().setHeaders(
-        tokenKey: 'x-access-token',
-        token: _credentials.value.jwt!,
-      );
+  Future<void> refreshToken(String password) async {
+    final Session session = await userApiService.login(
+        username: _credentials.value.username!, password: password);
 
-      return response.statusCode!;
-    }
-    return response.statusCode!;
-  }
-
-  Future<bool> increaseUsersCredit() async {
-    final response = await _dio.get(EndpointsUser.increaseCredit);
-    if (response.statusCode == 200) {
-      return true;
-    }
-    return false;
+    authenticate(session);
+    await saveSession(session);
+    locator<DioClient>().setHeaders(
+      tokenKey: 'x-access-token',
+      token: _credentials.value.jwt!,
+    );
+    return;
   }
 
   Future<void> attemptLogin(
       {required String username, required String password}) async {
-    String auth = 'Basic ${base64Encode(utf8.encode('$username:$password'))}';
-    //_operationReport.value = Report(null, null);
-    locator<NotificationManager>().isRunningValue(true);
-    final response = await _dio.get(EndpointsUser.login,
-        options: Options(headers: <String, String>{'Authorization': auth}));
-    if (response.statusCode == 200) {
-      final Session session = Session.fromJson(response.data)
-          .copyWith(server: locator<EnvManager>().env.value.server);
-      await saveSession(session);
-      authenticate(session);
-      if (!locator.isRegistered<DioClient>()) {
-        await registerDependentManagers(_credentials.value.jwt!);
-      }
+    final Session session = await userApiService.login(
+      username: username,
+      password: password,
+    );
+    await saveSession(session);
+    authenticate(session);
 
-      //await locator.allReady();
-      locator<NotificationManager>()
-          .showSnackBar(NotificationType.success, 'Login erfolgreich!');
-      locator<NotificationManager>().isRunningValue(false);
-      return;
+    locator<NotificationManager>()
+        .showSnackBar(NotificationType.success, 'Login erfolgreich!');
+    //-TODO: instead of checking if the
+    if (!locator.isRegistered<SchooldayManager>()) {
+      await registerDependentManagers();
     }
-    if (response.statusCode == 401) {
-      locator<NotificationManager>().showSnackBar(NotificationType.warning,
-          'Login fehlgeschlagen - falsches passwort!');
 
-      return;
-    }
-    locator<NotificationManager>().isRunningValue(false);
     return;
   }
 
@@ -250,8 +193,8 @@ class SessionManager {
     updatedSessions[session.server!] = session;
     final updatedSessionsAsJson = json.encode(updatedSessions);
     await secureStorageWrite('sessions', updatedSessionsAsJson);
-    logger.i('Session(s) stored');
-    logger.i(updatedSessionsAsJson);
+    logger.i('${updatedSessions.length} Session(s) stored');
+
     return;
   }
 

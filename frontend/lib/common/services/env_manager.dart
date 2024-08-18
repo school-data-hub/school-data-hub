@@ -4,8 +4,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:schuldaten_hub/api/dio/dio_client.dart';
-import 'package:schuldaten_hub/common/models/schoolday_models/schoolday.dart';
+import 'package:schuldaten_hub/api/services/dio/dio_client.dart';
 import 'package:schuldaten_hub/common/models/session_models/env.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/schoolday_manager.dart';
@@ -19,7 +18,7 @@ import 'package:schuldaten_hub/features/main_menu_pages/widgets/landing_bottom_n
 import 'package:schuldaten_hub/features/pupil/services/pupil_identity_manager.dart';
 import 'package:schuldaten_hub/features/pupil/services/pupil_manager.dart';
 import 'package:schuldaten_hub/features/school_lists/services/school_list_manager.dart';
-import 'package:schuldaten_hub/features/schoolday_events/services/schoolday_event_manager.dart';
+import 'package:schuldaten_hub/features/users/services/user_manager.dart';
 
 class EnvManager {
   ValueListenable<Env> get env => _env;
@@ -57,7 +56,7 @@ class EnvManager {
       _defaultEnv.value = await secureStorageRead('defaultEnv') ?? '';
       final String? storedSession =
           await secureStorageRead(SecureStorageKey.environments.value);
-      logger.i('environment(s) found!');
+
       try {
         final Map<String, Env> environmentsMap =
             (json.decode(storedSession!) as Map<String, dynamic>).map(
@@ -66,8 +65,9 @@ class EnvManager {
         _envs.value = environmentsMap;
         // if there are environments stored, the default environment is already set
         _env.value = environmentsMap[_defaultEnv.value] ?? Env();
+        locator<DioClient>().setBaseUrl(_env.value.serverUrl!);
         _envReady.value = true;
-
+        logger.i('${environmentsMap.length} environment(s) found!');
         return;
       } catch (e) {
         logger.f('Error reading env from secureStorage!',
@@ -128,17 +128,22 @@ class EnvManager {
     locator<DioClient>().setBaseUrl(_env.value.serverUrl!);
     _defaultEnv.value = envName;
     secureStorageWrite(SecureStorageKey.defaultEnv.value, envName);
-    final cacheManager = locator<DefaultCacheManager>();
-    await cacheManager.emptyCache();
-    await locator<SessionManager>().checkStoredCredentials();
-    await locator<PupilIdentityManager>().getStoredPupilIdentities();
-    await locator<PupilManager>().fetchAllPupils();
-    await locator<SchooldayManager>().getSchoolSemesters();
-    await locator<SchooldayManager>().getSchooldays();
-    await locator<LearningSupportManager>().fetchGoalCategories();
-    await locator<CompetenceManager>().fetchCompetences();
-    await locator<SchoolListManager>().fetchSchoolLists();
-    await locator<AuthorizationManager>().fetchAuthorizations();
+    if (!locator.isRegistered<SchooldayManager>()) {
+      registerDependentManagers();
+    } else {
+      final cacheManager = locator<DefaultCacheManager>();
+      await cacheManager.emptyCache();
+      await locator<SessionManager>().checkStoredCredentials();
+      await locator<UserManager>().fetchUsers();
+      await locator<PupilIdentityManager>().getStoredPupilIdentities();
+      await locator<PupilManager>().fetchAllPupils();
+      await locator<SchooldayManager>().getSchoolSemesters();
+      await locator<SchooldayManager>().getSchooldays();
+      await locator<LearningSupportManager>().fetchGoalCategories();
+      await locator<CompetenceManager>().fetchCompetences();
+      await locator<SchoolListManager>().fetchSchoolLists();
+      await locator<AuthorizationManager>().fetchAuthorizations();
+    }
     locator<BottomNavManager>().setBottomNavPage(0);
   }
 

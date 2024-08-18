@@ -18,12 +18,6 @@ String tokenLifetimeLeft(String token) {
   return timeLeft;
 }
 
-void logout(BuildContext context) async {
-  await locator<SessionManager>().logout();
-  locator<NotificationManager>().showSnackBar(
-      NotificationType.success, 'Zugangsdaten und QR-Ids gelöscht!');
-}
-
 void logoutAndDeleteAllData(BuildContext context) async {
   await locator<PupilIdentityManager>().deleteAllPupilIdentities();
   await locator<EnvManager>().deleteEnv();

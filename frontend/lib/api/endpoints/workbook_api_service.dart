@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:schuldaten_hub/api/api.dart';
-import 'package:schuldaten_hub/api/dio/dio_client.dart';
+import 'package:schuldaten_hub/api/services/dio/dio_client.dart';
 
 import 'package:schuldaten_hub/common/constants/enums.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
@@ -20,21 +20,19 @@ class WorkbookApiService {
   static const _getWorkbooksUrl = '/workbooks/all/flat';
 
   Future<List<Workbook>> getWorkbooks() async {
+    notificationManager.isRunningValue(true);
     final Response response = await _client.get(_getWorkbooksUrl);
+    notificationManager.isRunningValue(false);
 
     if (response.statusCode != 200) {
       notificationManager.showSnackBar(
           NotificationType.error, 'Fehler beim Laden der Arbeitshefte');
-
-      notificationManager.isRunningValue(false);
 
       throw ApiException('Failed to fetch workbooks', response.statusCode);
     }
 
     final List<Workbook> workbooks =
         (response.data as List).map((e) => Workbook.fromJson(e)).toList();
-
-    notificationManager.isRunningValue(false);
 
     return workbooks;
   }
@@ -43,15 +41,13 @@ class WorkbookApiService {
 
   static const _postWorkbookUrl = '/workbooks/new';
 
-  Future<Workbook> postWorkbook(
-    String name,
-    int isbn,
-    String subject,
-    String level,
-    int amount,
-  ) async {
-    notificationManager.isRunningValue(true);
-
+  Future<Workbook> postWorkbook({
+    String? name,
+    required int isbn,
+    String? subject,
+    String? level,
+    int? amount,
+  }) async {
     final data = jsonEncode({
       "name": name,
       "isbn": isbn,
@@ -61,20 +57,19 @@ class WorkbookApiService {
       "amount": amount
     });
 
+    notificationManager.isRunningValue(true);
     final Response response = await _client.post(_postWorkbookUrl, data: data);
+    notificationManager.isRunningValue(false);
 
     if (response.statusCode != 200) {
       notificationManager.showSnackBar(
           NotificationType.error, 'Fehler beim Erstellen des Arbeitshefts');
-
-      notificationManager.isRunningValue(false);
 
       throw ApiException('Failed to fetch workbooks', response.statusCode);
     }
 
     Workbook newWorkbook = Workbook.fromJson(response.data);
 
-    notificationManager.isRunningValue(false);
     return newWorkbook;
   }
 
@@ -89,8 +84,6 @@ class WorkbookApiService {
       int? isbn,
       String? subject,
       String? level}) async {
-    notificationManager.isRunningValue(true);
-
     final data = jsonEncode({
       "name": name ?? workbook.name,
       "subject": subject ?? workbook.subject,
@@ -98,21 +91,19 @@ class WorkbookApiService {
       "image_url": workbook.imageUrl
     });
 
+    notificationManager.isRunningValue(true);
     final Response response =
         await _client.patch(_patchWorkbookUrl((workbook.isbn)), data: data);
+    notificationManager.isRunningValue(false);
 
     if (response.statusCode != 200) {
       notificationManager.showSnackBar(
           NotificationType.error, 'Fehler beim Aktualisieren des Arbeitshefts');
 
-      notificationManager.isRunningValue(false);
-
       throw ApiException('Failed to update a workbook', response.statusCode);
     }
 
     final Workbook updatedWorkbook = Workbook.fromJson(response.data);
-
-    notificationManager.isRunningValue(false);
 
     return updatedWorkbook;
   }
@@ -123,8 +114,6 @@ class WorkbookApiService {
   }
 
   Future<Workbook> postWorkbookFile(File imageFile, int isbn) async {
-    notificationManager.isRunningValue(true);
-
     final encryptedFile = await customEncrypter.encryptFile(imageFile);
 
     String fileName = encryptedFile.path.split('/').last;
@@ -135,26 +124,23 @@ class WorkbookApiService {
         filename: fileName,
       ),
     });
-
+    notificationManager.isRunningValue(true);
     final Response response = await _client.patch(
       _patchWorkbookWithImageUrl(isbn),
       data: formData,
     );
+    notificationManager.isRunningValue(false);
 
     // Handle errors.
     if (response.statusCode != 200) {
       notificationManager.showSnackBar(
           NotificationType.error, 'Fehler beim Hochladen des Bildes');
 
-      notificationManager.isRunningValue(false);
-
       throw ApiException(
           'Failed to upload workbook image', response.statusCode);
     }
 
     final Workbook workbook = Workbook.fromJson(response.data);
-
-    notificationManager.isRunningValue(false);
 
     return workbook;
   }
@@ -171,22 +157,18 @@ class WorkbookApiService {
 
   Future<Workbook> deleteWorkbookFile(int isbn) async {
     notificationManager.isRunningValue(true);
-
     final Response response = await _client.delete(getWorkbookImage(isbn));
+    notificationManager.isRunningValue(false);
 
     if (response.statusCode != 200) {
       notificationManager.showSnackBar(
           NotificationType.error, 'Fehler beim Löschen des Bildes');
-
-      notificationManager.isRunningValue(false);
 
       throw ApiException(
           'Failed to delete workbook image', response.statusCode);
     }
 
     final Workbook workbook = Workbook.fromJson(response.data);
-
-    notificationManager.isRunningValue(false);
 
     return workbook;
   }
@@ -196,12 +178,11 @@ class WorkbookApiService {
 
     final Response response =
         await _client.delete(WorkbookApiService().deleteWorkbookUrl(isbn));
+    notificationManager.isRunningValue(false);
 
     if (response.statusCode != 200) {
       notificationManager.showSnackBar(
           NotificationType.error, 'Fehler beim Löschen des Arbeitshefts');
-
-      notificationManager.isRunningValue(false);
 
       throw ApiException('Failed to delete a workbook', response.statusCode);
     }
@@ -209,7 +190,6 @@ class WorkbookApiService {
     final List<Workbook> workbooks =
         (response.data as List).map((e) => Workbook.fromJson(e)).toList();
 
-    notificationManager.isRunningValue(false);
     return workbooks;
   }
 

@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:dio/dio.dart';
 import 'package:schuldaten_hub/api/api.dart';
-import 'package:schuldaten_hub/api/dio/dio_interceptor.dart';
+import 'package:schuldaten_hub/api/services/dio/dio_interceptor.dart';
 import 'package:schuldaten_hub/common/services/env_manager.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/session_manager.dart';
@@ -25,9 +25,9 @@ class DioClient {
     // ..interceptors.add(LogInterceptor(
     //   request: true,
     //   requestHeader: true,
-    //   // requestBody: true,
-    //   // responseHeader: true,
-    //   // responseBody: true,
+    // requestBody: true,
+    // responseHeader: true,
+    // responseBody: true,
     // )
     // );
   }

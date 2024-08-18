@@ -136,7 +136,7 @@ def create_user(current_user, json_data):
     user_data['public_id'] = new_user.public_id
     user_data['name'] = new_user.name
     user_data['credit'] = new_user.credit
-    user_data['is_admin'] = new_user.admin
+    user_data['admin'] = new_user.admin
     user_data['role'] = new_user.role
     user_data['time_units'] = new_user.time_units
     user_data['contact'] = new_user.contact

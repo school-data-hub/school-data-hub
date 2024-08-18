@@ -51,7 +51,7 @@ class WorkbookManager {
     int amount,
   ) async {
     final Workbook responseWorkbook = await apiWorkbookService.postWorkbook(
-        name, isbn, subject, level, amount);
+        name: name, isbn: isbn, subject: subject, level: level, amount: amount);
 
     _workbooks.value = [..._workbooks.value, responseWorkbook];
 

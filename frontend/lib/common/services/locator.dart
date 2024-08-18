@@ -1,10 +1,11 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
-import 'package:schuldaten_hub/api/dio/dio_client.dart';
+import 'package:schuldaten_hub/api/services/dio/dio_client.dart';
 import 'package:schuldaten_hub/common/constants/enums.dart';
 import 'package:schuldaten_hub/common/services/env_manager.dart';
 import 'package:schuldaten_hub/common/services/search_textfield_manager.dart';
 import 'package:schuldaten_hub/common/services/notification_manager.dart';
+import 'package:schuldaten_hub/features/users/services/user_manager.dart';
 import 'package:schuldaten_hub/common/utils/logger.dart';
 import 'package:schuldaten_hub/common/utils/secure_storage.dart';
 import 'package:schuldaten_hub/features/pupil/filters/pupils_filter.dart';
@@ -52,6 +53,8 @@ void registerBaseManagers() {
     return connectionManager;
   });
 
+  locator.registerSingleton<DioClient>(DioClient(Dio(), ''));
+
   locator.registerSingletonAsync<SessionManager>(() async {
     logger.i('Registering SessionManager');
     final sessionManager = SessionManager();
@@ -67,19 +70,27 @@ void registerBaseManagers() {
     logger.i('PupilIdentityManager initialized');
     return pupilBaseManager;
   }, dependsOn: [EnvManager]);
+
   locator.registerSingleton<DefaultCacheManager>(DefaultCacheManager());
+
   locator.registerSingleton<NotificationManager>(NotificationManager());
+
   locator.registerSingleton<BottomNavManager>(BottomNavManager());
+
   locator.registerSingleton<SearchManager>(SearchManager());
 }
 
-Future registerDependentManagers(String token) async {
+Future registerDependentManagers() async {
   logger.i('Registering dependent managers');
 
-  locator.registerSingleton<DioClient>(
-      DioClient(Dio(), locator<EnvManager>().env.value.serverUrl!));
+  locator.registerSingletonAsync<UserManager>(() async {
+    logger.i('Registering UserManager');
+    final userManager = UserManager();
+    await userManager.init();
+    logger.i('UserManager initialized');
+    return userManager;
+  }, dependsOn: [SessionManager]);
 
-  locator<DioClient>().setHeaders(tokenKey: 'x-access-token', token: token);
   locator.registerSingletonAsync<SchooldayManager>(() async {
     logger.i('Registering SchooldayManager');
     final schooldayManager = SchooldayManager();
@@ -87,13 +98,15 @@ Future registerDependentManagers(String token) async {
     logger.i('SchooldayManager initialized');
     return schooldayManager;
   }, dependsOn: [SessionManager]);
+
   locator.registerSingletonAsync<PupilManager>(() async {
     logger.i('Registering PupilManager');
     final pupilManager = PupilManager();
     await pupilManager.init();
     logger.i('PupilManager initialized');
     return pupilManager;
-  }, dependsOn: [EnvManager, SessionManager, PupilIdentityManager]);
+  }, dependsOn: [SessionManager, PupilIdentityManager]);
+
   locator.registerSingletonAsync<WorkbookManager>(() async {
     logger.i('Registering WorkbookManager');
     final workbookManager = WorkbookManager();
@@ -135,27 +148,28 @@ Future registerDependentManagers(String token) async {
   }, dependsOn: [SessionManager]);
 
   locator.registerSingletonWithDependencies<PupilFilterManager>(
-    () => PupilFilterManager(),
-    dependsOn: [PupilManager],
-  );
-  locator.registerSingletonWithDependencies<SchooldayEventFilterManager>(
-    () {
-      logger.i('SchooldayEventFilterManager initialized');
-      return SchooldayEventFilterManager();
-    },
-    dependsOn: [PupilManager, PupilFilterManager],
-  );
+      () => PupilFilterManager(),
+      dependsOn: [PupilManager]);
+
+  locator.registerSingletonWithDependencies<SchooldayEventFilterManager>(() {
+    logger.i('SchooldayEventFilterManager initialized');
+    return SchooldayEventFilterManager();
+  }, dependsOn: [PupilManager, PupilFilterManager]);
 
   locator.registerSingletonWithDependencies<PupilsFilter>(
-    () => PupilsFilterImplementation(
-      locator<PupilManager>(),
-    ),
-    dependsOn: [PupilManager, PupilFilterManager, SchooldayEventFilterManager],
-  );
+      () => PupilsFilterImplementation(
+            locator<PupilManager>(),
+          ),
+      dependsOn: [
+        PupilManager,
+        PupilFilterManager,
+        SchooldayEventFilterManager
+      ]);
+
   locator.registerSingletonWithDependencies<SchoolListFilterManager>(
-    () => SchoolListFilterManager(),
-    dependsOn: [PupilsFilter],
-  );
+      () => SchoolListFilterManager(),
+      dependsOn: [PupilsFilter]);
+
   locator.registerSingletonAsync<SchoolListManager>(() async {
     logger.i('Registering SchoolListManager');
     final schoolListManager = SchoolListManager();
@@ -167,6 +181,7 @@ Future registerDependentManagers(String token) async {
   locator.registerSingletonWithDependencies<AttendanceManager>(
       () => AttendanceManager(),
       dependsOn: [SchooldayManager, PupilsFilter]);
+
   locator.registerSingletonWithDependencies<SchooldayEventManager>(
       () => SchooldayEventManager(),
       dependsOn: [SchooldayManager, PupilsFilter]);
@@ -180,6 +195,7 @@ Future<bool> registerMatrixPolicyManager() async {
   if (locator.isRegistered<MatrixPolicyManager>()) {
     return true;
   }
+
   locator.registerSingletonAsync<MatrixPolicyManager>(() async {
     logger.i('Registering MatrixPolicyManager');
     final policyManager = MatrixPolicyManager();
@@ -194,11 +210,13 @@ Future<bool> registerMatrixPolicyManager() async {
     () => MatrixPolicyFilterManager(),
     dependsOn: [MatrixPolicyManager],
   );
+
   return true;
 }
 
 Future unregisterDependentManagers() async {
   locator.unregister<DioClient>();
+  locator.unregister<UserManager>();
   locator.unregister<SchooldayManager>();
   locator.unregister<WorkbookManager>();
   locator.unregister<LearningSupportManager>();

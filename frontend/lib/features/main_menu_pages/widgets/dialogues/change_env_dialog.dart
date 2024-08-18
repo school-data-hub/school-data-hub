@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/constants/colors.dart';
 import 'package:schuldaten_hub/common/models/session_models/env.dart';
 import 'package:schuldaten_hub/common/services/env_manager.dart';
@@ -19,18 +20,28 @@ Future<bool?> changeEnvironmentDialog({
           width: 300,
           child: ListView.builder(
               itemBuilder: (BuildContext context, int index) {
-                return TextButton(
-                  child: Text(
-                    envs[index].server!,
-                    style: const TextStyle(color: Colors.red),
-                  ),
-                  onPressed: () {
-                    locator<EnvManager>()
-                        .switchEnv(envName: envs[index].server!);
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    TextButton(
+                      child: Text(
+                        envs[index].server!,
+                        style: const TextStyle(
+                            fontSize: 18, color: interactiveColor),
+                      ),
+                      onPressed: () {
+                        locator<EnvManager>()
+                            .switchEnv(envName: envs[index].server!);
 
-                    Navigator.of(context)
-                        .pop(); // Return false to indicate cancellation
-                  },
+                        Navigator.of(context)
+                            .pop(); // Return false to indicate cancellation
+                      },
+                    ),
+                    const Gap(10),
+                    locator<EnvManager>().env.value.server == envs[index].server
+                        ? const Icon(Icons.check, color: Colors.green)
+                        : const SizedBox(),
+                  ],
                 );
               },
               itemCount: envs.length),
