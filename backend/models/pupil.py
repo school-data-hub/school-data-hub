@@ -53,7 +53,7 @@ class Pupil(db.Model):
                                         cascade="all, delete-orphan")
     def __init__(self, internal_id, contact, parents_contact, credit, credit_earned, ogs, pick_up_time, ogs_info, individual_development_plan,
                  five_years, communication_pupil, communication_tutor1,
-                 communication_tutor2, preschool_revision, avatar_id, avatar_url, special_information):
+                 communication_tutor2, preschool_revision, avatar_id, avatar_url, special_information, emergency_care):
         self.internal_id = internal_id
         self.contact = contact
         self.parents_contact = parents_contact
@@ -71,6 +71,7 @@ class Pupil(db.Model):
         self.avatar_id = avatar_id
         self.avatar_url = avatar_url
         self.special_information = special_information
+        self.emergency_care = emergency_care
 
 class CreditHistoryLog(db.Model):
     id = db.Column(db.Integer, primary_key=True)

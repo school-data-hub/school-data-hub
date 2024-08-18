@@ -69,6 +69,7 @@ def upload_pupils_txt(current_user, files_data):
                             communication_tutor2=None,
                             preschool_revision=None,
                             avatar_url=None,
+                            avatar_id=None,
                             special_information=None,
                             emergency_care=False,)
             new_pupils = new_pupils + 1

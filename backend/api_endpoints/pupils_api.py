@@ -176,7 +176,9 @@ def update_siblings(current_user, json_data):
                 case'communication_tutor1':            
                     pupil.communication_tutor1 = data[key] 
                 case'communication_tutor2':            
-                    pupil.communication_tutor2 = data[key]                    
+                    pupil.communication_tutor2 = data[key]
+                case 'emergency_care':
+                    pupil.emergency_care = data[key]                    
     
     #- LOG ENTRY
     create_log_entry(current_user, request, data)

@@ -114,4 +114,5 @@ class PupilSiblingsPatchSchema(Schema):
     communication_tutor1 = fields.String(allow_none=True)
     communication_tutor2 = fields.String(allow_none=True)    
     parents_contact = String(allow_none=True)
+    emergency_care = fields.Boolean(allow_none=True)
 pupil_siblings_patch_schema = PupilSiblingsPatchSchema()
