@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
-import 'package:schuldaten_hub/api/services/dio/dio_client.dart';
+import 'package:schuldaten_hub/api/services/dio/api_client_service.dart';
 import 'package:schuldaten_hub/common/constants/enums.dart';
 import 'package:schuldaten_hub/common/services/env_manager.dart';
 import 'package:schuldaten_hub/common/services/search_textfield_manager.dart';
@@ -54,7 +54,7 @@ void registerBaseManagers() {
     return connectionManager;
   });
 
-  locator.registerSingleton<DioClient>(DioClient(Dio(), ''));
+  locator.registerSingleton<ApiClientService>(ApiClientService(Dio(), ''));
 
   locator.registerSingletonAsync<SessionManager>(() async {
     logger.i('Registering SessionManager');
@@ -216,7 +216,7 @@ Future<bool> registerMatrixPolicyManager() async {
 }
 
 Future unregisterDependentManagers() async {
-  locator.unregister<DioClient>();
+  locator.unregister<ApiClientService>();
   locator.unregister<UserManager>();
   locator.unregister<SchooldayManager>();
   locator.unregister<WorkbookManager>();

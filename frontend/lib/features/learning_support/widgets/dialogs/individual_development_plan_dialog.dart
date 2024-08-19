@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/constants/colors.dart';
+import 'package:schuldaten_hub/common/utils/extensions.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 
@@ -14,6 +16,8 @@ Future<void> individualDevelopmentPlanDialog(
       builder: (context) {
         int dialogDropdownValue = value;
 
+        DateTime selectedDate = DateTime.now();
+        String textValue = '';
         return StatefulBuilder(builder: (context, setState) {
           return AlertDialog(
             content: Form(
@@ -73,12 +77,63 @@ Future<void> individualDevelopmentPlanDialog(
                                       fontSize: 18,
                                     )),
                               )),
+                          DropdownMenuItem(
+                              value: 4,
+                              child: Center(
+                                child: Text("Regenbogenförderung",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18,
+                                    )),
+                              )),
                         ],
                         onChanged: (newvalue) {
                           setState(() {
                             dialogDropdownValue = newvalue!;
                           });
                         }),
+                  ),
+                ),
+                const Gap(10),
+                GestureDetector(
+                  onTap: () async {
+                    final DateTime? picked = await showDatePicker(
+                        context: context,
+                        initialDate: selectedDate,
+                        firstDate: DateTime(2015, 8),
+                        lastDate: DateTime(2101));
+                    if (picked != null && picked != selectedDate) {
+                      setState(() {
+                        selectedDate = picked;
+                      });
+                    }
+                  },
+                  child: Text(selectedDate.formatForUser(),
+                      style: const TextStyle(
+                        color: backgroundColor,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      )),
+                ),
+                const Gap(10),
+                TextFormField(
+                  onChanged: (newTextValue) {
+                    setState(() {
+                      textValue = newTextValue;
+                    });
+                  },
+                  decoration: const InputDecoration(
+                    labelText: 'Kommentar',
+                    labelStyle: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                    ),
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.black),
+                    ),
                   ),
                 ),
               ],
@@ -111,8 +166,14 @@ Future<void> individualDevelopmentPlanDialog(
                         fontWeight: FontWeight.bold),
                   ),
                   onTap: () {
-                    locator<PupilManager>().patchPupil(pupil.internalId,
-                        'individual_development_plan', dialogDropdownValue);
+                    locator<PupilManager>()
+                        .patchPupilWithIndividualDevelopmentPlan(
+                            pupilId: pupil.internalId,
+                            level: dialogDropdownValue,
+                            createdAt: selectedDate,
+                            createdBy: 'Test',
+                            comment: textValue);
+
                     Navigator.of(context).pop();
                   },
                 ),

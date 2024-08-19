@@ -12,7 +12,7 @@ from schemas.log_entry_schemas import ApiFileSchema
 
 pupil_api = APIBlueprint('pupils_api', __name__, url_prefix='/api/pupils')
 
-from models.pupil import CreditHistoryLog, Pupil
+from models.pupil import CreditHistoryLog, Pupil, IndividualDevelopmentPlan
 from auth_middleware import token_required
 from schemas.pupil_schemas import *
 
@@ -126,8 +126,7 @@ def update_pupil(current_user, internal_id, json_data):
                 pupil.five_years = data[key] 
             case'special_needs':            
                 pupil.special_needs = data[key] 
-            case'individual_development_plan':            
-                pupil.individual_development_plan = data[key]           
+         #- individual_development_plan is handled in a separate endpoint        
             case'communication_pupil':            
                 pupil.communication_pupil = data[key] 
             case'communication_tutor1':            
@@ -358,3 +357,29 @@ def delete_avatar(current_user, internal_id):
     db.session.commit()
 
     return jsonify( {'message': 'Avatar gelöscht!'}), 200
+
+
+#- PATCH INDIVIDUAL DEVELOPMENT PLAN
+####################################
+@pupil_api.route('/<internal_id>/plan', methods=['PATCH'])
+@pupil_api.input(individual_development_plan_in_schema)
+@pupil_api.output(pupil_schema)
+@pupil_api.doc(security='ApiKeyAuth', tags=['Pupil'], summary='Patch an individual development plan')
+@token_required
+def update_plan(current_user, internal_id, json_data):
+    pupil = get_pupil_by_id(internal_id)
+    if pupil == None:
+        return jsonify({'message': 'This pupil does not exist!'}), 404
+    data = json_data
+    created_by = current_user.name
+    created_at = data['created_at']
+    level = data['level']
+    comment = data['comment']
+    new_plan = IndividualDevelopmentPlan(pupil_id=internal_id, created_by=created_by, created_at=created_at, level=level, comment=comment)
+    pupil.individual_development_plans.append(new_plan)
+    pupil.individual_development_plan = level
+    db.session.add(new_plan)
+    #- LOG ENTRY
+    create_log_entry(current_user, request, data)
+    db.session.commit()
+    return pupil

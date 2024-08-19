@@ -44,12 +44,39 @@ class NewWorkbookPageState extends State<NewWorkbookPage> {
 
   void patchWorkbook() async {
     String workbookName = nameTextFieldController.text;
-    int workbookIsbn = int.parse(isbnTextFieldController.text);
+    int workbookIsbn =
+        int.parse(isbnTextFieldController.text.replaceAll('-', ''));
     String workbookSubject = subjectTextFieldController.text;
     String workbookLevel = level.text;
 
     await locator<WorkbookManager>().updateWorkbookProperty(
         workbookName, workbookIsbn, workbookSubject, workbookLevel);
+  }
+
+  void _listenToIsbn() {
+    final String text = isbnTextFieldController.text;
+    final String formattedText = _formatISBN(text);
+    if (text != formattedText) {
+      isbnTextFieldController.value = isbnTextFieldController.value.copyWith(
+        text: formattedText,
+        selection: TextSelection.collapsed(offset: formattedText.length),
+      );
+    }
+  }
+
+  String _formatISBN(String text) {
+    // Remove all existing dashes
+    text = text.replaceAll('-', '');
+
+    final buffer = StringBuffer();
+    for (int i = 0; i < text.length; i++) {
+      if (i == 3 || i == 4 || i == 6 || i == 12) {
+        buffer.write('-');
+      }
+      buffer.write(text[i]);
+    }
+
+    return buffer.toString();
   }
 
   @override
@@ -60,6 +87,8 @@ class NewWorkbookPageState extends State<NewWorkbookPage> {
     }
     subjectTextFieldController.text = widget.wbSubject ?? '';
     level.text = widget.wbLevel ?? '';
+
+    isbnTextFieldController.addListener(_listenToIsbn);
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -271,6 +300,7 @@ class NewWorkbookPageState extends State<NewWorkbookPage> {
   void dispose() {
     // Clean up the controller when the widget is removed from the tree
     nameTextFieldController.dispose();
+    isbnTextFieldController.removeListener(_listenToIsbn);
     isbnTextFieldController.dispose();
     subjectTextFieldController.dispose();
     level.dispose();

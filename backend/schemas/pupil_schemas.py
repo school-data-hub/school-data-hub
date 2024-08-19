@@ -10,16 +10,17 @@ from schemas.missed_class_schemas import MissedClassSchema
 from schemas.school_list_schemas import PupilProfileListSchema
 from schemas.workbook_schemas import PupilWorkbookSchema
 
-class IndividualDevelopmentPlanSchema(Schema):
-    pupil_id = fields.Integer()
+class IndividualDevelopmentPlanInSchema(Schema):
+   
     comment = fields.String()
     created_by = fields.String()
     created_at = fields.Date()
+    level = fields.Integer()
     class Meta:
-        fields = ('pupil_id', 'comment', 'created_by', 'created_at')
+        fields = ('pupil_id', 'level', 'comment', 'created_by', 'created_at')
 
-individual_development_plan_schema = IndividualDevelopmentPlanSchema()
-individual_development_plans_schema = IndividualDevelopmentPlanSchema(many = True)
+individual_development_plan_in_schema = IndividualDevelopmentPlanInSchema()
+individual_development_plans_in_schema = IndividualDevelopmentPlanInSchema(many = True)
 
 class PupilSchema(Schema):
     avatar_id = fields.String(metadata={'nullable': True})
@@ -38,7 +39,7 @@ class PupilSchema(Schema):
     communication_tutor1 = fields.String(allow_none=True)
     communication_tutor2 = fields.String(allow_none=True)
     preschool_revision = fields.Integer()
-    individual_development_plans = fields.List(fields.Nested(IndividualDevelopmentPlanSchema))
+    individual_development_plans = fields.List(fields.Nested(IndividualDevelopmentPlanInSchema))
     pupil_missed_classes = fields.List(fields.Nested(MissedClassSchema))
     pupil_schoolday_events = fields.List(fields.Nested(SchooldayEventSchema))
     support_goals = fields.List(fields.Nested(SupportGoalSchema))

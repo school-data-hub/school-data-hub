@@ -7,6 +7,7 @@ import 'package:schuldaten_hub/api/api.dart';
 import 'package:schuldaten_hub/common/services/env_manager.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/session_manager.dart';
+import 'package:schuldaten_hub/common/utils/extensions.dart';
 import 'package:schuldaten_hub/common/widgets/dialogues/confirmation_dialog.dart';
 import 'package:schuldaten_hub/common/widgets/dialogues/information_dialog.dart';
 import 'package:schuldaten_hub/common/widgets/document_image.dart';
@@ -132,7 +133,7 @@ class WorkbookCard extends StatelessWidget {
                                   child: SingleChildScrollView(
                                     scrollDirection: Axis.horizontal,
                                     child: Text(
-                                      workbook.name!,
+                                      workbook.name,
                                       style: const TextStyle(
                                           fontSize: 20,
                                           fontWeight: FontWeight.bold),
@@ -149,7 +150,7 @@ class WorkbookCard extends StatelessWidget {
                               const Text('ISBN:'),
                               const Gap(10),
                               Text(
-                                workbook.isbn.toString(),
+                                workbook.isbn.displayAsIsbn(),
                                 style: const TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,

@@ -4,7 +4,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:schuldaten_hub/api/services/dio/dio_client.dart';
+import 'package:schuldaten_hub/api/services/dio/api_client_service.dart';
 import 'package:schuldaten_hub/common/models/session_models/env.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/schoolday_manager.dart';
@@ -66,7 +66,7 @@ class EnvManager {
         _envs.value = environmentsMap;
         // if there are environments stored, the default environment is already set
         _env.value = environmentsMap[_defaultEnv.value] ?? Env();
-        locator<DioClient>().setBaseUrl(_env.value.serverUrl!);
+        locator<ApiClientService>().setBaseUrl(_env.value.serverUrl!);
         _envReady.value = true;
         logger.i('${environmentsMap.length} environment(s) found!');
         return;
@@ -131,7 +131,7 @@ class EnvManager {
 
   Future<void> switchEnv({required String envName}) async {
     _env.value = _envs.value[envName]!;
-    locator<DioClient>().setBaseUrl(_env.value.serverUrl!);
+    locator<ApiClientService>().setBaseUrl(_env.value.serverUrl!);
     _defaultEnv.value = envName;
     secureStorageWrite(SecureStorageKey.defaultEnv.value, envName);
     _envReady.value = true;

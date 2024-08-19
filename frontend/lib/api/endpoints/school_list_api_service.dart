@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:schuldaten_hub/api/api.dart';
-import 'package:schuldaten_hub/api/services/dio/dio_client.dart';
+import 'package:schuldaten_hub/api/services/dio/api_client_service.dart';
 import 'package:schuldaten_hub/common/constants/enums.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_manager.dart';
@@ -10,7 +10,7 @@ import 'package:schuldaten_hub/common/services/session_manager.dart';
 import 'package:schuldaten_hub/features/school_lists/models/school_list.dart';
 
 class SchoolListApiService {
-  final DioClient _client = locator<DioClient>();
+  final ApiClientService _client = locator<ApiClientService>();
   final notificationManager = locator<NotificationManager>();
 
   //- get school lists

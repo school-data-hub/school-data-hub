@@ -94,15 +94,17 @@ class IndividualDevelopmentPlan(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     created_by = db.Column(db.String(20),nullable = False)
     created_at = db.Column(db.Date, nullable = False)
+    level = db.Column(db.String(20), nullable = False)
     comment = db.Column(db.String(200), nullable = False)
 
     #- RELATIONSHIP TO PUPIL MANY-TO-ONE
     pupil_id = db.Column('pupil_id', db.Integer, db.ForeignKey('pupil.internal_id'))
     pupil = db.relationship('Pupil', back_populates='individual_development_plans')
-    def __init__(self, pupil_id, created_by, created_at, description):
+    def __init__(self, pupil_id, created_by, created_at, level, comment):
         self.pupil_id = pupil_id
         self.created_by = created_by
         self.created_at = created_at
-        self.description = description
+        self.level = level
+        self.comment = comment
 
       

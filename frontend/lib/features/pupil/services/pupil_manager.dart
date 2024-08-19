@@ -120,14 +120,13 @@ class PupilManager extends ChangeNotifier {
   //- Fetch pupils with the given ids from the backend
 
   Future<void> fetchPupilsByInternalId(List<int> internalPupilIds) async {
-    notificationManager.isRunningValue(true);
     notificationManager.showSnackBar(NotificationType.info,
         'Lade Schülerdaten aus der Datenbank. Bitte warten...');
 
     // fetch the pupils from the backend
     final fetchedPupils = await apiPupilService.fetchListOfPupils(
         internalPupilIds: internalPupilIds);
-    notificationManager.isRunningValue(false);
+
     // check if we did not get a pupil response for some ids
     // if so, we will delete the personal data for those ids later
     final List<int> outdatedPupilIdentitiesIds = internalPupilIds
@@ -258,8 +257,6 @@ class PupilManager extends ChangeNotifier {
   }
 
   Future<void> patchPupil(int pupilId, String jsonKey, var value) async {
-    notificationManager.isRunningValue(true);
-
     // if the value is relevant to siblings, check for siblings first and handle them if true
 
     if (jsonKey == 'communication_tutor1' ||
@@ -292,7 +289,6 @@ class PupilManager extends ChangeNotifier {
 
         notificationManager.showSnackBar(
             NotificationType.success, 'Geschwister erfolgreich gepatcht!');
-        notificationManager.isRunningValue(false);
       }
     }
 
@@ -304,8 +300,24 @@ class PupilManager extends ChangeNotifier {
     // now update the pupil in the repository
 
     _pupils[pupilId]!.updatePupil(pupilUpdate);
+  }
 
-    notificationManager.isRunningValue(false);
+  Future<void> patchPupilWithIndividualDevelopmentPlan(
+      {required int pupilId,
+      required int level,
+      required DateTime createdAt,
+      required String createdBy,
+      required String comment}) async {
+    final PupilData updatedPupil =
+        await apiPupilService.patchPupilWithIndividualDevelopmentPlan(
+      internalId: pupilId,
+      individualDevelopmentPlanLevel: level,
+      createdAt: createdAt,
+      createdBy: createdBy,
+      comment: comment,
+    );
+
+    _pupils[pupilId]!.updatePupil(updatedPupil);
   }
 
   PupilsFilter getPupilFilter() {

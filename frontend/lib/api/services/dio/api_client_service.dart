@@ -7,13 +7,13 @@ import 'package:schuldaten_hub/common/services/env_manager.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/session_manager.dart';
 
-class DioClient {
+class ApiClientService {
   // dio instance
   late final Dio _dio;
   String baseUrl;
 
   // injecting dio instance
-  DioClient(this._dio, this.baseUrl) {
+  ApiClientService(this._dio, this.baseUrl) {
     _dio
       ..options.baseUrl = baseUrl
       ..options.connectTimeout = ApiSettings.connectionTimeout

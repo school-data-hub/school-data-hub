@@ -4,7 +4,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:schuldaten_hub/api/api.dart';
-import 'package:schuldaten_hub/api/services/dio/dio_client.dart';
+import 'package:schuldaten_hub/api/services/dio/api_client_service.dart';
 import 'package:schuldaten_hub/common/constants/enums.dart';
 import 'package:schuldaten_hub/common/models/session_models/session.dart';
 import 'package:schuldaten_hub/common/services/env_manager.dart';
@@ -46,7 +46,7 @@ class SessionManager {
     _credentials.value = session;
     _isAdmin.value = _credentials.value.isAdmin!;
     _isAuthenticated.value = true;
-    locator<DioClient>()
+    locator<ApiClientService>()
         .setHeaders(tokenKey: 'x-access-token', token: session.jwt!);
   }
 
@@ -162,7 +162,7 @@ class SessionManager {
 
     authenticate(session);
     await saveSession(session);
-    locator<DioClient>().setHeaders(
+    locator<ApiClientService>().setHeaders(
       tokenKey: 'x-access-token',
       token: _credentials.value.jwt!,
     );

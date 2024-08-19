@@ -4,7 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:listenable_collections/listenable_collections.dart';
 import 'package:schuldaten_hub/api/api.dart';
-import 'package:schuldaten_hub/api/services/dio/dio_client.dart';
+import 'package:schuldaten_hub/api/services/dio/api_client_service.dart';
 import 'package:schuldaten_hub/api/endpoints/matrix_endpoints.dart';
 import 'package:schuldaten_hub/common/constants/enums.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
@@ -68,7 +68,7 @@ class MatrixPolicyManager {
   MatrixPolicyManager() {
     logger.i('MatrixPolicyManager constructor called');
   }
-  final dioClient = locator<DioClient>();
+  final dioClient = locator<ApiClientService>();
   final notificationManager = locator<NotificationManager>();
 
   Future<MatrixPolicyManager> init() async {

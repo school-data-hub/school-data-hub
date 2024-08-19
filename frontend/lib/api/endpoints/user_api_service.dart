@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:schuldaten_hub/api/api.dart';
-import 'package:schuldaten_hub/api/services/dio/dio_client.dart';
+import 'package:schuldaten_hub/api/services/dio/api_client_service.dart';
 import 'package:schuldaten_hub/common/constants/enums.dart';
 import 'package:schuldaten_hub/common/models/session_models/session.dart';
 import 'package:schuldaten_hub/features/users/models/user.dart';
@@ -35,7 +35,7 @@ class EndpointsUser {
 }
 
 class UserApiService {
-  final DioClient _client = locator<DioClient>();
+  final ApiClientService _client = locator<ApiClientService>();
   final notificationManager = locator<NotificationManager>();
 
   //- login
@@ -129,7 +129,7 @@ class UserApiService {
   }
 
   Future<Session> updateSessionData(Session session) async {
-    final client = locator<DioClient>();
+    final client = locator<ApiClientService>();
 
     final response = await client.get(EndpointsUser.getSelfUser);
 

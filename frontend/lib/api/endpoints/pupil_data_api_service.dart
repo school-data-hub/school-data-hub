@@ -3,15 +3,16 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:schuldaten_hub/api/api.dart';
-import 'package:schuldaten_hub/api/services/dio/dio_client.dart';
+import 'package:schuldaten_hub/api/services/dio/api_client_service.dart';
 
 import 'package:schuldaten_hub/common/constants/enums.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_manager.dart';
+import 'package:schuldaten_hub/common/utils/extensions.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_data.dart';
 
 class PupilDataApiService {
-  final DioClient _client = locator<DioClient>();
+  final ApiClientService _client = locator<ApiClientService>();
 
   final notificationManager = locator<NotificationManager>();
 
@@ -92,11 +93,6 @@ class PupilDataApiService {
     return responsePupils;
   }
 
-  //- NOT USED - Ist das nicht das gleiche wie fetchPupils mit diese eine internalId in der Liste?
-  String getOnePupil(int id) {
-    return '/pupils/$id';
-  }
-
   //- NOT USED - instead the url is used in downloadOrCachedAndDecryptImage
   String getPupilAvatar(int id) {
     return '/pupils/$id/avatar';
@@ -135,9 +131,6 @@ class PupilDataApiService {
           'Failed to update pupil property', response.statusCode);
     }
 
-    /// wenn immer möglich mach die deserialisierung direkt am endpoint
-    /// so dass die app nicht mit resonse objekten arbeiten und wissen muss
-    /// wie die daten aussehen
     final PupilData responsePupil = PupilData.fromJson(response.data);
 
     notificationManager.isRunningValue(false);
@@ -230,5 +223,47 @@ class PupilDataApiService {
     }
     // TODO: This is an empty response, should we return something?
     return;
+  }
+
+  //- post individual development plan change
+
+  String _patchWithIndividualDevelopmentPlan(int internalId) {
+    return '/pupils/$internalId/plan';
+  }
+
+  Future<PupilData> patchPupilWithIndividualDevelopmentPlan({
+    required int internalId,
+    required int individualDevelopmentPlanLevel,
+    required DateTime createdAt,
+    required String createdBy,
+    required String comment,
+  }) async {
+    notificationManager.isRunningValue(true);
+
+    final data = jsonEncode({
+      'level': individualDevelopmentPlanLevel,
+      'created_at': createdAt.formatForJson(),
+      'created_by': createdBy,
+      'comment': comment,
+    });
+
+    final response = await _client
+        .patch(_patchWithIndividualDevelopmentPlan(internalId), data: data);
+
+    if (response.statusCode != 200) {
+      notificationManager.showSnackBar(NotificationType.error,
+          'Die Förderstufe konnte nicht aktualisiert werden: ${response.statusCode}');
+
+      notificationManager.isRunningValue(false);
+
+      throw ApiException(
+          'Failed to patch individual development plan', response.statusCode);
+    }
+
+    final PupilData responsePupil = PupilData.fromJson(response.data);
+
+    notificationManager.isRunningValue(false);
+
+    return responsePupil;
   }
 }

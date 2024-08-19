@@ -13,6 +13,30 @@ import 'package:schuldaten_hub/features/workbooks/models/pupil_workbook.dart';
 part 'pupil_data.g.dart';
 
 @JsonSerializable()
+class IndividualDevelopmentPlan {
+  @JsonKey(name: 'level')
+  final int level;
+  @JsonKey(name: 'comment')
+  final String comment;
+  @JsonKey(name: 'created_at')
+  final DateTime createdAt;
+  @JsonKey(name: 'created_by')
+  final String createdBy;
+
+  factory IndividualDevelopmentPlan.fromJson(Map<String, dynamic> json) =>
+      _$IndividualDevelopmentPlanFromJson(json);
+
+  Map<String, dynamic> toJson() => _$IndividualDevelopmentPlanToJson(this);
+
+  IndividualDevelopmentPlan({
+    required this.level,
+    required this.comment,
+    required this.createdAt,
+    required this.createdBy,
+  });
+}
+
+@JsonSerializable()
 class PupilData {
   @JsonKey(name: 'avatar_id')
   final String? avatarId;
@@ -67,6 +91,9 @@ class PupilData {
   @JsonKey(name: "competence_goals")
   final List<CompetenceGoal> competenceGoals;
 
+  @JsonKey(name: 'individual_development_plans')
+  final List<IndividualDevelopmentPlan> individualDevelopmentPlans;
+
   factory PupilData.fromJson(Map<String, dynamic> json) =>
       _$PupilDataFromJson(json);
 
@@ -99,5 +126,6 @@ class PupilData {
     required this.creditHistoryLogs,
     required this.competenceGoals,
     required this.competenceChecks,
+    required this.individualDevelopmentPlans,
   });
 }

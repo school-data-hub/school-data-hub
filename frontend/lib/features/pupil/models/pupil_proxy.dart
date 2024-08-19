@@ -203,6 +203,8 @@ class PupilProxy with ChangeNotifier {
   int get creditEarned => _pupilData.creditEarned;
   String? get fiveYears => _pupilData.fiveYears;
   int get individualDevelopmentPlan => _pupilData.individualDevelopmentPlan;
+  List<IndividualDevelopmentPlan> get individualDevelopmentPlans =>
+      _pupilData.individualDevelopmentPlans;
   int get internalId => _pupilData.internalId;
   bool get ogs => _pupilData.ogs;
   String? get ogsInfo => _pupilData.ogsInfo;
