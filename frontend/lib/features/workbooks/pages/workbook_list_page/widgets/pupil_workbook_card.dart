@@ -92,9 +92,9 @@ class PupilWorkbookCard extends StatelessWidget {
                             updateShouldNotify: (oldValue, newValue) =>
                                 oldValue.documentUrl != newValue.documentUrl,
                             value: DocumentImageData(
-                                documentTag:
+                                documentTag: workbook.imageUrl!,
+                                documentUrl:
                                     '${locator<EnvManager>().env.value.serverUrl}${WorkbookApiService().getWorkbookImage(workbook.isbn)}',
-                                documentUrl: workbook.imageUrl,
                                 size: 100),
                             child: const DocumentImage(),
                           )
