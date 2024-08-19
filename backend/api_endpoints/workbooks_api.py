@@ -1,7 +1,6 @@
 from datetime import datetime
 import os
 import uuid
-from helpers.db_helpers import get_workbook_by_isbn
 from helpers.log_entries import create_log_entry
 from models.log_entry import LogEntry
 from schemas.log_entry_schemas import ApiFileSchema
@@ -12,7 +11,7 @@ from flask import current_app, json, jsonify, request, send_file
 from app import db
 from auth_middleware import token_required
 
-workbook_api = APIBlueprint('workbooks_api', __name__, url_prefix='/api/workbook')
+workbook_api = APIBlueprint('workbooks_api', __name__, url_prefix='/api/workbooks')
 
 #- GET WORKBOOKS 
 ################
@@ -72,9 +71,11 @@ def get_one_workbook(current_user, isbn):
 @workbook_api.doc(security='ApiKeyAuth', tags=['Workbooks'], summary='Post a new workbook')
 @token_required
 def create_workbook(current_user, json_data):
-    if get_workbook_by_isbn(json_data['isbn']) is None:
-        return jsonify({'message': 'Das Arbeitsheft existiert schon!'}), 400
+    print('Daten angekommen!')
     data = json_data
+    if db.session.query(Workbook).filter(Workbook.isbn == data['isbn']).first():
+        return jsonify({'message': 'Das Arbeitsheft existiert schon!'}), 400
+   
     isbn = data['isbn']
     name = data['name']
     subject = data['subject']
@@ -100,7 +101,7 @@ def create_workbook(current_user, json_data):
 @workbook_api.doc(security='ApiKeyAuth', tags=['Workbooks'], summary='Patch an existing workbook')
 @token_required
 def patch_workbook(current_user, isbn, json_data):
-    workbook = get_workbook_by_isbn(isbn)
+    workbook =db.session.query(Workbook).filter(Workbook.isbn == isbn).first()
     if workbook is None:
         return jsonify({'message': 'Das Arbeitsheft existiert nicht!'}), 404
     data = json_data
@@ -131,7 +132,7 @@ def patch_workbook(current_user, isbn, json_data):
 @workbook_api.doc(security='ApiKeyAuth', tags=['Workbooks'], summary='Patch an existing workbook with image')
 @token_required
 def patch_workbook_image(current_user, isbn, files_data):
-    workbook = get_workbook_by_isbn(isbn)
+    workbook = db.session.query(Workbook).filter(Workbook.isbn == isbn).first()
     if workbook is None:
         return jsonify({'message': 'Das Arbeitsheft existiert nicht!'}), 404
     if 'file' not in files_data:
@@ -157,7 +158,7 @@ def patch_workbook_image(current_user, isbn, files_data):
 @workbook_api.doc(security='ApiKeyAuth', tags=['Workbooks'], summary='Get workbook image')
 @token_required
 def get_workbook_image(current_user, isbn):
-    workbook = get_workbook_by_isbn(isbn)
+    workbook = db.session.query(Workbook).filter(Workbook.isbn == isbn).first()
     if workbook is None:
         return jsonify({'message': 'Das Arbeitsheft existiert nicht!'}), 404
     if len(str(workbook.image_url)) < 5:
@@ -173,7 +174,7 @@ def get_workbook_image(current_user, isbn):
 def delete_workbook(current_user, isbn):
     if not current_user.admin:
         return jsonify({'error' : 'Not authorized!'}), 401
-    this_workbook = get_workbook_by_isbn(isbn)
+    this_workbook = db.session.query(Workbook).filter(Workbook.isbn == isbn).first()
     if this_workbook == None:
         return jsonify({'message': 'Dieses Arbeitsheft existiert nicht!'}), 404
     if this_workbook.image_url is not None:

@@ -73,5 +73,5 @@ def get_authorized_school_lists(user_name: str) -> Optional[List[SchoolList]]:
     
 ## Workbooks
 
-def get_workbook_by_isbn(isbn: int) -> Optional[Workbook]:
-    return db.session.query(Workbook).filter(Workbook.isbn == isbn).first()
+# def get_workbook_by_isbn(isbn: int) -> Optional[Workbook]:
+#     return db.session.query(Workbook).filter(Workbook.isbn == isbn).first()
