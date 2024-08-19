@@ -33,16 +33,18 @@ class AttendanceCard extends WatchingWidget {
 
     final attendanceManager = locator<AttendanceManager>();
     DateTime thisDate = this.thisDate;
-    MissedType dropdownMissedValue =
-        AttendanceHelper.setMissedTypeValue(internalId, thisDate);
-    bool? excusedValue = AttendanceHelper.setExcusedValue(internalId, thisDate);
-    ContactedType dropdownContactedValue =
-        AttendanceHelper.setContactedValue(internalId, thisDate);
-    bool? returnedValue =
-        AttendanceHelper.setReturnedValue(internalId, thisDate);
-    String? createdModifiedValue(pupilId) {
-      return AttendanceHelper.setCreatedModifiedValue(pupilId, thisDate);
-    }
+    AttendanceValues attendanceInfo =
+        AttendanceHelper.setAttendanceInfo(internalId, thisDate);
+    // MissedType dropdownMissedValue =
+    //     AttendanceHelper.setMissedTypeValue(internalId, thisDate);
+    // bool? excusedValue = AttendanceHelper.setExcusedValue(internalId, thisDate);
+    // ContactedType dropdownContactedValue =
+    //     AttendanceHelper.setContactedValue(internalId, thisDate);
+    // bool? returnedValue =
+    //     AttendanceHelper.setReturnedValue(internalId, thisDate);
+    // String? createdModifiedValue(pupilId) {
+    //   return AttendanceHelper.setCreatedModifiedValue(pupilId, thisDate);
+    // }
 
     //- TODO: This widget is a mess, should be refactored!
 
@@ -120,11 +122,12 @@ class AttendanceCard extends WatchingWidget {
                                 onTap: () {
                                   FocusManager.instance.primaryFocus!.unfocus();
                                 },
-                                value: dropdownMissedValue,
+                                value: attendanceInfo.missedTypeValue,
                                 items: missedTypeMenuItems,
                                 onChanged: (newValue) async {
                                   FocusManager.instance.primaryFocus!.unfocus();
-                                  if (dropdownMissedValue == newValue) {
+                                  if (attendanceInfo.missedTypeValue ==
+                                      newValue) {
                                     return;
                                   }
                                   if (newValue == MissedType.isLate) {
@@ -146,18 +149,19 @@ class AttendanceCard extends WatchingWidget {
                             Checkbox(
                               checkColor: Colors.white,
                               activeColor: excusedCheckColor,
-                              value: excusedValue,
+                              value: attendanceInfo.excusedValue,
                               onChanged: (bool? newvalue) {
                                 attendanceManager.changeExcusedValue(
                                     pupil.internalId, thisDate, newvalue!);
                               },
                             ),
                             const Gap(4),
-                            (dropdownMissedValue == MissedType.isMissed &&
-                                        excusedValue == true) ||
-                                    dropdownContactedValue !=
+                            (attendanceInfo.missedTypeValue ==
+                                            MissedType.isMissed &&
+                                        attendanceInfo.excusedValue == true) ||
+                                    attendanceInfo.contactedTypeValue !=
                                         ContactedType.notSet ||
-                                    returnedValue == true
+                                    attendanceInfo.returnedValue == true
                                 ? DropdownButtonHideUnderline(
                                     child: DropdownButton<ContactedType>(
                                         icon: const Visibility(
@@ -167,12 +171,15 @@ class AttendanceCard extends WatchingWidget {
                                           FocusManager.instance.primaryFocus!
                                               .unfocus();
                                         },
-                                        value: dropdownContactedValue,
+                                        value:
+                                            attendanceInfo.contactedTypeValue,
                                         items: dropdownContactedMenuItems,
                                         onChanged: (newValue) {
-                                          if (dropdownContactedValue ==
+                                          if (attendanceInfo
+                                                      .contactedTypeValue ==
                                                   newValue ||
-                                              excusedValue == false) {
+                                              attendanceInfo.excusedValue ==
+                                                  false) {
                                             return;
                                           }
                                           attendanceManager
@@ -192,9 +199,9 @@ class AttendanceCard extends WatchingWidget {
                             Checkbox(
                               checkColor: Colors.white,
                               activeColor: goneHomeColor,
-                              value: returnedValue ?? false,
+                              value: attendanceInfo.returnedValue,
                               onChanged: (bool? newValue) async {
-                                if (dropdownMissedValue ==
+                                if (attendanceInfo.missedTypeValue ==
                                     MissedType.isMissed) {
                                   return;
                                 }
@@ -225,10 +232,10 @@ class AttendanceCard extends WatchingWidget {
                           SizedBox(
                             width: 70,
                             child: Center(
-                              child: createdModifiedValue(pupil.internalId) !=
+                              child: attendanceInfo.createdOrModifiedByValue !=
                                       null
                                   ? Text(
-                                      createdModifiedValue(pupil.internalId)!,
+                                      attendanceInfo.createdOrModifiedByValue!,
                                       textAlign: TextAlign.center,
                                       style: const TextStyle(
                                           fontWeight: FontWeight.bold,
@@ -379,16 +386,17 @@ class AttendanceCard extends WatchingWidget {
                                     FocusManager.instance.primaryFocus!
                                         .unfocus();
                                   },
-                                  value: dropdownMissedValue,
+                                  value: attendanceInfo.missedTypeValue,
                                   items: missedTypeMenuItems,
                                   onChanged: (newValue) async {
                                     FocusManager.instance.primaryFocus!
                                         .unfocus();
-                                    if (dropdownMissedValue == newValue) {
+                                    if (attendanceInfo.missedTypeValue ==
+                                        newValue) {
                                       return;
                                     }
                                     if (newValue == MissedType.isMissed &&
-                                        returnedValue == true) {
+                                        attendanceInfo.returnedValue == true) {
                                       locator<NotificationManager>().showSnackBar(
                                           NotificationType.error,
                                           'Ein Kind, das abgeholt wurde, gilt nicht als fehlend für den Tag!');
@@ -417,11 +425,11 @@ class AttendanceCard extends WatchingWidget {
                                 width: 50,
                                 child: Center(
                                   child:
-                                      createdModifiedValue(pupil.internalId) !=
+                                      attendanceInfo.createdOrModifiedByValue !=
                                               null
                                           ? Text(
-                                              createdModifiedValue(
-                                                  pupil.internalId)!,
+                                              attendanceInfo
+                                                  .createdOrModifiedByValue!,
                                               textAlign: TextAlign.center,
                                               style: const TextStyle(
                                                   fontWeight: FontWeight.bold,
@@ -439,7 +447,7 @@ class AttendanceCard extends WatchingWidget {
                               Checkbox(
                                 checkColor: Colors.white,
                                 activeColor: excusedCheckColor,
-                                value: excusedValue,
+                                value: attendanceInfo.excusedValue,
                                 onChanged: (bool? newvalue) {
                                   attendanceManager.changeExcusedValue(
                                       pupil.internalId, thisDate, newvalue!);
@@ -467,11 +475,12 @@ class AttendanceCard extends WatchingWidget {
                           ),
                           const Gap(5),
                           Column(children: [
-                            (dropdownMissedValue == MissedType.isMissed &&
-                                        excusedValue == true) ||
-                                    dropdownContactedValue !=
+                            (attendanceInfo.missedTypeValue ==
+                                            MissedType.isMissed &&
+                                        attendanceInfo.excusedValue == true) ||
+                                    attendanceInfo.contactedTypeValue !=
                                         ContactedType.notSet ||
-                                    returnedValue == true
+                                    attendanceInfo.returnedValue == true
                                 ? DropdownButtonHideUnderline(
                                     child: DropdownButton<ContactedType>(
                                         icon: const Visibility(
@@ -481,12 +490,15 @@ class AttendanceCard extends WatchingWidget {
                                           FocusManager.instance.primaryFocus!
                                               .unfocus();
                                         },
-                                        value: dropdownContactedValue,
+                                        value:
+                                            attendanceInfo.contactedTypeValue,
                                         items: dropdownContactedMenuItems,
                                         onChanged: (newValue) {
-                                          if (dropdownContactedValue ==
+                                          if (attendanceInfo
+                                                      .contactedTypeValue ==
                                                   newValue ||
-                                              excusedValue == false) {
+                                              attendanceInfo.excusedValue ==
+                                                  false) {
                                             return;
                                           }
                                           attendanceManager
@@ -529,10 +541,10 @@ class AttendanceCard extends WatchingWidget {
                                 Checkbox(
                                   checkColor: Colors.white,
                                   activeColor: goneHomeColor,
-                                  value: returnedValue ?? false,
+                                  value: attendanceInfo.returnedValue ?? false,
                                   onChanged: (bool? newValue) async {
                                     if (newValue == true) {
-                                      if (dropdownMissedValue ==
+                                      if (attendanceInfo.missedTypeValue ==
                                           MissedType.isMissed) {
                                         locator<NotificationManager>().showSnackBar(
                                             NotificationType.error,
@@ -581,6 +593,14 @@ class AttendanceCard extends WatchingWidget {
                         ],
                       ),
                       const Gap(15),
+                      attendanceInfo.missedTypeValue != MissedType.notSet
+                          ? Row(
+                              children: [
+                                Text(attendanceInfo.commentValue ??
+                                    'Kein Kommentar')
+                              ],
+                            )
+                          : const SizedBox.shrink(),
                     ]),
               ),
             ),

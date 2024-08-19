@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:gap/gap.dart';
@@ -301,10 +303,11 @@ class SettingsPage extends WatchingWidget {
                           leading: const Icon(Icons.qr_code_rounded),
                           title: const Text('Schulschlüssel zeigen'),
                           onPressed: (context) async {
-                            final String? qr = await secureStorageRead('env');
-
-                            if (qr != null && context.mounted) {
-                              showQrCode(qr, context);
+                            final Map<String, dynamic> json =
+                                locator<EnvManager>().env.value.toJson();
+                            final String jsonString = jsonEncode(json);
+                            if (context.mounted) {
+                              showQrCode(jsonString, context);
                             }
                           }),
                       SettingsTile.navigation(

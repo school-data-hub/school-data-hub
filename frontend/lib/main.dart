@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:isolate';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +15,6 @@ import 'package:schuldaten_hub/features/main_menu_pages/widgets/landing_bottom_n
 import 'package:schuldaten_hub/features/main_menu_pages/loading_page.dart';
 import 'package:schuldaten_hub/features/main_menu_pages/login_page/controller/login_controller.dart';
 import 'package:schuldaten_hub/features/main_menu_pages/no_connection_page.dart';
-import 'package:schuldaten_hub/features/pupil/services/pupil_identity_manager.dart';
 import 'package:watch_it/watch_it.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -44,13 +44,15 @@ void main() async {
     ),
   );
   registerBaseManagers();
-  await locator.isReady<EnvManager>();
-  await locator.isReady<ConnectionManager>();
-  await locator.isReady<SessionManager>();
-  await locator.isReady<PupilIdentityManager>();
+  await locator.allReady();
+
+  // await locator.isReady<EnvManager>();
+  // await locator.isReady<ConnectionManager>();
+  // await locator.isReady<SessionManager>();
+  // await locator.isReady<PupilIdentityManager>();
 
   runApp(const MyApp());
-  // This is a hack to avoid calls to firebase from the mobile_scanner package every 15 minutes
+  // TODO: INFO - This is a hack to avoid calls to firebase from the mobile_scanner package every 15 minutes
   // like described here: https://github.com/juliansteenbakker/mobile_scanner/issues/553
   if (Platform.isAndroid) {
     final dir = await getApplicationDocumentsDirectory();

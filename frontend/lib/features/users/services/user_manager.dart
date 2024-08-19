@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:schuldaten_hub/api/endpoints/user_api_service.dart';
 import 'package:schuldaten_hub/common/constants/enums.dart';
-import 'package:schuldaten_hub/common/models/session_models/user.dart';
+import 'package:schuldaten_hub/features/users/models/user.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_manager.dart';
 

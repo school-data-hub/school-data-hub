@@ -9,6 +9,26 @@ import 'package:schuldaten_hub/features/attendance/services/attendance_manager.d
 import 'package:schuldaten_hub/features/pupil/services/pupil_manager.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
 
+class AttendanceValues {
+  final MissedType missedTypeValue;
+  final ContactedType contactedTypeValue;
+  final String? createdOrModifiedByValue;
+  final bool excusedValue;
+  final bool returnedValue;
+  final String? returnedTimeValue;
+  final String? commentValue;
+
+  AttendanceValues({
+    required this.missedTypeValue,
+    required this.contactedTypeValue,
+    required this.createdOrModifiedByValue,
+    required this.excusedValue,
+    this.returnedValue = false,
+    this.returnedTimeValue,
+    this.commentValue,
+  });
+}
+
 //- lookup functions
 class AttendanceHelper {
   static int? findMissedClassIndex(PupilProxy pupil, DateTime date) {
@@ -250,79 +270,128 @@ class AttendanceHelper {
     return false;
   }
 
-//- set value functions
-  static MissedType setMissedTypeValue(int pupilId, DateTime date) {
+// use one function instead all the set value functions
+// to avoid unnecessary lookups
+  static AttendanceValues setAttendanceInfo(int pupilId, DateTime date) {
+    MissedType missedType;
+    ContactedType contactedType;
     final PupilProxy pupil = locator<PupilManager>().findPupilById(pupilId)!;
     final int? missedClass = findMissedClassIndex(pupil, date);
     if (missedClass == -1 || missedClass == null) {
-      return MissedType.notSet;
-    }
-    final dropdownvalue = pupil.pupilMissedClasses![missedClass].missedType;
-
-    final MissedType missedType =
-        MissedType.values.firstWhere((e) => e.value == dropdownvalue);
-    return missedType;
-  }
-
-  static ContactedType setContactedValue(int pupilId, DateTime date) {
-    final PupilProxy pupil = locator<PupilManager>().findPupilById(pupilId)!;
-    final int? missedClass = findMissedClassIndex(pupil, date);
-    if (missedClass == -1) {
-      return ContactedType.notSet;
+      return AttendanceValues(
+        missedTypeValue: MissedType.notSet,
+        contactedTypeValue: ContactedType.notSet,
+        createdOrModifiedByValue: null,
+        excusedValue: false,
+        returnedValue: false,
+        returnedTimeValue: null,
+        commentValue: null,
+      );
     } else {
-      final contactedType = ContactedType.values.firstWhereOrNull(
-          (e) => e.value == pupil.pupilMissedClasses![missedClass!].contacted);
-
-      return contactedType ?? ContactedType.notSet;
+      final dropdownvalue = pupil.pupilMissedClasses![missedClass].missedType;
+      missedType =
+          MissedType.values.firstWhere((e) => e.value == dropdownvalue);
     }
+
+    final contactedValue = pupil.pupilMissedClasses![missedClass].contacted;
+    contactedType = ContactedType.values
+            .firstWhereOrNull((e) => e.value == contactedValue) ??
+        ContactedType.notSet;
+
+    String createdOrModifiedBy =
+        pupil.pupilMissedClasses![missedClass].modifiedBy ??
+            pupil.pupilMissedClasses![missedClass].createdBy;
+
+    final bool excused = pupil.pupilMissedClasses![missedClass].excused!;
+    final bool returned = pupil.pupilMissedClasses![missedClass].backHome!;
+    final String? returnedTime =
+        pupil.pupilMissedClasses![missedClass].backHomeAt;
+    final String? comment = pupil.pupilMissedClasses![missedClass].comment;
+
+    return AttendanceValues(
+      missedTypeValue: missedType,
+      contactedTypeValue: contactedType,
+      createdOrModifiedByValue: createdOrModifiedBy,
+      excusedValue: excused,
+      returnedValue: returned,
+      returnedTimeValue: returnedTime,
+      commentValue: comment,
+    );
   }
 
-  static String? setCreatedModifiedValue(int pupilId, DateTime date) {
-    final PupilProxy pupil = locator<PupilManager>().findPupilById(pupilId)!;
-    final int? missedClass = findMissedClassIndex(pupil, date);
-    if (missedClass == -1 || missedClass == null) {
-      return null;
-    }
-    final String createdBy = pupil.pupilMissedClasses![missedClass].createdBy;
-    final String? modifiedBy =
-        pupil.pupilMissedClasses![missedClass].modifiedBy;
+// //- set value functions
+//   static MissedType setMissedTypeValue(int pupilId, DateTime date) {
+//     final PupilProxy pupil = locator<PupilManager>().findPupilById(pupilId)!;
+//     final int? missedClass = findMissedClassIndex(pupil, date);
+//     if (missedClass == -1 || missedClass == null) {
+//       return MissedType.notSet;
+//     }
+//     final dropdownvalue = pupil.pupilMissedClasses![missedClass].missedType;
 
-    if (modifiedBy != null) {
-      return modifiedBy;
-    }
-    return createdBy;
-  }
+//     final MissedType missedType =
+//         MissedType.values.firstWhere((e) => e.value == dropdownvalue);
+//     return missedType;
+//   }
 
-  static bool setExcusedValue(int pupilId, DateTime date) {
-    final PupilProxy pupil = locator<PupilManager>().findPupilById(pupilId)!;
-    final int? missedClass = findMissedClassIndex(pupil, date);
-    if (missedClass == -1) {
-      return false;
-    }
-    final excusedValue = pupil.pupilMissedClasses![missedClass!].excused;
-    return excusedValue!;
-  }
+//   static ContactedType setContactedValue(int pupilId, DateTime date) {
+//     final PupilProxy pupil = locator<PupilManager>().findPupilById(pupilId)!;
+//     final int? missedClass = findMissedClassIndex(pupil, date);
+//     if (missedClass == -1) {
+//       return ContactedType.notSet;
+//     } else {
+//       final contactedType = ContactedType.values.firstWhereOrNull(
+//           (e) => e.value == pupil.pupilMissedClasses![missedClass!].contacted);
 
-  static bool? setReturnedValue(int pupilId, DateTime date) {
-    final PupilProxy pupil = locator<PupilManager>().findPupilById(pupilId)!;
-    final int? missedClass = findMissedClassIndex(pupil, date);
+//       return contactedType ?? ContactedType.notSet;
+//     }
+//   }
 
-    if (missedClass == -1) {
-      return false;
-    }
-    final returnedindex = pupil.pupilMissedClasses![missedClass!].backHome;
-    return returnedindex;
-  }
+//   static String? setCreatedModifiedValue(int pupilId, DateTime date) {
+//     final PupilProxy pupil = locator<PupilManager>().findPupilById(pupilId)!;
+//     final int? missedClass = findMissedClassIndex(pupil, date);
+//     if (missedClass == -1 || missedClass == null) {
+//       return null;
+//     }
+//     final String createdBy = pupil.pupilMissedClasses![missedClass].createdBy;
+//     final String? modifiedBy =
+//         pupil.pupilMissedClasses![missedClass].modifiedBy;
 
-  static String? setReturnedTime(int pupilId, DateTime date) {
-    final PupilProxy pupil = locator<PupilManager>().findPupilById(pupilId)!;
-    final int? missedClass = findMissedClassIndex(pupil, date);
-    if (missedClass == -1) {
-      return null;
-    }
-    final returnedTime = pupil.pupilMissedClasses![missedClass!].backHomeAt;
-    return returnedTime;
-  }
+//     if (modifiedBy != null) {
+//       return modifiedBy;
+//     }
+//     return createdBy;
+//   }
+
+//   static bool setExcusedValue(int pupilId, DateTime date) {
+//     final PupilProxy pupil = locator<PupilManager>().findPupilById(pupilId)!;
+//     final int? missedClass = findMissedClassIndex(pupil, date);
+//     if (missedClass == -1) {
+//       return false;
+//     }
+//     final excusedValue = pupil.pupilMissedClasses![missedClass!].excused;
+//     return excusedValue!;
+//   }
+
+//   static bool? setReturnedValue(int pupilId, DateTime date) {
+//     final PupilProxy pupil = locator<PupilManager>().findPupilById(pupilId)!;
+//     final int? missedClass = findMissedClassIndex(pupil, date);
+
+//     if (missedClass == -1) {
+//       return false;
+//     }
+//     final returnedindex = pupil.pupilMissedClasses![missedClass!].backHome;
+//     return returnedindex;
+//   }
+
+//   static String? setReturnedTime(int pupilId, DateTime date) {
+//     final PupilProxy pupil = locator<PupilManager>().findPupilById(pupilId)!;
+//     final int? missedClass = findMissedClassIndex(pupil, date);
+//     if (missedClass == -1) {
+//       return null;
+//     }
+//     final returnedTime = pupil.pupilMissedClasses![missedClass!].backHomeAt;
+//     return returnedTime;
+//   }
 
 //- Date functions
 

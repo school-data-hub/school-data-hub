@@ -1,69 +1,32 @@
+import 'package:json_annotation/json_annotation.dart';
+
+part 'user.g.dart';
+
+@JsonSerializable()
 class User {
   final bool admin;
-  final String? contact;
-  final int credit;
-  final String name;
+  @JsonKey(name: 'public_id')
   final String publicId;
+  final String name;
   final String role;
-  final int timeUnits;
   final String? tutoring;
+  final int credit;
+  @JsonKey(name: 'time_units')
+  final int timeUnits;
+  final String? contact;
+
+  factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
 
   User({
     required this.admin,
-    this.contact,
-    required this.credit,
-    required this.name,
     required this.publicId,
+    required this.name,
     required this.role,
-    required this.timeUnits,
     this.tutoring,
+    required this.credit,
+    required this.timeUnits,
+    this.contact,
   });
 
-  User copyWith({
-    bool? admin,
-    String? contact,
-    int? credit,
-    String? name,
-    String? publicId,
-    String? role,
-    int? timeUnits,
-    String? tutoring,
-  }) {
-    return User(
-      admin: admin ?? this.admin,
-      contact: contact ?? this.contact,
-      credit: credit ?? this.credit,
-      name: name ?? this.name,
-      publicId: publicId ?? this.publicId,
-      role: role ?? this.role,
-      timeUnits: timeUnits ?? this.timeUnits,
-      tutoring: tutoring ?? this.tutoring,
-    );
-  }
-
-  factory User.fromJson(Map<String, dynamic> json) {
-    return User(
-      admin: json['admin'],
-      contact: json['contact'],
-      credit: json['credit'],
-      name: json['name'],
-      publicId: json['publicId'],
-      role: json['role'],
-      timeUnits: json['timeUnits'],
-      tutoring: json['tutoring'],
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'admin': admin,
-      'contact': contact,
-      'credit': credit,
-      'name': name,
-      'publicId': publicId,
-      'role': role,
-      'timeUnits': timeUnits,
-      'tutoring': tutoring,
-    };
-  }
+  Map<String, dynamic> toJson() => _$UserToJson(this);
 }

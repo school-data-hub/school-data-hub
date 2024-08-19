@@ -264,7 +264,8 @@ class PupilManager extends ChangeNotifier {
 
     if (jsonKey == 'communication_tutor1' ||
         jsonKey == 'communication_tutor2' ||
-        jsonKey == 'parents_contact') {
+        jsonKey == 'parents_contact' ||
+        jsonKey == 'emergency_care') {
       final PupilProxy pupil = findPupilById(pupilId)!;
       if (pupil.family != null) {
         // we have a sibling

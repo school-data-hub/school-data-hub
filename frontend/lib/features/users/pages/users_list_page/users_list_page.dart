@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:schuldaten_hub/common/constants/colors.dart';
 
-import 'package:schuldaten_hub/common/models/session_models/user.dart';
+import 'package:schuldaten_hub/features/users/models/user.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/widgets/generic_app_bar.dart';
 import 'package:schuldaten_hub/features/users/pages/users_list_page/widgets/users_list_page_bottom_navbar.dart';
