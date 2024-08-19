@@ -41,7 +41,7 @@ def add_workbook_to_pupil(current_user, internal_id, isbn):
 
 #- PATCH PUPIL WORKBOOK
 #######################
-@pupil_workbook_api.route('/pupil_workbooks/<internal_id>/<isbn>', methods=['PATCH'])
+@pupil_workbook_api.route('/<internal_id>/<isbn>', methods=['PATCH'])
 @pupil_workbook_api.input(pupil_workbook_schema)
 @pupil_workbook_api.output(pupil_schema)
 @pupil_workbook_api.doc(security='ApiKeyAuth', tags=['Pupil Workbooks'])
@@ -68,7 +68,7 @@ def update_PupilWorkbook(current_user, internal_id, isbn):
 
 #- DELETE PUPIL WORKBOOK
 ########################
-@pupil_workbook_api.route('/pupil_workbooks/<internal_id>/workbook/<isbn>', methods=['DELETE'])
+@pupil_workbook_api.route('/<internal_id>/workbook/<isbn>', methods=['DELETE'])
 @pupil_workbook_api.output(pupil_schema)
 @pupil_workbook_api.doc(security='ApiKeyAuth', tags=['Pupil Workbooks'])
 @token_required
