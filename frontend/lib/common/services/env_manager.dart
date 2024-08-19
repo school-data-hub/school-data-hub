@@ -48,10 +48,11 @@ class EnvManager {
   }
 
   Future<void> checkStoredEnv() async {
-    bool isStoredEnv =
-        await secureStorageContains(SecureStorageKey.environments.value);
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     _packageInfo.value = packageInfo;
+    bool isStoredEnv =
+        await secureStorageContains(SecureStorageKey.environments.value);
+
     if (isStoredEnv == true) {
       _defaultEnv.value = await secureStorageRead('defaultEnv') ?? '';
       final String? storedSession =
@@ -78,16 +79,22 @@ class EnvManager {
         return;
       }
     } else {
-      logger.i('No env found');
+      bool isStoredOldEnv = await secureStorageContains('env');
+      if (isStoredOldEnv == true) {
+        final String? storedSession = await secureStorageRead('env');
+        addEnv(storedSession!);
+      } else {
+        logger.i('No env found');
 
-      return;
+        return;
+      }
     }
   }
 
   // set the environment from a string
-  void addEnv(String scanResult) async {
+  void addEnv(String envAsString) async {
     final Env env =
-        Env.fromJson(json.decode(scanResult) as Map<String, dynamic>);
+        Env.fromJson(json.decode(envAsString) as Map<String, dynamic>);
 
     _envs.value = {..._envs.value, env.server!: env};
 
@@ -123,11 +130,11 @@ class EnvManager {
   }
 
   Future<void> switchEnv({required String envName}) async {
-    _envReady.value = true;
     _env.value = _envs.value[envName]!;
     locator<DioClient>().setBaseUrl(_env.value.serverUrl!);
     _defaultEnv.value = envName;
     secureStorageWrite(SecureStorageKey.defaultEnv.value, envName);
+    _envReady.value = true;
     if (!locator.isRegistered<SchooldayManager>()) {
       registerDependentManagers();
     } else {

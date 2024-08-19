@@ -2,10 +2,10 @@ from models.schoolday import *
 
 class Workbook(db.Model):
     id = db.Column(db.Integer, primary_key = True)
-    isbn = db.Column(db.Integer, unique=True)
-    name = db.Column(db.String(20))
+    isbn = db.Column(db.Integer, nullable = False, unique=True)
+    name = db.Column(db.String(20), nullable = False)
     subject = db.Column(db.String(10))
-    level = db.Column(db.String(5), nullable = False)
+    level = db.Column(db.String(5))
     amount = db.Column(db.Integer, nullable = False, default = 0)
     image_url = db.Column(db.String(50), nullable = True)
 

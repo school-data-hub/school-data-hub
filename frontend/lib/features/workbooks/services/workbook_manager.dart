@@ -34,7 +34,8 @@ class WorkbookManager {
   Future<void> getWorkbooks() async {
     final List<Workbook> responseWorkbooks =
         await apiWorkbookService.getWorkbooks();
-
+    // sort workbooks by name
+    responseWorkbooks.sort((a, b) => a.name.compareTo(b.name));
     notificationManager.showSnackBar(
         NotificationType.success, 'Arbeitshefte erfolgreich geladen');
 

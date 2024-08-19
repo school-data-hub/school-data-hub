@@ -14,7 +14,7 @@ class Workbook {
       required this.imageUrl});
 
   final int isbn;
-  final String? name;
+  final String name;
   final String? subject;
   final String? level;
   final int amount;
