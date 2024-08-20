@@ -6,7 +6,7 @@ import 'dart:io';
 import 'package:collection/collection.dart';
 
 import 'package:flutter/material.dart';
-import 'package:schuldaten_hub/api/api.dart';
+import 'package:schuldaten_hub/common/services/api/api.dart';
 import 'package:schuldaten_hub/common/constants/enums.dart';
 import 'package:schuldaten_hub/common/services/env_manager.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';

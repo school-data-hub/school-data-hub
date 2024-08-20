@@ -4,15 +4,13 @@ Software tool to handle school information flows between teachers / administrati
 
 ### Origins
 
-This software originated during the COVID-pandemic in our primary school "Hermannschule" in Stolberg (Germany). In order to keep track on attendance and quarantine statuses I developed a simple app to keep records in a collaborative way with a simple backend built with flask.
+This software originated during the COVID-pandemic in the primary school "Hermannschule" in Stolberg (Germany). In order to keep track on attendance and quarantine statuses a simple app was developed to keep records in a collaborative way with a simple backend built with flask.
 
-As I realized the time saving potential that brought handling this information digitally, I started to build a data model with information sets that we handle every day and cause long ways (walking across the school), cost time and organization resources, or leave long paper trails.
-
-While learning more and more how programming works, I extended the model more and more...
+Recognizing the time saving potential that brought handling this information digitally, the app was expanded with information sets that are handled every day in schools and cause long ways (walking across the school), cost time and organization resources, or leave long paper trails.
 
 ### So what does it do?
 
-The app takes exported information from the software provided by our Education ministry and uses it to build extended models of the schools' pupils in the backend  without uploading any personal data to the server^. The models in the backend are then used to add our additional information.
+The app takes exported information from the software provided by the NRW Education ministry (https://www.svws.nrw.de/) and uses it to build extended models of the schools' pupils in the backend  without uploading any personal data to the server^. The models in the backend are then used to add additional information.
 
 ### Data protection efforts
 
@@ -26,11 +24,7 @@ A singular approach that this app takes is the **transport of personal informati
 
 #### But why so complicated?
 
-Since I'm no expert in data security, this is the way I found to ensure that the pupils' personal data isn't sent back and forth through the internet. In fact, this way the personal data is only transported through devices over encrypted qr-codes. As we are storing quite sensitive information, it is crucial that this information can't be related to a concrete pupil without proper authorization.
-
-You can read more about the data modeling here:
-
-https://github.com/dabblingwithcode/school_data_hub_frontend/blob/main/docs/data_models_description.md
+The aim is to ensure that the pupils' personal data isn't sent back and forth through the internet. In fact, this way the personal data is only transported through devices over encrypted qr-codes. As we are storing quite sensitive information, it is crucial that this information can't be related to a concrete pupil without proper authorization.
 
 **Have you got a better idea? Pull requests welcome! :-)**
 
@@ -58,7 +52,7 @@ For now, all stored images.
   
 #### Accounts
 
-- In our school, we have an own currency. We use it as a reward system to motivate our pupils. With this currency, they can buy stuff in our own shop (like school t-shirts or buttons, but also pencils, erasers, or little games like yoyos and such).
+- In the Hermannschule there is a school own currency. It is used as a reward system to motivate pupils. With this currency, they can buy stuff in the school's own shop (like school t-shirts or buttons, but also pencils, erasers, or little games like frisbees and such).
 
 #### Special information
 
@@ -90,29 +84,31 @@ Pupils have the right to get learning support according to their individual need
 
 - Calender view to see  / add / delete schooldays. Additionally, the attendance list of the selected date is shown. (To do: add more than one day at a time with https://pub.dev/packages/calendar_date_picker2 )
 
+#### User management (WIP)
+
+UI to add, update, and delete users.
+
 ### Roadmap
 
-The export of reports in a printable format (pdf) is crucial for us and because of that on top of the list.
+The export of reports in a printable format (pdf) is  on top of the list.
 
-There are also a couple of models in the backend that are not implemented in the client yet.
+There are also a couple of models in the backend that are not implemented in the client yet, like a digital library management.
 
 ### TO-DO:
 
 #### Code quality / architecture
 
-- no dynamic type functions -> functions should have a return type (`void` or `Future<void>` )  (work in progress)
-- detach API calls from the managers (work in progress)
 - migrate filter architecture to `PupilsFilter` (work in progress)
 - subsitute hard coded enum filters for class and school grade with a dynamic solution, so that the app can be used for other schools. **Priority: high**
   
 #### Functionality
 
 - error handling in API calls. **Priority: high**
-- review state management across views. **Priority: high**
+- review state management across pages. **Priority: high**
 - handle 'no internet connection' case **Priority: high**
 - review / implement navigation **Priority: medium**
 - internationalization
-- generally, improve code quality. The naming of models, functions and such should definitely be revisited by an actual programming person. O:-) **Priority: low (it works like this)**
+- generally, improve code quality. The naming of models, functions and such should definitely be revisited by an actual programming person.**Priority: low (it works like this)**
 
 #### Design
 
@@ -120,7 +116,7 @@ There are also a couple of models in the backend that are not implemented in the
   
 #### Features
 
-- UI for user accounts management
+
 - UI for semester management
 - pdf export feature: individual development plan report. **Priority: high**
 - implement competence feature, competence report for a school semester and pdf export. **Priority: high**
@@ -128,6 +124,10 @@ There are also a couple of models in the backend that are not implemented in the
 - book feature (library lending system) **Priority: medium**
 - generate qr stickers as shortcuts for documenting features **Priority: low**
 
-### Thanks to the open source community
+### Credits
 
-I have great admiration for the work of everybody contributing to the frameworks, packages and tools that I used for this project, and are deeply grateful for their generosity sharing their work. The more I learn about programming, the more I appreciate it. So thank you, open source community! You make things possible and this world a better place.
+Thanks to the open source community!
+
+Original code written by @dabblingwithcode .
+
+Thanks to @escamoteur (developer of get_it and watch_it) for kindly answering questions and helping out in a couple of sessions with state management, the PupilProxy model and its filters.

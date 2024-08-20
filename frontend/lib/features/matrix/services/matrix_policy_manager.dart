@@ -3,9 +3,9 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:listenable_collections/listenable_collections.dart';
-import 'package:schuldaten_hub/api/api.dart';
-import 'package:schuldaten_hub/api/services/dio/api_client_service.dart';
-import 'package:schuldaten_hub/api/endpoints/matrix_endpoints.dart';
+import 'package:schuldaten_hub/common/services/api/api.dart';
+import 'package:schuldaten_hub/common/services/api/services/api_client_service.dart';
+import 'package:schuldaten_hub/features/matrix/services/matrix_endpoints.dart';
 import 'package:schuldaten_hub/common/constants/enums.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_manager.dart';
@@ -168,6 +168,8 @@ class MatrixPolicyManager {
       MatrixRoom namedRoom = await _fetchAdditionalRoomInfos(roomId);
       rooms.add(namedRoom);
     }
+    // sort the rooms by name
+    rooms.sort((a, b) => a.name!.compareTo(b.name!));
     _matrixRooms.addAll(rooms);
     _matrixPolicy.value = policy;
 

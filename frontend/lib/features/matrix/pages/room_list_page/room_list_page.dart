@@ -10,6 +10,7 @@ import 'package:schuldaten_hub/features/matrix/filters/matrix_policy_filter_mana
 import 'package:schuldaten_hub/features/matrix/pages/room_list_page/widgets/room_list_card.dart';
 import 'package:schuldaten_hub/features/matrix/pages/room_list_page/widgets/room_list_searchbar.dart';
 import 'package:schuldaten_hub/features/matrix/pages/room_list_page/widgets/room_list_view_bottom_navbar.dart';
+import 'package:schuldaten_hub/features/matrix/services/matrix_policy_manager.dart';
 
 import 'package:schuldaten_hub/features/pupil/services/pupil_manager.dart';
 
@@ -48,7 +49,8 @@ class RoomListPage extends WatchingWidget {
         ),
       ),
       body: RefreshIndicator(
-        onRefresh: () async => locator<PupilManager>().fetchAllPupils(),
+        onRefresh: () async =>
+            locator<MatrixPolicyManager>().fetchMatrixPolicy(),
         child: Center(
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 800),

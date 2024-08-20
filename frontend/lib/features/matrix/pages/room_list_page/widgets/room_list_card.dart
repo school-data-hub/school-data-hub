@@ -93,7 +93,7 @@ class _RoomListCardState extends State<RoomListCard> {
                             scrollDirection: Axis.horizontal,
                             child: Row(
                               children: [
-                                Text(
+                                SelectableText(
                                   widget.matrixRoom.id,
                                   style: const TextStyle(
                                     fontSize: 14,

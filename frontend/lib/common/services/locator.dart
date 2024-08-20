@@ -1,6 +1,8 @@
+import 'dart:developer';
+
 import 'package:dio/dio.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
-import 'package:schuldaten_hub/api/services/dio/api_client_service.dart';
+import 'package:schuldaten_hub/common/services/api/services/api_client_service.dart';
 import 'package:schuldaten_hub/common/constants/enums.dart';
 import 'package:schuldaten_hub/common/services/env_manager.dart';
 import 'package:schuldaten_hub/common/services/search_textfield_manager.dart';
@@ -17,7 +19,7 @@ import 'package:schuldaten_hub/features/authorizations/services/authorization_ma
 import 'package:schuldaten_hub/features/matrix/filters/matrix_policy_filter_manager.dart';
 import 'package:schuldaten_hub/features/competence/filters/competence_filter_manager.dart';
 import 'package:schuldaten_hub/features/competence/services/competence_manager.dart';
-import 'package:schuldaten_hub/api/services/connection_manager.dart';
+import 'package:schuldaten_hub/common/services/api/services/connection_manager.dart';
 import 'package:schuldaten_hub/features/matrix/services/matrix_policy_manager.dart';
 import 'package:schuldaten_hub/features/learning_support/services/learning_support_manager.dart';
 import 'package:schuldaten_hub/features/pupil/filters/pupil_filter_manager.dart';
@@ -26,7 +28,7 @@ import 'package:schuldaten_hub/features/pupil/services/pupil_manager.dart';
 import 'package:schuldaten_hub/features/pupil/services/pupil_identity_manager.dart';
 import 'package:schuldaten_hub/features/school_lists/filters/school_list_filter_manager.dart';
 import 'package:schuldaten_hub/features/school_lists/services/school_list_manager.dart';
-import 'package:schuldaten_hub/common/services/schoolday_manager.dart';
+import 'package:schuldaten_hub/features/schooldays/services/schoolday_manager.dart';
 import 'package:schuldaten_hub/features/main_menu_pages/widgets/landing_bottom_nav_bar.dart';
 import 'package:schuldaten_hub/features/workbooks/services/workbook_manager.dart';
 import 'package:watch_it/watch_it.dart';

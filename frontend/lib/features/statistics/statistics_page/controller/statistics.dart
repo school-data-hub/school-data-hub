@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:schuldaten_hub/common/models/schoolday_models/schoolday.dart';
-import 'package:schuldaten_hub/common/services/schoolday_manager.dart';
+import 'package:schuldaten_hub/features/schooldays/models/schoolday.dart';
+import 'package:schuldaten_hub/features/schooldays/services/schoolday_manager.dart';
 import 'package:schuldaten_hub/common/utils/extensions.dart';
 import 'package:schuldaten_hub/features/attendance/models/missed_class.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';

@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:schuldaten_hub/api/services/connection_manager.dart';
+import 'package:schuldaten_hub/common/services/api/services/connection_manager.dart';
 import 'package:schuldaten_hub/common/constants/colors.dart';
 import 'package:schuldaten_hub/common/routes/app_routes.dart';
 import 'package:schuldaten_hub/common/services/env_manager.dart';

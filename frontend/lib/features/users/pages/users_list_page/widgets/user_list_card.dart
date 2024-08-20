@@ -2,28 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
 import 'package:schuldaten_hub/features/users/models/user.dart';
-import 'package:watch_it/watch_it.dart';
 
-class UserListCard extends WatchingStatefulWidget {
+class UserListCard extends StatelessWidget {
   final User user;
-  const UserListCard(this.user, {super.key});
-
-  @override
-  State<UserListCard> createState() => _UserListCardState();
-}
-
-class _UserListCardState extends State<UserListCard> {
-  @override
-  void initState() {
-    super.initState();
-  }
+  const UserListCard({required this.user, super.key});
 
   @override
   Widget build(BuildContext context) {
-    // PupilProxy pupil = watchValue((PupilFilterManager x) => x.filteredPupils)
-    //     .where((element) => element.internalId == widget.passedPupil.internalId)
-    //     .first;
-
     return Card(
       color: Colors.white,
       surfaceTintColor: Colors.white,
@@ -38,7 +23,23 @@ class _UserListCardState extends State<UserListCard> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              //AvatarWithBadges(pupil: pupil, size: 80),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    width: 70,
+                    height: 60,
+                    child: Center(
+                      child: Text(
+                        user.name,
+                        style: const TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
               const Gap(10),
               Expanded(
                 child: Column(
@@ -62,7 +63,7 @@ class _UserListCardState extends State<UserListCard> {
                                 // ));
                               },
                               child: Text(
-                                widget.user.name,
+                                user.role,
                                 overflow: TextOverflow.fade,
                                 softWrap: false,
                                 textAlign: TextAlign.left,
@@ -86,8 +87,7 @@ class _UserListCardState extends State<UserListCard> {
                             child: Row(
                               children: [
                                 Text(
-                                  widget.user.contact ??
-                                      'kein Kontakt eingetragen',
+                                  user.contact ?? 'kein Kontakt eingetragen',
                                   style: const TextStyle(
                                     fontSize: 16,
                                   ),
@@ -103,8 +103,6 @@ class _UserListCardState extends State<UserListCard> {
                   ],
                 ),
               ),
-              const Gap(20),
-
               const Gap(20),
             ],
           ),

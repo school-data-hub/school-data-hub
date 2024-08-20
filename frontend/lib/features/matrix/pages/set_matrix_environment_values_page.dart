@@ -26,15 +26,17 @@ class SetMatrixEnvironmentValuesPageState
   Set<String> roomIds = {};
   //Set<int> pupilIds = {};
   void setMatrixEnvironment() async {
-    final bool managerIsReady = await registerMatrixPolicyManager();
-    String url = urlTextFieldController.text;
+    if (!locator.isRegistered<MatrixPolicyManager>()) {
+      registerMatrixPolicyManager();
+    }
+
+    String url = 'https://${urlTextFieldController.text}/';
     String matrixToken = matrixTokenTextFieldController.text;
     String policyToken = policyTokenTextFieldController.text;
     await locator.allReady();
-    if (managerIsReady) {
-      locator<MatrixPolicyManager>().setMatrixEnvironmentValues(
-          url: url, matrixToken: matrixToken, policyToken: policyToken);
-    }
+
+    locator<MatrixPolicyManager>().setMatrixEnvironmentValues(
+        url: url, matrixToken: matrixToken, policyToken: policyToken);
   }
 
   @override
@@ -78,6 +80,8 @@ class SetMatrixEnvironmentValuesPageState
                         fontWeight: FontWeight.bold,
                       ),
                     ),
+                    const Gap(5),
+                    const Text('https://', style: TextStyle(fontSize: 16)),
                     const Gap(5),
                     SizedBox(
                       width: 300,
