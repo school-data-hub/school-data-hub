@@ -2,10 +2,9 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
-import 'package:listenable_collections/listenable_collections.dart';
 import 'package:schuldaten_hub/common/services/api/api.dart';
 import 'package:schuldaten_hub/common/services/api/services/api_client_service.dart';
-import 'package:schuldaten_hub/features/matrix/services/matrix_endpoints.dart';
+import 'package:schuldaten_hub/features/matrix/services/matrix_api_service.dart';
 import 'package:schuldaten_hub/common/constants/enums.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_manager.dart';
@@ -17,7 +16,6 @@ import 'package:schuldaten_hub/features/matrix/models/matrix_user.dart';
 import 'package:schuldaten_hub/features/matrix/models/policy.dart';
 import 'package:schuldaten_hub/features/matrix/services/matrix_policy_helper_functions.dart';
 import 'package:schuldaten_hub/features/matrix/services/pdf_printer/matrix_credentials_printer.dart';
-import 'package:watch_it/watch_it.dart';
 
 class MatrixCredentials {
   final String url;
@@ -60,8 +58,8 @@ class MatrixPolicyManager {
   final _matrixPolicy = ValueNotifier<Policy?>(null);
   final _pendingChanges = ValueNotifier<bool>(false);
   final _synapseToken = ValueNotifier<String>('');
-  final _matrixUsers = ListNotifier<MatrixUser>();
-  final _matrixRooms = ListNotifier<MatrixRoom>();
+  final _matrixUsers = ValueNotifier<List<MatrixUser>>([]);
+  final _matrixRooms = ValueNotifier<List<MatrixRoom>>([]);
   late final String _matrixUrl;
   final _corporalToken = ValueNotifier<String>('');
 
@@ -103,8 +101,8 @@ class MatrixPolicyManager {
     _matrixPolicy.value = null;
     _pendingChanges.value = false;
     _synapseToken.value = '';
-    _matrixUsers.clear();
-    _matrixRooms.clear();
+    _matrixUsers.value = [];
+    _matrixRooms.value = [];
     _corporalToken.value = '';
     await secureStorageDelete('matrix');
     locator<SessionManager>()
@@ -155,14 +153,13 @@ class MatrixPolicyManager {
     notificationManager.showSnackBar(
         NotificationType.success, 'Matrix-Räumeverwaltung geladen');
 
+    _matrixPolicy.value = policy;
     List<MatrixRoom> rooms = [];
     dioClient.setCustomDioClientOptions(token: 'Bearer ${_synapseToken.value}');
 
     notificationManager.showSnackBar(
         NotificationType.success, 'Matrix-Räume werden geladen...');
-    for (MatrixUser user in policy.matrixUsers!) {
-      _matrixUsers.add(user);
-    }
+    _matrixUsers.value = policy.matrixUsers!;
 
     for (String roomId in policy.managedRoomIds) {
       MatrixRoom namedRoom = await _fetchAdditionalRoomInfos(roomId);
@@ -170,7 +167,7 @@ class MatrixPolicyManager {
     }
     // sort the rooms by name
     rooms.sort((a, b) => a.name!.compareTo(b.name!));
-    _matrixRooms.addAll(rooms);
+    _matrixRooms.value = rooms;
     _matrixPolicy.value = policy;
 
     notificationManager.showSnackBar(NotificationType.success, 'Räume geladen');
@@ -202,7 +199,7 @@ class MatrixPolicyManager {
     });
 
     final Response response =
-        await dioClient.post(MatrixEndpoints.createRoom, data: data);
+        await dioClient.post(MatrixApiService.createRoom, data: data);
     if (response.statusCode == 200) {
       // extract the value of "room_id" out of the response
       final String roomId = jsonDecode(response.data)['room_id'];
@@ -213,7 +210,10 @@ class MatrixPolicyManager {
   }
 
   void addManagedRoom(MatrixRoom newRoom) {
-    _matrixRooms.add(newRoom);
+    final matrixRooms = [..._matrixRooms.value];
+    matrixRooms.add(newRoom);
+    _matrixRooms.value = matrixRooms;
+    // _matrixRooms.add(newRoom);
 
     final admin = _matrixUsers.value
         .firstWhere((element) => element.id == _matrixAdminId.value);
@@ -223,8 +223,31 @@ class MatrixPolicyManager {
     _pendingChanges.value = true;
   }
 
-  Future setRoomPowerLevels(String roomId, List<RoomAdmin>? adminPowerLevels,
-      int eventsDefault, int reactions) async {
+  //- MATRIX USER METHODS
+
+  MatrixUser getUserById(String userId) {
+    return _matrixUsers.value.firstWhere((element) => element.id == userId);
+  }
+
+  Future setRoomPowerLevels(
+      {required String roomId,
+      RoomAdmin? roomAdmin,
+      int? eventsDefault,
+      int? reactions}) async {
+    List<RoomAdmin> adminPowerLevels = [];
+    Map<String, dynamic> adminPowerLevelsMap = {};
+    final matrixRoom =
+        _matrixRooms.value.firstWhere((element) => element.id == roomId);
+
+    // We make sure that the instance admin has admin power level in the room
+    adminPowerLevels = matrixRoom.roomAdmins ??
+        [RoomAdmin(id: _matrixAdminId.value, powerLevel: 100)];
+    if (roomAdmin != null) {
+      adminPowerLevels.add(roomAdmin);
+    }
+    for (RoomAdmin admin in adminPowerLevels) {
+      adminPowerLevelsMap[admin.id] = admin.powerLevel;
+    }
     dioClient.setCustomDioClientOptions(
         baseUrl: _matrixUrl,
         tokenKey: 'Authorization',
@@ -244,27 +267,35 @@ class MatrixPolicyManager {
         "m.space.child": 50,
         "m.room.topic": 50,
         "m.room.pinned_events": 50,
-        "m.reaction": reactions,
+        "m.reaction": reactions ?? matrixRoom.powerLevelReactions,
         "m.room.redaction": 0,
         "org.matrix.msc3401.call": 50,
         "org.matrix.msc3401.call.member": 50,
         "im.vector.modular.widgets": 50,
         "io.element.voice_broadcast_info": 50
       },
-      "events_default": eventsDefault,
+      "events_default": eventsDefault ?? matrixRoom.eventsDefault,
       "invite": 50,
       "kick": 50,
       "notifications": {"room": 20},
       "redact": 50,
       "state_default": 50,
-      if (adminPowerLevels != null) "users": adminPowerLevels,
-      if (adminPowerLevels == null) "users": {_matrixAdminId.value: 100},
+      "users": adminPowerLevelsMap,
       "users_default": 0
     });
 
     final response = await dioClient.put(
-        '$_matrixUrl${MatrixEndpoints().putRoomPowerLevels(roomId)}',
+        '$_matrixUrl${MatrixApiService().putRoomPowerLevels(roomId)}',
         data: data);
+    if (response.statusCode != 200) {
+      notificationManager.showSnackBar(
+          NotificationType.error, 'Fehler: status code ${response.statusCode}');
+      throw ApiException(
+          'Fehler beim Setzen der Power Levels', response.statusCode);
+    }
+
+    notificationManager.showSnackBar(
+        NotificationType.success, 'Power Levels gesetzt');
     logger.i('Response: ${response.data}');
     dioClient.setDefaultDioClientOptions();
   }
@@ -282,7 +313,7 @@ class MatrixPolicyManager {
 
     // First API call
     final responseRoomSPowerLevels = await dioClient.get(
-      '$_matrixUrl${MatrixEndpoints().fetchRoomPowerLevels(roomId)}',
+      '$_matrixUrl${MatrixApiService().fetchRoomPowerLevels(roomId)}',
     );
 
     if (responseRoomSPowerLevels.statusCode == 200) {
@@ -302,7 +333,7 @@ class MatrixPolicyManager {
 
     // Second API call
     final responseRoomName = await dioClient.get(
-      '$_matrixUrl${MatrixEndpoints().fetchRoomName(roomId)}',
+      '$_matrixUrl${MatrixApiService().fetchRoomName(roomId)}',
     );
 
     if (responseRoomName.statusCode == 200) {
@@ -338,7 +369,7 @@ class MatrixPolicyManager {
     });
 
     final Response response = await dioClient.put(
-      MatrixEndpoints().createMatrixUser(matrixId),
+      MatrixApiService().createMatrixUser(matrixId),
       data: data,
     );
     if (response.statusCode == 201 || response.statusCode == 200) {
@@ -346,7 +377,10 @@ class MatrixPolicyManager {
         id: matrixId,
         displayName: displayName,
       );
-      _matrixUsers.add(newUser);
+      final matrixUsers = [..._matrixUsers.value];
+      matrixUsers.add(newUser);
+      _matrixUsers.value = matrixUsers;
+      // _matrixUsers.add(newUser);
       await printMatrixCredentials(_matrixUrl, newUser, password);
     }
     dioClient.setDefaultDioClientOptions();
@@ -365,10 +399,13 @@ class MatrixPolicyManager {
       "erase": true,
     });
     final Response response = await dioClient
-        .delete(MatrixEndpoints().deleteMatrixUser(userId), data: data);
+        .delete(MatrixApiService().deleteMatrixUser(userId), data: data);
 
     if (response.statusCode == 200) {
-      _matrixUsers.removeWhere((user) => user.id == userId);
+      List<MatrixUser> matrixUsers = List.from(_matrixUsers.value);
+      matrixUsers.removeWhere((user) => user.id == userId);
+      _matrixUsers.value = matrixUsers;
+      // _matrixUsers.removeWhere((user) => user.id == userId);
     }
     _pendingChanges.value = true;
     dioClient.setDefaultDioClientOptions();

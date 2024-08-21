@@ -1,4 +1,13 @@
-class MatrixEndpoints {
+import 'dart:convert';
+
+import 'package:dio/dio.dart';
+import 'package:schuldaten_hub/common/services/api/services/api_client_service.dart';
+import 'package:schuldaten_hub/common/services/locator.dart';
+import 'package:schuldaten_hub/features/matrix/models/matrix_room.dart';
+
+class MatrixApiService {
+  final dioClient = locator<ApiClientService>();
+
   //- PUT POLICY
 
 //**- USER
@@ -48,7 +57,20 @@ class MatrixEndpoints {
 
   //- PUT ROOM POWER LEVELS
   String putRoomPowerLevels(String roomId) {
-    return '_matrix/client/v3/rooms/$roomId/state/m.room.power_levels';
+    final roomIdforUrl = roomId.replaceAllMapped(
+      RegExp(r'[!:]'),
+      (match) {
+        switch (match.group(0)) {
+          case '!':
+            return '%21';
+          case ':':
+            return '%3A';
+          default:
+            return match.group(0)!;
+        }
+      },
+    );
+    return '_matrix/client/v3/rooms/$roomIdforUrl/state/m.room.power_levels';
   }
 
   String setRoomPowerLevels(String roomId) {

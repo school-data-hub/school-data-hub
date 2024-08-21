@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
+import 'package:collection/collection.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/features/matrix/models/matrix_room.dart';
@@ -32,6 +33,24 @@ List<MatrixUser> usersInRoom(String roomId) {
       .where((user) => user.matrixRooms.any((room) => room.id == roomId))
       .toList();
   return usersInRoom;
+}
+
+int? powerLevelInRoom(String roomId, String userId) {
+  final room = locator<MatrixPolicyManager>()
+      .matrixRooms
+      .value
+      .firstWhere((room) => room.id == roomId);
+  if (room.roomAdmins != null) {
+    final RoomAdmin? userAsRoomAdmin =
+        room.roomAdmins!.firstWhereOrNull((admin) => admin.id == userId);
+    if (userAsRoomAdmin != null) {
+      return userAsRoomAdmin.powerLevel;
+    } else {
+      return null;
+    }
+  }
+
+  return room.powerLevelReactions;
 }
 
 List<MatrixRoom> roomsFromRoomIds(List<String> roomIds) {

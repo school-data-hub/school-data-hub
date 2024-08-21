@@ -13,6 +13,7 @@ import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/session_helper_functions.dart';
 import 'package:schuldaten_hub/common/services/session_manager.dart';
 import 'package:schuldaten_hub/common/services/notification_manager.dart';
+import 'package:schuldaten_hub/features/matrix/pages/pupil_matrix_contacts.dart';
 import 'package:schuldaten_hub/features/users/services/user_manager.dart';
 import 'package:schuldaten_hub/common/utils/secure_storage.dart';
 import 'package:schuldaten_hub/common/widgets/dialogues/confirmation_dialog.dart';
@@ -353,6 +354,16 @@ class SettingsPage extends WatchingWidget {
                           onPressed: (context) async {
                             await locator<MatrixPolicyManager>()
                                 .deleteAndDeregisterMatrixPolicyManager();
+                          }),
+                      SettingsTile.navigation(
+                          leading: const Icon(
+                            Icons.calendar_month_rounded,
+                          ),
+                          title: const Text('Kontakte bearbeiten'),
+                          onPressed: (context) async {
+                            Navigator.of(context).push(MaterialPageRoute(
+                              builder: (ctx) => const PupilsContactList(),
+                            ));
                           }),
                       SettingsTile.navigation(
                           leading: const Icon(

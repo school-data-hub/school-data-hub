@@ -300,6 +300,7 @@ class PupilManager extends ChangeNotifier {
     // now update the pupil in the repository
 
     _pupils[pupilId]!.updatePupil(pupilUpdate);
+    notifyListeners();
   }
 
   Future<void> patchPupilWithIndividualDevelopmentPlan(

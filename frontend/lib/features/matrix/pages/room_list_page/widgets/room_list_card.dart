@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/constants/colors.dart';
 import 'package:schuldaten_hub/common/widgets/custom_expansion_tile.dart';
@@ -103,6 +104,17 @@ class _RoomListCardState extends State<RoomListCard> {
                               ],
                             ),
                           ),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.copy),
+                          onPressed: () {
+                            Clipboard.setData(
+                                ClipboardData(text: widget.matrixRoom.id));
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text('Copied to clipboard')),
+                            );
+                          },
                         ),
                       ],
                     ),
@@ -221,7 +233,8 @@ class _RoomListCardState extends State<RoomListCard> {
           CustomListTiles(
               title: null,
               tileController: _tileController,
-              widgetList: usersInRoomList(matrixUsersInRoom, context))
+              widgetList: usersInRoomList(
+                  matrixUsersInRoom, widget.matrixRoom.id, context))
         ],
       ),
     );

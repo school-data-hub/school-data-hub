@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
@@ -34,10 +36,10 @@ class PupilInfosContent extends StatelessWidget {
         mode: LaunchMode.externalApplication,
       );
       if (!launched) {
-        print('Failed to launch $matrixUrl');
+        log('Failed to launch $matrixUrl');
       }
     } catch (e) {
-      print('An error occurred while launching $matrixUrl: $e');
+      log('An error occurred while launching $matrixUrl: $e');
     }
 
     return;
