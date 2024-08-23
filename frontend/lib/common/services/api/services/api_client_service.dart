@@ -21,14 +21,15 @@ class ApiClientService {
 
       ..options.receiveTimeout = ApiSettings.receiveTimeout
       ..options.responseType = ResponseType.json
-      ..interceptors.add(DioInterceptor())
-      ..interceptors.add(LogInterceptor(
-        request: true,
-        requestHeader: true,
-        requestBody: true,
-        responseHeader: true,
-        responseBody: true,
-      ));
+      ..interceptors.add(DioInterceptor());
+    // ..interceptors.add(LogInterceptor(
+    //   request: true,
+    //   requestHeader: true,
+    //   requestBody: true,
+    //   responseHeader: true,
+    //   responseBody: true,
+    // ));
+    log('ApiClientService initialized');
   }
 
   setCustomDioClientOptions(
@@ -56,6 +57,7 @@ class ApiClientService {
 
   setBaseUrl(String baseUrl) {
     _dio.options.baseUrl = baseUrl;
+    log('Base URL set to: $baseUrl');
   }
 
   //- GET:

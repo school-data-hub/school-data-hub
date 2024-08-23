@@ -23,7 +23,7 @@ class WorkbookManager {
 
   Future<WorkbookManager> init() async {
     await getWorkbooks();
-    logger.i('WorkbookManager constructed!');
+
     return this;
   }
 

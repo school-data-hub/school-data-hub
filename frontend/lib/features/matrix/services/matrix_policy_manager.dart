@@ -71,7 +71,7 @@ class MatrixPolicyManager {
 
   Future<MatrixPolicyManager> init() async {
     if (locator<SessionManager>().isAdmin.value == true) {
-      if (await secureStorageContains('matrix')) {
+      if (await secureStorageContainsKey('matrix')) {
         try {
           String? matrixStoredValues = await secureStorageRead('matrix');
           if (matrixStoredValues == null) {

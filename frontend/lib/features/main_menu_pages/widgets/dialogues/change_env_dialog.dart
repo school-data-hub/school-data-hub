@@ -31,7 +31,7 @@ Future<bool?> changeEnvironmentDialog({
                       ),
                       onPressed: () {
                         locator<EnvManager>()
-                            .switchEnv(envName: envs[index].server!);
+                            .activateEnv(envName: envs[index].server!);
 
                         Navigator.of(context)
                             .pop(); // Return false to indicate cancellation

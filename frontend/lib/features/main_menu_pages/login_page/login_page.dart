@@ -30,7 +30,7 @@ class LoginPage extends WatchingWidget {
     bool isAuthenticated = watchValue((SessionManager x) => x.isAuthenticated);
     bool envReady = watchValue((EnvManager x) => x.envReady);
     final locale = AppLocalizations.of(context)!;
-    logger.i('LoginView: isAuthenticated: ${isAuthenticated.toString()}');
+    logger.w('# LoginPage | isAuthenticated: ${isAuthenticated.toString()}');
     final bool keyboardOn = MediaQuery.of(context).viewInsets.vertical > 0.0;
     //FocusScopeNode currentFocus = FocusScope.of(context);
 

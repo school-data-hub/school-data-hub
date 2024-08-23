@@ -20,9 +20,7 @@ class SchooldayEventFilterManager {
   // final _filteredSchooldayEventsCount = ValueNotifier<int>(
   //     SchoolEventHelper.getSchooldayEventCount(
   //         locator<PupilsFilter>().filteredPupils.value));
-  SchooldayEventFilterManager() {
-    logger.i('SchooldayEventFilterManager constructor called!');
-  }
+  SchooldayEventFilterManager();
 
   resetFilters() {
     _schooldayEventsFilterState.value = {...initialSchooldayEventFilterValues};

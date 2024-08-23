@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
@@ -33,8 +34,14 @@ class SessionManager {
   SessionManager();
   Future<SessionManager> init() async {
     await checkStoredCredentials();
-    logger.i('Returning SessionManager instance!');
+    log('Returning SessionManager instance!');
     return this;
+  }
+
+  void unauthaeticate() {
+    _isAuthenticated.value = false;
+    _credentials.value = Session();
+    _isAdmin.value = false;
   }
 
   void setSessionNotAuthenticated() {
@@ -66,79 +73,78 @@ class SessionManager {
     await saveSession(updatedSession);
   }
 
+  Future<Map<String, Session>?> sessionsInStorage() async {
+    if (await secureStorageContainsKey('sessions') == true) {
+      // if so, read them
+      final String? storedSessions =
+          await secureStorageRead(SecureStorageKey.sessions.value);
+      log('Session(s) found!');
+      // decode the stored sessions
+      final Map<String, Session> sessions = (json.decode(storedSessions!)
+              as Map<String, dynamic>)
+          .map((key, value) =>
+              MapEntry(key, Session.fromJson(value as Map<String, dynamic>)));
+      // check if the sessions in the secure storage are empty
+      if (sessions.isEmpty) {
+        logger.w('Empty sessions found in secure storage! Deleting...');
+        await secureStorageDelete(SecureStorageKey.sessions.value);
+        return null;
+      }
+
+      return sessions;
+    }
+
+    return null;
+  }
+
   Future<void> checkStoredCredentials() async {
     if (locator<EnvManager>().env.value.serverUrl == null) {
       logger.w('No environment found!', stackTrace: StackTrace.current);
 
       return;
     }
-    if (_sessions.value.isEmpty) {
-      // check if there are sessions stored in the secure storage
-      if (await secureStorageContains('sessions') == true) {
-        // if so, read them
-        final String? storedSessions =
-            await secureStorageRead(SecureStorageKey.sessions.value);
-        logger.i('Session(s) found!');
-        // decode the stored sessions
-        final Map<String, Session> sessions = (json.decode(storedSessions!)
-                as Map<String, dynamic>)
-            .map((key, value) =>
-                MapEntry(key, Session.fromJson(value as Map<String, dynamic>)));
-        // check if the sessions in the secure storage are empty
-        if (sessions.isEmpty) {
-          logger.w('No session found');
-          return;
-        }
-        //read the default server from the secure storage
-        // final String? defaultServer =
-        //     await secureStorageRead(SecureStorageKey.defaultEnv.value);
-        // set the sessions to the value notifier
-        _sessions.value = sessions;
-      }
+    final Map<String, Session>? storedSessions = await sessionsInStorage();
+    if (storedSessions == null) {
+      logger.w('No sessions found in secure storage!');
+
+      return;
+    }
+    _sessions.value = storedSessions;
+
+    if (locator<EnvManager>().env.value.server == null) {
+      logger.w('No environment found!', stackTrace: StackTrace.current);
+
+      return;
+    }
+    final Session? linkedSession =
+        _sessions.value[locator<EnvManager>().env.value.server!];
+    if (linkedSession == null) {
+      logger
+          .w('No session found for ${locator<EnvManager>().env.value.server!}');
+
+      return;
+    }
+
+    _credentials.value = linkedSession;
+    // check if the session is still valid
+    if (JwtDecoder.isExpired(linkedSession.jwt!)) {
+      removeSession(server: linkedSession.server!);
+
+      logger.w('Session was not valid - deleted!',
+          stackTrace: StackTrace.current);
+
+      return;
     }
     // There are sessions stored - let's decode them
     try {
       // check if there is a session linked to the default server
-      final Session? linkedSession =
-          _sessions.value[locator<EnvManager>().env.value.server!];
-      if (linkedSession == null) {
-        logger.w(
-            'No session found for ${locator<EnvManager>().env.value.server!}');
-
-        return;
-      }
-
-      _credentials.value = linkedSession;
 
       // check if the session is still valid
       // if not, delete the session
-      if (JwtDecoder.isExpired(linkedSession.jwt!)) {
-        removeSession(server: linkedSession.server!);
-        final Map<String, Session> updatedSessions = _sessions.value;
-        updatedSessions.remove(linkedSession.server!);
-        _sessions.value = updatedSessions;
-        if (updatedSessions.isNotEmpty) {
-          await saveSession(_credentials.value);
-        } else {
-          await secureStorageDelete(SecureStorageKey.sessions.value);
 
-          return;
-        }
-        logger.w('Session was not valid - deleted!',
-            stackTrace: StackTrace.current);
-
-        return;
-      }
-      if (locator<EnvManager>().env.value.serverUrl == null) {
-        logger.w('No environment found!', stackTrace: StackTrace.current);
-
-        return;
-      }
-
-      logger.i('Stored session is valid!');
+      log('Stored session is valid!');
       authenticate(_credentials.value);
-      logger.i(
-          'SessionManager: isAuthenticated is ${_isAuthenticated.value.toString()}');
+      log('SessionManager: isAuthenticated is ${_isAuthenticated.value.toString()}');
 
       if (!locator.isRegistered<SchooldayManager>()) {
         await registerDependentManagers();
@@ -180,8 +186,8 @@ class SessionManager {
 
     locator<NotificationManager>()
         .showSnackBar(NotificationType.success, 'Login erfolgreich!');
-    //-TODO: instead of checking if the
-    if (!locator.isRegistered<SchooldayManager>()) {
+
+    if (locator<EnvManager>().dependentManagersRegistered.value == false) {
       await registerDependentManagers();
     }
 
@@ -192,7 +198,8 @@ class SessionManager {
     final Map<String, Session> updatedSessions = _sessions.value;
     updatedSessions[session.server!] = session;
     final updatedSessionsAsJson = json.encode(updatedSessions);
-    await secureStorageWrite('sessions', updatedSessionsAsJson);
+    await secureStorageWrite(
+        SecureStorageKey.sessions.value, updatedSessionsAsJson);
     logger.i('${updatedSessions.length} Session(s) stored');
 
     return;
@@ -205,7 +212,7 @@ class SessionManager {
     if (updatedSessions.isNotEmpty) {
       await saveSession(_credentials.value);
     } else {
-      await secureStorageDelete('sessions');
+      await secureStorageDelete(SecureStorageKey.sessions.value);
     }
     _credentials.value = Session();
     locator<NotificationManager>().showSnackBar(
@@ -222,9 +229,8 @@ class SessionManager {
 
     locator.get<BottomNavManager>().setBottomNavPage(0);
     _isAuthenticated.value = false;
-    locator<NotificationManager>().showSnackBar(
-        NotificationType.success, 'Zugangsdaten und QR-IDs gelöscht');
-
+    _credentials.value = Session();
+    locator<ApiClientService>().setHeaders(tokenKey: '', token: '');
     await unregisterDependentManagers();
     return;
   }

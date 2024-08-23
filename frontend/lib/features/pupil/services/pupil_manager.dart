@@ -28,7 +28,6 @@ class PupilManager extends ChangeNotifier {
 
   void clearData() {
     _pupils.clear();
-    //locator<PupilsFilterImplementation>().filteredPupils
   }
 
   PupilProxy? findPupilById(int id) {

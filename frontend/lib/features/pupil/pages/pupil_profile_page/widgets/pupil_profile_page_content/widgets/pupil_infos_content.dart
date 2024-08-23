@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
@@ -9,41 +7,16 @@ import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/utils/extensions.dart';
 import 'package:schuldaten_hub/common/widgets/avatar.dart';
 import 'package:schuldaten_hub/common/widgets/dialogues/confirmation_dialog.dart';
-import 'package:schuldaten_hub/common/widgets/dialogues/information_dialog.dart';
 import 'package:schuldaten_hub/common/widgets/dialogues/long_textfield_dialog.dart';
+import 'package:schuldaten_hub/features/matrix/services/matrix_policy_helper_functions.dart';
 
 import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
 import 'package:schuldaten_hub/features/pupil/services/pupil_manager.dart';
 import 'package:schuldaten_hub/features/pupil/pages/pupil_profile_page/pupil_profile_page.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class PupilInfosContent extends StatelessWidget {
   final PupilProxy pupil;
   const PupilInfosContent({required this.pupil, super.key});
-
-  Future<void> launchMatrixUrl(BuildContext context, String contact) async {
-    final Uri matrixUrl = Uri.parse('https://matrix.to/#/$contact');
-    bool canLaunchThis = await canLaunchUrl(matrixUrl);
-    if (!canLaunchThis) {
-      if (context.mounted) {
-        informationDialog(context, 'Verbindung nicht möglich',
-            'Es konnte keine Verbindung mit dem Messenger hergestellt werden.');
-      }
-    }
-    try {
-      final bool launched = await launchUrl(
-        matrixUrl,
-        mode: LaunchMode.externalApplication,
-      );
-      if (!launched) {
-        log('Failed to launch $matrixUrl');
-      }
-    } catch (e) {
-      log('An error occurred while launching $matrixUrl: $e');
-    }
-
-    return;
-  }
 
   @override
   Widget build(BuildContext context) {

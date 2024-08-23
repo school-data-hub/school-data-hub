@@ -27,9 +27,7 @@ class SchoolListManager {
   // with the key being the listId
   Map<String, SchoolList> _schoolListMap = {};
 
-  SchoolListManager() {
-    logger.i('SchoolListManager constructor called');
-  }
+  SchoolListManager();
 
   Future<SchoolListManager> init() async {
     await fetchSchoolLists();

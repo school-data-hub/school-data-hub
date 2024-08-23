@@ -1,14 +1,18 @@
 import 'dart:convert';
+import 'dart:developer' as developer;
 import 'dart:io';
 import 'dart:math';
 
 import 'package:collection/collection.dart';
+import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
+import 'package:schuldaten_hub/common/widgets/dialogues/information_dialog.dart';
 import 'package:schuldaten_hub/features/matrix/models/matrix_room.dart';
 import 'package:schuldaten_hub/features/matrix/models/matrix_user.dart';
 import 'package:schuldaten_hub/features/matrix/models/policy.dart';
 import 'package:schuldaten_hub/features/matrix/services/matrix_policy_manager.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 Future<bool> generatePolicyJsonFile() async {
   // create a new json file with the policy
@@ -93,4 +97,28 @@ String generatePassword() {
   // Combine the characters and digits to form the password
   final password = randomCharacters.followedBy(randomDigits).join();
   return password;
+}
+
+Future<void> launchMatrixUrl(BuildContext context, String contact) async {
+  final Uri matrixUrl = Uri.parse('https://matrix.to/#/$contact');
+  bool canLaunchThis = await canLaunchUrl(matrixUrl);
+  if (!canLaunchThis) {
+    if (context.mounted) {
+      informationDialog(context, 'Verbindung nicht möglich',
+          'Es konnte keine Verbindung mit dem Messenger hergestellt werden.');
+    }
+  }
+  try {
+    final bool launched = await launchUrl(
+      matrixUrl,
+      mode: LaunchMode.externalApplication,
+    );
+    if (!launched) {
+      developer.log('Failed to launch $matrixUrl');
+    }
+  } catch (e) {
+    developer.log('An error occurred while launching $matrixUrl: $e');
+  }
+
+  return;
 }

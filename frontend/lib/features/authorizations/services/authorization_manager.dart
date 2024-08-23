@@ -17,9 +17,7 @@ class AuthorizationManager {
   final _authorizations = ValueNotifier<List<Authorization>>([]);
   Map<String, Authorization> _authorizationsMap = {};
 
-  AuthorizationManager() {
-    logger.i('AuthorizationManager constructor called');
-  }
+  AuthorizationManager();
 
   Future<AuthorizationManager> init() async {
     notificationManager.showSnackBar(

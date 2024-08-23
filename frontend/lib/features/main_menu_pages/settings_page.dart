@@ -165,12 +165,13 @@ class SettingsPage extends WatchingWidget {
                     onPressed: (context) async {
                       final confirm = await confirmationDialog(
                           context: context,
-                          title: 'Lokale ID-Schlüssel löschen',
-                          message: 'Lokale ID-Schlüssel löschen?');
+                          title: 'Lokale Kinder-Ids löschen',
+                          message: 'Kinder-Ids für diese Instanz löschen?');
                       if (confirm == true && context.mounted) {
                         locator
                             .get<PupilIdentityManager>()
-                            .deleteAllPupilIdentities();
+                            .deletePupilIdentitiesForEnv(
+                                locator<EnvManager>().env.value.server!);
                         locator<NotificationManager>().showSnackBar(
                             NotificationType.success, 'ID-Schlüssel gelöscht');
                       }
@@ -324,7 +325,7 @@ class SettingsPage extends WatchingWidget {
                           onPressed: (context) async {
                             if (!matrixPolicyManagerIsRegistered) {
                               bool matrixEnvValuesAvailable =
-                                  await secureStorageContains('matrix');
+                                  await secureStorageContainsKey('matrix');
                               if (matrixEnvValuesAvailable) {
                                 await registerMatrixPolicyManager();
                                 return;

@@ -16,9 +16,7 @@ class CompetenceFilterManager {
   final _filteredCompetences = ValueNotifier<List<Competence>>(
       locator<CompetenceManager>().competences.value);
   final _filtersOn = ValueNotifier<bool>(false);
-  CompetenceFilterManager() {
-    logger.i('CompetenceFilterManager constructor called.');
-  }
+  CompetenceFilterManager();
   refreshFilteredCompetences(List<Competence> competences) {
     _filteredCompetences.value = competences;
     logger.i('refreshed filtered competences');

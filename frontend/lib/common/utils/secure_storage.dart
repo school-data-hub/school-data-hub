@@ -1,10 +1,9 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-const secureStorage = FlutterSecureStorage();
+const _secureStorage = FlutterSecureStorage();
 
 enum SecureStorageKey {
   environments('environments'),
-  defaultEnv('defaultEnv'),
   sessions('sessions'),
   pupilIdentities('pupilIdentities'),
   ;
@@ -13,8 +12,8 @@ enum SecureStorageKey {
   const SecureStorageKey(this.value);
 }
 
-Future<bool> secureStorageContains(String key) async {
-  if (await secureStorage.containsKey(key: key)) {
+Future<bool> secureStorageContainsKey(String key) async {
+  if (await _secureStorage.containsKey(key: key)) {
     return true;
   } else {
     return false;
@@ -22,16 +21,16 @@ Future<bool> secureStorageContains(String key) async {
 }
 
 Future<String?> secureStorageRead(String key) async {
-  final value = await secureStorage.read(key: key);
-  return value!;
+  final value = await _secureStorage.read(key: key);
+  return value;
 }
 
 Future<void> secureStorageWrite(String key, String value) async {
-  await secureStorage.write(key: key, value: value);
+  await _secureStorage.write(key: key, value: value);
   return;
 }
 
 Future<void> secureStorageDelete(String key) async {
-  await secureStorage.delete(key: key);
+  await _secureStorage.delete(key: key);
   return;
 }

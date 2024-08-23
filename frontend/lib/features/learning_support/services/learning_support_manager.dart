@@ -23,9 +23,8 @@ class LearningSupportManager {
   final _goalCategories = ValueNotifier<List<SupportCategory>>([]);
   final _isRunning = ValueNotifier<bool>(false);
 
-  LearningSupportManager() {
-    logger.i('GoalManager constructor called');
-  }
+  LearningSupportManager();
+
   Future<LearningSupportManager> init() async {
     await fetchGoalCategories();
     return this;

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/foundation.dart';
 import 'package:schuldaten_hub/common/constants/enums.dart';
 
@@ -21,7 +23,7 @@ class PupilsFilterImplementation with ChangeNotifier implements PupilsFilter {
     //  PupilSortMode? sortMode,
     // }
   ) : _pupilsManager = pupilsManager {
-    logger.i('PupilsFilterImplementation created');
+    log('PupilsFilterImplementation created');
     refreshs();
     _pupilsManager.addListener(refreshs);
   }
