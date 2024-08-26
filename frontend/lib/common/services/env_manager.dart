@@ -11,6 +11,7 @@ import 'package:schuldaten_hub/common/models/env.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_manager.dart';
 import 'package:schuldaten_hub/features/pupil/filters/pupils_filter.dart';
+
 import 'package:schuldaten_hub/features/schooldays/services/schoolday_manager.dart';
 import 'package:schuldaten_hub/common/services/session_manager.dart';
 import 'package:schuldaten_hub/common/utils/logger.dart';
@@ -23,21 +24,25 @@ import 'package:schuldaten_hub/features/pupil/services/pupil_identity_manager.da
 import 'package:schuldaten_hub/features/pupil/services/pupil_manager.dart';
 import 'package:schuldaten_hub/features/school_lists/services/school_list_manager.dart';
 import 'package:schuldaten_hub/features/users/services/user_manager.dart';
+import 'package:schuldaten_hub/features/workbooks/services/workbook_manager.dart';
 
 class EnvManager {
+  final _dependentMangagersRegistered = ValueNotifier<bool>(false);
   ValueListenable<bool> get dependentManagersRegistered =>
       _dependentMangagersRegistered;
-  ValueListenable<Env> get env => _activeEnv;
-  ValueListenable<Map<String, Env>> get envs => _environments;
-  ValueListenable<String> get defaultEnv => _defaultEnv;
-  ValueListenable<bool> get envReady => _envReady;
-  ValueListenable<PackageInfo> get packageInfo => _packageInfo;
 
-  final _dependentMangagersRegistered = ValueNotifier<bool>(false);
   final _activeEnv = ValueNotifier<Env>(Env());
+  ValueListenable<Env> get env => _activeEnv;
+
   final _environments = ValueNotifier<Map<String, Env>>({});
+  ValueListenable<Map<String, Env>> get envs => _environments;
+
   final _defaultEnv = ValueNotifier<String>('');
+  ValueListenable<String> get defaultEnv => _defaultEnv;
+
   final _envReady = ValueNotifier<bool>(false);
+  ValueListenable<bool> get envReady => _envReady;
+
   final _packageInfo = ValueNotifier<PackageInfo>(PackageInfo(
     appName: '',
     packageName: '',
@@ -45,6 +50,7 @@ class EnvManager {
     buildNumber: '',
     buildSignature: '',
   ));
+  ValueListenable<PackageInfo> get packageInfo => _packageInfo;
 
   EnvManager();
 
@@ -102,6 +108,36 @@ class EnvManager {
         return null;
       }
     }
+    //- TODO: remove this after all users have migrated to the new env storage
+    bool legacyEnvironmentInStorage = await secureStorageContainsKey('env');
+    if (legacyEnvironmentInStorage == true) {
+      final String? storedEnvironmentAsString = await secureStorageRead('env');
+      final Map<String, dynamic> storedEnvironmentMap =
+          json.decode(storedEnvironmentAsString!) as Map<String, dynamic>;
+      storedEnvironmentMap['server'] = 'Hermannschule';
+
+      try {
+        final Env legacyEnvironment = Env.fromJson(storedEnvironmentMap);
+
+        final EnvsInStorage environmentsInStorage = EnvsInStorage(
+            defalutEnv: legacyEnvironment.server!,
+            environmentsMap: {legacyEnvironment.server!: legacyEnvironment});
+
+        final String jsonEnvs = jsonEncode(environmentsInStorage);
+
+        await secureStorageWrite(SecureStorageKey.environments.value, jsonEnvs);
+
+        return environmentsInStorage;
+      } catch (e) {
+        logger.f('Error reading env from secureStorage: $e',
+            stackTrace: StackTrace.current);
+        // log('deleting faulty environments from secure storage');
+        // await secureStorageDelete(SecureStorageKey.environments.value);
+        locator<NotificationManager>().showSnackBar(NotificationType.error,
+            'Fehler beim Lesen der Umgebung aus dem sicheren Speicher');
+        return null;
+      }
+    }
     return null;
   }
 
@@ -111,18 +147,15 @@ class EnvManager {
         Env.fromJson(json.decode(envAsString) as Map<String, dynamic>);
 
     _environments.value = {..._environments.value, env.server!: env};
-    final updatedEnvsForStorage = EnvsInStorage(
-        defalutEnv: env.server!, environmentsMap: _environments.value);
-    final String jsonEnvs = jsonEncode(updatedEnvsForStorage);
+    _defaultEnv.value = env.server!;
 
-    await secureStorageWrite(SecureStorageKey.environments.value, jsonEnvs);
     logger.i(
         'New Env ${env.server} stored, there are now ${_environments.value.length} environments stored!');
 
+    locator<NotificationManager>().showSnackBar(NotificationType.success,
+        'Schulschlüssel für ${env.server} gespeichert!');
     activateEnv(envName: env.server!);
 
-    locator<NotificationManager>()
-        .showSnackBar(NotificationType.success, 'Schulschlüssel gespeichert!');
     return;
   }
 
@@ -133,7 +166,7 @@ class EnvManager {
     // write _envs.value to secure storage
     final jsonEnvs = json.encode(_environments.value);
     await secureStorageWrite(SecureStorageKey.environments.value, jsonEnvs);
-    // if there are environments left in _envs.value, set the last one as _env.value
+    // if there are environments left in _envs.value, set the last one as value
     if (_environments.value.isNotEmpty) {
       _activeEnv.value = _environments.value.values.last;
       _defaultEnv.value = _environments.value.keys.last;
@@ -152,6 +185,13 @@ class EnvManager {
 
   Future<void> activateEnv({required String envName}) async {
     _activeEnv.value = _environments.value[envName]!;
+    final updatedEnvsForStorage = EnvsInStorage(
+        defalutEnv: _activeEnv.value.server!,
+        environmentsMap: _environments.value);
+
+    final String jsonEnvs = jsonEncode(updatedEnvsForStorage);
+
+    await secureStorageWrite(SecureStorageKey.environments.value, jsonEnvs);
     locator<ApiClientService>().setBaseUrl(_activeEnv.value.serverUrl!);
 
     _defaultEnv.value = envName;
@@ -159,8 +199,11 @@ class EnvManager {
     _envReady.value = true;
     logger.i('Activated Env: ${_activeEnv.value.server}');
     if (_dependentMangagersRegistered.value == true) {
-      locator<SessionManager>().unauthaeticate();
-      await propagateNewEnv();
+      locator<SessionManager>().unauthenticate();
+      clearInstanceServerData();
+      await locator<SessionManager>().checkStoredCredentials();
+
+      //await propagateNewEnv();
     }
   }
 
@@ -170,12 +213,11 @@ class EnvManager {
   }
 
   Future<void> propagateNewEnv() async {
-    await locator<DefaultCacheManager>().emptyCache();
-    await locator<SessionManager>().checkStoredCredentials();
-    await locator<UserManager>().fetchUsers();
+    locator<NotificationManager>().heavyLoadingValue(true);
+
     await locator<PupilIdentityManager>().getPupilIdentitiesForEnv();
-    locator<PupilManager>().clearData();
-    locator<PupilsFilter>().clearFilteredPupils;
+    await locator<UserManager>().fetchUsers();
+
     await locator<PupilManager>().fetchAllPupils();
     await locator<SchooldayManager>().getSchoolSemesters();
     await locator<SchooldayManager>().getSchooldays();
@@ -183,6 +225,23 @@ class EnvManager {
     await locator<CompetenceManager>().fetchCompetences();
     await locator<SchoolListManager>().fetchSchoolLists();
     await locator<AuthorizationManager>().fetchAuthorizations();
-    locator<BottomNavManager>().setBottomNavPage(0);
+    await locator<BottomNavManager>().setBottomNavPage(0);
+    logger.i('New Env propagated');
+    locator<NotificationManager>().heavyLoadingValue(false);
+  }
+
+  Future<void> clearInstanceServerData() async {
+    logger.i('Clearing instance server data');
+    await locator<DefaultCacheManager>().emptyCache();
+    locator<PupilIdentityManager>().clearPupilIdentities();
+    locator<PupilsFilter>().clearFilteredPupils();
+    locator<PupilManager>().clearData();
+    locator<UserManager>().clearUsers();
+    locator<SchooldayManager>().clearData();
+    locator<LearningSupportManager>().clearData();
+    locator<CompetenceManager>().clearData();
+    locator<SchoolListManager>().clearData();
+    locator<AuthorizationManager>().clearData();
+    locator<WorkbookManager>().clearData();
   }
 }

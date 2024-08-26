@@ -6,6 +6,7 @@ enum SecureStorageKey {
   environments('environments'),
   sessions('sessions'),
   pupilIdentities('pupilIdentities'),
+  matrix('matrix'),
   ;
 
   final String value;

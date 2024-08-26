@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:schuldaten_hub/common/constants/colors.dart';
+import 'package:schuldaten_hub/common/services/env_manager.dart';
+import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_manager.dart';
 import 'package:watch_it/watch_it.dart';
 
@@ -36,7 +38,7 @@ class LoadingPageState extends State<LoadingPage> {
         ),
         child: Center(
           child: SizedBox(
-            height: 500,
+            height: 520,
             width: 600,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -57,6 +59,16 @@ class LoadingPageState extends State<LoadingPage> {
                     fontSize: 30,
                   ),
                 ),
+                const Gap(15),
+                if (locator<EnvManager>().env.value.server != null)
+                  Text(
+                    locator<EnvManager>().env.value.server!,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                    ),
+                  ),
                 const Spacer(),
                 Text(lastNotificationMessage,
                     style: const TextStyle(

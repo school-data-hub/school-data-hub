@@ -60,7 +60,7 @@ class PupilProfilePage extends WatchingWidget {
                               collapseMode: CollapseMode.none,
                               titlePadding: const EdgeInsets.only(
                                   left: 5, top: 5, right: 5, bottom: 5),
-                              title: PupilProfileHeadWidget(pupil: pupil),
+                              title: PupilProfileHeadWidget(passedPupil: pupil),
                             ),
                           ),
                           SliverToBoxAdapter(

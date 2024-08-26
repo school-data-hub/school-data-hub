@@ -7,7 +7,6 @@ import 'package:schuldaten_hub/common/constants/enums.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_manager.dart';
 import 'package:schuldaten_hub/common/services/session_manager.dart';
-import 'package:schuldaten_hub/common/utils/logger.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_data.dart';
 import 'package:schuldaten_hub/features/pupil/services/pupil_manager.dart';
 import 'package:schuldaten_hub/features/workbooks/models/workbook.dart';
@@ -30,6 +29,10 @@ class WorkbookManager {
   final apiWorkbookService = WorkbookApiService();
   final notificationManager = locator<NotificationManager>();
   final pupilManager = locator<PupilManager>();
+
+  void clearData() {
+    _workbooks.value = [];
+  }
 
   Future<void> getWorkbooks() async {
     final List<Workbook> responseWorkbooks =

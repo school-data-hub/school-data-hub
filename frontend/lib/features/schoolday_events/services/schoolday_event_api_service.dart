@@ -28,7 +28,7 @@ class SchooldayEventApiService {
 
   Future<PupilData> postSchooldayEvent(
       int pupilId, DateTime date, String type, String reason) async {
-    locator<NotificationManager>().isRunningValue(true);
+    locator<NotificationManager>().apiRunningValue(true);
 
     final data = jsonEncode({
       "schoolday_event_day": date.formatForJson(),
@@ -48,7 +48,7 @@ class SchooldayEventApiService {
       notificationManager.showSnackBar(
           NotificationType.warning, 'Fehler beim Posten des Ereignisses!');
 
-      notificationManager.isRunningValue(false);
+      notificationManager.apiRunningValue(false);
 
       throw ApiException(
           'Failed to post an schooldayEvent', response.statusCode);
@@ -56,7 +56,7 @@ class SchooldayEventApiService {
 
     final PupilData responsePupil = PupilData.fromJson(response.data);
 
-    locator<NotificationManager>().isRunningValue(false);
+    locator<NotificationManager>().apiRunningValue(false);
     return responsePupil;
   }
 
@@ -89,7 +89,7 @@ class SchooldayEventApiService {
       String? processedBy,
       DateTime? processedAt,
       DateTime? admonishedDay}) async {
-    notificationManager.isRunningValue(true);
+    notificationManager.apiRunningValue(true);
 
     // if the schooldayEvent is patched as processed,
     // processing user and processed date are automatically added
@@ -126,7 +126,7 @@ class SchooldayEventApiService {
       notificationManager.showSnackBar(
           NotificationType.warning, 'Fehler beim Patchen des Ereignisses!');
 
-      notificationManager.isRunningValue(false);
+      notificationManager.apiRunningValue(false);
 
       throw ApiException(
           'Failed to patch an schooldayEvent', response.statusCode);
@@ -134,7 +134,7 @@ class SchooldayEventApiService {
 
     final PupilData responsePupil = PupilData.fromJson(response.data);
 
-    locator<NotificationManager>().isRunningValue(false);
+    locator<NotificationManager>().apiRunningValue(false);
 
     return responsePupil;
   }
@@ -155,7 +155,7 @@ class SchooldayEventApiService {
 
   Future<PupilData> patchSchooldayEventWithFile(
       File imageFile, String schooldayEventId, bool isProcessed) async {
-    locator<NotificationManager>().isRunningValue(true);
+    locator<NotificationManager>().apiRunningValue(true);
 
     String endpoint;
 
@@ -186,7 +186,7 @@ class SchooldayEventApiService {
       locator<NotificationManager>().showSnackBar(
           NotificationType.warning, 'Fehler beim Hochladen des Bildes!');
 
-      locator<NotificationManager>().isRunningValue(false);
+      locator<NotificationManager>().apiRunningValue(false);
 
       throw ApiException(
           'Failed to upload schooldayEvent file', response.statusCode);
@@ -194,7 +194,7 @@ class SchooldayEventApiService {
 
     final PupilData responsePupil = PupilData.fromJson(response.data);
 
-    locator<NotificationManager>().isRunningValue(false);
+    locator<NotificationManager>().apiRunningValue(false);
 
     return responsePupil;
   }
@@ -206,11 +206,11 @@ class SchooldayEventApiService {
   }
 
   Future<PupilData> deleteSchooldayEvent(String schooldayEventId) async {
-    locator<NotificationManager>().isRunningValue(true);
+    locator<NotificationManager>().apiRunningValue(true);
 
     Response response =
         await _client.delete(_deleteSchooldayEventUrl(schooldayEventId));
-    locator<NotificationManager>().isRunningValue(false);
+    locator<NotificationManager>().apiRunningValue(false);
     if (response.statusCode != 200) {
       locator<NotificationManager>().showSnackBar(
           NotificationType.warning, 'Fehler beim Löschen des Ereignisses!');
@@ -235,7 +235,7 @@ class SchooldayEventApiService {
 
   deleteSchooldayEventFile(
       String schooldayEventId, String cacheKey, bool isProcessed) async {
-    locator<NotificationManager>().isRunningValue(true);
+    locator<NotificationManager>().apiRunningValue(true);
 
     // choose endpoint depending on isProcessed
     String endpoint;
@@ -251,7 +251,7 @@ class SchooldayEventApiService {
       locator<NotificationManager>().showSnackBar(
           NotificationType.warning, 'Fehler beim Löschen der Datei!');
 
-      locator<NotificationManager>().isRunningValue(false);
+      locator<NotificationManager>().apiRunningValue(false);
 
       throw ApiException(
           'Failed to delete schooldayEvent', response.statusCode);
@@ -263,7 +263,7 @@ class SchooldayEventApiService {
     final cacheManager = locator<DefaultCacheManager>();
     await cacheManager.removeFile(cacheKey);
 
-    notificationManager.isRunningValue(false);
+    notificationManager.apiRunningValue(false);
 
     return responsePupil;
   }

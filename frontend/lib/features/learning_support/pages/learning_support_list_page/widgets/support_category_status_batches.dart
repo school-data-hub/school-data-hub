@@ -19,10 +19,16 @@ class SupportCategoryStatusBatches extends StatelessWidget {
         pupil.supportCategoryStatuses!;
     List<Widget> widgetList = [];
     Map<int, int> categoryCounts = {};
+    Set<int> countedCategoryIds = {};
 
     // Calculate counts
     for (SupportCategoryStatus supportCategoryStatus
         in supportCategoryStatuses) {
+      if (countedCategoryIds
+          .contains(supportCategoryStatus.supportCategoryId)) {
+        continue;
+      }
+      countedCategoryIds.add(supportCategoryStatus.supportCategoryId);
       int rootCategoryId = locator<LearningSupportManager>()
           .getRootSupportCategory(supportCategoryStatus.supportCategoryId)
           .categoryId;

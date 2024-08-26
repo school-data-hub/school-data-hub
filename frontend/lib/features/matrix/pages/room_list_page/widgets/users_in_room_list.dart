@@ -91,7 +91,7 @@ List<Widget> usersInRoomList(
                                 'Moderationsrechte für ${matrixUser.displayName} vergeben?',
                             title: 'Moderationsrechte vergeben');
                         if (result == true) {
-                          locator<MatrixPolicyManager>().setRoomPowerLevels(
+                          locator<MatrixPolicyManager>().changeRoomPowerLevels(
                               roomId: roomId,
                               roomAdmin: RoomAdmin(
                                   id: matrixUser.id!, powerLevel: 50));

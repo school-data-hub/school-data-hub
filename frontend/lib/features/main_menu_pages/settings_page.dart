@@ -82,6 +82,8 @@ class SettingsPage extends WatchingWidget {
                     trailing: null,
                   ),
                   SettingsTile.navigation(
+                    onPressed: (context) =>
+                        locator<PupilManager>().cleanPupilsAvatarIds(),
                     leading: const Icon(
                       Icons.account_circle_rounded,
                     ),
@@ -452,7 +454,7 @@ class SettingsPage extends WatchingWidget {
 
                         if (context.mounted) {
                           Navigator.of(context).push(MaterialPageRoute(
-                            builder: (ctx) => QrCodeCarousel(qrMaps: qrData),
+                            builder: (ctx) => QrCodeSpeedShow(qrMaps: qrData),
                           ));
                         }
                       }),

@@ -30,6 +30,10 @@ class CompetenceManager {
   final notificationManager = locator<NotificationManager>();
   final apiCompetenceService = CompetenceApiService();
 
+  void clearData() {
+    _competences.value = [];
+  }
+
   Future<void> firstFetchCompetences() async {
     final List<Competence> competences =
         await apiCompetenceService.fetchCompetences();

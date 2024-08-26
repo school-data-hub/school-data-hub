@@ -12,8 +12,6 @@ import 'package:schuldaten_hub/features/matrix/pages/room_list_page/widgets/room
 import 'package:schuldaten_hub/features/matrix/pages/room_list_page/widgets/room_list_view_bottom_navbar.dart';
 import 'package:schuldaten_hub/features/matrix/services/matrix_policy_manager.dart';
 
-import 'package:schuldaten_hub/features/pupil/services/pupil_manager.dart';
-
 import 'package:watch_it/watch_it.dart';
 
 class RoomListPage extends WatchingWidget {

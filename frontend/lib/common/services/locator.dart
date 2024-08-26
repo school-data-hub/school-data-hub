@@ -7,6 +7,7 @@ import 'package:schuldaten_hub/common/constants/enums.dart';
 import 'package:schuldaten_hub/common/services/env_manager.dart';
 import 'package:schuldaten_hub/common/services/search_textfield_manager.dart';
 import 'package:schuldaten_hub/common/services/notification_manager.dart';
+import 'package:schuldaten_hub/features/matrix/services/matrix_api_service.dart';
 import 'package:schuldaten_hub/features/users/services/user_manager.dart';
 import 'package:schuldaten_hub/common/utils/logger.dart';
 import 'package:schuldaten_hub/common/utils/secure_storage.dart';
@@ -236,6 +237,9 @@ Future unregisterDependentManagers() async {
   if (locator.isRegistered<MatrixPolicyManager>()) {
     locator.unregister<MatrixPolicyManager>();
     locator.unregister<MatrixPolicyFilterManager>();
+    locator.unregister<MatrixPolicyManager>();
+    locator.unregister<MatrixApiService>();
+
     locator<SessionManager>().changeMatrixPolicyManagerRegistrationStatus(true);
   }
   locator.unregister<PupilsFilter>();

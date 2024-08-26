@@ -14,7 +14,7 @@ class DioInterceptor extends Interceptor {
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
     if (response.statusCode == 401) {
-      locator<SessionManager>().logout();
+      // locator<SessionManager>().logout();
       return;
     }
 
@@ -26,7 +26,8 @@ class DioInterceptor extends Interceptor {
   void onError(DioException err, ErrorInterceptorHandler handler) {
     log("Error[${err.response?.statusCode}] => PATH: ${err.requestOptions.path}");
     if (err.response!.statusCode == 401) {
-      locator<SessionManager>().logout();
+      log("AUTH ERROR[${err.response?.statusCode}] => PATH: ${err.requestOptions.path}");
+      //  locator<SessionManager>().logout();
       //handler.next(err);
     }
     super.onError(err, handler);

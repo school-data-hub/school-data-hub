@@ -2,7 +2,7 @@
 
 enum SearchType { pupil, room, matrixUser, list, authorization, workbook }
 
-enum NotificationType { success, error, warning, info }
+enum NotificationType { success, error, warning, info, infoDialog }
 
 enum CompetenceFilter { E1, E2, S3, S4 }
 

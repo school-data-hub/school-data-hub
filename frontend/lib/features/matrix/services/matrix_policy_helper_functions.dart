@@ -21,7 +21,7 @@ Future<bool> generatePolicyJsonFile() async {
   if (file.existsSync()) {
     file.deleteSync();
   }
-  final Policy policy = locator<MatrixPolicyManager>().matrixPolicy.value!;
+  final Policy policy = locator<MatrixPolicyManager>().matrixPolicy!;
   final Map<String, dynamic> jsonString = policy.toJson();
   // transform the map into a json string
   final String policyJson = jsonEncode(jsonString);

@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:schuldaten_hub/common/services/session_manager.dart';
 import 'package:schuldaten_hub/features/users/services/user_api_service.dart';
 import 'package:schuldaten_hub/common/constants/enums.dart';
 import 'package:schuldaten_hub/features/users/models/user.dart';
@@ -17,6 +18,9 @@ class UserManager {
 
   final userApiService = UserApiService();
   Future<void> fetchUsers() async {
+    if (locator<SessionManager>().isAdmin.value == false) {
+      return;
+    }
     final List<User> responseUsers = await userApiService.getAllUsers();
 
     // reorder the list alphabetically by the user's name

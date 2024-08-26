@@ -18,20 +18,23 @@ import 'package:schuldaten_hub/common/services/notification_manager.dart';
 
 import 'dart:async';
 
-class QrCodeCarousel extends StatefulWidget {
+class QrCodeSpeedShow extends StatefulWidget {
   final List<Map<String, Object>> qrMaps;
 
-  const QrCodeCarousel({super.key, required this.qrMaps});
+  const QrCodeSpeedShow({super.key, required this.qrMaps});
 
   @override
-  QrCodeCarouselState createState() => QrCodeCarouselState();
+  QrCodeSpeedShowState createState() => QrCodeSpeedShowState();
 }
 
-class QrCodeCarouselState extends State<QrCodeCarousel> {
+class QrCodeSpeedShowState extends State<QrCodeSpeedShow> {
   late Timer _timer;
   int _currentIndex = -1;
   int _countdown = 5; // Set the initial countdown value
+  bool _countdownFinished = false;
   int _milliseconds = 1000; // Set the initial timer interval
+  bool _isLastCode = false; // Check if the last code is shown
+  bool _timerRunning = true;
   late Map<String, int> _pupilNumbers;
   late Map<String, String> _qrMap;
   @override
@@ -47,14 +50,25 @@ class QrCodeCarouselState extends State<QrCodeCarousel> {
       setState(() {
         _countdown = _countdown > 0 ? _countdown - 1 : _countdown;
         if (_countdown == 0) {
-          _timer.cancel(); // Cancel the current timer
-          _milliseconds = 1100; // Set the qr carousel interval
-          startTimer(_milliseconds); // Start a new timer with the new interval
-          _currentIndex = (_currentIndex + 1) % _qrMap.values.length;
+          // Cancel the current timer
+
+          if (_countdownFinished != true) {
+            _countdownFinished = true;
+            _timer.cancel();
+            _milliseconds = 1100; // Set the qr carousel interval
+            startTimer(_milliseconds);
+          } // Start a new timer with the new interval
+          if (!_isLastCode) {
+            _currentIndex = (_currentIndex + 1) % _qrMap.values.length;
+            if (_currentIndex == _qrMap.values.length - 1) _isLastCode = true;
+          } else {
+            _timer.cancel();
+            _timerRunning = false;
+          }
         }
         // Stop the timer when the Container is shown
         if (_currentIndex == _qrMap.length - 1) {
-          _timer.cancel();
+          _isLastCode = true;
         }
       });
     });
@@ -102,23 +116,41 @@ class QrCodeCarouselState extends State<QrCodeCarousel> {
               ),
             )
           : Center(
-              child: _currentIndex != _qrMap.length - 1
-                  ? Column(
-                      children: [
-                        const Gap(20),
-                        Text(_qrMap.keys.elementAt(_currentIndex),
-                            style: const TextStyle(
-                                fontSize: 30, fontWeight: FontWeight.bold),
-                            textAlign: TextAlign.center),
-                        Padding(
-                          padding: const EdgeInsets.all(20.0),
-                          child: QrImageView(
-                            size: mediaQuery.size.height * 0.75,
-                            data: _qrMap.values.elementAt(_currentIndex),
-                            version: QrVersions.auto,
+              child: _timerRunning == true //_currentIndex != _qrMap.length
+                  ? ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 800),
+                      child: Column(
+                        children: [
+                          const Gap(20),
+                          SizedBox(
+                            child: Row(
+                              children: [
+                                const Gap(20),
+                                Text(_qrMap.keys.elementAt(_currentIndex),
+                                    style: const TextStyle(
+                                        fontSize: 30,
+                                        fontWeight: FontWeight.bold),
+                                    textAlign: TextAlign.center),
+                                const Spacer(),
+                                Text((_currentIndex + 1).toString(),
+                                    style: const TextStyle(
+                                        fontSize: 30,
+                                        fontWeight: FontWeight.bold),
+                                    textAlign: TextAlign.center),
+                                const Gap(20),
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+                          Padding(
+                            padding: const EdgeInsets.all(20.0),
+                            child: QrImageView(
+                              size: mediaQuery.size.height * 0.75,
+                              data: _qrMap.values.elementAt(_currentIndex),
+                              version: QrVersions.auto,
+                            ),
+                          ),
+                        ],
+                      ),
                     )
                   : Column(children: [
                       const Gap(20),

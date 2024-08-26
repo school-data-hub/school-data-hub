@@ -22,7 +22,7 @@ class PupilDataApiService {
 
   Future<List<PupilData>> updateBackendPupilsDatabase(
       {required File file}) async {
-    notificationManager.isRunningValue(true);
+    notificationManager.apiRunningValue(true);
 
     String fileName = file.path.split('/').last;
     FormData formData = FormData.fromMap({
@@ -41,7 +41,7 @@ class PupilDataApiService {
       notificationManager.showSnackBar(NotificationType.error,
           'Die Liste konnte nicht aktualisiert werden: ${response.statusCode}');
 
-      notificationManager.isRunningValue(false);
+      notificationManager.apiRunningValue(false);
 
       throw ApiException('Failed to export pupils to txt', response.statusCode);
     }
@@ -49,7 +49,7 @@ class PupilDataApiService {
     final List<PupilData> pupils =
         (response.data as List).map((e) => PupilData.fromJson(e)).toList();
 
-    notificationManager.isRunningValue(false);
+    notificationManager.apiRunningValue(false);
 
     return pupils;
   }
@@ -69,7 +69,7 @@ class PupilDataApiService {
   Future<List<PupilData>> fetchListOfPupils({
     required List<int> internalPupilIds,
   }) async {
-    notificationManager.isRunningValue(true);
+    notificationManager.apiRunningValue(true);
 
     final pupilIdsListToJson = jsonEncode({"pupils": internalPupilIds});
 
@@ -80,7 +80,7 @@ class PupilDataApiService {
       notificationManager.showSnackBar(NotificationType.error,
           'Die Schüler konnten nicht geladen werden: ${response.statusCode}');
 
-      notificationManager.isRunningValue(false);
+      notificationManager.apiRunningValue(false);
 
       throw ApiException('Failed to fetch pupils', response.statusCode);
     }
@@ -88,7 +88,7 @@ class PupilDataApiService {
     final List<PupilData> responsePupils =
         (response.data as List).map((e) => PupilData.fromJson(e)).toList();
 
-    notificationManager.isRunningValue(false);
+    notificationManager.apiRunningValue(false);
 
     return responsePupils;
   }
@@ -115,7 +115,7 @@ class PupilDataApiService {
     required String property,
     required dynamic value,
   }) async {
-    notificationManager.isRunningValue(true);
+    notificationManager.apiRunningValue(true);
 
     final Map<String, dynamic> data = {property: value};
     final response =
@@ -125,7 +125,7 @@ class PupilDataApiService {
       notificationManager.showSnackBar(NotificationType.error,
           'Die Schüler konnten nicht aktualisiert werden: ${response.statusCode}');
 
-      notificationManager.isRunningValue(false);
+      notificationManager.apiRunningValue(false);
 
       throw ApiException(
           'Failed to update pupil property', response.statusCode);
@@ -133,7 +133,7 @@ class PupilDataApiService {
 
     final PupilData responsePupil = PupilData.fromJson(response.data);
 
-    notificationManager.isRunningValue(false);
+    notificationManager.apiRunningValue(false);
 
     return responsePupil;
   }
@@ -146,7 +146,7 @@ class PupilDataApiService {
     required String property,
     required dynamic value,
   }) async {
-    notificationManager.isRunningValue(true);
+    notificationManager.apiRunningValue(true);
 
     final data = jsonEncode({
       'pupils': siblingsPupilIds,
@@ -159,14 +159,14 @@ class PupilDataApiService {
       notificationManager.showSnackBar(NotificationType.error,
           'Die Geschwister konnten nicht aktualisiert werden: ${response.statusCode}');
 
-      notificationManager.isRunningValue(false);
+      notificationManager.apiRunningValue(false);
 
       throw ApiException('Failed to patch siblings', response.statusCode);
     }
     final List<PupilData> responsePupils =
         (response.data as List).map((e) => PupilData.fromJson(e)).toList();
 
-    notificationManager.isRunningValue(false);
+    notificationManager.apiRunningValue(false);
 
     return responsePupils;
   }
@@ -181,7 +181,7 @@ class PupilDataApiService {
     required int id,
     required FormData formData,
   }) async {
-    notificationManager.isRunningValue(true);
+    notificationManager.apiRunningValue(true);
 
     final Response response =
         await _client.patch(_updatePupilhWithAvatarUrl(id), data: formData);
@@ -190,12 +190,12 @@ class PupilDataApiService {
       notificationManager.showSnackBar(NotificationType.error,
           'Das Profilbild konnte nicht aktualisiert werden: ${response.statusCode}');
 
-      notificationManager.isRunningValue(false);
+      notificationManager.apiRunningValue(false);
 
       throw ApiException('Failed to upload pupil avatar', response.statusCode);
     }
 
-    notificationManager.isRunningValue(false);
+    notificationManager.apiRunningValue(false);
 
     return PupilData.fromJson(response.data);
   }
@@ -207,7 +207,7 @@ class PupilDataApiService {
   }
 
   Future<void> deletePupilAvatar({required int internalId}) async {
-    notificationManager.isRunningValue(true);
+    notificationManager.apiRunningValue(true);
 
     final Response response =
         await _client.delete(_deletePupilAvatarUrl(internalId));
@@ -216,7 +216,7 @@ class PupilDataApiService {
       notificationManager.showSnackBar(NotificationType.error,
           'Das Profilbild konnte nicht gelöscht werden: ${response.statusCode}');
 
-      notificationManager.isRunningValue(false);
+      notificationManager.apiRunningValue(false);
 
       throw ApiException(
           'Something went wrong deleting the avatar', response.statusCode);
@@ -238,7 +238,7 @@ class PupilDataApiService {
     required String createdBy,
     required String comment,
   }) async {
-    notificationManager.isRunningValue(true);
+    notificationManager.apiRunningValue(true);
 
     final data = jsonEncode({
       'level': individualDevelopmentPlanLevel,
@@ -254,7 +254,7 @@ class PupilDataApiService {
       notificationManager.showSnackBar(NotificationType.error,
           'Die Förderstufe konnte nicht aktualisiert werden: ${response.statusCode}');
 
-      notificationManager.isRunningValue(false);
+      notificationManager.apiRunningValue(false);
 
       throw ApiException(
           'Failed to patch individual development plan', response.statusCode);
@@ -262,7 +262,7 @@ class PupilDataApiService {
 
     final PupilData responsePupil = PupilData.fromJson(response.data);
 
-    notificationManager.isRunningValue(false);
+    notificationManager.apiRunningValue(false);
 
     return responsePupil;
   }

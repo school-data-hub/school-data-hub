@@ -28,6 +28,7 @@ class PupilManager extends ChangeNotifier {
 
   void clearData() {
     _pupils.clear();
+    return;
   }
 
   PupilProxy? findPupilById(int id) {
@@ -108,6 +109,28 @@ class PupilManager extends ChangeNotifier {
     await fetchPupilsByInternalId(pupilsToFetch);
   }
 
+  Future<void> cleanPupilsAvatarIds() async {
+    final pupilsToFetch = locator.get<PupilIdentityManager>().availablePupilIds;
+    if (pupilsToFetch.isEmpty) {
+      return;
+    }
+    for (int pupilId in pupilsToFetch) {
+      final PupilProxy? pupil = findPupilById(pupilId);
+
+      if (pupil != null) {
+        if (pupil.avatarId != null) {
+          final cleanedAvatarId = pupil.avatarId!
+              .replaceFirst('./media_upload/avtr/', '')
+              .replaceFirst('.jpg', '');
+          final PupilData pupilData = await apiPupilService.updatePupilProperty(
+              id: pupilId, property: 'avatar_id', value: cleanedAvatarId);
+          pupil.updatePupil(pupilData);
+          _pupils[pupilId]!.updatePupil(pupilData);
+        }
+      }
+    }
+  }
+
   Future<void> init() async {
     await fetchAllPupils();
   }
@@ -159,8 +182,8 @@ class PupilManager extends ChangeNotifier {
     if (outdatedPupilIdentitiesIds.isNotEmpty) {
       final deletedPupilIdentities = await pupilIdentityManager
           .deletePupilIdentities(outdatedPupilIdentitiesIds);
-      notificationManager.showSnackBar(NotificationType.warning,
-          '$deletedPupilIdentities sind nicht mehr in der Datenbank und wurden gelöscht.');
+      notificationManager.showInformationDialog(
+          'Diese Schüler_innen existieren nicht mehr in der Datenbank, Ihre Ids wurden aus dem Gerät gelöscht:\n\n$deletedPupilIdentities');
     }
     notificationManager.showSnackBar(
         NotificationType.success, 'Schülerdaten geladen!');

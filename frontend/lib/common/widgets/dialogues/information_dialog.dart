@@ -4,7 +4,7 @@ void informationDialog(context, title, text) => showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: Text(title),
-        content: Text(text),
+        content: SingleChildScrollView(child: Text(text)),
         actions: [
           TextButton(
             child: const Padding(

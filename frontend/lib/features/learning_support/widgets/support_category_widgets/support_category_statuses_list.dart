@@ -255,7 +255,29 @@ List<Widget> pupilCategoryStatusesList(PupilProxy pupil, BuildContext context) {
                 SupportCategoryStatusEntry(
                     pupil: pupil,
                     status: mappedStatusesWithSameGoalCategory[i]),
-              ]
+              ],
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: ElevatedButton(
+                  style: actionButtonStyle,
+                  onPressed: () async {
+                    await Navigator.of(context).push(MaterialPageRoute(
+                        builder: (ctx) => NewCategoryItem(
+                              appBarTitle: 'Neues Förderziel',
+                              pupilId: pupil.internalId,
+                              goalCategoryId: key,
+                              elementType: 'goal',
+                            )));
+                  },
+                  child: const Text(
+                    "NEUES FÖRDERZIEL",
+                    style: TextStyle(
+                        fontSize: 17.0,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
             ]),
           ),
         );

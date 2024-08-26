@@ -10,7 +10,6 @@ import 'package:schuldaten_hub/common/constants/enums.dart';
 import 'package:schuldaten_hub/common/models/session.dart';
 import 'package:schuldaten_hub/common/services/env_manager.dart';
 import 'package:schuldaten_hub/common/services/notification_manager.dart';
-import 'package:schuldaten_hub/features/schooldays/services/schoolday_manager.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/utils/logger.dart';
 import 'package:schuldaten_hub/common/utils/secure_storage.dart';
@@ -38,7 +37,7 @@ class SessionManager {
     return this;
   }
 
-  void unauthaeticate() {
+  void unauthenticate() {
     _isAuthenticated.value = false;
     _credentials.value = Session();
     _isAdmin.value = false;
@@ -99,25 +98,40 @@ class SessionManager {
 
   Future<void> checkStoredCredentials() async {
     if (locator<EnvManager>().env.value.serverUrl == null) {
-      logger.w('No environment found!', stackTrace: StackTrace.current);
+      logger.w('Checking credentials, but no environment found!',
+          stackTrace: StackTrace.current);
 
       return;
     }
+
     final Map<String, Session>? storedSessions = await sessionsInStorage();
+    _sessions.value = storedSessions ?? {};
+
     if (storedSessions == null) {
       logger.w('No sessions found in secure storage!');
-
-      return;
+      //-TODO: delete legacy code when sure it's not needed anymore
+      if (await secureStorageContainsKey('session') == true) {
+        // if so, read them
+        final String? legacySessioninStorage =
+            await secureStorageRead('session');
+        log('Legacy session found!');
+        // decode the stored session and add missing keys and values
+        final Map<String, dynamic> legacySessionMap =
+            json.decode(legacySessioninStorage!) as Map<String, dynamic>;
+        legacySessionMap['server'] = locator<EnvManager>().env.value.server;
+        legacySessionMap['contact'] = null;
+        legacySessionMap['tutoring'] = null;
+        final Session session =
+            Session.fromJson(legacySessionMap); // as Session;
+        saveSession(session);
+      } else {
+        return;
+      }
     }
-    _sessions.value = storedSessions;
 
-    if (locator<EnvManager>().env.value.server == null) {
-      logger.w('No environment found!', stackTrace: StackTrace.current);
-
-      return;
-    }
     final Session? linkedSession =
         _sessions.value[locator<EnvManager>().env.value.server!];
+
     if (linkedSession == null) {
       logger
           .w('No session found for ${locator<EnvManager>().env.value.server!}');
@@ -126,15 +140,17 @@ class SessionManager {
     }
 
     _credentials.value = linkedSession;
+
     // check if the session is still valid
     if (JwtDecoder.isExpired(linkedSession.jwt!)) {
       removeSession(server: linkedSession.server!);
 
-      logger.w('Session was not valid - deleted!',
+      logger.w('Session found, but was not valid - deleted!',
           stackTrace: StackTrace.current);
 
       return;
     }
+
     // There are sessions stored - let's decode them
     try {
       // check if there is a session linked to the default server
@@ -144,10 +160,15 @@ class SessionManager {
 
       log('Stored session is valid!');
       authenticate(_credentials.value);
-      log('SessionManager: isAuthenticated is ${_isAuthenticated.value.toString()}');
+      log('Session isAuthenticated is ${_isAuthenticated.value.toString()}');
 
-      if (!locator.isRegistered<SchooldayManager>()) {
+      if (!locator<EnvManager>().dependentManagersRegistered.value) {
+        logger.i(
+            'Authenticated on first run - registering dependent managers...');
         await registerDependentManagers();
+      } else {
+        logger.i('Authenticated on env change - propagating new env...');
+        locator<EnvManager>().propagateNewEnv();
       }
 
       return;
@@ -189,6 +210,8 @@ class SessionManager {
 
     if (locator<EnvManager>().dependentManagersRegistered.value == false) {
       await registerDependentManagers();
+    } else {
+      locator<EnvManager>().propagateNewEnv();
     }
 
     return;
@@ -200,6 +223,8 @@ class SessionManager {
     final updatedSessionsAsJson = json.encode(updatedSessions);
     await secureStorageWrite(
         SecureStorageKey.sessions.value, updatedSessionsAsJson);
+    // let's keep them in memory as well
+    _sessions.value = updatedSessions;
     logger.i('${updatedSessions.length} Session(s) stored');
 
     return;

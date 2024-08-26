@@ -2,9 +2,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:schuldaten_hub/common/constants/colors.dart';
+import 'package:schuldaten_hub/common/constants/enums.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_manager.dart';
 import 'package:schuldaten_hub/common/widgets/bottom_nav_bar_layouts.dart';
+import 'package:schuldaten_hub/common/widgets/dialogues/information_dialog.dart';
 import 'package:schuldaten_hub/common/widgets/snackbars.dart';
 import 'package:schuldaten_hub/features/main_menu_pages/learn_list_page.dart';
 import 'package:schuldaten_hub/features/main_menu_pages/pupil_lists_menu_page.dart';
@@ -26,9 +28,6 @@ class BottomNavManager {
   }
   setBottomNavPage(index) {
     _bottomNavState.value = index;
-    if (_pageViewController.value.hasClients) {
-      _pageViewController.value.jumpToPage(index);
-    }
   }
 
   setPupilProfileNavPage(index) {
@@ -57,14 +56,16 @@ class BottomNavigation extends WatchingWidget {
     registerHandler(
         select: (NotificationManager x) => x.notification,
         handler: (context, value, cancel) {
-          snackbar(context, value.type, value.message);
+          value.type == NotificationType.infoDialog
+              ? informationDialog(context, 'Info', value.message)
+              : snackbar(context, value.type, value.message);
         });
-    //- TODO: use overlay without blocking interaction
-    // registerHandler(
-    //     select: (NotificationManager x) => x.isRunning,
-    //     handler: (context, value, cancel) {
-    //       value ? showLoadingOverlay(context) : hideLoadingOverlay();
-    //     });
+
+    registerHandler(
+        select: (NotificationManager x) => x.heavyLoading,
+        handler: (context, value, cancel) {
+          value ? showLoadingOverlay(context) : hideLoadingOverlay();
+        });
 
     final manager = locator<BottomNavManager>();
     final tab = watchValue((BottomNavManager x) => x.bottomNavState);
@@ -90,7 +91,7 @@ class BottomNavigation extends WatchingWidget {
             manager.setBottomNavPage(index);
             pageViewController.animateToPage(index,
                 duration: const Duration(milliseconds: 200),
-                curve: Curves.bounceOut);
+                curve: Curves.easeIn);
             //BottomNavManager().setBottomNavPage(index);
           },
           showSelectedLabels: true,
@@ -137,9 +138,28 @@ void showLoadingOverlay(BuildContext context) {
             dismissible: false,
             color: Colors.black.withOpacity(0.3)), // Background color
         const Center(
-            child: CircularProgressIndicator(
-          color: backgroundColor,
-        )), // Spinning wheel
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Material(
+                color: Colors.transparent,
+                child: Text(
+                  'Bitte warten...', // Your text here
+                  style: TextStyle(
+                      color: Colors.white, // Text color
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold // Text size
+                      ),
+                ),
+              ),
+              SizedBox(height: 16), // Space between the spinner and the text
+
+              CircularProgressIndicator(
+                color: backgroundColor,
+              ),
+            ],
+          ),
+        ),
       ],
     ),
   );

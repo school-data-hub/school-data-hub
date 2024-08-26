@@ -33,7 +33,8 @@ class NewWorkbookPageState extends State<NewWorkbookPage> {
   Set<int> pupilIds = {};
   void postNewWorkbook() async {
     String workbookName = nameTextFieldController.text;
-    int workbookIsbn = int.parse(isbnTextFieldController.text);
+    int workbookIsbn =
+        int.parse(isbnTextFieldController.text.replaceAll('-', ''));
     String workbookSubject = subjectTextFieldController.text;
     String workbookLevel = level.text;
     int amount = int.parse(amountTextFieldController.text);
@@ -259,7 +260,8 @@ class NewWorkbookPageState extends State<NewWorkbookPage> {
                         if (locator<WorkbookManager>().workbooks.value.any(
                             (element) =>
                                 element.isbn ==
-                                int.parse(isbnTextFieldController.text))) {
+                                int.parse(isbnTextFieldController.text
+                                    .replaceAll('-', '')))) {
                           locator<NotificationManager>().showSnackBar(
                               NotificationType.error,
                               'Dieses Arbeitsheft gibt es schon!');
