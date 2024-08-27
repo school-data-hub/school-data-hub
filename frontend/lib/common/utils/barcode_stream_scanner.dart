@@ -5,7 +5,6 @@ import 'package:schuldaten_hub/common/constants/styles.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/widgets/generic_app_bar.dart';
 import 'package:schuldaten_hub/features/pupil/services/pupil_identity_manager.dart';
-import 'package:schuldaten_hub/features/pupil/services/pupil_manager.dart';
 
 class BarcodeStreamScanner extends StatefulWidget {
   const BarcodeStreamScanner({super.key});

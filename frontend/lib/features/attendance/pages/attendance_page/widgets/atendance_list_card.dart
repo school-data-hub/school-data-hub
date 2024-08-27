@@ -541,7 +541,7 @@ class AttendanceCard extends WatchingWidget {
                                 Checkbox(
                                   checkColor: Colors.white,
                                   activeColor: goneHomeColor,
-                                  value: attendanceInfo.returnedValue ?? false,
+                                  value: attendanceInfo.returnedValue,
                                   onChanged: (bool? newValue) async {
                                     if (newValue == true) {
                                       if (attendanceInfo.missedTypeValue ==

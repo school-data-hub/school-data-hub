@@ -71,7 +71,7 @@ def get_one_workbook(current_user, isbn):
 @workbook_api.doc(security='ApiKeyAuth', tags=['Workbooks'], summary='Post a new workbook')
 @token_required
 def create_workbook(current_user, json_data):
-    print('Daten angekommen!')
+  
     data = json_data
     if db.session.query(Workbook).filter(Workbook.isbn == data['isbn']).first():
         return jsonify({'message': 'Das Arbeitsheft existiert schon!'}), 400

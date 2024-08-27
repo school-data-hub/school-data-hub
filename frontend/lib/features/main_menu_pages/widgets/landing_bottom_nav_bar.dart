@@ -53,6 +53,10 @@ class BottomNavigation extends WatchingWidget {
   @override
   Widget build(BuildContext context) {
     final locale = AppLocalizations.of(context)!;
+    final manager = locator<BottomNavManager>();
+    final tab = watchValue((BottomNavManager x) => x.bottomNavState);
+    final pageViewController =
+        watchValue((BottomNavManager x) => x.pageViewController);
     registerHandler(
         select: (NotificationManager x) => x.notification,
         handler: (context, value, cancel) {
@@ -67,10 +71,6 @@ class BottomNavigation extends WatchingWidget {
           value ? showLoadingOverlay(context) : hideLoadingOverlay();
         });
 
-    final manager = locator<BottomNavManager>();
-    final tab = watchValue((BottomNavManager x) => x.bottomNavState);
-    final pageViewController =
-        watchValue((BottomNavManager x) => x.pageViewController);
     return Scaffold(
       backgroundColor: canvasColor,
       body: PageView(

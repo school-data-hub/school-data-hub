@@ -123,10 +123,12 @@ class WorkbookCard extends StatelessWidget {
                                           Navigator.of(context)
                                               .push(MaterialPageRoute(
                                             builder: (ctx) => NewWorkbookPage(
-                                                workbook.name,
-                                                workbook.isbn,
-                                                workbook.subject,
-                                                workbook.level),
+                                              wbName: workbook.name,
+                                              wbIsbn: workbook.isbn,
+                                              wbSubject: workbook.subject,
+                                              wbLevel: workbook.level,
+                                              isEdit: true,
+                                            ),
                                           ));
                                         }
                                       : () {},

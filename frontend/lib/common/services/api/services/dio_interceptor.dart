@@ -1,7 +1,5 @@
 import 'dart:developer';
 import 'package:dio/dio.dart';
-import 'package:schuldaten_hub/common/services/locator.dart';
-import 'package:schuldaten_hub/common/services/session_manager.dart';
 
 class DioInterceptor extends Interceptor {
   @override

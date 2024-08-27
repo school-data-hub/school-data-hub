@@ -53,7 +53,7 @@ class StatisticsView extends StatelessWidget {
                       children: [
                         groupListTiles(context, controller),
                         languagesListTiles(context, controller),
-                        enrollmentListTiles(context, controller)
+                        EnrollmentListTiles(controller: controller)
                       ]),
                 ))
               ],
