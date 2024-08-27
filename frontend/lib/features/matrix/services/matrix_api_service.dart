@@ -41,7 +41,7 @@ class MatrixApiService {
 
     final url = _matrixUrl;
     final token =
-        authType == MatrixAuthType.matrix ? _matrixToken : _matrixToken;
+        authType == MatrixAuthType.matrix ? _matrixToken : _corporalToken;
 
     _dioClient.setCustomDioClientOptions(
       baseUrl: url,

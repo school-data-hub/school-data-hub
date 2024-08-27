@@ -57,6 +57,15 @@ class UserManager {
     return;
   }
 
+  Future<void> changePassword(String oldPassword, String newPassword) async {
+    final User? user = await userApiService.changePassword(
+        oldPassword: oldPassword, newPassword: newPassword);
+
+    notificationManager.showSnackBar(
+        NotificationType.success, 'Passwort erfolgreich geändert!');
+    return;
+  }
+
   Future<void> deleteUser(User user) async {
     await userApiService.deleteUser(user.publicId);
     removeUser(user);

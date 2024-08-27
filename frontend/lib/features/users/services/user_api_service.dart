@@ -5,6 +5,7 @@ import 'package:schuldaten_hub/common/services/api/api.dart';
 import 'package:schuldaten_hub/common/services/api/services/api_client_service.dart';
 import 'package:schuldaten_hub/common/constants/enums.dart';
 import 'package:schuldaten_hub/common/models/session.dart';
+import 'package:schuldaten_hub/common/services/session_manager.dart';
 import 'package:schuldaten_hub/features/users/models/user.dart';
 import 'package:schuldaten_hub/common/services/env_manager.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
@@ -20,13 +21,17 @@ class EndpointsUser {
   //- POST
   static const createUser = '/users/new';
 
+  static String _changePassword(String publicId) {
+    return '/users/$publicId/new_password';
+  }
+
   //- PATCH
-  String patchUser(String publicId) {
+  String _patchUser(String publicId) {
     return '/users/$publicId';
   }
 
   //- DELETE
-  static String deleteUser(String publicId) {
+  static String _deleteUser(String publicId) {
     return '/users/$publicId';
   }
 
@@ -67,9 +72,34 @@ class UserApiService {
     return session;
   }
 
+  Future<User?> changePassword(
+      {required String oldPassword, required String newPassword}) async {
+    final data = jsonEncode({
+      "old_password": oldPassword,
+      "new_password": newPassword,
+    });
+
+    notificationManager.apiRunningValue(true);
+    final Response response = await _client.patch(
+      EndpointsUser._changePassword(
+          locator<SessionManager>().credentials.value.publicId!),
+      data: data,
+    );
+    notificationManager.apiRunningValue(false);
+
+    if (response.statusCode != 200) {
+      notificationManager.showSnackBar(
+          NotificationType.error, 'Fehler beim Ändern des Passworts');
+      throw ApiException('Failed to change password', response.statusCode);
+    }
+    final User user = User.fromJson(response.data);
+
+    return user;
+  }
+
   Future<void> deleteUser(String publicId) async {
     final Response response =
-        await _client.delete(EndpointsUser.deleteUser(publicId));
+        await _client.delete(EndpointsUser._deleteUser(publicId));
 
     if (response.statusCode != 200) {
       notificationManager.showSnackBar(

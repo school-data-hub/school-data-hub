@@ -113,7 +113,9 @@ class WorkbookManager {
     notificationManager.showSnackBar(
         NotificationType.success, 'Arbeitsheft erfolgreich gelöscht');
 
-    //- TODO: delete all pupilWorkbooks with this isbn
+    //- TODO: delete all pupilWorkbooks with this isbn in memory
+    //- instead of fetching all pupils again
+    locator<PupilManager>().fetchAllPupils();
     return;
   }
 

@@ -14,6 +14,7 @@ import 'package:schuldaten_hub/common/services/session_helper_functions.dart';
 import 'package:schuldaten_hub/common/services/session_manager.dart';
 import 'package:schuldaten_hub/common/services/notification_manager.dart';
 import 'package:schuldaten_hub/features/matrix/pages/pupil_matrix_contacts.dart';
+import 'package:schuldaten_hub/features/users/pages/user_change_password_page/user_change_password_page.dart';
 import 'package:schuldaten_hub/features/users/services/user_manager.dart';
 import 'package:schuldaten_hub/common/utils/secure_storage.dart';
 import 'package:schuldaten_hub/common/widgets/dialogues/confirmation_dialog.dart';
@@ -94,6 +95,18 @@ class SettingsPage extends WatchingWidget {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
+                    trailing: null,
+                  ),
+                  SettingsTile.navigation(
+                    onPressed: (context) {
+                      Navigator.of(context).push(MaterialPageRoute(
+                        builder: (ctx) => const UserChangePasswordPage(),
+                      ));
+                    },
+                    leading: const Icon(
+                      Icons.text_fields_rounded,
+                    ),
+                    title: const Text('Passwort ändern'),
                     trailing: null,
                   ),
                   SettingsTile.navigation(

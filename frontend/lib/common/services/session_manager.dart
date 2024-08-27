@@ -14,6 +14,7 @@ import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/utils/logger.dart';
 import 'package:schuldaten_hub/common/utils/secure_storage.dart';
 import 'package:schuldaten_hub/features/main_menu_pages/widgets/landing_bottom_nav_bar.dart';
+import 'package:schuldaten_hub/features/users/models/user.dart';
 
 class SessionManager {
   ValueListenable<Map<String, Session>> get sessions => _sessions;
@@ -193,6 +194,26 @@ class SessionManager {
       tokenKey: 'x-access-token',
       token: _credentials.value.jwt!,
     );
+    return;
+  }
+
+  Future<void> changePassword(
+      String currentPassword, String newPassword) async {
+    final User? user = await userApiService.changePassword(
+      oldPassword: currentPassword,
+      newPassword: newPassword,
+    );
+    // authenticate(session);
+    // await saveSession(session);
+    if (user == null) {
+      locator<NotificationManager>().showSnackBar(
+          NotificationType.error, 'Fehler beim Ändern des Passworts');
+      return;
+    } else {
+      locator<NotificationManager>().showSnackBar(
+          NotificationType.success, 'Passwort erfolgreich geändert!');
+    }
+
     return;
   }
 
