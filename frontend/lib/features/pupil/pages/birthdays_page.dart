@@ -100,31 +100,53 @@ class BirthdaysView extends WatchingWidget {
                                                 listedPupil.firstName,
                                                 style: const TextStyle(
                                                     fontWeight: FontWeight.bold,
-                                                    fontSize: 16),
+                                                    fontSize: 18),
                                               ),
                                               Text(
                                                 listedPupil.lastName,
                                                 style: const TextStyle(
-                                                    fontSize: 16),
+                                                    fontSize: 18),
                                               ),
                                             ],
                                           ),
                                           const Gap(20),
-                                          Text(
-                                            listedPupil.group,
-                                            style: const TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                color: groupColor,
-                                                fontSize: 18),
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    listedPupil.group,
+                                                    style: const TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color: groupColor,
+                                                        fontSize: 18),
+                                                  ),
+                                                  const Gap(10),
+                                                  Text(
+                                                    listedPupil.schoolyear,
+                                                    style: const TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color: schoolyearColor,
+                                                        fontSize: 18),
+                                                  ),
+                                                ],
+                                              ),
+                                              Text(
+                                                '${listedPupil.age.toString()} Jahre alt',
+                                                style: const TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.black,
+                                                    fontSize: 18),
+                                              ),
+                                            ],
                                           ),
-                                          const Gap(10),
-                                          Text(
-                                            listedPupil.schoolyear,
-                                            style: const TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                color: schoolyearColor,
-                                                fontSize: 18),
-                                          ),
+                                          const Gap(20),
                                         ],
                                       ),
                                     ),
