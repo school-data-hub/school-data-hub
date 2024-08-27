@@ -435,7 +435,8 @@ class SettingsPage extends WatchingWidget {
                   ),
                   SettingsTile.navigation(
                       leading: const Icon(Icons.qr_code_rounded),
-                      title: const Text('Kinder QR-Ids zeigen'),
+                      title:
+                          const Text('QR-Ids von ausgewählten Kindern zeigen'),
                       onPressed: (context) async {
                         final List<int>? pupilIds =
                             await Navigator.of(context).push(MaterialPageRoute(
@@ -457,8 +458,8 @@ class SettingsPage extends WatchingWidget {
                       }),
                   SettingsTile.navigation(
                       leading: const Icon(Icons.qr_code_rounded),
-                      title:
-                          const Text('Alle vorhandenen Gruppen-QR-Ids zeigen'),
+                      title: const Text(
+                          'Alle vorhandenen QR-Ids zeigen (autoplay)'),
                       onPressed: (context) async {
                         final List<Map<String, Object>> qrData =
                             await locator<PupilIdentityManager>()
@@ -474,7 +475,7 @@ class SettingsPage extends WatchingWidget {
                   SettingsTile.navigation(
                       leading: const Icon(Icons.qr_code_rounded),
                       title: const Text(
-                          'Alle vorhandenen Gruppen-QR-Ids zeigen (autoplay)'),
+                          'Alle vorhandenen QR-Ids zeigen (manuelle slides)'),
                       onPressed: (context) async {
                         final qrDataMaps = await locator<PupilIdentityManager>()
                             .generateAllPupilIdentitiesQrData(pupilsPerCode: 8);

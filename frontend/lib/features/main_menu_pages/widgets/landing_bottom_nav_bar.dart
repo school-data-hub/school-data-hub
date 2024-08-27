@@ -1,8 +1,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/constants/colors.dart';
 import 'package:schuldaten_hub/common/constants/enums.dart';
+import 'package:schuldaten_hub/common/services/env_manager.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_manager.dart';
 import 'package:schuldaten_hub/common/widgets/bottom_nav_bar_layouts.dart';
@@ -82,7 +84,7 @@ class BottomNavigation extends WatchingWidget {
           ScanToolsPage(),
           SettingsPage(),
         ],
-        onPageChanged: (index) => manager.setBottomNavPage(index),
+        //onPageChanged: (index) => manager.setBottomNavPage(index),
       ),
       bottomNavigationBar: BottomNavBarLayout(
         bottomNavBar: BottomNavigationBar(
@@ -130,20 +132,54 @@ class BottomNavigation extends WatchingWidget {
 OverlayEntry? overlayEntry;
 
 void showLoadingOverlay(BuildContext context) {
+  final locale = AppLocalizations.of(context)!;
   overlayEntry = OverlayEntry(
     builder: (context) => Stack(
       fit: StackFit.expand,
       children: [
-        ModalBarrier(
-            dismissible: false,
-            color: Colors.black.withOpacity(0.3)), // Background color
-        const Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Material(
-                color: Colors.transparent,
-                child: Text(
+        const ModalBarrier(
+          dismissible: false,
+          color: backgroundColor, // Colors.black.withOpacity(0.3)
+        ), // Background color
+        Material(
+          color: Colors.transparent,
+          child: Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const SizedBox(
+                  height: 300,
+                  width: 300,
+                  child: Image(
+                    image: AssetImage('assets/foreground.png'),
+                  ),
+                ),
+                Text(
+                  locale.schoolDataHub,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 30,
+                  ),
+                ),
+                const Gap(15),
+                if (locator<EnvManager>().env.value.server != null)
+                  Text(
+                    locator<EnvManager>().env.value.server!,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 22,
+                    ),
+                  ),
+                const Gap(10),
+                const Text('Instanzdaten werden geladen!',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                    )),
+                const Gap(5),
+                const Text(
                   'Bitte warten...', // Your text here
                   style: TextStyle(
                       color: Colors.white, // Text color
@@ -151,13 +187,12 @@ void showLoadingOverlay(BuildContext context) {
                       fontWeight: FontWeight.bold // Text size
                       ),
                 ),
-              ),
-              SizedBox(height: 16), // Space between the spinner and the text
-
-              CircularProgressIndicator(
-                color: backgroundColor,
-              ),
-            ],
+                const SizedBox(height: 16),
+                const CircularProgressIndicator(
+                  color: accentColor,
+                ),
+              ],
+            ),
           ),
         ),
       ],

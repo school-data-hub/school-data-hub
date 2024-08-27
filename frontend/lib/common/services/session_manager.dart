@@ -229,11 +229,7 @@ class SessionManager {
     locator<NotificationManager>()
         .showSnackBar(NotificationType.success, 'Login erfolgreich!');
 
-    if (locator<EnvManager>().dependentManagersRegistered.value == false) {
-      await registerDependentManagers();
-    } else {
-      locator<EnvManager>().propagateNewEnv();
-    }
+    await registerDependentManagers();
 
     return;
   }

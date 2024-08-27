@@ -81,6 +81,10 @@ void registerBaseManagers() {
 }
 
 Future registerDependentManagers() async {
+  if (locator<EnvManager>().dependentManagersRegistered.value) {
+    locator<EnvManager>().propagateNewEnv();
+    return;
+  }
   logger.i('Registering dependent managers');
 
   locator.registerSingleton<SearchManager>(SearchManager());

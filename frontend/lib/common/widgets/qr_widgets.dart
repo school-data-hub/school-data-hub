@@ -13,6 +13,7 @@ import 'package:qr_flutter/qr_flutter.dart';
 import 'package:pasteboard/pasteboard.dart';
 import 'package:schuldaten_hub/common/constants/colors.dart';
 import 'package:schuldaten_hub/common/constants/enums.dart';
+import 'package:schuldaten_hub/common/constants/styles.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_manager.dart';
 
@@ -86,7 +87,8 @@ class QrCodeSpeedShowState extends State<QrCodeSpeedShow> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('QR-Code Carousel'),
+        foregroundColor: Colors.white,
+        title: const Text('Alle QR-Ids (Autoplay)', style: appBarTextStyle),
         backgroundColor: backgroundColor,
       ),
       body: _countdown > 0
@@ -132,7 +134,8 @@ class QrCodeSpeedShowState extends State<QrCodeSpeedShow> {
                                         fontWeight: FontWeight.bold),
                                     textAlign: TextAlign.center),
                                 const Spacer(),
-                                Text((_currentIndex + 1).toString(),
+                                Text(
+                                    '${(_currentIndex + 1).toString()}/${_qrMap.entries.length}',
                                     style: const TextStyle(
                                         fontSize: 30,
                                         fontWeight: FontWeight.bold),
@@ -216,8 +219,7 @@ void showQrCarousel(
                 (mediaQuery.orientation == Orientation.landscape) ? 0.6 : 0.9,
             enlargeCenterPage: true,
             height: maxHeight,
-            autoPlay: autoPlay,
-            autoPlayInterval: const Duration(seconds: 1),
+            autoPlay: false,
             pauseAutoPlayInFiniteScroll: true,
             pauseAutoPlayOnTouch: true,
             scrollPhysics: const PageScrollPhysics(),
@@ -236,9 +238,21 @@ void showQrCarousel(
                     child: Column(
                       children: [
                         const Gap(10),
-                        Text(i.keys.first,
-                            style: const TextStyle(
-                                fontSize: 30, fontWeight: FontWeight.bold)),
+                        Row(
+                          children: [
+                            Gap(mediaQuery.size.width * 0.05),
+                            Text(i.keys.first,
+                                style: const TextStyle(
+                                    fontSize: 30, fontWeight: FontWeight.bold)),
+                            const Spacer(),
+                            Text(
+                              '${myListOfMaps.indexOf(i) + 1}/${myListOfMaps.length}',
+                              style: const TextStyle(
+                                  fontSize: 30, fontWeight: FontWeight.bold),
+                            ),
+                            Gap(mediaQuery.size.width * 0.05),
+                          ],
+                        ),
                         Expanded(
                           child: QrImageView(
                             padding: const EdgeInsets.all(20),

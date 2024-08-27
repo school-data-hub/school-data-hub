@@ -185,6 +185,7 @@ class EnvManager {
 
   Future<void> activateEnv({required String envName}) async {
     _activeEnv.value = _environments.value[envName]!;
+    locator<ApiClientService>().setBaseUrl(_activeEnv.value.serverUrl!);
     final updatedEnvsForStorage = EnvsInStorage(
         defalutEnv: _activeEnv.value.server!,
         environmentsMap: _environments.value);
@@ -192,15 +193,16 @@ class EnvManager {
     final String jsonEnvs = jsonEncode(updatedEnvsForStorage);
 
     await secureStorageWrite(SecureStorageKey.environments.value, jsonEnvs);
-    locator<ApiClientService>().setBaseUrl(_activeEnv.value.serverUrl!);
 
     _defaultEnv.value = envName;
 
     _envReady.value = true;
     logger.i('Activated Env: ${_activeEnv.value.server}');
     if (_dependentMangagersRegistered.value == true) {
+      locator<NotificationManager>().heavyLoadingValue(true);
+      clearInstanceSessionServerData();
       locator<SessionManager>().unauthenticate();
-      clearInstanceServerData();
+
       await locator<SessionManager>().checkStoredCredentials();
 
       //await propagateNewEnv();
@@ -213,24 +215,26 @@ class EnvManager {
   }
 
   Future<void> propagateNewEnv() async {
-    locator<NotificationManager>().heavyLoadingValue(true);
-
     await locator<PupilIdentityManager>().getPupilIdentitiesForEnv();
     await locator<UserManager>().fetchUsers();
 
     await locator<PupilManager>().fetchAllPupils();
     await locator<SchooldayManager>().getSchoolSemesters();
     await locator<SchooldayManager>().getSchooldays();
-    await locator<LearningSupportManager>().fetchGoalCategories();
+    await locator<LearningSupportManager>().fetchSupportCategories();
     await locator<CompetenceManager>().fetchCompetences();
     await locator<SchoolListManager>().fetchSchoolLists();
     await locator<AuthorizationManager>().fetchAuthorizations();
+    await locator<WorkbookManager>().getWorkbooks();
     await locator<BottomNavManager>().setBottomNavPage(0);
+    if (locator<SessionManager>().isAdmin.value == true) {
+      await locator<UserManager>().fetchUsers();
+    }
     logger.i('New Env propagated');
     locator<NotificationManager>().heavyLoadingValue(false);
   }
 
-  Future<void> clearInstanceServerData() async {
+  Future<void> clearInstanceSessionServerData() async {
     logger.i('Clearing instance server data');
     await locator<DefaultCacheManager>().emptyCache();
     locator<PupilIdentityManager>().clearPupilIdentities();
@@ -243,5 +247,6 @@ class EnvManager {
     locator<SchoolListManager>().clearData();
     locator<AuthorizationManager>().clearData();
     locator<WorkbookManager>().clearData();
+    return;
   }
 }

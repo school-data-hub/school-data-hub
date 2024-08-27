@@ -122,13 +122,11 @@ class PupilIdentityManager {
         _pupilIdentities[newPupilIdentity.id] = newPupilIdentity;
       }
     }
-    locator<NotificationManager>().heavyLoadingValue(true);
+
     writePupilIdentitiesToStorage(
         envKey: locator<EnvManager>().defaultEnv.value);
 
     await locator<PupilManager>().fetchAllPupils();
-    locator<NotificationManager>().heavyLoadingValue(false);
-    locator<BottomNavManager>().setBottomNavPage(0);
   }
 
   Future<Map<int, PupilIdentity>> readPupilIdentitiesFromStorage(

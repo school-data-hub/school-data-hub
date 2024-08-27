@@ -25,7 +25,7 @@ class LearningSupportManager {
   LearningSupportManager();
 
   Future<LearningSupportManager> init() async {
-    await fetchGoalCategories();
+    await fetchSupportCategories();
     return this;
   }
 
@@ -37,7 +37,7 @@ class LearningSupportManager {
     _goalCategories.value = [];
   }
 
-  Future<void> fetchGoalCategories() async {
+  Future<void> fetchSupportCategories() async {
     final List<SupportCategory> goalCategories =
         await apiLearningSupportService.fetchGoalCategories();
 

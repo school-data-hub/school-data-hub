@@ -21,6 +21,9 @@ class NotificationManager {
   NotificationManager();
 
   void showSnackBar(NotificationType type, String message) {
+    if (_heavyLoading.value) {
+      return;
+    }
     _snackBar.value = NotificationData(type, message);
   }
 
