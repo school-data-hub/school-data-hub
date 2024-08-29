@@ -36,11 +36,11 @@ class WorkbookCard extends StatelessWidget {
             //   ));
             // },
             onLongPress: () async {
-              if (!locator<SessionManager>().isAdmin.value) {
-                informationDialog(context, 'Keine Berechtigung',
-                    'Arbeitshefte können nur von Admins bearbeitet werden!');
-                return;
-              }
+              // if (!locator<SessionManager>().isAdmin.value) {
+              //   informationDialog(context, 'Keine Berechtigung',
+              //       'Arbeitshefte können nur von Admins bearbeitet werden!');
+              //   return;
+              // }
               final bool? result = await confirmationDialog(
                   context: context,
                   title: 'Arbeitsheft löschen',

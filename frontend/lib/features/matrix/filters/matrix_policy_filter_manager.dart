@@ -19,9 +19,7 @@ class MatrixPolicyFilterManager {
   final _searchText = ValueNotifier<String>('');
   final _filtersOn = ValueNotifier<bool>(false);
 
-  MatrixPolicyFilterManager() {
-    logger.i('MatrixPolicyFilterManager constructor called');
-  }
+  MatrixPolicyFilterManager();
 
   resetAllMatrixFilters() {
     _searchText.value = '';
@@ -31,7 +29,7 @@ class MatrixPolicyFilterManager {
         locator<MatrixPolicyManager>().matrixRooms.value;
   }
 
-  filterUsersWithSearchText(String text) {
+  setUsersFilterText(String text) {
     if (text == '') {
       _searchText.value = text;
       _filteredMatrixUsers.value =
@@ -48,7 +46,7 @@ class MatrixPolicyFilterManager {
     _filteredMatrixUsers.value = filteredMatrixUsers;
   }
 
-  filterRoomsWithSearchText(String text) {
+  setRoomsFilterText(String text) {
     if (text == '') {
       _searchText.value = text;
       _filteredMatrixRooms.value =

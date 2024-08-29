@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/constants/colors.dart';
 import 'package:schuldaten_hub/common/widgets/custom_expansion_tile.dart';
@@ -96,7 +97,18 @@ class _MatrixUsersListCardState extends State<MatrixUsersListCard> {
                                     fontSize: 16,
                                   ),
                                 ),
-                                const Gap(10),
+                                const Gap(20),
+                                IconButton(
+                                  icon: const Icon(Icons.copy),
+                                  onPressed: () {
+                                    Clipboard.setData(ClipboardData(
+                                        text: widget.matrixUser.id!));
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                          content: Text('Copied to clipboard')),
+                                    );
+                                  },
+                                ),
                               ],
                             ),
                           ),

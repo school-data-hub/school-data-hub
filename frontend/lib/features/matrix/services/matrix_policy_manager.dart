@@ -67,8 +67,8 @@ class MatrixPolicyManager {
           // set the variables in the matrixApiService
           matrixApiService.setMatrixEnvironmentValues(
               url: _matrixUrl,
-              matrixToken: _matrixToken!,
-              policyToken: _corporalToken!);
+              matrixToken: matrixToken!,
+              policyToken: corporalToken!);
           notificationManager.showSnackBar(NotificationType.success,
               'Matrix-Räumeverwaltung wird geladen...');
           await fetchMatrixPolicy();
@@ -105,11 +105,10 @@ class MatrixPolicyManager {
     secureStorageWrite(
         SecureStorageKey.matrix.value,
         jsonEncode(MatrixCredentials(
-                url: url,
-                matrixToken: matrixToken,
-                policyToken: policyToken,
-                compulsorayRooms: _compulsoryRooms)
-            .toJson()));
+            url: url,
+            matrixToken: matrixToken,
+            policyToken: policyToken,
+            compulsoryRooms: [..._compulsoryRooms]).toJson()));
 
     await fetchMatrixPolicy();
   }
@@ -134,6 +133,7 @@ class MatrixPolicyManager {
   Future<void> fetchMatrixPolicy() async {
     final Policy? policy = await matrixApiService.fetchMatrixPolicy();
     if (policy == null) {
+      logger.e('Error fetching Matrix policy!');
       return;
     }
 

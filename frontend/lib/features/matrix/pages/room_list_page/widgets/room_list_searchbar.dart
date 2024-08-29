@@ -3,11 +3,11 @@ import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/constants/colors.dart';
 import 'package:schuldaten_hub/common/constants/enums.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
+import 'package:schuldaten_hub/common/widgets/matrix_search_text_field.dart';
 import 'package:schuldaten_hub/common/widgets/search_text_field.dart';
 import 'package:schuldaten_hub/features/matrix/models/matrix_room.dart';
 import 'package:schuldaten_hub/features/matrix/filters/matrix_policy_filter_manager.dart';
 import 'package:schuldaten_hub/features/matrix/pages/room_list_page/widgets/rooms_filter_bottom_sheet.dart';
-import 'package:schuldaten_hub/features/pupil/filters/pupil_filter_manager.dart';
 
 class RoomListSearchBar extends StatelessWidget {
   final List<MatrixRoom> matrixRooms;
@@ -53,15 +53,15 @@ class RoomListSearchBar extends StatelessWidget {
             child: Row(
               children: [
                 Expanded(
-                    child: SearchTextField(
+                    child: MatrixSearchTextField(
                         searchType: SearchType.room,
                         hintText: 'Raum suchen',
                         refreshFunction: locator<MatrixPolicyFilterManager>()
-                            .filterRoomsWithSearchText)),
+                            .setRoomsFilterText)),
                 InkWell(
                   onTap: () => const RoomsFilterBottomSheet(),
-                  onLongPress: () =>
-                      locator<PupilFilterManager>().resetFilters(),
+                  onLongPress: () => locator<MatrixPolicyFilterManager>()
+                      .resetAllMatrixFilters(),
                   // onPressed: () => showBottomSheetFilters(context),
                   child: Padding(
                     padding: const EdgeInsets.all(10.0),

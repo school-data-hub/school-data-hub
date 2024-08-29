@@ -72,7 +72,7 @@ Widget selectRoomListSearchBar(
                       searchType: SearchType.room,
                       hintText: 'Raum suchen',
                       refreshFunction: locator<MatrixPolicyFilterManager>()
-                          .filterRoomsWithSearchText)),
+                          .setRoomsFilterText)),
               InkWell(
                 onTap: () => showCreditFilterBottomSheet(context),
                 onLongPress: () => locator<PupilFilterManager>().resetFilters(),
