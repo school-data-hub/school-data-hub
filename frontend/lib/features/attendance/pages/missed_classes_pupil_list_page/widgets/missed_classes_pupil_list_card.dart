@@ -61,30 +61,47 @@ class _AttendanceRankingListCardState extends State<AttendanceRankingListCard> {
                       children: [
                         Row(
                           children: [
-                            Flexible(
+                            Expanded(
                               child: SingleChildScrollView(
                                 scrollDirection: Axis.horizontal,
                                 child: InkWell(
                                   onTap: () {
                                     locator<BottomNavManager>()
                                         .setPupilProfileNavPage(3);
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (BuildContext context) =>
-                                            PupilProfilePage(pupil: pupil),
+                                    Navigator.of(context)
+                                        .push(MaterialPageRoute(
+                                      builder: (ctx) => PupilProfilePage(
+                                        pupil: pupil,
                                       ),
-                                    );
+                                    ));
                                   },
-                                  child: Text(
-                                    '${pupil.firstName} ${pupil.lastName}',
-                                    overflow: TextOverflow.ellipsis,
-                                    softWrap: false,
-                                    textAlign: TextAlign.left,
-                                    style: const TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18,
-                                    ),
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        pupil.firstName,
+                                        overflow: TextOverflow.fade,
+                                        softWrap: false,
+                                        textAlign: TextAlign.left,
+                                        style: const TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 18,
+                                        ),
+                                      ),
+                                      const Gap(5),
+                                      Text(
+                                        pupil.lastName,
+                                        overflow: TextOverflow.fade,
+                                        softWrap: false,
+                                        textAlign: TextAlign.left,
+                                        style: const TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.normal,
+                                          fontSize: 18,
+                                        ),
+                                      ),
+                                      const Gap(5),
+                                    ],
                                   ),
                                 ),
                               ),

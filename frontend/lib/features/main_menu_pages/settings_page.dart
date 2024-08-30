@@ -373,7 +373,7 @@ class SettingsPage extends WatchingWidget {
                           }),
                       SettingsTile.navigation(
                           leading: const Icon(
-                            Icons.calendar_month_rounded,
+                            Icons.group,
                           ),
                           title: const Text('Kontakte bearbeiten'),
                           onPressed: (context) async {

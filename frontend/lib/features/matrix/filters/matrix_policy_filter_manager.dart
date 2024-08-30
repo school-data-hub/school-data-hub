@@ -41,7 +41,8 @@ class MatrixPolicyFilterManager {
     List<MatrixUser> filteredMatrixUsers = [];
     filteredMatrixUsers = matrixUsers
         .where((MatrixUser user) =>
-            user.displayName.contains(text) || user.id!.contains(text))
+            user.displayName.toLowerCase().contains(text.toLowerCase()) ||
+            user.id!.toLowerCase().contains(text.toLowerCase()))
         .toList();
     _filteredMatrixUsers.value = filteredMatrixUsers;
   }
@@ -58,7 +59,8 @@ class MatrixPolicyFilterManager {
     List<MatrixRoom> filteredMatrixRooms = [];
     filteredMatrixRooms = matrixRooms
         .where((MatrixRoom room) =>
-            room.name!.contains(text) || room.id.contains(text))
+            room.name!.toLowerCase().contains(text.toLowerCase()) ||
+            room.id.toLowerCase().contains(text.toLowerCase()))
         .toList();
     _filteredMatrixRooms.value = filteredMatrixRooms;
   }

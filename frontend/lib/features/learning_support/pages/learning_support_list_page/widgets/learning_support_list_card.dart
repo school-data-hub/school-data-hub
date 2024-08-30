@@ -66,16 +66,33 @@ class _LearningSupportCardState extends State<LearningSupportCard> {
                                   ),
                                 ));
                               },
-                              child: Text(
-                                '${pupil.firstName} ${pupil.lastName}',
-                                overflow: TextOverflow.fade,
-                                softWrap: false,
-                                textAlign: TextAlign.left,
-                                style: const TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18,
-                                ),
+                              child: Row(
+                                children: [
+                                  Text(
+                                    pupil.firstName,
+                                    overflow: TextOverflow.fade,
+                                    softWrap: false,
+                                    textAlign: TextAlign.left,
+                                    style: const TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18,
+                                    ),
+                                  ),
+                                  const Gap(5),
+                                  Text(
+                                    pupil.lastName,
+                                    overflow: TextOverflow.fade,
+                                    softWrap: false,
+                                    textAlign: TextAlign.left,
+                                    style: const TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.normal,
+                                      fontSize: 18,
+                                    ),
+                                  ),
+                                  const Gap(5),
+                                ],
                               ),
                             ),
                           ),
