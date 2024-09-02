@@ -15,11 +15,31 @@ import 'package:schuldaten_hub/features/school_lists/pages/school_lists_page/wid
 
 import 'package:watch_it/watch_it.dart';
 
-class SchoolListsPage extends WatchingWidget {
+import '../../../../common/services/base_state.dart';
+import '../../../../common/widgets/generic_app_bar.dart';
+
+class SchoolListsPage extends WatchingStatefulWidget {
   const SchoolListsPage({super.key});
 
   @override
+  State<SchoolListsPage> createState() => _SchoolListsPageState();
+}
+
+class _SchoolListsPageState extends BaseState<SchoolListsPage> {
+  @override
+  Future<void> onInitialize() async {
+    await locator.isReady<SchoolListFilterManager>();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    if (!isInitialized) {
+      return const Scaffold(
+        backgroundColor: canvasColor,
+        appBar: GenericAppBar(iconData: Icons.rule_rounded, title: 'Listen'),
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
     bool filtersOn = watchValue((SchoolListFilterManager x) => x.filterState);
 
     Session session = watchValue((SessionManager x) => x.credentials);

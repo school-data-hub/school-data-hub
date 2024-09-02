@@ -14,14 +14,35 @@ import 'package:schuldaten_hub/features/pupil/services/pupil_manager.dart';
 import 'package:schuldaten_hub/features/credit/credit_list_page/widgets/credit_list_card.dart';
 import 'package:schuldaten_hub/features/credit/credit_list_page/widgets/credit_list_searchbar.dart';
 import 'package:schuldaten_hub/features/credit/credit_list_page/widgets/credit_list_page_bottom_navbar.dart';
+import 'package:schuldaten_hub/features/school_lists/filters/school_list_filter_manager.dart';
 
 import 'package:watch_it/watch_it.dart';
 
-class CreditListPage extends WatchingWidget {
+import '../../../common/services/base_state.dart';
+
+class CreditListPage extends WatchingStatefulWidget {
   const CreditListPage({super.key});
 
   @override
+  State<CreditListPage> createState() => _CreditListPageState();
+}
+
+class _CreditListPageState extends BaseState<CreditListPage> {
+  @override
+  Future<void> onInitialize() async {
+    await locator.isReady<PupilsFilter>();
+    await locator.isReady<SchoolListFilterManager>();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    if (!isInitialized) {
+      return const Scaffold(
+        backgroundColor: canvasColor,
+        appBar: GenericAppBar(iconData: Icons.credit_card, title: 'Guthaben:'),
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
     bool filtersOn = watchValue((PupilsFilter x) => x.filtersOn);
     List<PupilProxy> pupils = watchValue((PupilsFilter x) => x.filteredPupils);
     int userCredit = watchValue((SessionManager x) => x.credentials).credit!;

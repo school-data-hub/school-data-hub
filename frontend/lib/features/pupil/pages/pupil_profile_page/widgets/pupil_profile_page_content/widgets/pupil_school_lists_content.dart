@@ -11,12 +11,33 @@ import 'package:schuldaten_hub/features/school_lists/pages/school_list_pupils_pa
 import 'package:schuldaten_hub/features/school_lists/pages/school_lists_page/school_lists_page.dart';
 import 'package:watch_it/watch_it.dart';
 
-class PupilSchoolListsContent extends StatelessWidget {
+import '../../../../../../../common/services/base_state.dart';
+import '../../../../../filters/pupils_filter.dart';
+
+class PupilSchoolListsContent extends StatefulWidget {
   final PupilProxy pupil;
+
   const PupilSchoolListsContent({required this.pupil, super.key});
 
   @override
+  State<PupilSchoolListsContent> createState() =>
+      _PupilSchoolListsContentState();
+}
+
+class _PupilSchoolListsContentState extends BaseState<PupilSchoolListsContent> {
+  @override
+  Future<void> onInitialize() async {
+    await locator.isReady<PupilsFilter>();
+    await locator.isReady<SchoolListManager>();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    if (!isInitialized) {
+      return const Card(
+        child: CircularProgressIndicator(),
+      );
+    }
     return Card(
       color: pupilProfileCardColor,
       shape: RoundedRectangleBorder(
@@ -47,7 +68,7 @@ class PupilSchoolListsContent extends StatelessWidget {
             )
           ]),
           const Gap(15),
-          PupilSchoolListContentList(pupil: pupil),
+          PupilSchoolListContentList(pupil: widget.pupil),
         ]),
       ),
     );
@@ -56,6 +77,7 @@ class PupilSchoolListsContent extends StatelessWidget {
 
 class PupilSchoolListContentList extends WatchingWidget {
   final PupilProxy pupil;
+
   const PupilSchoolListContentList({required this.pupil, super.key});
 
   @override

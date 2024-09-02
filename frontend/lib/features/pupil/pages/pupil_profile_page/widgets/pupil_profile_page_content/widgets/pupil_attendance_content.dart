@@ -15,15 +15,36 @@ import 'package:schuldaten_hub/features/attendance/pages/widgets/attendance_badg
 import 'package:schuldaten_hub/features/attendance/pages/widgets/attendance_stats_pupil.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
 
-class PupilAttendanceContent extends StatelessWidget {
+import '../../../../../../../common/services/base_state.dart';
+import '../../../../../filters/pupils_filter.dart';
+
+class PupilAttendanceContent extends StatefulWidget {
   final PupilProxy pupil;
+
   const PupilAttendanceContent({required this.pupil, super.key});
 
   @override
+  State<PupilAttendanceContent> createState() => _PupilAttendanceContentState();
+}
+
+class _PupilAttendanceContentState extends BaseState<PupilAttendanceContent> {
+  @override
+  Future<void> onInitialize() async {
+    await locator.isReady<PupilsFilter>();
+    await locator.isReady<AttendanceManager>();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final List<int> missedHoursForActualReport =
-        locator<AttendanceManager>().missedHoursforSemesterOrSchoolyear(pupil);
-    List<MissedClass> missedClasses = List.from(pupil.pupilMissedClasses!);
+    if (!isInitialized) {
+      return const Card(
+        child: CircularProgressIndicator(),
+      );
+    }
+    final List<int> missedHoursForActualReport = locator<AttendanceManager>()
+        .missedHoursforSemesterOrSchoolyear(widget.pupil);
+    List<MissedClass> missedClasses =
+        List.from(widget.pupil.pupilMissedClasses!);
     // sort by missedDay
     missedClasses.sort((b, a) => a.missedDay.compareTo(b.missedDay));
     return Card(
@@ -56,7 +77,7 @@ class PupilAttendanceContent extends StatelessWidget {
             )
           ]),
           const Gap(15),
-          attendanceStats(pupil),
+          attendanceStats(widget.pupil),
           const Gap(10),
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -117,7 +138,8 @@ class PupilAttendanceContent extends StatelessWidget {
                           message: 'Die Fehlzeit löschen?');
                       if (confirm != true) return;
                       await locator<AttendanceManager>().deleteMissedClass(
-                          pupil.internalId, missedClasses[index].missedDay);
+                          widget.pupil.internalId,
+                          missedClasses[index].missedDay);
 
                       locator<NotificationManager>().showSnackBar(
                           NotificationType.success, 'Fehlzeit gelöscht!');

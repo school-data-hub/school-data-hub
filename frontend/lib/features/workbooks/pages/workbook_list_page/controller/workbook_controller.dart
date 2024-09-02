@@ -16,12 +16,6 @@ class WorkbookList extends StatefulWidget {
 
 class WorkbookController extends State<WorkbookList> {
   @override
-  void initState() {
-    locator<WorkbookManager>().getWorkbooks();
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return WorkbookListView(this);
   }

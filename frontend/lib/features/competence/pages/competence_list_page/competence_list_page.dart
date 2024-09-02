@@ -13,11 +13,32 @@ import 'package:schuldaten_hub/features/competence/pages/patch_competence_page/p
 
 import 'package:watch_it/watch_it.dart';
 
-class CompetenceListPage extends WatchingWidget {
+import '../../../../common/services/base_state.dart';
+import '../../../../common/widgets/generic_app_bar.dart';
+
+class CompetenceListPage extends WatchingStatefulWidget {
   const CompetenceListPage({super.key});
 
   @override
+  State<CompetenceListPage> createState() => _CompetenceListPageState();
+}
+
+class _CompetenceListPageState extends BaseState<CompetenceListPage> {
+  @override
+  Future<void> onInitialize() async {
+    await locator.isReady<CompetenceFilterManager>();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    if (!isInitialized) {
+      return const Scaffold(
+        backgroundColor: canvasColor,
+        appBar:
+            GenericAppBar(iconData: Icons.rule_rounded, title: 'Kompetenzen'),
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
     //TODO: functions in the build method don't feel right
     navigateToNewCompetenceview(int competenceId) {
       Navigator.of(context).push(MaterialPageRoute(

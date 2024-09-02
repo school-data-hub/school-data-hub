@@ -4,15 +4,39 @@ import 'package:schuldaten_hub/common/constants/colors.dart';
 import 'package:schuldaten_hub/common/constants/paddings.dart';
 import 'package:schuldaten_hub/common/widgets/dialogues/information_dialog.dart';
 import 'package:schuldaten_hub/features/learning_support/pages/learning_support_list_page/learning_support_list_page.dart';
+import 'package:schuldaten_hub/features/learning_support/services/learning_support_manager.dart';
 import 'package:schuldaten_hub/features/pupil/pages/pupil_profile_page/widgets/pupil_profile_page_content/widgets/pupil_profile_learning_support_content.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
 
-class PupilLearningSupportContent extends StatelessWidget {
+import '../../../../../../../common/services/base_state.dart';
+import '../../../../../../../common/services/locator.dart';
+import '../../../../../filters/pupils_filter.dart';
+
+class PupilLearningSupportContent extends StatefulWidget {
   final PupilProxy pupil;
+
   const PupilLearningSupportContent({required this.pupil, super.key});
 
   @override
+  State<PupilLearningSupportContent> createState() =>
+      _PupilLearningSupportContentState();
+}
+
+class _PupilLearningSupportContentState
+    extends BaseState<PupilLearningSupportContent> {
+  @override
+  Future<void> onInitialize() async {
+    await locator.isReady<PupilsFilter>();
+    await locator.isReady<LearningSupportManager>();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    if (!isInitialized) {
+      return const Card(
+        child: CircularProgressIndicator(),
+      );
+    }
     return Card(
       color: pupilProfileCardColor,
       shape: RoundedRectangleBorder(
@@ -54,7 +78,7 @@ class PupilLearningSupportContent extends StatelessWidget {
             ),
           ]),
           const Gap(15),
-          ...pupilLearningSupportContentList(pupil, context),
+          ...pupilLearningSupportContentList(widget.pupil, context),
         ]),
       ),
     );
