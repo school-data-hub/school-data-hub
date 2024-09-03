@@ -98,7 +98,7 @@ class SelectMatrixRoomsListController extends State<SelectMatrixRoomsList> {
         watchValue((MatrixPolicyFilterManager x) => x.filteredMatrixRooms);
 
     List<MatrixRoom> filteredListedRooms =
-        roomsFromRoomIds(widget.selectableRooms!)
+        MatrixHelperFunctions.roomsFromRoomIds(widget.selectableRooms!)
             .where((room) => filteredRooms.contains(room))
             .toList();
     return SelectMatrixRoomsListView(this, filteredListedRooms);

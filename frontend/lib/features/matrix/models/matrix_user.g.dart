@@ -11,10 +11,9 @@ MatrixUser _$MatrixUserFromJson(Map<String, dynamic> json) => MatrixUser(
       active: json['active'] as bool?,
       authType: json['authType'] as String?,
       displayName: json['displayName'] as String,
-      joinedRoomIds: (json['joinedRoomIds'] as List<dynamic>?)
-              ?.map((e) => e as String)
-              .toList() ??
-          const [],
+      joinedRoomIds: (json['joinedRoomIds'] as List<dynamic>)
+          .map((e) => e as String)
+          .toList(),
     );
 
 Map<String, dynamic> _$MatrixUserToJson(MatrixUser instance) =>

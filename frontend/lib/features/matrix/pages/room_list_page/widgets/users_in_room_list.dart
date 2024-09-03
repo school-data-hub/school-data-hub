@@ -106,7 +106,9 @@ List<Widget> usersInRoomList(
                         ),
                       ),
                     ),
-                    if (powerLevelInRoom(roomId, matrixUser.id!) != null)
+                    if (MatrixHelperFunctions.powerLevelInRoom(
+                            roomId, matrixUser.id!) !=
+                        null)
                       const Icon(
                         Icons.check,
                         color: Colors.green,

@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
-import 'package:schuldaten_hub/common/utils/logger.dart';
 import 'package:schuldaten_hub/features/matrix/models/matrix_room.dart';
 import 'package:schuldaten_hub/features/matrix/models/matrix_user.dart';
 import 'package:schuldaten_hub/features/matrix/services/matrix_policy_manager.dart';
@@ -29,6 +28,22 @@ class MatrixPolicyFilterManager {
         locator<MatrixPolicyManager>().matrixRooms.value;
   }
 
+  refreshFilteredMatrixUsers() {
+    final matrixUsers = locator<MatrixPolicyManager>().matrixUsers.value;
+    final filteredMatrixUsers = _filteredMatrixUsers.value;
+    for (var user in matrixUsers) {
+      final index = filteredMatrixUsers
+          .indexWhere((filteredUser) => filteredUser.id == user.id);
+      if (index != -1) {
+        if (filteredMatrixUsers[index] != user) {
+          filteredMatrixUsers[index] = user;
+        }
+      }
+    }
+
+    _filteredMatrixUsers.value = filteredMatrixUsers;
+  }
+
   setUsersFilterText(String text) {
     if (text == '') {
       _searchText.value = text;
@@ -36,7 +51,7 @@ class MatrixPolicyFilterManager {
           locator<MatrixPolicyManager>().matrixUsers.value;
       return;
     }
-    final List<MatrixUser> matrixUsers =
+    List<MatrixUser> matrixUsers =
         List.from(locator<MatrixPolicyManager>().matrixUsers.value);
     List<MatrixUser> filteredMatrixUsers = [];
     filteredMatrixUsers = matrixUsers

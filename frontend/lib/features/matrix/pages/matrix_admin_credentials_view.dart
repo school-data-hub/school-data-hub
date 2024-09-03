@@ -28,15 +28,15 @@ class NewMatrixUserViewState extends State<NewMatrixUserView> {
     await locator<MatrixPolicyManager>()
         .createNewMatrixUser(matrixId, displayName);
 
-    await locator<MatrixPolicyManager>()
-        .addMatrixUserToRooms(matrixId, roomIdsList);
+    locator<MatrixPolicyManager>().addMatrixUserToRooms(matrixId, roomIdsList);
     // await locator<SchoolListManager>()
     //     .postSchoolListWithGroup(text1, text2, pupilIds.toList(), listType);
   }
 
   @override
   Widget build(BuildContext context) {
-    List<MatrixRoom> roomsFromIds = roomsFromRoomIds(roomIds.toList());
+    List<MatrixRoom> roomsFromIds =
+        MatrixHelperFunctions.roomsFromRoomIds(roomIds.toList());
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -227,7 +227,8 @@ class NewMatrixUserViewState extends State<NewMatrixUserView> {
                     final List<String> selectedRoomIds =
                         await Navigator.of(context).push(MaterialPageRoute(
                               builder: (ctx) => SelectMatrixRoomsList(
-                                  restOfRooms(roomIds.toList())),
+                                  MatrixHelperFunctions.restOfRooms(
+                                      roomIds.toList())),
                             )) ??
                             [];
                     if (selectedRoomIds.isNotEmpty) {

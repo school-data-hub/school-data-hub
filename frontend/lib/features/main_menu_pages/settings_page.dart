@@ -355,17 +355,6 @@ class SettingsPage extends WatchingWidget {
                           }),
                       SettingsTile.navigation(
                           leading: const Icon(Icons.chat_rounded),
-                          title: const Text('Policy generieren'),
-                          onPressed: (context) async {
-                            final bool confirmed =
-                                await generatePolicyJsonFile();
-                            if (confirmed) {
-                              locator<NotificationManager>().showSnackBar(
-                                  NotificationType.error, 'Datei generiert');
-                            }
-                          }),
-                      SettingsTile.navigation(
-                          leading: const Icon(Icons.chat_rounded),
                           title: const Text('Raumverwaltung löschen'),
                           onPressed: (context) async {
                             await locator<MatrixPolicyManager>()
