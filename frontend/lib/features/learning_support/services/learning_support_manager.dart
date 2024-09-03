@@ -165,7 +165,7 @@ class LearningSupportManager {
 
   Color getCategoryColor(int categoryId) {
     final SupportCategory rootCategory = getRootSupportCategory(categoryId);
-    return getRootSupportCategoryColor(rootCategory)!;
+    return getRootSupportCategoryColor(rootCategory);
   }
 
   Color getRootSupportCategoryColor(SupportCategory goalCategory) {

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/widgets/generic_app_bar.dart';
@@ -9,8 +8,8 @@ import 'package:schuldaten_hub/features/matrix/models/matrix_user.dart';
 import 'package:schuldaten_hub/features/matrix/pages/matrix_users_list_page/widgets/matrix_user_list_card.dart';
 import 'package:schuldaten_hub/features/matrix/pages/matrix_users_list_page/widgets/matrix_user_list_searchbar.dart';
 import 'package:schuldaten_hub/features/matrix/pages/matrix_users_list_page/widgets/matrix_users_list_view_bottom_navbar.dart';
-import 'package:schuldaten_hub/features/matrix/services/matrix_policy_helper_functions.dart';
 import 'package:schuldaten_hub/features/matrix/services/matrix_policy_manager.dart';
+import 'package:schuldaten_hub/features/matrix/services/matrix_room_helpers.dart';
 import 'package:watch_it/watch_it.dart';
 
 class MatrixRoomPage extends WatchingWidget {
@@ -22,7 +21,7 @@ class MatrixRoomPage extends WatchingWidget {
     final List<MatrixUser> matrixUsers =
         watchValue((MatrixPolicyManager x) => x.matrixUsers);
     final List<MatrixUser> matrixUsersInRoom =
-        MatrixHelperFunctions.usersInRoom(matrixRoom.id);
+        MatrixRoomHelper.usersInRoom(matrixRoom.id);
     return Scaffold(
       appBar: GenericAppBar(iconData: Icons.room, title: matrixRoom.name!),
       body: RefreshIndicator(

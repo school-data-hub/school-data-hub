@@ -7,8 +7,8 @@ import 'package:schuldaten_hub/common/widgets/custom_list_tiles.dart';
 import 'package:schuldaten_hub/features/matrix/models/matrix_room.dart';
 import 'package:schuldaten_hub/features/matrix/models/matrix_user.dart';
 import 'package:schuldaten_hub/features/matrix/pages/matrix_room_page/matrix_room_page.dart';
-import 'package:schuldaten_hub/features/matrix/services/matrix_policy_helper_functions.dart';
 import 'package:schuldaten_hub/features/matrix/pages/room_list_page/widgets/users_in_room_list.dart';
+import 'package:schuldaten_hub/features/matrix/services/matrix_room_helpers.dart';
 import 'package:watch_it/watch_it.dart';
 
 class RoomListCard extends WatchingStatefulWidget {
@@ -33,7 +33,7 @@ class _RoomListCardState extends State<RoomListCard> {
     //     .where((element) => element.internalId == widget.passedPupil.internalId)
     //     .first;
     final List<MatrixUser> matrixUsersInRoom =
-        MatrixHelperFunctions.usersInRoom(widget.matrixRoom.id);
+        MatrixRoomHelper.usersInRoom(widget.matrixRoom.id);
     return Card(
       color: Colors.white,
       surfaceTintColor: Colors.white,

@@ -1,4 +1,3 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
@@ -10,7 +9,7 @@ import 'package:schuldaten_hub/common/widgets/custom_list_tiles.dart';
 import 'package:schuldaten_hub/features/matrix/models/matrix_user.dart';
 import 'package:schuldaten_hub/features/matrix/pages/matrix_users_list_page/widgets/pupil_rooms_list.dart';
 import 'package:schuldaten_hub/features/matrix/pages/select_matrix_rooms_list_page/controller/select_matrix_rooms_list_controller.dart';
-import 'package:schuldaten_hub/features/matrix/services/matrix_policy_helper_functions.dart';
+import 'package:schuldaten_hub/features/matrix/services/matrix_room_helpers.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
 import 'package:schuldaten_hub/features/pupil/services/pupil_manager.dart';
 import 'package:watch_it/watch_it.dart';
@@ -169,9 +168,8 @@ class _MatrixUsersListCardState extends State<MatrixUsersListCard> {
                     child: ElevatedButton(
                       style: successButtonStyle,
                       onPressed: () async {
-                        final availableRooms =
-                            MatrixHelperFunctions.restOfRooms(
-                                matrixUser.joinedRoomIds);
+                        final availableRooms = MatrixRoomHelper.restOfRooms(
+                            matrixUser.joinedRoomIds);
                         final List<String> selectedRoomIds =
                             await Navigator.of(context).push(MaterialPageRoute(
                                   builder: (ctx) =>

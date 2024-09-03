@@ -7,7 +7,7 @@ import 'package:schuldaten_hub/features/matrix/pages/select_matrix_rooms_list_pa
 import 'package:schuldaten_hub/features/matrix/pages/select_matrix_rooms_list_page/widgets/select_matrix_room_card.dart';
 import 'package:schuldaten_hub/features/matrix/pages/select_matrix_rooms_list_page/widgets/select_matrix_rooms_list_view_bottom_navbar.dart';
 import 'package:schuldaten_hub/features/matrix/pages/select_matrix_rooms_list_page/widgets/select_room_list_searchbar.dart';
-import 'package:schuldaten_hub/features/pupil/filters/pupil_filter_manager.dart';
+
 import 'package:watch_it/watch_it.dart';
 
 class SelectMatrixRoomsListView extends WatchingWidget {
@@ -18,8 +18,6 @@ class SelectMatrixRoomsListView extends WatchingWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool filtersOn = watchValue((PupilFilterManager x) => x.filtersOn);
-
     return Scaffold(
       backgroundColor: canvasColor,
       appBar: AppBar(
@@ -63,8 +61,9 @@ class SelectMatrixRoomsListView extends WatchingWidget {
                     titlePadding: const EdgeInsets.only(
                         left: 5, top: 5, right: 5, bottom: 5),
                     collapseMode: CollapseMode.none,
-                    title: selectRoomListSearchBar(
-                        context, filteredRoomsInLIst, controller, filtersOn),
+                    title: SelectRoomListSearchBar(
+                        matrixRooms: filteredRoomsInLIst,
+                        controller: controller),
                   ),
                 ),
                 filteredRoomsInLIst.isEmpty
@@ -95,7 +94,7 @@ class SelectMatrixRoomsListView extends WatchingWidget {
         ),
       ),
       bottomNavigationBar:
-          selectMatrixRoomsListViewBottomNavBar(context, controller, filtersOn),
+          SelectMatrixRoomsListViewBottomNavBar(controller: controller),
     );
   }
 }

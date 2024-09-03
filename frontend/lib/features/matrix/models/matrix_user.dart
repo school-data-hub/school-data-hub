@@ -2,8 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/features/matrix/models/matrix_room.dart';
-import 'package:schuldaten_hub/features/matrix/services/matrix_policy_helper_functions.dart';
 import 'package:schuldaten_hub/features/matrix/services/matrix_policy_manager.dart';
+import 'package:schuldaten_hub/features/matrix/services/matrix_room_helpers.dart';
 
 part 'matrix_user.g.dart';
 
@@ -58,7 +58,7 @@ class MatrixUser extends ChangeNotifier {
   }
 
   void joinRooms(List<String> roomIds) {
-    _matrixRooms.addAll(MatrixHelperFunctions.roomsFromRoomIds(roomIds));
+    _matrixRooms.addAll(MatrixRoomHelper.roomsFromRoomIds(roomIds));
 
     _joinedRoomIds.addAll(roomIds);
     locator<MatrixPolicyManager>().pendingChangesHandler(true);

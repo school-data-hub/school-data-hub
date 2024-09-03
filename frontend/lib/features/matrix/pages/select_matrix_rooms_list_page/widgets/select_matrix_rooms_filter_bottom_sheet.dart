@@ -62,7 +62,7 @@ class SelectMatrixUsersFilterBottomSheet extends WatchingWidget {
   }
 }
 
-showSelectMatrixUsersFilterBottomSheet(BuildContext context) {
+showSelectMatrixRoomsFilterBottomSheet(BuildContext context) {
   return showModalBottomSheet(
     constraints: const BoxConstraints(maxWidth: 800),
     shape: RoundedRectangleBorder(

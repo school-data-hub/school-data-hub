@@ -7,7 +7,6 @@ import 'package:schuldaten_hub/features/credit/credit_list_page/widgets/credit_f
 import 'package:schuldaten_hub/features/matrix/filters/matrix_policy_filter_manager.dart';
 import 'package:schuldaten_hub/features/matrix/pages/new_matrix_user_view.dart';
 import 'package:schuldaten_hub/features/matrix/pages/room_list_page/room_list_page.dart';
-import 'package:schuldaten_hub/features/matrix/services/matrix_api_service.dart';
 import 'package:schuldaten_hub/features/matrix/services/matrix_policy_manager.dart';
 import 'package:watch_it/watch_it.dart';
 

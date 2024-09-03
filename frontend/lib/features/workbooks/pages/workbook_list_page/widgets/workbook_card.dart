@@ -9,7 +9,6 @@ import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/session_manager.dart';
 import 'package:schuldaten_hub/common/utils/extensions.dart';
 import 'package:schuldaten_hub/common/widgets/dialogues/confirmation_dialog.dart';
-import 'package:schuldaten_hub/common/widgets/dialogues/information_dialog.dart';
 import 'package:schuldaten_hub/common/widgets/document_image.dart';
 import 'package:schuldaten_hub/common/widgets/upload_image.dart';
 import 'package:schuldaten_hub/features/workbooks/models/workbook.dart';

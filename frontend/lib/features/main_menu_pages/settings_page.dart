@@ -23,7 +23,6 @@ import 'package:schuldaten_hub/common/widgets/qr_widgets.dart';
 import 'package:schuldaten_hub/features/schooldays/pages/schooldays_calendar_page.dart';
 import 'package:schuldaten_hub/features/main_menu_pages/login_page/controller/login_controller.dart';
 import 'package:schuldaten_hub/features/main_menu_pages/widgets/dialogues/change_env_dialog.dart';
-import 'package:schuldaten_hub/features/matrix/services/matrix_policy_helper_functions.dart';
 import 'package:schuldaten_hub/features/matrix/pages/set_matrix_environment_values_page.dart';
 import 'package:schuldaten_hub/features/matrix/services/matrix_policy_manager.dart';
 import 'package:schuldaten_hub/features/pupil/services/pupil_identity_manager.dart';

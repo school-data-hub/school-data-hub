@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:http_parser/http_parser.dart';
 import 'package:dio/dio.dart';
 import 'package:schuldaten_hub/common/constants/enums.dart';
 import 'package:schuldaten_hub/common/services/api/api.dart';
@@ -11,7 +10,6 @@ import 'package:schuldaten_hub/features/matrix/models/matrix_room.dart';
 import 'package:schuldaten_hub/features/matrix/models/matrix_user.dart';
 import 'package:schuldaten_hub/features/matrix/models/policy.dart';
 import 'package:schuldaten_hub/features/matrix/services/matrix_policy_helper_functions.dart';
-import 'package:path/path.dart' as path;
 import 'package:schuldaten_hub/features/matrix/services/matrix_policy_manager.dart';
 
 enum MatrixAuthType { matrix, corporal }

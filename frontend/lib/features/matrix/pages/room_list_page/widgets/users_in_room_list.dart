@@ -5,8 +5,8 @@ import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/widgets/dialogues/confirmation_dialog.dart';
 import 'package:schuldaten_hub/features/matrix/models/matrix_room.dart';
 import 'package:schuldaten_hub/features/matrix/models/matrix_user.dart';
-import 'package:schuldaten_hub/features/matrix/services/matrix_policy_helper_functions.dart';
 import 'package:schuldaten_hub/features/matrix/services/matrix_policy_manager.dart';
+import 'package:schuldaten_hub/features/matrix/services/matrix_room_helpers.dart';
 
 List<Widget> usersInRoomList(
     List<MatrixUser> matrixUsers, String roomId, BuildContext context) {
@@ -106,7 +106,7 @@ List<Widget> usersInRoomList(
                         ),
                       ),
                     ),
-                    if (MatrixHelperFunctions.powerLevelInRoom(
+                    if (MatrixRoomHelper.powerLevelInRoom(
                             roomId, matrixUser.id!) !=
                         null)
                       const Icon(

@@ -24,7 +24,7 @@ class SchoolListManager {
 
   // Let's define maps to make lookups faster
   // with the key being the listId
-  Map<String, SchoolList> _schoolListMap = {};
+  final Map<String, SchoolList> _schoolListMap = {};
 
   SchoolListManager();
 
