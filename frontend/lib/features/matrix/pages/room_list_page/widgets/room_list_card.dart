@@ -89,6 +89,7 @@ class _RoomListCardState extends State<RoomListCard> {
                     ),
                     const Gap(5),
                     Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Expanded(
                           child: SingleChildScrollView(

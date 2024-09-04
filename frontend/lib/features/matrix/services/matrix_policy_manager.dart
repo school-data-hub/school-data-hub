@@ -166,7 +166,7 @@ class MatrixPolicyManager {
     notificationManager.showSnackBar(NotificationType.success, 'Räume geladen');
 
     logger.i('Fetched Matrix policy!');
-
+    _pendingChanges.value = false;
     locator<SessionManager>().changeMatrixPolicyManagerRegistrationStatus(true);
 
     return;

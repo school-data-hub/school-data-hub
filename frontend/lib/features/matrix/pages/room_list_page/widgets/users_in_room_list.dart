@@ -26,7 +26,7 @@ List<Widget> usersInRoomList(
             // changeCreditDialog(context, pupil);
           },
           child: const Text(
-            "BERECHTIGUNGEN ÄNDERN",
+            "KONTO HINZUFÜGEN",
             style: buttonTextStyle,
           ),
         ),

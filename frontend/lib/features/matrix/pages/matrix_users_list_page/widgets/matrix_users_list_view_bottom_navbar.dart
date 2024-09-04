@@ -94,8 +94,8 @@ class MatrixUsersListViewBottomNavbar extends WatchingWidget {
                 const Gap(30),
                 InkWell(
                   onTap: () => showCreditFilterBottomSheet(context),
-                  onLongPress: () =>
-                      locator<PupilFilterManager>().resetFilters(),
+                  onLongPress: () => locator<MatrixPolicyFilterManager>()
+                      .resetAllMatrixFilters(),
                   child: Icon(
                     Icons.filter_list,
                     color: filtersOn ? Colors.deepOrange : Colors.white,

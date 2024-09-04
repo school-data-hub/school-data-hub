@@ -198,7 +198,7 @@ class MatrixApiService {
       data: bytes,
     );
     //delete file, we don't need it anymore
-    policyFile.deleteSync();
+    // policyFile.deleteSync();
     if (response.statusCode != 200) {
       notificationManager.showSnackBar(
           NotificationType.error, 'Fehler: status code ${response.statusCode}');
