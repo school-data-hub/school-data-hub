@@ -7,7 +7,6 @@ import 'package:schuldaten_hub/common/constants/colors.dart';
 import 'package:schuldaten_hub/common/constants/enums.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_manager.dart';
-import 'package:schuldaten_hub/common/utils/logger.dart';
 import 'package:schuldaten_hub/features/learning_support/models/support_category/support_category.dart';
 import 'package:schuldaten_hub/features/learning_support/models/support_goal/support_goal.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_data.dart';
@@ -23,11 +22,10 @@ class LearningSupportManager {
   final _goalCategories = ValueNotifier<List<SupportCategory>>([]);
   final _isRunning = ValueNotifier<bool>(false);
 
-  LearningSupportManager() {
-    logger.i('GoalManager constructor called');
-  }
+  LearningSupportManager();
+
   Future<LearningSupportManager> init() async {
-    await fetchGoalCategories();
+    await fetchSupportCategories();
     return this;
   }
 
@@ -35,7 +33,11 @@ class LearningSupportManager {
 
   final apiLearningSupportService = LearningSupportApiService();
 
-  Future<void> fetchGoalCategories() async {
+  void clearData() {
+    _goalCategories.value = [];
+  }
+
+  Future<void> fetchSupportCategories() async {
     final List<SupportCategory> goalCategories =
         await apiLearningSupportService.fetchGoalCategories();
 
@@ -163,7 +165,7 @@ class LearningSupportManager {
 
   Color getCategoryColor(int categoryId) {
     final SupportCategory rootCategory = getRootSupportCategory(categoryId);
-    return getRootSupportCategoryColor(rootCategory)!;
+    return getRootSupportCategoryColor(rootCategory);
   }
 
   Color getRootSupportCategoryColor(SupportCategory goalCategory) {

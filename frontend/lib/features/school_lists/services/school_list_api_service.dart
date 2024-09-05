@@ -18,7 +18,7 @@ class SchoolListApiService {
   static const _getSchoolListsUrl = '/school_lists/all';
 
   Future<List<SchoolList>> fetchSchoolLists() async {
-    notificationManager.isRunningValue(true);
+    notificationManager.apiRunningValue(true);
 
     final response = await _client.get(_getSchoolListsUrl);
 
@@ -26,7 +26,7 @@ class SchoolListApiService {
       notificationManager.showSnackBar(
           NotificationType.error, 'Fehler beim Laden der Schullisten');
 
-      notificationManager.isRunningValue(false);
+      notificationManager.apiRunningValue(false);
 
       throw ApiException('Failed to fetch school lists', response.statusCode);
     }
@@ -34,7 +34,7 @@ class SchoolListApiService {
     final List<SchoolList> schoolLists =
         (response.data as List).map((e) => SchoolList.fromJson(e)).toList();
 
-    notificationManager.isRunningValue(false);
+    notificationManager.apiRunningValue(false);
 
     return schoolLists;
   }
@@ -48,7 +48,7 @@ class SchoolListApiService {
       required String description,
       required List<int> pupilIds,
       required String visibility}) async {
-    notificationManager.isRunningValue(true);
+    notificationManager.apiRunningValue(true);
 
     final String data = jsonEncode({
       "list_name": name,
@@ -60,7 +60,7 @@ class SchoolListApiService {
     final response =
         await _client.post(_postSchoolListWithGroupUrl, data: data);
 
-    notificationManager.isRunningValue(false);
+    notificationManager.apiRunningValue(false);
 
     if (response.statusCode != 200) {
       notificationManager.showSnackBar(
@@ -88,7 +88,7 @@ class SchoolListApiService {
       String? description,
       String? visibility}) async {
     assert(name != null || description != null || visibility != null);
-    notificationManager.isRunningValue(true);
+    notificationManager.apiRunningValue(true);
     Map<String, String> jsonMap = {};
 
     if (name != null) {
@@ -106,7 +106,7 @@ class SchoolListApiService {
     final Response response = await _client
         .patch(_patchSchoolListUrl(schoolListToUpdate.listId), data: data);
 
-    notificationManager.isRunningValue(false);
+    notificationManager.apiRunningValue(false);
 
     if (response.statusCode != 200) {
       notificationManager.showSnackBar(
@@ -123,11 +123,11 @@ class SchoolListApiService {
   }
 
   Future<List<SchoolList>> deleteSchoolList(String listId) async {
-    notificationManager.isRunningValue(true);
+    notificationManager.apiRunningValue(true);
 
     final Response response =
         await _client.delete(_deleteSchoolListUrl(listId));
-    notificationManager.isRunningValue(false);
+    notificationManager.apiRunningValue(false);
 
     if (response.statusCode != 200) {
       notificationManager.showSnackBar(
@@ -153,12 +153,12 @@ class SchoolListApiService {
       {required String listId, required List<int> pupilIds}) async {
     final data = jsonEncode({"pupils": pupilIds});
 
-    notificationManager.isRunningValue(true);
+    notificationManager.apiRunningValue(true);
 
     final response =
         await _client.post(_addPupilsToSchoolList(listId), data: data);
 
-    notificationManager.isRunningValue(false);
+    notificationManager.apiRunningValue(false);
 
     if (response.statusCode != 200) {
       notificationManager.showSnackBar(
@@ -198,11 +198,11 @@ class SchoolListApiService {
             locator<SessionManager>().credentials.value.username
       });
     }
-    notificationManager.isRunningValue(true);
+    notificationManager.apiRunningValue(true);
     final response =
         await _client.patch(_patchPupilSchoolList(pupilId, listId), data: data);
 
-    notificationManager.isRunningValue(false);
+    notificationManager.apiRunningValue(false);
 
     if (response.statusCode != 200) {
       notificationManager.showSnackBar(
@@ -227,12 +227,12 @@ class SchoolListApiService {
   }) async {
     final data = jsonEncode({"pupils": pupilIds});
 
-    notificationManager.isRunningValue(true);
+    notificationManager.apiRunningValue(true);
 
     final response =
         await _client.post(_deletePupilsFromSchoolList(listId), data: data);
 
-    notificationManager.isRunningValue(false);
+    notificationManager.apiRunningValue(false);
 
     if (response.statusCode != 200) {
       notificationManager.showSnackBar(

@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/constants/colors.dart';
 import 'package:schuldaten_hub/common/widgets/custom_expansion_tile.dart';
 import 'package:schuldaten_hub/common/widgets/custom_list_tiles.dart';
 import 'package:schuldaten_hub/features/matrix/models/matrix_room.dart';
 import 'package:schuldaten_hub/features/matrix/models/matrix_user.dart';
-import 'package:schuldaten_hub/features/matrix/services/matrix_policy_helper_functions.dart';
+import 'package:schuldaten_hub/features/matrix/pages/matrix_room_page/matrix_room_page.dart';
 import 'package:schuldaten_hub/features/matrix/pages/room_list_page/widgets/users_in_room_list.dart';
+import 'package:schuldaten_hub/features/matrix/services/matrix_room_helpers.dart';
 import 'package:watch_it/watch_it.dart';
 
 class RoomListCard extends WatchingStatefulWidget {
@@ -31,7 +33,7 @@ class _RoomListCardState extends State<RoomListCard> {
     //     .where((element) => element.internalId == widget.passedPupil.internalId)
     //     .first;
     final List<MatrixUser> matrixUsersInRoom =
-        usersInRoom(widget.matrixRoom.id);
+        MatrixRoomHelper.usersInRoom(widget.matrixRoom.id);
     return Card(
       color: Colors.white,
       surfaceTintColor: Colors.white,
@@ -63,11 +65,11 @@ class _RoomListCardState extends State<RoomListCard> {
                               onTap: () {
                                 // locator<BottomNavManager>()
                                 //     .setPupilProfileNavPage(2);
-                                // Navigator.of(context).push(MaterialPageRoute(
-                                //   builder: (ctx) => PupilProfile(
-                                //     pupil,
-                                //   ),
-                                // ));
+                                Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (ctx) => MatrixRoomPage(
+                                    matrixRoom: widget.matrixRoom,
+                                  ),
+                                ));
                               },
                               child: Text(
                                 '${widget.matrixRoom.name}',
@@ -87,6 +89,7 @@ class _RoomListCardState extends State<RoomListCard> {
                     ),
                     const Gap(5),
                     Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Expanded(
                           child: SingleChildScrollView(
@@ -103,6 +106,17 @@ class _RoomListCardState extends State<RoomListCard> {
                               ],
                             ),
                           ),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.copy),
+                          onPressed: () {
+                            Clipboard.setData(
+                                ClipboardData(text: widget.matrixRoom.id));
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text('Copied to clipboard')),
+                            );
+                          },
                         ),
                       ],
                     ),
@@ -221,7 +235,8 @@ class _RoomListCardState extends State<RoomListCard> {
           CustomListTiles(
               title: null,
               tileController: _tileController,
-              widgetList: usersInRoomList(matrixUsersInRoom, context))
+              widgetList: usersInRoomList(
+                  matrixUsersInRoom, widget.matrixRoom.id, context))
         ],
       ),
     );

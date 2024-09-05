@@ -22,9 +22,9 @@ class WorkbookApiService {
   static const _getWorkbooksUrl = '/workbooks/all/flat';
 
   Future<List<Workbook>> getWorkbooks() async {
-    notificationManager.isRunningValue(true);
+    notificationManager.apiRunningValue(true);
     final Response response = await _client.get(_getWorkbooksUrl);
-    notificationManager.isRunningValue(false);
+    notificationManager.apiRunningValue(false);
 
     if (response.statusCode != 200) {
       notificationManager.showSnackBar(
@@ -59,11 +59,11 @@ class WorkbookApiService {
       "amount": amount
     });
 
-    notificationManager.isRunningValue(true);
+    notificationManager.apiRunningValue(true);
     final Response response = await _client.post(_postWorkbookUrl, data: data);
     logger.d('${response.statusCode} ${response.data}');
     debugger();
-    notificationManager.isRunningValue(false);
+    notificationManager.apiRunningValue(false);
 
     if (response.statusCode != 200) {
       notificationManager.showSnackBar(
@@ -95,10 +95,10 @@ class WorkbookApiService {
       "image_url": workbook.imageUrl
     });
 
-    notificationManager.isRunningValue(true);
+    notificationManager.apiRunningValue(true);
     final Response response =
         await _client.patch(_patchWorkbookUrl((workbook.isbn)), data: data);
-    notificationManager.isRunningValue(false);
+    notificationManager.apiRunningValue(false);
 
     if (response.statusCode != 200) {
       notificationManager.showSnackBar(
@@ -128,12 +128,12 @@ class WorkbookApiService {
         filename: fileName,
       ),
     });
-    notificationManager.isRunningValue(true);
+    notificationManager.apiRunningValue(true);
     final Response response = await _client.patch(
       _patchWorkbookWithImageUrl(isbn),
       data: formData,
     );
-    notificationManager.isRunningValue(false);
+    notificationManager.apiRunningValue(false);
 
     // Handle errors.
     if (response.statusCode != 200) {
@@ -160,9 +160,9 @@ class WorkbookApiService {
   }
 
   Future<Workbook> deleteWorkbookFile(int isbn) async {
-    notificationManager.isRunningValue(true);
+    notificationManager.apiRunningValue(true);
     final Response response = await _client.delete(getWorkbookImage(isbn));
-    notificationManager.isRunningValue(false);
+    notificationManager.apiRunningValue(false);
 
     if (response.statusCode != 200) {
       notificationManager.showSnackBar(
@@ -178,11 +178,11 @@ class WorkbookApiService {
   }
 
   Future<List<Workbook>> deleteWorkbook(int isbn) async {
-    notificationManager.isRunningValue(true);
+    notificationManager.apiRunningValue(true);
 
     final Response response =
         await _client.delete(WorkbookApiService().deleteWorkbookUrl(isbn));
-    notificationManager.isRunningValue(false);
+    notificationManager.apiRunningValue(false);
 
     if (response.statusCode != 200) {
       notificationManager.showSnackBar(

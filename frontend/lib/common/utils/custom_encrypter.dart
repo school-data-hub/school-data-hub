@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:isolate';
 
 import 'package:encrypt/encrypt.dart' as enc;
 import 'package:flutter/foundation.dart';
@@ -71,5 +70,24 @@ class CustomEncrypter {
 
     final Uint8List decryptedBytes = Uint8List.fromList(decrypted);
     return decryptedBytes;
+  }
+
+  static void generateNewEncryptionKeys() async {
+    final oldKey = locator<EnvManager>().env.value.key!;
+    final oldIv = locator<EnvManager>().env.value.iv!;
+    final oldKeyBase64 = enc.Key.fromUtf8(oldKey).base64;
+    final oldIvBase64 = enc.IV.fromUtf8(oldIv).base64;
+    final key = enc.Key.fromSecureRandom(32);
+    // Generate a 16-byte (128-bit) IV
+    final iv = enc.IV.fromSecureRandom(16);
+
+    // Convert to base64 strings
+    final keyBase64 = key.base64;
+    final ivBase64 = iv.base64;
+
+    // Save to a text file
+    final file = File('encryption_keys.txt');
+    await file.writeAsString(
+        'Old Key: $oldKeyBase64\nOld IV: $oldIvBase64\n Key: $keyBase64\nIV: $ivBase64');
   }
 }

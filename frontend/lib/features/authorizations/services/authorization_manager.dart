@@ -4,7 +4,6 @@ import 'package:flutter/foundation.dart';
 import 'package:schuldaten_hub/common/services/api/api.dart';
 import 'package:schuldaten_hub/common/constants/enums.dart';
 import 'package:schuldaten_hub/common/services/notification_manager.dart';
-import 'package:schuldaten_hub/common/utils/logger.dart';
 import 'package:schuldaten_hub/features/authorizations/models/authorization.dart';
 
 import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
@@ -17,9 +16,7 @@ class AuthorizationManager {
   final _authorizations = ValueNotifier<List<Authorization>>([]);
   Map<String, Authorization> _authorizationsMap = {};
 
-  AuthorizationManager() {
-    logger.i('AuthorizationManager constructor called');
-  }
+  AuthorizationManager();
 
   Future<AuthorizationManager> init() async {
     notificationManager.showSnackBar(
@@ -30,6 +27,11 @@ class AuthorizationManager {
 
   final notificationManager = locator<NotificationManager>();
   final authorizationApiService = AuthorizationApiService();
+
+  void clearData() {
+    _authorizations.value = [];
+    _authorizationsMap = {};
+  }
 
   Future<void> fetchAuthorizations() async {
     final authorizations = await authorizationApiService.fetchAuthorizations();

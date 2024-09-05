@@ -55,6 +55,8 @@ List<Widget> buildCompetenceTree(
                           child: Column(
                             children: [
                               Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Flexible(
                                     child: InkWell(
@@ -69,6 +71,13 @@ List<Widget> buildCompetenceTree(
                                         style: const TextStyle(
                                             fontWeight: FontWeight.bold),
                                       ),
+                                    ),
+                                  ),
+                                  InkWell(
+                                    onTap: () {},
+                                    child: const Icon(
+                                      Icons.group_add_rounded,
+                                      color: Colors.white,
                                     ),
                                   ),
                                 ],

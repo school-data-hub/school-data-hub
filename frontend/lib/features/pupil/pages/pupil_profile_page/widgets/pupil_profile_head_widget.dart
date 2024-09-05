@@ -7,13 +7,15 @@ import 'package:schuldaten_hub/common/widgets/avatar.dart';
 import 'package:schuldaten_hub/features/pupil/services/pupil_manager.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
 import 'package:schuldaten_hub/features/pupil/pages/pupil_profile_page/widgets/pupil_set_avatar.dart';
+import 'package:watch_it/watch_it.dart';
 
-class PupilProfileHeadWidget extends StatelessWidget {
-  final PupilProxy pupil;
-  const PupilProfileHeadWidget({required this.pupil, super.key});
+class PupilProfileHeadWidget extends WatchingWidget {
+  final PupilProxy passedPupil;
+  const PupilProfileHeadWidget({required this.passedPupil, super.key});
 
   @override
   Widget build(BuildContext context) {
+    final pupil = watch<PupilProxy>(passedPupil);
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

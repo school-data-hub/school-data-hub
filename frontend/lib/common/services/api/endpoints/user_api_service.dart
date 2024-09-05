@@ -43,10 +43,10 @@ class UserApiService {
       {required String username, required String password}) async {
     String auth = 'Basic ${base64Encode(utf8.encode('$username:$password'))}';
 
-    notificationManager.isRunningValue(true);
+    notificationManager.apiRunningValue(true);
     final Response response = await _client.get(EndpointsUser.login,
         options: Options(headers: <String, String>{'Authorization': auth}));
-    notificationManager.isRunningValue(false);
+    notificationManager.apiRunningValue(false);
 
     if (response.statusCode != 200) {
       if (response.statusCode == 401) {
@@ -95,9 +95,9 @@ class UserApiService {
 
   //- get all users
   Future<List<User>> getAllUsers() async {
-    notificationManager.isRunningValue(true);
+    notificationManager.apiRunningValue(true);
     final Response response = await _client.get(EndpointsUser.getAllUsers);
-    notificationManager.isRunningValue(false);
+    notificationManager.apiRunningValue(false);
 
     if (response.statusCode != 200) {
       notificationManager.showSnackBar(
@@ -113,9 +113,9 @@ class UserApiService {
 
   //- get self user
   Future<User> getSelfUser() async {
-    notificationManager.isRunningValue(true);
+    notificationManager.apiRunningValue(true);
     final Response response = await _client.get(EndpointsUser.getSelfUser);
-    notificationManager.isRunningValue(false);
+    notificationManager.apiRunningValue(false);
 
     if (response.statusCode != 200) {
       notificationManager.showSnackBar(
@@ -167,10 +167,10 @@ class UserApiService {
       if (tutoring != null) "tutoring": tutoring,
     });
 
-    notificationManager.isRunningValue(true);
+    notificationManager.apiRunningValue(true);
     final Response response =
         await _client.post(EndpointsUser.createUser, data: data);
-    notificationManager.isRunningValue(false);
+    notificationManager.apiRunningValue(false);
 
     if (response.statusCode != 200) {
       notificationManager.showSnackBar(

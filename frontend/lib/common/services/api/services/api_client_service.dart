@@ -25,17 +25,18 @@ class ApiClientService {
     // ..interceptors.add(LogInterceptor(
     //   request: true,
     //   requestHeader: true,
-    // requestBody: true,
-    // responseHeader: true,
-    // responseBody: true,
-    // )
-    // );
+    //   requestBody: true,
+    //   responseHeader: true,
+    //   responseBody: true,
+    // ));
+    log('ApiClientService initialized');
   }
 
   setCustomDioClientOptions(
       {String? baseUrl, String? tokenKey, String? token, bool? isFile}) {
     if (baseUrl != null) _dio.options.baseUrl = baseUrl;
     if (tokenKey != null && token != null) {
+      _dio.options.headers.clear();
       _dio.options.headers[tokenKey] = token;
     }
     if (isFile != null) {
@@ -57,6 +58,7 @@ class ApiClientService {
 
   setBaseUrl(String baseUrl) {
     _dio.options.baseUrl = baseUrl;
+    log('Base URL set to: $baseUrl');
   }
 
   //- GET:

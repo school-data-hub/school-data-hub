@@ -1,10 +1,14 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/constants/colors.dart';
+import 'package:schuldaten_hub/common/constants/enums.dart';
+import 'package:schuldaten_hub/common/services/env_manager.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_manager.dart';
 import 'package:schuldaten_hub/common/widgets/bottom_nav_bar_layouts.dart';
+import 'package:schuldaten_hub/common/widgets/dialogues/information_dialog.dart';
 import 'package:schuldaten_hub/common/widgets/snackbars.dart';
 import 'package:schuldaten_hub/features/main_menu_pages/learn_list_page.dart';
 import 'package:schuldaten_hub/features/main_menu_pages/pupil_lists_menu_page.dart';
@@ -26,9 +30,6 @@ class BottomNavManager {
   }
   setBottomNavPage(index) {
     _bottomNavState.value = index;
-    if (_pageViewController.value.hasClients) {
-      _pageViewController.value.jumpToPage(index);
-    }
   }
 
   setPupilProfileNavPage(index) {
@@ -54,22 +55,24 @@ class BottomNavigation extends WatchingWidget {
   @override
   Widget build(BuildContext context) {
     final locale = AppLocalizations.of(context)!;
-    registerHandler(
-        select: (NotificationManager x) => x.notification,
-        handler: (context, value, cancel) {
-          snackbar(context, value.type, value.message);
-        });
-    //- TODO: use overlay without blocking interaction
-    // registerHandler(
-    //     select: (NotificationManager x) => x.isRunning,
-    //     handler: (context, value, cancel) {
-    //       value ? showLoadingOverlay(context) : hideLoadingOverlay();
-    //     });
-
     final manager = locator<BottomNavManager>();
     final tab = watchValue((BottomNavManager x) => x.bottomNavState);
     final pageViewController =
         watchValue((BottomNavManager x) => x.pageViewController);
+    registerHandler(
+        select: (NotificationManager x) => x.notification,
+        handler: (context, value, cancel) {
+          value.type == NotificationType.infoDialog
+              ? informationDialog(context, 'Info', value.message)
+              : snackbar(context, value.type, value.message);
+        });
+
+    registerHandler(
+        select: (NotificationManager x) => x.heavyLoading,
+        handler: (context, value, cancel) {
+          value ? showLoadingOverlay(context) : hideLoadingOverlay();
+        });
+
     return Scaffold(
       backgroundColor: canvasColor,
       body: PageView(
@@ -81,7 +84,7 @@ class BottomNavigation extends WatchingWidget {
           ScanToolsPage(),
           SettingsPage(),
         ],
-        onPageChanged: (index) => manager.setBottomNavPage(index),
+        //onPageChanged: (index) => manager.setBottomNavPage(index),
       ),
       bottomNavigationBar: BottomNavBarLayout(
         bottomNavBar: BottomNavigationBar(
@@ -90,7 +93,7 @@ class BottomNavigation extends WatchingWidget {
             manager.setBottomNavPage(index);
             pageViewController.animateToPage(index,
                 duration: const Duration(milliseconds: 200),
-                curve: Curves.bounceOut);
+                curve: Curves.easeIn);
             //BottomNavManager().setBottomNavPage(index);
           },
           showSelectedLabels: true,
@@ -129,17 +132,69 @@ class BottomNavigation extends WatchingWidget {
 OverlayEntry? overlayEntry;
 
 void showLoadingOverlay(BuildContext context) {
+  final locale = AppLocalizations.of(context)!;
   overlayEntry = OverlayEntry(
     builder: (context) => Stack(
       fit: StackFit.expand,
       children: [
-        ModalBarrier(
-            dismissible: false,
-            color: Colors.black.withOpacity(0.3)), // Background color
-        const Center(
-            child: CircularProgressIndicator(
-          color: backgroundColor,
-        )), // Spinning wheel
+        const ModalBarrier(
+          dismissible: false,
+          color: backgroundColor, // Colors.black.withOpacity(0.3)
+        ), // Background color
+        Material(
+          color: Colors.transparent,
+          child: Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const SizedBox(
+                  height: 300,
+                  width: 300,
+                  child: Image(
+                    image: AssetImage('assets/foreground.png'),
+                  ),
+                ),
+                Text(
+                  locale.schoolDataHub,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 30,
+                  ),
+                ),
+                const Gap(15),
+                if (locator<EnvManager>().env.value.server != null)
+                  Text(
+                    locator<EnvManager>().env.value.server!,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 22,
+                    ),
+                  ),
+                const Gap(10),
+                const Text('Instanzdaten werden geladen!',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                    )),
+                const Gap(5),
+                const Text(
+                  'Bitte warten...', // Your text here
+                  style: TextStyle(
+                      color: Colors.white, // Text color
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold // Text size
+                      ),
+                ),
+                const SizedBox(height: 16),
+                const CircularProgressIndicator(
+                  color: accentColor,
+                ),
+              ],
+            ),
+          ),
+        ),
       ],
     ),
   );

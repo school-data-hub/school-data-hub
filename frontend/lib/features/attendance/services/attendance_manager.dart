@@ -217,7 +217,7 @@ class AttendanceManager {
 
   Future<void> changeReturnedValue(
       int pupilId, bool newValue, DateTime date, String? time) async {
-    locator<NotificationManager>().isRunningValue(true);
+    locator<NotificationManager>().apiRunningValue(true);
     final PupilProxy pupil = pupilManager.findPupilById(pupilId)!;
     final int? missedClass = AttendanceHelper.findMissedClassIndex(pupil, date);
 
@@ -381,7 +381,7 @@ class AttendanceManager {
 
       await deleteMissedClass(pupilId, date);
 
-      locator<NotificationManager>().isRunningValue(false);
+      locator<NotificationManager>().apiRunningValue(false);
 
       return;
     }

@@ -186,6 +186,17 @@ class PupilProxy with ChangeNotifier {
   String get language => _pupilIdentity.language;
   String? get family => _pupilIdentity.family;
   DateTime get birthday => _pupilIdentity.birthday;
+  int get age {
+    final today = DateTime.now();
+    int age = today.year - _pupilIdentity.birthday.year;
+    if (today.month < _pupilIdentity.birthday.month ||
+        (today.month == _pupilIdentity.birthday.month &&
+            today.day < _pupilIdentity.birthday.day)) {
+      age--;
+    }
+    return age;
+  }
+
   DateTime? get migrationSupportEnds => _pupilIdentity.migrationSupportEnds;
   DateTime get pupilSince => _pupilIdentity.pupilSince;
 

@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/constants/styles.dart';
+import 'package:schuldaten_hub/common/services/locator.dart';
+import 'package:schuldaten_hub/common/widgets/dialogues/confirmation_dialog.dart';
+import 'package:schuldaten_hub/features/matrix/models/matrix_room.dart';
 import 'package:schuldaten_hub/features/matrix/models/matrix_user.dart';
+import 'package:schuldaten_hub/features/matrix/services/matrix_policy_manager.dart';
+import 'package:schuldaten_hub/features/matrix/services/matrix_room_helpers.dart';
 
 List<Widget> usersInRoomList(
-    List<MatrixUser> matrixUsers, BuildContext context) {
+    List<MatrixUser> matrixUsers, String roomId, BuildContext context) {
   // List<MatrixRoom> namedMatrixRooms =
   //     locator<MatrixPolicyManager>().matrixRooms.value;
 
@@ -21,7 +26,7 @@ List<Widget> usersInRoomList(
             // changeCreditDialog(context, pupil);
           },
           child: const Text(
-            "BERECHTIGUNGEN ÄNDERN",
+            "KONTO HINZUFÜGEN",
             style: buttonTextStyle,
           ),
         ),
@@ -78,14 +83,36 @@ List<Widget> usersInRoomList(
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text(
-                      matrixUser.displayName,
-                      style: const TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
+                    InkWell(
+                      onLongPress: () async {
+                        final bool? result = await confirmationDialog(
+                            context: context,
+                            message:
+                                'Moderationsrechte für ${matrixUser.displayName} vergeben?',
+                            title: 'Moderationsrechte vergeben');
+                        if (result == true) {
+                          locator<MatrixPolicyManager>().changeRoomPowerLevels(
+                              roomId: roomId,
+                              roomAdmin: RoomAdmin(
+                                  id: matrixUser.id!, powerLevel: 50));
+                        }
+                      },
+                      child: Text(
+                        matrixUser.displayName,
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                        ),
                       ),
                     ),
+                    if (MatrixRoomHelper.powerLevelInRoom(
+                            roomId, matrixUser.id!) !=
+                        null)
+                      const Icon(
+                        Icons.check,
+                        color: Colors.green,
+                      )
                   ],
                 ),
               ),

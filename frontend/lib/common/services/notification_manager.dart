@@ -9,19 +9,33 @@ class NotificationData {
 }
 
 class NotificationManager {
-  ValueListenable<NotificationData> get notification => _snackBar;
-  ValueListenable<bool> get isRunning => _isRunning;
   final _snackBar = ValueNotifier<NotificationData>(
       NotificationData(NotificationType.success, ''));
-  final _isRunning = ValueNotifier<bool>(false);
+  ValueListenable<NotificationData> get notification => _snackBar;
+
+  final _apiRunning = ValueNotifier<bool>(false);
+  ValueListenable<bool> get isRunning => _apiRunning;
+  final _heavyLoading = ValueNotifier<bool>(false);
+  ValueListenable<bool> get heavyLoading => _heavyLoading;
 
   NotificationManager();
 
   void showSnackBar(NotificationType type, String message) {
+    if (_heavyLoading.value) {
+      return;
+    }
     _snackBar.value = NotificationData(type, message);
   }
 
-  void isRunningValue(bool value) {
-    _isRunning.value = value;
+  void showInformationDialog(String message) {
+    _snackBar.value = NotificationData(NotificationType.infoDialog, message);
+  }
+
+  void apiRunningValue(bool value) {
+    _apiRunning.value = value;
+  }
+
+  void heavyLoadingValue(bool value) {
+    _heavyLoading.value = value;
   }
 }

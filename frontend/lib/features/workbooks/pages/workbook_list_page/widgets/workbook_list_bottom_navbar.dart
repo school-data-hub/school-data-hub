@@ -34,8 +34,7 @@ Widget workbookListBottomNavBar(BuildContext context) {
               ),
               onPressed: () {
                 Navigator.of(context).push(MaterialPageRoute(
-                  builder: (ctx) =>
-                      const NewWorkbookPage(null, null, null, null),
+                  builder: (ctx) => const NewWorkbookPage(isEdit: false),
                 ));
               },
             ),

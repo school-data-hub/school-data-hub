@@ -16,17 +16,17 @@ class PupilWorkbookApiService {
   }
 
   Future<PupilData> postNewPupilWorkbook(int pupilId, int isbn) async {
-    notificationManager.isRunningValue(true);
+    notificationManager.apiRunningValue(true);
 
     final Response response =
         await _client.post(_newPupilWorkbookUrl(pupilId, isbn));
 
-    notificationManager.isRunningValue(false);
+    notificationManager.apiRunningValue(false);
 
     if (response.statusCode != 200) {
       notificationManager.showSnackBar(
           NotificationType.error, 'Fehler beim Erstellen des Arbeitshefts');
-      notificationManager.isRunningValue(false);
+      notificationManager.apiRunningValue(false);
       throw ApiException(
           'Failed to create a pupil workbook', response.statusCode);
     }
@@ -41,11 +41,11 @@ class PupilWorkbookApiService {
   }
 
   Future<PupilData> deletePupilWorkbook(int pupilId, int isbn) async {
-    notificationManager.isRunningValue(true);
+    notificationManager.apiRunningValue(true);
     final Response response =
         await _client.delete(_deletePupilWorkbookUrl(pupilId, isbn));
 
-    notificationManager.isRunningValue(false);
+    notificationManager.apiRunningValue(false);
 
     if (response.statusCode != 200) {
       notificationManager.showSnackBar(

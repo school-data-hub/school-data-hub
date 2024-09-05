@@ -25,7 +25,7 @@ class PupilAuthorization(db.Model):
     file_url = db.Column(db.String(50),  nullable= True)
 
     #- RELATIONSHIP TO AUTHORIZATION MANY-TO-ONE
-    origin_authorization = db.Column(db.String(50), db.ForeignKey('authorization.authorization_id'))
+    origin_authorization = db.Column(db.String(50), db.ForeignKey('authorization.authorization_id'), unique=True)
     authorized_pupil = db.relationship('Authorization', back_populates='authorized_pupils')
 
     #- RELATIONSHIP TO PUPIL MANY-TO-ONE

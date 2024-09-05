@@ -23,7 +23,7 @@ class LearningSupportApiService {
   static const String _fetchGoalCategoriesUrl = '/support_categories/all/flat';
 
   Future<List<SupportCategory>> fetchGoalCategories() async {
-    notificationManager.isRunningValue(true);
+    notificationManager.apiRunningValue(true);
 
     final response = await _client.get(_fetchGoalCategoriesUrl);
 
@@ -31,7 +31,7 @@ class LearningSupportApiService {
       notificationManager.showSnackBar(
           NotificationType.error, 'Fehler beim Laden der Kategorien');
 
-      notificationManager.isRunningValue(false);
+      notificationManager.apiRunningValue(false);
 
       throw ApiException(
           'Failed to fetch goal categories', response.statusCode);
@@ -41,7 +41,7 @@ class LearningSupportApiService {
         .map((e) => SupportCategory.fromJson(e))
         .toList();
 
-    notificationManager.isRunningValue(false);
+    notificationManager.apiRunningValue(false);
 
     return goalCategories;
   }
@@ -61,7 +61,7 @@ class LearningSupportApiService {
       required int goalCategoryId,
       required String state,
       required String comment}) async {
-    notificationManager.isRunningValue(true);
+    notificationManager.apiRunningValue(true);
 
     final data = jsonEncode({
       "state": state,
@@ -77,7 +77,7 @@ class LearningSupportApiService {
       notificationManager.showSnackBar(
           NotificationType.error, 'Fehler beim Posten des Status');
 
-      notificationManager.isRunningValue(false);
+      notificationManager.apiRunningValue(false);
 
       throw ApiException('Failed to post category status', response.statusCode);
     }
@@ -85,7 +85,7 @@ class LearningSupportApiService {
 
     notificationManager.showSnackBar(
         NotificationType.success, 'Status erfolgreich gepostet');
-    notificationManager.isRunningValue(false);
+    notificationManager.apiRunningValue(false);
 
     return pupil;
   }
@@ -102,7 +102,7 @@ class LearningSupportApiService {
       String? comment,
       String? createdBy,
       String? createdAt) async {
-    notificationManager.isRunningValue(true);
+    notificationManager.apiRunningValue(true);
 
     final data = jsonEncode({
       if (state != null) "state": state,
@@ -118,7 +118,7 @@ class LearningSupportApiService {
       notificationManager.showSnackBar(
           NotificationType.error, 'Fehler beim Aktualisieren des Status');
 
-      notificationManager.isRunningValue(false);
+      notificationManager.apiRunningValue(false);
 
       throw ApiException(
           'Failed to update category status', response.statusCode);
@@ -126,7 +126,7 @@ class LearningSupportApiService {
 
     final PupilData pupil = PupilData.fromJson(response.data);
 
-    notificationManager.isRunningValue(false);
+    notificationManager.apiRunningValue(false);
 
     return pupil;
   }
@@ -140,7 +140,7 @@ class LearningSupportApiService {
   }
 
   Future deleteCategoryStatus(String statusId) async {
-    notificationManager.isRunningValue(true);
+    notificationManager.apiRunningValue(true);
 
     final response = await _client.delete(_deleteCategoryStatusUrl(statusId));
 
@@ -148,7 +148,7 @@ class LearningSupportApiService {
       notificationManager.showSnackBar(
           NotificationType.error, 'Fehler beim Löschen des Status');
 
-      notificationManager.isRunningValue(false);
+      notificationManager.apiRunningValue(false);
 
       throw ApiException(
           'Failed to delete category status', response.statusCode);
@@ -156,7 +156,7 @@ class LearningSupportApiService {
 
     final PupilData pupil = PupilData.fromJson(response.data);
 
-    notificationManager.isRunningValue(false);
+    notificationManager.apiRunningValue(false);
 
     return pupil;
   }
@@ -174,7 +174,7 @@ class LearningSupportApiService {
       required int pupilId,
       required String description,
       required String strategies}) async {
-    notificationManager.isRunningValue(true);
+    notificationManager.apiRunningValue(true);
 
     final data = jsonEncode({
       "support_category_id": goalCategoryId,
@@ -192,14 +192,14 @@ class LearningSupportApiService {
       notificationManager.showSnackBar(
           NotificationType.error, 'Fehler beim Hinzufügen des Ziels');
 
-      notificationManager.isRunningValue(false);
+      notificationManager.apiRunningValue(false);
 
       throw ApiException('Failed to post category goal', response.statusCode);
     }
 
     final PupilData pupil = PupilData.fromJson(response.data);
 
-    notificationManager.isRunningValue(false);
+    notificationManager.apiRunningValue(false);
 
     return pupil;
   }
@@ -211,7 +211,7 @@ class LearningSupportApiService {
   }
 
   Future deleteGoal(String goalId) async {
-    notificationManager.isRunningValue(true);
+    notificationManager.apiRunningValue(true);
 
     final Response response = await _client.delete(_deleteGoalUrl(goalId));
 
@@ -219,14 +219,14 @@ class LearningSupportApiService {
       notificationManager.showSnackBar(
           NotificationType.error, 'Fehler beim Löschen des Ziels');
 
-      notificationManager.isRunningValue(false);
+      notificationManager.apiRunningValue(false);
 
       throw ApiException('Failed to delete category goal', response.statusCode);
     }
 
     final PupilData pupil = PupilData.fromJson(response.data);
 
-    notificationManager.isRunningValue(false);
+    notificationManager.apiRunningValue(false);
 
     return pupil;
   }

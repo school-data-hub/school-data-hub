@@ -7,7 +7,6 @@ import 'package:schuldaten_hub/features/attendance/pages/attendance_page/attenda
 import 'package:schuldaten_hub/features/attendance/pages/missed_classes_pupil_list_page/missed_classes_pupil_list_page.dart';
 import 'package:schuldaten_hub/features/credit/credit_list_page/credit_list_page.dart';
 import 'package:schuldaten_hub/features/competence/pages/learning_pupil_list_page/learning_pupil_list_page.dart';
-import 'package:schuldaten_hub/features/main_menu_pages/learn_list_page.dart';
 import 'package:schuldaten_hub/features/main_menu_pages/widgets/main_menu_button.dart';
 import 'package:schuldaten_hub/features/learning_support/pages/learning_support_list_page/learning_support_list_page.dart';
 import 'package:schuldaten_hub/features/matrix/pages/room_list_page/room_list_page.dart';

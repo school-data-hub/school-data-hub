@@ -66,7 +66,7 @@ class AttendanceApiService {
     String? returnedAt,
     ContactedType? contactedType,
   }) async {
-    notificationManager.isRunningValue(true);
+    notificationManager.apiRunningValue(true);
     final data = jsonEncode({
       "missed_pupil_id": pupilId,
       "missed_day": date.formatForJson(),
@@ -79,7 +79,7 @@ class AttendanceApiService {
       "written_excuse": writtenExcuse ?? false,
     });
     final Response response = await _client.post(_postMissedClass, data: data);
-    notificationManager.isRunningValue(false);
+    notificationManager.apiRunningValue(false);
 
     if (response.statusCode != 200) {
       notificationManager.showSnackBar(
@@ -103,12 +103,12 @@ class AttendanceApiService {
       missedClasses.map((missedClass) => missedClass.toJson()).toList(),
     ]);
 
-    notificationManager.isRunningValue(true);
+    notificationManager.apiRunningValue(true);
 
     final Response response =
         await _client.post(_postMissedClassList, data: data);
 
-    notificationManager.isRunningValue(false);
+    notificationManager.apiRunningValue(false);
 
     if (response.statusCode != 200) {
       notificationManager.showSnackBar(
@@ -141,7 +141,7 @@ class AttendanceApiService {
     String? returnedAt,
     ContactedType? contactedType,
   }) async {
-    notificationManager.isRunningValue(true);
+    notificationManager.apiRunningValue(true);
 
     final data = jsonEncode({
       "missed_pupil_id": pupilId,
@@ -158,7 +158,7 @@ class AttendanceApiService {
     final Response response =
         await _client.patch(_patchMissedClass(pupilId, date), data: data);
 
-    notificationManager.isRunningValue(false);
+    notificationManager.apiRunningValue(false);
 
     if (response.statusCode != 200) {
       notificationManager.showSnackBar(
@@ -180,11 +180,11 @@ class AttendanceApiService {
   }
 
   Future<PupilData> deleteMissedClass(int pupilId, DateTime date) async {
-    notificationManager.isRunningValue(true);
+    notificationManager.apiRunningValue(true);
 
     final response = await _client.delete(_deleteMissedClassUrl(pupilId, date));
 
-    notificationManager.isRunningValue(false);
+    notificationManager.apiRunningValue(false);
 
     if (response.statusCode != 200) {
       notificationManager.showSnackBar(

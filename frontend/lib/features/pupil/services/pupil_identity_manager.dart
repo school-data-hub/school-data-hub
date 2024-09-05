@@ -35,7 +35,7 @@ class PupilIdentityManager {
   }
 
   Future<PupilIdentityManager> init() async {
-    await getStoredPupilIdentities();
+    await getPupilIdentitiesForEnv();
     return this;
   }
 
@@ -46,24 +46,30 @@ class PupilIdentityManager {
     locator<PupilManager>().clearData();
   }
 
-  Future<void> getStoredPupilIdentities() async {
-    bool storedPupilIdentitiesExist = await secureStorage.containsKey(
-        key:
-            '${SecureStorageKey.pupilIdentities.value}_${locator<EnvManager>().defaultEnv.value}');
+  void clearPupilIdentities() {
+    _pupilIdentities.clear();
+    return;
+  }
 
-    if (storedPupilIdentitiesExist == false) {
+  Future<void> deletePupilIdentitiesForEnv(String envKey) async {
+    await secureStorageDelete(
+        '${SecureStorageKey.pupilIdentities.value}_$envKey');
+    _pupilIdentities.clear();
+    locator<PupilsFilter>().clearFilteredPupils();
+    locator<PupilManager>().clearData();
+  }
+
+  Future<void> getPupilIdentitiesForEnv() async {
+    final defaultEnv = locator<EnvManager>().defaultEnv.value;
+    final Map<int, PupilIdentity> pupilIdentities =
+        await readPupilIdentitiesFromStorage(envKey: defaultEnv);
+    if (pupilIdentities.isEmpty) {
       logger.w(
-          'No stored pupil identities found for ${SecureStorageKey.pupilIdentities.value}_${locator<EnvManager>().defaultEnv.value}}');
-      return;
+          'No stored pupil identities found for ${SecureStorageKey.pupilIdentities.value}_$defaultEnv');
+    } else {
+      logger.i('Pupil identities loaded from secure storage');
     }
-
-    _pupilIdentities = await readPupilIdentitiesFromStorage(
-        envKey: locator<EnvManager>().defaultEnv.value);
-
-    if (_pupilIdentities.isNotEmpty) {
-      logger.d('Pupil identities loaded from secure storage');
-    }
-
+    _pupilIdentities = pupilIdentities;
     return;
   }
 
@@ -71,7 +77,7 @@ class PupilIdentityManager {
     final String? scanResult =
         await scanner(context, 'Personenbezogene Informationen scannen');
     if (scanResult != null) {
-      addNewPupilIdentities(identitiesFromStringLines: scanResult);
+      decryptCodesAndAddIdentities([scanResult]);
     } else {
       locator<NotificationManager>()
           .showSnackBar(NotificationType.warning, 'Scan abgebrochen');
@@ -88,18 +94,22 @@ class PupilIdentityManager {
   //   await secureStorageWrite(
   //       'pupilIdentities', jsonEncode(personalIdentitiesList));
   // }
+  Future<void> decryptCodesAndAddIdentities(List<String> codes) async {
+    String decryptedString = '';
+    for (String code in codes) {
+      decryptedString += '${customEncrypter.decrypt(code)}\n';
+    }
+
+    addNewPupilIdentities(identitiesFromStringLines: decryptedString);
+  }
 
   Future<void> addNewPupilIdentities(
       {required String identitiesFromStringLines}) async {
     late final String? decryptedIdentitiesAsString;
 
-    if (!Platform.isWindows) {
-      decryptedIdentitiesAsString =
-          customEncrypter.decrypt(identitiesFromStringLines);
-    } else {
-      // If the string is imported in windows, it comes from a .txt file and it's not encrypted
-      decryptedIdentitiesAsString = identitiesFromStringLines;
-    }
+    // If the string is imported in windows, it comes from a .txt file and it's not encrypted
+    decryptedIdentitiesAsString = identitiesFromStringLines;
+
     // The pupils in the string are separated by a '\n' - let's split them apart
     List<String> splittedPupilIdentities =
         decryptedIdentitiesAsString.split('\n');
@@ -110,15 +120,6 @@ class PupilIdentityManager {
         final newPupilIdentity =
             PupilIdentityHelper.pupilIdentityFromString(data);
         _pupilIdentities[newPupilIdentity.id] = newPupilIdentity;
-        // if (locator<PupilManager>().findPupilById(newPupilIdentity.id) !=
-        //     null) {
-        //   final pupil =
-        //       locator<PupilManager>().findPupilById(newPupilIdentity.id)!;
-        //   pupil.updatePupilIdentityFromSchoolDatabase(newPupilIdentity);
-        // } else {
-        //   locator<PupilManager>()
-        //       .fetchPupilsByInternalId([newPupilIdentity.id]);
-        // }
       }
     }
 
@@ -126,8 +127,6 @@ class PupilIdentityManager {
         envKey: locator<EnvManager>().defaultEnv.value);
 
     await locator<PupilManager>().fetchAllPupils();
-
-    locator<BottomNavManager>().setBottomNavPage(0);
   }
 
   Future<Map<int, PupilIdentity>> readPupilIdentitiesFromStorage(
@@ -150,18 +149,12 @@ class PupilIdentityManager {
     await secureStorageWrite(
         '${SecureStorageKey.pupilIdentities.value}_$envKey',
         jsonPupilIdentities);
-    logger.d(
-        'Pupil identities written to secure storage for ${SecureStorageKey.pupilIdentities.value}_$envKey');
+    log('Pupil identities written to secure storage for ${SecureStorageKey.pupilIdentities.value}_$envKey');
 
-    final written = await secureStorage.containsKey(
-        key:
-            '${SecureStorageKey.pupilIdentities.value}_${locator<EnvManager>().defaultEnv.value}');
-    logger.d(
-        'Written: $written with key ${SecureStorageKey.pupilIdentities.value}_$envKey');
-
-    final writtenMap = await readPupilIdentitiesFromStorage(envKey: envKey);
-
-    logger.d('Written map: ${writtenMap.toString()}');
+    // final written = await secureStorageContainsKey(
+    //     '${SecureStorageKey.pupilIdentities.value}_${locator<EnvManager>().defaultEnv.value}');
+    // logger.d(
+    //     'Written: $written with key ${SecureStorageKey.pupilIdentities.value}_$envKey');
   }
 
   Future<void> updateBackendPupilsFromSchoolPupilIdentitySource(
@@ -210,7 +203,8 @@ class PupilIdentityManager {
     }
 
     await secureStorageWrite(
-        'pupilIdentities', jsonEncode(_pupilIdentities.values.toList()));
+        '${SecureStorageKey.sessions.value}_${locator<EnvManager>().defaultEnv.value}',
+        jsonEncode(_pupilIdentities.values.toList()));
 
     await locator<PupilManager>().fetchAllPupils();
 
@@ -297,19 +291,17 @@ class PupilIdentityManager {
     List<String> toBeDeletedPupilIdentities = [];
 
     for (int id in toBeDeletedPupilIds) {
-      toBeDeletedPupilIdentities.add(_pupilIdentities[id]!.firstName);
-      if (toBeDeletedPupilIds.indexOf(id) != 0) {
-        toBeDeletedPupilIdentities.add(', ');
-      }
+      toBeDeletedPupilIdentities.add(
+          '${_pupilIdentities[id]!.firstName} ${_pupilIdentities[id]!.lastName}, ${_pupilIdentities[id]!.group}');
+
       _pupilIdentities.remove(id);
     }
 
     writePupilIdentitiesToStorage(
         envKey: locator<EnvManager>().defaultEnv.value);
 
-    logger.w(
-        ' ${toBeDeletedPupilIds.length} SuS sind nicht mehr in der Datenbank und wurden gelöscht!');
+    log(' ${toBeDeletedPupilIds.length} SuS sind nicht mehr in der Datenbank und wurden gelöscht!');
 
-    return toBeDeletedPupilIdentities.join(', ');
+    return toBeDeletedPupilIdentities.join('\n');
   }
 }

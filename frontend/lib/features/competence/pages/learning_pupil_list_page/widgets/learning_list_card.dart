@@ -5,11 +5,10 @@ import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/widgets/avatar.dart';
 import 'package:schuldaten_hub/common/widgets/custom_expansion_tile.dart';
 import 'package:schuldaten_hub/common/widgets/custom_list_tiles.dart';
+import 'package:schuldaten_hub/features/competence/pages/learning_pupil_list_page/widgets/competence_checks_batches.dart';
 import 'package:schuldaten_hub/features/competence/pages/learning_pupil_list_page/widgets/pupil_learning_content_list.dart';
 import 'package:schuldaten_hub/features/main_menu_pages/widgets/landing_bottom_nav_bar.dart';
 import 'package:schuldaten_hub/features/learning_support/services/learning_support_helper_functions.dart';
-import 'package:schuldaten_hub/features/learning_support/widgets/dialogs/individual_development_plan_dialog.dart';
-import 'package:schuldaten_hub/features/learning_support/pages/learning_support_list_page/widgets/support_category_status_batches.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
 import 'package:schuldaten_hub/features/pupil/pages/pupil_profile_page/pupil_profile_page.dart';
 
@@ -59,23 +58,40 @@ class _LearningSupportCardState extends State<LearningCard> {
                             child: InkWell(
                               onTap: () {
                                 locator<BottomNavManager>()
-                                    .setPupilProfileNavPage(8);
+                                    .setPupilProfileNavPage(9);
                                 Navigator.of(context).push(MaterialPageRoute(
                                   builder: (ctx) => PupilProfilePage(
                                     pupil: pupil,
                                   ),
                                 ));
                               },
-                              child: Text(
-                                '${pupil.firstName} ${pupil.lastName}',
-                                overflow: TextOverflow.fade,
-                                softWrap: false,
-                                textAlign: TextAlign.left,
-                                style: const TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18,
-                                ),
+                              child: Row(
+                                children: [
+                                  Text(
+                                    pupil.firstName,
+                                    overflow: TextOverflow.fade,
+                                    softWrap: false,
+                                    textAlign: TextAlign.left,
+                                    style: const TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18,
+                                    ),
+                                  ),
+                                  const Gap(5),
+                                  Text(
+                                    pupil.lastName,
+                                    overflow: TextOverflow.fade,
+                                    softWrap: false,
+                                    textAlign: TextAlign.left,
+                                    style: const TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.normal,
+                                      fontSize: 18,
+                                    ),
+                                  ),
+                                  const Gap(5),
+                                ],
                               ),
                             ),
                           ),
@@ -98,14 +114,14 @@ class _LearningSupportCardState extends State<LearningCard> {
                       ],
                     ),
                     const Gap(15),
-                    if (pupil.supportCategoryStatuses!.isNotEmpty)
+                    if (pupil.competenceChecks!.isNotEmpty)
                       InkWell(
                         onTap: () {
                           _tileController.isExpanded
                               ? _tileController.collapse()
                               : _tileController.expand();
                         },
-                        child: SupportCategoryStatusBatches(pupil: pupil),
+                        child: CompetenceChecksBatches(pupil: pupil),
                       ),
                   ],
                 ),
@@ -117,21 +133,20 @@ class _LearningSupportCardState extends State<LearningCard> {
                       ? _tileController.collapse()
                       : _tileController.expand();
                 },
-                onLongPress: () async {
-                  individualDevelopmentPlanDialog(
-                      context, pupil, pupil.individualDevelopmentPlan);
-                },
                 child: Column(
                   children: [
                     const Gap(20),
-                    const Text('Ebene'),
-                    Center(
-                      child: Text(
-                        pupil.individualDevelopmentPlan.toString(),
-                        style: const TextStyle(
-                          fontSize: 23,
-                          fontWeight: FontWeight.bold,
-                          color: backgroundColor,
+                    //const Text('Ebene'),
+                    SizedBox(
+                      width: 40.0,
+                      child: Center(
+                        child: Text(
+                          pupil.pupilWorkbooks!.length.toString(),
+                          style: const TextStyle(
+                            fontSize: 23,
+                            fontWeight: FontWeight.bold,
+                            color: backgroundColor,
+                          ),
                         ),
                       ),
                     ),

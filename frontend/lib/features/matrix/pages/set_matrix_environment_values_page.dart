@@ -1,10 +1,12 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/constants/colors.dart';
 import 'package:schuldaten_hub/common/constants/styles.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
+import 'package:schuldaten_hub/common/utils/import_string_from_txt_file.dart';
 import 'package:schuldaten_hub/common/utils/scanner.dart';
 import 'package:schuldaten_hub/features/matrix/services/matrix_policy_manager.dart';
 
@@ -30,13 +32,16 @@ class SetMatrixEnvironmentValuesPageState
       registerMatrixPolicyManager();
     }
 
-    String url = 'https://${urlTextFieldController.text}/';
+    String url = 'https://${urlTextFieldController.text}';
     String matrixToken = matrixTokenTextFieldController.text;
     String policyToken = policyTokenTextFieldController.text;
     await locator.allReady();
 
     locator<MatrixPolicyManager>().setMatrixEnvironmentValues(
-        url: url, matrixToken: matrixToken, policyToken: policyToken);
+        url: url,
+        matrixToken: matrixToken,
+        policyToken: policyToken,
+        compulsoryRooms: []);
   }
 
   @override
@@ -157,25 +162,40 @@ class SetMatrixEnvironmentValuesPageState
                 ElevatedButton(
                   style: successButtonStyle,
                   onPressed: () async {
-                    final String? scanResult =
-                        await scanner(context, 'Matrix Zugangsdaten scannen');
+                    String? scanResult;
+                    if (Platform.isAndroid || Platform.isIOS) {
+                      scanResult =
+                          await scanner(context, 'Matrix Zugangsdaten scannen');
+                    }
+                    if (Platform.isWindows ||
+                        Platform.isLinux ||
+                        Platform.isMacOS) {
+                      scanResult = await importStringtromTxtFile();
+                    }
                     if (scanResult != null) {
                       final matrixCredentialsMap = jsonDecode(scanResult);
+
                       // final MatrixCredentials matrixCredentials =
                       //     MatrixCredentials.fromJson(matrixCredentialsMap);
                       urlTextFieldController.text = matrixCredentialsMap['url'];
+
                       matrixTokenTextFieldController.text =
                           matrixCredentialsMap['matrixToken'];
+
                       policyTokenTextFieldController.text =
                           matrixCredentialsMap['policyToken'];
+
                       setMatrixEnvironment();
+
                       if (context.mounted) {
                         Navigator.pop(context);
                       }
                     }
                   },
-                  child: const Text(
-                    'SCANNEN',
+                  child: Text(
+                    (Platform.isAndroid || Platform.isIOS)
+                        ? 'SCANNEN'
+                        : 'IMPORT AUS DATEI',
                     style: buttonTextStyle,
                   ),
                 ),

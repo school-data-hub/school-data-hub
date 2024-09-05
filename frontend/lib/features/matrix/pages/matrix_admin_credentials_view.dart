@@ -5,9 +5,9 @@ import 'package:schuldaten_hub/common/constants/styles.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/session_manager.dart';
 import 'package:schuldaten_hub/features/matrix/models/matrix_room.dart';
-import 'package:schuldaten_hub/features/matrix/services/matrix_policy_helper_functions.dart';
 import 'package:schuldaten_hub/features/matrix/services/matrix_policy_manager.dart';
 import 'package:schuldaten_hub/features/matrix/pages/select_matrix_rooms_list_page/controller/select_matrix_rooms_list_controller.dart';
+import 'package:schuldaten_hub/features/matrix/services/matrix_room_helpers.dart';
 
 class NewMatrixUserView extends StatefulWidget {
   const NewMatrixUserView({super.key});
@@ -17,26 +17,26 @@ class NewMatrixUserView extends StatefulWidget {
 }
 
 class NewMatrixUserViewState extends State<NewMatrixUserView> {
-  final TextEditingController textField1Controller = TextEditingController();
-  final TextEditingController textField2Controller = TextEditingController();
+  final TextEditingController matrixIdController = TextEditingController();
+  final TextEditingController displayNameController = TextEditingController();
   Set<String> roomIds = {};
   //Set<int> pupilIds = {};
   void postNewMatrixUser() async {
-    String matrixId = '@${textField1Controller.text}:hermannschule.de';
-    String displayName = textField2Controller.text;
+    String matrixId = '@${matrixIdController.text}:hermannschule.de';
+    String displayName = displayNameController.text;
     List<String> roomIdsList = roomIds.toList();
     await locator<MatrixPolicyManager>()
         .createNewMatrixUser(matrixId, displayName);
 
-    await locator<MatrixPolicyManager>()
-        .addMatrixUserToRooms(matrixId, roomIdsList);
+    locator<MatrixPolicyManager>().addMatrixUserToRooms(matrixId, roomIdsList);
     // await locator<SchoolListManager>()
     //     .postSchoolListWithGroup(text1, text2, pupilIds.toList(), listType);
   }
 
   @override
   Widget build(BuildContext context) {
-    List<MatrixRoom> roomsFromIds = roomsFromRoomIds(roomIds.toList());
+    List<MatrixRoom> roomsFromIds =
+        MatrixRoomHelper.roomsFromRoomIds(roomIds.toList());
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -82,7 +82,7 @@ class NewMatrixUserViewState extends State<NewMatrixUserView> {
                       child: TextField(
                         minLines: 1,
                         maxLines: 3,
-                        controller: textField1Controller,
+                        controller: matrixIdController,
                         decoration: const InputDecoration(
                           contentPadding: EdgeInsets.all(10),
                           border: OutlineInputBorder(
@@ -112,7 +112,7 @@ class NewMatrixUserViewState extends State<NewMatrixUserView> {
                 TextField(
                   minLines: 1,
                   maxLines: 3,
-                  controller: textField2Controller,
+                  controller: displayNameController,
                   decoration: const InputDecoration(
                     contentPadding: EdgeInsets.all(10),
                     border: OutlineInputBorder(
@@ -227,7 +227,8 @@ class NewMatrixUserViewState extends State<NewMatrixUserView> {
                     final List<String> selectedRoomIds =
                         await Navigator.of(context).push(MaterialPageRoute(
                               builder: (ctx) => SelectMatrixRoomsList(
-                                  restOfRooms(roomIds.toList())),
+                                  MatrixRoomHelper.restOfRooms(
+                                      roomIds.toList())),
                             )) ??
                             [];
                     if (selectedRoomIds.isNotEmpty) {
@@ -275,8 +276,8 @@ class NewMatrixUserViewState extends State<NewMatrixUserView> {
   @override
   void dispose() {
     // Clean up the controller when the widget is removed from the tree
-    textField1Controller.dispose();
-    textField2Controller.dispose();
+    matrixIdController.dispose();
+    displayNameController.dispose();
     super.dispose();
   }
 }

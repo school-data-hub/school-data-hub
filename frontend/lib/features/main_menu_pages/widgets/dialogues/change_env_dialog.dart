@@ -30,11 +30,9 @@ Future<bool?> changeEnvironmentDialog({
                             fontSize: 18, color: interactiveColor),
                       ),
                       onPressed: () {
+                        Navigator.of(context).pop();
                         locator<EnvManager>()
-                            .switchEnv(envName: envs[index].server!);
-
-                        Navigator.of(context)
-                            .pop(); // Return false to indicate cancellation
+                            .activateEnv(envName: envs[index].server!);
                       },
                     ),
                     const Gap(10),

@@ -5,11 +5,9 @@ import 'package:schuldaten_hub/common/constants/styles.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_manager.dart';
 import 'package:schuldaten_hub/common/utils/scanner.dart';
-import 'package:schuldaten_hub/features/competence/models/competence_goal.dart';
-import 'package:schuldaten_hub/features/competence/pages/learning_pupil_list_page/widgets/competence_goal_card.dart';
-import 'package:schuldaten_hub/features/competence/pages/learning_pupil_list_page/widgets/pupil_competence_tree.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
 import 'package:schuldaten_hub/features/workbooks/models/pupil_workbook.dart';
+import 'package:schuldaten_hub/features/workbooks/pages/new_workbook_page/new_workbook_page.dart';
 import 'package:schuldaten_hub/features/workbooks/services/workbook_manager.dart';
 import 'package:schuldaten_hub/features/workbooks/pages/workbook_list_page/widgets/pupil_workbook_card.dart';
 
@@ -35,13 +33,18 @@ class PupilLearningContent extends StatelessWidget {
           onPressed: () async {
             final scanResult = await scanner(context, 'ISBN code scannen');
             if (scanResult != null) {
+              final scannedIsbn = int.parse(scanResult);
               if (!locator<WorkbookManager>()
                   .workbooks
                   .value
-                  .any((element) => element.isbn == int.parse(scanResult))) {
-                locator<NotificationManager>().showSnackBar(
-                    NotificationType.error,
-                    'Das Arbeitsheft wurde noch nicht erfasst. Bitte zuerst unter "Arbeitshefte" hinzufügen.');
+                  .any((element) => element.isbn == scannedIsbn)) {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (ctx) => NewWorkbookPage(
+                          isEdit: false,
+                          wbIsbn: scannedIsbn,
+                        )));
+                locator<NotificationManager>().showInformationDialog(
+                    'Das Arbeitsheft wurde noch nicht erfasst. Bitte hinzufügen!');
                 return;
               }
               if (pupil.pupilWorkbooks!.isNotEmpty) {
@@ -90,57 +93,58 @@ class PupilLearningContent extends StatelessWidget {
             },
           ),
         ],
-        const Gap(20),
-        const Text(' ⚠️ Ab hier ist Baustelle! ⚠️',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-        const Gap(20),
-        const Text(' ⚠️ Preview ⚠️',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-        const Gap(20),
-        const Row(
-          children: [
-            Text(
-              'Lernziele',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-          ],
-        ),
-        const Gap(10),
-        ElevatedButton(
-          style: actionButtonStyle,
-          onPressed: () async {},
-          child: const Text(
-            "NEUES LERNZIEL",
-            style: buttonTextStyle,
-          ),
-        ),
-        pupil.competenceGoals!.isNotEmpty
-            ? const Gap(15)
-            : const SizedBox.shrink(),
-        pupil.competenceGoals!.isNotEmpty
-            ? ListView.builder(
-                padding: const EdgeInsets.all(0),
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: pupil.competenceGoals!.length,
-                itemBuilder: (context, int index) {
-                  List<CompetenceGoal> pupilGoals = pupil.competenceGoals!;
-                  return CompetenceGoalCard(
-                    pupil: pupil,
-                    pupilGoal: pupilGoals[index],
-                  );
-                })
-            : const SizedBox.shrink(),
-        const Gap(20),
-        const Row(
-          children: [
-            Text(
-              'Status Kompetenzen',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-          ],
-        ),
-        ...buildPupilCompetenceTree(pupil, null, 0, null, context),
+        // TODO: implement this!
+        // const Gap(20),
+        // const Text(' ⚠️ Ab hier ist Baustelle! ⚠️',
+        //     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+        // const Gap(20),
+        // const Text(' ⚠️ Preview ⚠️',
+        //     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+        // const Gap(20),
+        // const Row(
+        //   children: [
+        //     Text(
+        //       'Lernziele',
+        //       style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        //     ),
+        //   ],
+        // ),
+        // const Gap(10),
+        // ElevatedButton(
+        //   style: actionButtonStyle,
+        //   onPressed: () async {},
+        //   child: const Text(
+        //     "NEUES LERNZIEL",
+        //     style: buttonTextStyle,
+        //   ),
+        // ),
+        // pupil.competenceGoals!.isNotEmpty
+        //     ? const Gap(15)
+        //     : const SizedBox.shrink(),
+        // pupil.competenceGoals!.isNotEmpty
+        //     ? ListView.builder(
+        //         padding: const EdgeInsets.all(0),
+        //         shrinkWrap: true,
+        //         physics: const NeverScrollableScrollPhysics(),
+        //         itemCount: pupil.competenceGoals!.length,
+        //         itemBuilder: (context, int index) {
+        //           List<CompetenceGoal> pupilGoals = pupil.competenceGoals!;
+        //           return CompetenceGoalCard(
+        //             pupil: pupil,
+        //             pupilGoal: pupilGoals[index],
+        //           );
+        //         })
+        //     : const SizedBox.shrink(),
+        // const Gap(20),
+        // const Row(
+        //   children: [
+        //     Text(
+        //       'Status Kompetenzen',
+        //       style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        //     ),
+        //   ],
+        // ),
+        // ...buildPupilCompetenceTree(pupil, null, 0, null, context),
         const Gap(15),
       ],
     );

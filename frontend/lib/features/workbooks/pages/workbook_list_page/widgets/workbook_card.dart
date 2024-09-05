@@ -9,7 +9,6 @@ import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/session_manager.dart';
 import 'package:schuldaten_hub/common/utils/extensions.dart';
 import 'package:schuldaten_hub/common/widgets/dialogues/confirmation_dialog.dart';
-import 'package:schuldaten_hub/common/widgets/dialogues/information_dialog.dart';
 import 'package:schuldaten_hub/common/widgets/document_image.dart';
 import 'package:schuldaten_hub/common/widgets/upload_image.dart';
 import 'package:schuldaten_hub/features/workbooks/models/workbook.dart';
@@ -36,11 +35,11 @@ class WorkbookCard extends StatelessWidget {
             //   ));
             // },
             onLongPress: () async {
-              if (!locator<SessionManager>().isAdmin.value) {
-                informationDialog(context, 'Keine Berechtigung',
-                    'Arbeitshefte können nur von Admins bearbeitet werden!');
-                return;
-              }
+              // if (!locator<SessionManager>().isAdmin.value) {
+              //   informationDialog(context, 'Keine Berechtigung',
+              //       'Arbeitshefte können nur von Admins bearbeitet werden!');
+              //   return;
+              // }
               final bool? result = await confirmationDialog(
                   context: context,
                   title: 'Arbeitsheft löschen',
@@ -123,10 +122,12 @@ class WorkbookCard extends StatelessWidget {
                                           Navigator.of(context)
                                               .push(MaterialPageRoute(
                                             builder: (ctx) => NewWorkbookPage(
-                                                workbook.name,
-                                                workbook.isbn,
-                                                workbook.subject,
-                                                workbook.level),
+                                              wbName: workbook.name,
+                                              wbIsbn: workbook.isbn,
+                                              wbSubject: workbook.subject,
+                                              wbLevel: workbook.level,
+                                              isEdit: true,
+                                            ),
                                           ));
                                         }
                                       : () {},

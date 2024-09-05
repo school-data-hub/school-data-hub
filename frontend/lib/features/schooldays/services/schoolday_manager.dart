@@ -37,6 +37,15 @@ class SchooldayManager {
 
   final apiSchooldayService = SchooldayApiService();
 
+  void clearData() {
+    _schooldays.value = [];
+    _availableDates.value = [];
+    _thisDate.value = DateTime.now();
+    _startDate.value = DateTime.now();
+    _endDate.value = DateTime.now();
+    _schoolSemesters.value = [];
+  }
+
   Schoolday? getSchooldayByDate(DateTime date) {
     final Schoolday? schoolday = _schooldays.value.firstWhereOrNull((element) =>
         element.schoolday.year == date.year &&

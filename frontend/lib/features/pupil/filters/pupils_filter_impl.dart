@@ -1,9 +1,10 @@
+import 'dart:developer';
+
 import 'package:flutter/foundation.dart';
 import 'package:schuldaten_hub/common/constants/enums.dart';
 
 import 'package:schuldaten_hub/common/filters/filters.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
-import 'package:schuldaten_hub/common/utils/logger.dart';
 import 'package:schuldaten_hub/features/attendance/services/attendance_helper_functions.dart';
 import 'package:schuldaten_hub/features/pupil/filters/pupil_text_filter.dart';
 import 'package:schuldaten_hub/features/pupil/filters/pupil_objects_filters.dart';
@@ -21,7 +22,7 @@ class PupilsFilterImplementation with ChangeNotifier implements PupilsFilter {
     //  PupilSortMode? sortMode,
     // }
   ) : _pupilsManager = pupilsManager {
-    logger.i('PupilsFilterImplementation created');
+    log('PupilsFilterImplementation created');
     refreshs();
     _pupilsManager.addListener(refreshs);
   }
@@ -136,14 +137,17 @@ class PupilsFilterImplementation with ChangeNotifier implements PupilsFilter {
       bool isMatchedByGroupFilter = !isAnyGroupFilterActive ||
           groupFilters
               .any((filter) => filter.isActive && filter.matches(pupil));
-
+      if (!isMatchedByGroupFilter) {
+        filtersOn = true;
+        continue;
+      }
       // matches if no stufen filter is active or if the stufen matches the pupil's stufe
       bool isMatchedBySchoolGradeFilter = !isAnySchoolGradeFilterActive ||
           schoolGradeFilters
               .any((filter) => filter.isActive && filter.matches(pupil));
 
       // if the pupil is not matched by any group or stufen filter, skip the pupil
-      if (!isMatchedByGroupFilter || !isMatchedBySchoolGradeFilter) {
+      if (!isMatchedBySchoolGradeFilter) {
         filtersOn = true;
         continue;
       }

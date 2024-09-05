@@ -6,6 +6,7 @@ import 'package:schuldaten_hub/common/constants/styles.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/utils/extensions.dart';
 import 'package:schuldaten_hub/common/widgets/avatar.dart';
+import 'package:schuldaten_hub/features/attendance/services/attendance_helper_functions.dart';
 import 'package:schuldaten_hub/features/pupil/services/pupil_manager.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
 
@@ -19,6 +20,7 @@ class BirthdaysView extends WatchingWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Set<DateTime> seenBirthdays = {};
     final List<PupilProxy> pupils =
         locator<PupilManager>().pupilsWithBirthdaySinceDate(selectedDate);
 
@@ -56,19 +58,37 @@ class BirthdaysView extends WatchingWidget {
                           itemCount: pupils.length,
                           itemBuilder: (context, int index) {
                             PupilProxy listedPupil = pupils[index];
+                            final bool isBirthdayPrinted =
+                                seenBirthdays.contains(DateTime(
+                                    DateTime.now().year,
+                                    listedPupil.birthday.month,
+                                    listedPupil.birthday.day));
+                            if (!isBirthdayPrinted) {
+                              seenBirthdays.add(DateTime(
+                                  DateTime.now().year,
+                                  listedPupil.birthday.month,
+                                  listedPupil.birthday.day));
+                            }
                             return Column(
                               children: [
-                                const Gap(5),
-                                Row(
-                                  children: [
-                                    Text(
-                                      listedPupil.birthday.formatForUser(),
-                                      style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 18),
-                                    )
-                                  ],
-                                ),
+                                !isBirthdayPrinted
+                                    ? Row(
+                                        children: [
+                                          const Gap(5),
+                                          Text(
+                                            AttendanceHelper.thisDateAsString(
+                                                context,
+                                                DateTime(
+                                                    DateTime.now().year,
+                                                    listedPupil.birthday.month,
+                                                    listedPupil.birthday.day)),
+                                            style: const TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 18),
+                                          )
+                                        ],
+                                      )
+                                    : const SizedBox.shrink(),
                                 InkWell(
                                   onTap: () {
                                     Navigator.of(context)
@@ -88,7 +108,7 @@ class BirthdaysView extends WatchingWidget {
                                                 avatarId: listedPupil.avatarId,
                                                 internalId:
                                                     listedPupil.internalId,
-                                                size: 40),
+                                                size: 60),
                                             child: const AvatarImage(),
                                           ),
                                           const Gap(10),
@@ -100,36 +120,59 @@ class BirthdaysView extends WatchingWidget {
                                                 listedPupil.firstName,
                                                 style: const TextStyle(
                                                     fontWeight: FontWeight.bold,
-                                                    fontSize: 16),
+                                                    fontSize: 18),
                                               ),
                                               Text(
                                                 listedPupil.lastName,
                                                 style: const TextStyle(
-                                                    fontSize: 16),
+                                                    fontSize: 18),
                                               ),
                                             ],
                                           ),
                                           const Gap(20),
-                                          Text(
-                                            listedPupil.group,
-                                            style: const TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                color: groupColor,
-                                                fontSize: 18),
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    listedPupil.group,
+                                                    style: const TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color: groupColor,
+                                                        fontSize: 18),
+                                                  ),
+                                                  const Gap(10),
+                                                  Text(
+                                                    listedPupil.schoolyear,
+                                                    style: const TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color: schoolyearColor,
+                                                        fontSize: 18),
+                                                  ),
+                                                ],
+                                              ),
+                                              Text(
+                                                '${listedPupil.age.toString()} Jahre alt',
+                                                style: const TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.black,
+                                                    fontSize: 18),
+                                              ),
+                                            ],
                                           ),
-                                          const Gap(10),
-                                          Text(
-                                            listedPupil.schoolyear,
-                                            style: const TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                color: schoolyearColor,
-                                                fontSize: 18),
-                                          ),
+                                          const Gap(20),
                                         ],
                                       ),
                                     ),
                                   ),
                                 ),
+                                const Gap(5)
                               ],
                             );
                           }),

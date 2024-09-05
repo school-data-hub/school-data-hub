@@ -7,7 +7,6 @@ import 'package:schuldaten_hub/common/constants/enums.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_manager.dart';
 import 'package:schuldaten_hub/common/services/session_manager.dart';
-import 'package:schuldaten_hub/common/utils/logger.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_data.dart';
 import 'package:schuldaten_hub/features/pupil/services/pupil_manager.dart';
 import 'package:schuldaten_hub/features/workbooks/models/workbook.dart';
@@ -23,13 +22,17 @@ class WorkbookManager {
 
   Future<WorkbookManager> init() async {
     await getWorkbooks();
-    logger.i('WorkbookManager constructed!');
+
     return this;
   }
 
   final apiWorkbookService = WorkbookApiService();
   final notificationManager = locator<NotificationManager>();
   final pupilManager = locator<PupilManager>();
+
+  void clearData() {
+    _workbooks.value = [];
+  }
 
   Future<void> getWorkbooks() async {
     final List<Workbook> responseWorkbooks =
@@ -110,7 +113,9 @@ class WorkbookManager {
     notificationManager.showSnackBar(
         NotificationType.success, 'Arbeitsheft erfolgreich gelöscht');
 
-    //- TODO: delete all pupilWorkbooks with this isbn
+    //- TODO: delete all pupilWorkbooks with this isbn in memory
+    //- instead of fetching all pupils again
+    locator<PupilManager>().fetchAllPupils();
     return;
   }
 

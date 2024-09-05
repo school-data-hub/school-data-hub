@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
 import 'package:schuldaten_hub/common/constants/enums.dart';
-import 'package:schuldaten_hub/common/utils/logger.dart';
 import 'package:schuldaten_hub/features/schoolday_events/models/schoolday_event.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
 import 'package:schuldaten_hub/features/schoolday_events/models/schoolday_event_enums.dart';
@@ -20,9 +19,7 @@ class SchooldayEventFilterManager {
   // final _filteredSchooldayEventsCount = ValueNotifier<int>(
   //     SchoolEventHelper.getSchooldayEventCount(
   //         locator<PupilsFilter>().filteredPupils.value));
-  SchooldayEventFilterManager() {
-    logger.i('SchooldayEventFilterManager constructor called!');
-  }
+  SchooldayEventFilterManager();
 
   resetFilters() {
     _schooldayEventsFilterState.value = {...initialSchooldayEventFilterValues};

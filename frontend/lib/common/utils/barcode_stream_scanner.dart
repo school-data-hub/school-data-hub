@@ -5,10 +5,8 @@ import 'package:schuldaten_hub/common/constants/styles.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/widgets/generic_app_bar.dart';
 import 'package:schuldaten_hub/features/pupil/services/pupil_identity_manager.dart';
-import 'package:schuldaten_hub/features/pupil/services/pupil_manager.dart';
-import 'package:watch_it/watch_it.dart';
 
-class BarcodeStreamScanner extends WatchingStatefulWidget {
+class BarcodeStreamScanner extends StatefulWidget {
   const BarcodeStreamScanner({super.key});
 
   @override
@@ -21,6 +19,7 @@ class _BarcodeStreamScannerState extends State<BarcodeStreamScanner> {
   );
 
   int _counter = 0;
+  final List<String> _scannedQrCodes = [];
   String _lastProcessedQrCode = '';
 
   Widget _buildBarcodeStream() {
@@ -40,10 +39,13 @@ class _BarcodeStreamScannerState extends State<BarcodeStreamScanner> {
         final String? newQrCode = barcodes.last.rawValue;
         if (newQrCode != null) {
           if (_lastProcessedQrCode == '' || _lastProcessedQrCode != newQrCode) {
-            unawaited(locator<PupilIdentityManager>()
-                .addNewPupilIdentities(identitiesFromStringLines: newQrCode));
-            _counter++;
-            _lastProcessedQrCode = newQrCode;
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              setState(() {
+                _scannedQrCodes.add(newQrCode);
+                _counter++;
+                _lastProcessedQrCode = newQrCode;
+              });
+            });
           }
         }
         return Column(
@@ -94,7 +96,10 @@ class _BarcodeStreamScannerState extends State<BarcodeStreamScanner> {
                     child: ElevatedButton(
                       style: successButtonStyle,
                       onPressed: () {
-                        unawaited(locator<PupilManager>().fetchAllPupils());
+                        unawaited(locator<PupilIdentityManager>()
+                            .decryptCodesAndAddIdentities(_scannedQrCodes));
+
+                        //  unawaited(locator<PupilManager>().fetchAllPupils());
                         Navigator.pop(context);
                       },
                       child: const Text(

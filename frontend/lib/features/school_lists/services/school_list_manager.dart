@@ -3,7 +3,6 @@ import 'package:flutter/foundation.dart';
 import 'package:schuldaten_hub/common/services/api/api.dart';
 import 'package:schuldaten_hub/common/constants/enums.dart';
 import 'package:schuldaten_hub/common/services/notification_manager.dart';
-import 'package:schuldaten_hub/common/utils/logger.dart';
 import 'package:schuldaten_hub/features/school_lists/models/pupil_list.dart';
 import 'package:schuldaten_hub/features/school_lists/models/school_list.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
@@ -25,10 +24,14 @@ class SchoolListManager {
 
   // Let's define maps to make lookups faster
   // with the key being the listId
-  Map<String, SchoolList> _schoolListMap = {};
+  final Map<String, SchoolList> _schoolListMap = {};
 
-  SchoolListManager() {
-    logger.i('SchoolListManager constructor called');
+  SchoolListManager();
+
+  void clearData() {
+    _schoolLists.value = [];
+    _pupilSchoolLists.value = [];
+    _pupilListMap.value = {};
   }
 
   Future<SchoolListManager> init() async {

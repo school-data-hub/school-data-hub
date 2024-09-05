@@ -4,7 +4,6 @@ import 'package:schuldaten_hub/common/constants/colors.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/widgets/bottom_nav_bar_layouts.dart';
 import 'package:schuldaten_hub/features/credit/credit_list_page/widgets/credit_filter_bottom_sheet.dart';
-import 'package:schuldaten_hub/features/matrix/pages/new_matrix_user_view.dart';
 import 'package:schuldaten_hub/features/users/pages/new_user_page/new_user_page.dart';
 
 import '../../../../pupil/filters/pupil_filter_manager.dart';

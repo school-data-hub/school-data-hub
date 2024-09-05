@@ -13,6 +13,8 @@ import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/session_helper_functions.dart';
 import 'package:schuldaten_hub/common/services/session_manager.dart';
 import 'package:schuldaten_hub/common/services/notification_manager.dart';
+import 'package:schuldaten_hub/features/matrix/pages/pupil_matrix_contacts.dart';
+import 'package:schuldaten_hub/features/users/pages/user_change_password_page/user_change_password_page.dart';
 import 'package:schuldaten_hub/features/users/services/user_manager.dart';
 import 'package:schuldaten_hub/common/utils/secure_storage.dart';
 import 'package:schuldaten_hub/common/widgets/dialogues/confirmation_dialog.dart';
@@ -21,7 +23,6 @@ import 'package:schuldaten_hub/common/widgets/qr_widgets.dart';
 import 'package:schuldaten_hub/features/schooldays/pages/schooldays_calendar_page.dart';
 import 'package:schuldaten_hub/features/main_menu_pages/login_page/controller/login_controller.dart';
 import 'package:schuldaten_hub/features/main_menu_pages/widgets/dialogues/change_env_dialog.dart';
-import 'package:schuldaten_hub/features/matrix/services/matrix_policy_helper_functions.dart';
 import 'package:schuldaten_hub/features/matrix/pages/set_matrix_environment_values_page.dart';
 import 'package:schuldaten_hub/features/matrix/services/matrix_policy_manager.dart';
 import 'package:schuldaten_hub/features/pupil/services/pupil_identity_manager.dart';
@@ -81,6 +82,8 @@ class SettingsPage extends WatchingWidget {
                     trailing: null,
                   ),
                   SettingsTile.navigation(
+                    onPressed: (context) =>
+                        locator<PupilManager>().cleanPupilsAvatarIds(),
                     leading: const Icon(
                       Icons.account_circle_rounded,
                     ),
@@ -91,6 +94,18 @@ class SettingsPage extends WatchingWidget {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
+                    trailing: null,
+                  ),
+                  SettingsTile.navigation(
+                    onPressed: (context) {
+                      Navigator.of(context).push(MaterialPageRoute(
+                        builder: (ctx) => const UserChangePasswordPage(),
+                      ));
+                    },
+                    leading: const Icon(
+                      Icons.text_fields_rounded,
+                    ),
+                    title: const Text('Passwort ändern'),
                     trailing: null,
                   ),
                   SettingsTile.navigation(
@@ -164,12 +179,13 @@ class SettingsPage extends WatchingWidget {
                     onPressed: (context) async {
                       final confirm = await confirmationDialog(
                           context: context,
-                          title: 'Lokale ID-Schlüssel löschen',
-                          message: 'Lokale ID-Schlüssel löschen?');
+                          title: 'Lokale Kinder-Ids löschen',
+                          message: 'Kinder-Ids für diese Instanz löschen?');
                       if (confirm == true && context.mounted) {
                         locator
                             .get<PupilIdentityManager>()
-                            .deleteAllPupilIdentities();
+                            .deletePupilIdentitiesForEnv(
+                                locator<EnvManager>().env.value.server!);
                         locator<NotificationManager>().showSnackBar(
                             NotificationType.success, 'ID-Schlüssel gelöscht');
                       }
@@ -323,7 +339,7 @@ class SettingsPage extends WatchingWidget {
                           onPressed: (context) async {
                             if (!matrixPolicyManagerIsRegistered) {
                               bool matrixEnvValuesAvailable =
-                                  await secureStorageContains('matrix');
+                                  await secureStorageContainsKey('matrix');
                               if (matrixEnvValuesAvailable) {
                                 await registerMatrixPolicyManager();
                                 return;
@@ -338,21 +354,20 @@ class SettingsPage extends WatchingWidget {
                           }),
                       SettingsTile.navigation(
                           leading: const Icon(Icons.chat_rounded),
-                          title: const Text('Policy generieren'),
-                          onPressed: (context) async {
-                            final bool confirmed =
-                                await generatePolicyJsonFile();
-                            if (confirmed) {
-                              locator<NotificationManager>().showSnackBar(
-                                  NotificationType.error, 'Datei generiert');
-                            }
-                          }),
-                      SettingsTile.navigation(
-                          leading: const Icon(Icons.chat_rounded),
                           title: const Text('Raumverwaltung löschen'),
                           onPressed: (context) async {
                             await locator<MatrixPolicyManager>()
                                 .deleteAndDeregisterMatrixPolicyManager();
+                          }),
+                      SettingsTile.navigation(
+                          leading: const Icon(
+                            Icons.group,
+                          ),
+                          title: const Text('Kontakte bearbeiten'),
+                          onPressed: (context) async {
+                            Navigator.of(context).push(MaterialPageRoute(
+                              builder: (ctx) => const PupilsContactList(),
+                            ));
                           }),
                       SettingsTile.navigation(
                           leading: const Icon(
@@ -408,7 +423,8 @@ class SettingsPage extends WatchingWidget {
                   ),
                   SettingsTile.navigation(
                       leading: const Icon(Icons.qr_code_rounded),
-                      title: const Text('Kinder QR-Ids zeigen'),
+                      title:
+                          const Text('QR-Ids von ausgewählten Kindern zeigen'),
                       onPressed: (context) async {
                         final List<int>? pupilIds =
                             await Navigator.of(context).push(MaterialPageRoute(
@@ -430,8 +446,8 @@ class SettingsPage extends WatchingWidget {
                       }),
                   SettingsTile.navigation(
                       leading: const Icon(Icons.qr_code_rounded),
-                      title:
-                          const Text('Alle vorhandenen Gruppen-QR-Ids zeigen'),
+                      title: const Text(
+                          'Alle vorhandenen QR-Ids zeigen (autoplay)'),
                       onPressed: (context) async {
                         final List<Map<String, Object>> qrData =
                             await locator<PupilIdentityManager>()
@@ -440,14 +456,14 @@ class SettingsPage extends WatchingWidget {
 
                         if (context.mounted) {
                           Navigator.of(context).push(MaterialPageRoute(
-                            builder: (ctx) => QrCodeCarousel(qrMaps: qrData),
+                            builder: (ctx) => QrCodeSpeedShow(qrMaps: qrData),
                           ));
                         }
                       }),
                   SettingsTile.navigation(
                       leading: const Icon(Icons.qr_code_rounded),
                       title: const Text(
-                          'Alle vorhandenen Gruppen-QR-Ids zeigen (autoplay)'),
+                          'Alle vorhandenen QR-Ids zeigen (manuelle slides)'),
                       onPressed: (context) async {
                         final qrDataMaps = await locator<PupilIdentityManager>()
                             .generateAllPupilIdentitiesQrData(pupilsPerCode: 8);

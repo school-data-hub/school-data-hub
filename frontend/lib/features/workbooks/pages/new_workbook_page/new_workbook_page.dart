@@ -14,8 +14,14 @@ class NewWorkbookPage extends StatefulWidget {
   final int? wbIsbn;
   final String? wbSubject;
   final String? wbLevel;
-  const NewWorkbookPage(this.wbName, this.wbIsbn, this.wbSubject, this.wbLevel,
-      {super.key});
+  final bool isEdit;
+  const NewWorkbookPage(
+      {required this.isEdit,
+      this.wbName,
+      this.wbIsbn,
+      this.wbSubject,
+      this.wbLevel,
+      super.key});
 
   @override
   NewWorkbookPageState createState() => NewWorkbookPageState();
@@ -33,7 +39,8 @@ class NewWorkbookPageState extends State<NewWorkbookPage> {
   Set<int> pupilIds = {};
   void postNewWorkbook() async {
     String workbookName = nameTextFieldController.text;
-    int workbookIsbn = int.parse(isbnTextFieldController.text);
+    int workbookIsbn =
+        int.parse(isbnTextFieldController.text.replaceAll('-', ''));
     String workbookSubject = subjectTextFieldController.text;
     String workbookLevel = level.text;
     int amount = int.parse(amountTextFieldController.text);
@@ -95,9 +102,7 @@ class NewWorkbookPageState extends State<NewWorkbookPage> {
         backgroundColor: backgroundColor,
         title: Center(
           child: Text(
-            (widget.wbIsbn != null)
-                ? 'Arbeitsheft bearbeiten'
-                : 'Neues Arbeitsheft',
+            (widget.isEdit) ? 'Arbeitsheft bearbeiten' : 'Neues Arbeitsheft',
             style: appBarTextStyle,
           ),
         ),
@@ -219,38 +224,40 @@ class NewWorkbookPageState extends State<NewWorkbookPage> {
                     ),
                   ),
                   const Gap(30),
-                  ElevatedButton(
-                    style: actionButtonStyle,
-                    onPressed: () async {
-                      final String? scannedIsbn =
-                          await scanner(context, 'Isbn code scannen');
-                      logger.i('Scanned ISBN: $scannedIsbn');
-                      if (scannedIsbn == null) {
-                        return;
-                      }
-                      if (locator<WorkbookManager>().workbooks.value.any(
-                          (element) =>
-                              element.isbn == int.parse(scannedIsbn))) {
-                        locator<NotificationManager>().showSnackBar(
-                            NotificationType.error,
-                            'Dieses Arbeitsheft gibt es schon!');
+                  if (!widget.isEdit) ...<Widget>[
+                    ElevatedButton(
+                      style: actionButtonStyle,
+                      onPressed: () async {
+                        final String? scannedIsbn =
+                            await scanner(context, 'Isbn code scannen');
+                        logger.i('Scanned ISBN: $scannedIsbn');
+                        if (scannedIsbn == null) {
+                          return;
+                        }
+                        if (locator<WorkbookManager>().workbooks.value.any(
+                            (element) =>
+                                element.isbn == int.parse(scannedIsbn))) {
+                          locator<NotificationManager>().showSnackBar(
+                              NotificationType.error,
+                              'Dieses Arbeitsheft gibt es schon!');
 
-                        return;
-                      }
-                      setState(() {
-                        isbnTextFieldController.text = scannedIsbn;
-                      });
-                    },
-                    child: const Text(
-                      'ISBN SCANNEN',
-                      style: buttonTextStyle,
+                          return;
+                        }
+                        setState(() {
+                          isbnTextFieldController.text = scannedIsbn;
+                        });
+                      },
+                      child: const Text(
+                        'ISBN SCANNEN',
+                        style: buttonTextStyle,
+                      ),
                     ),
-                  ),
-                  const Gap(15),
+                    const Gap(15)
+                  ],
                   ElevatedButton(
                     style: successButtonStyle,
                     onPressed: () {
-                      if (widget.wbIsbn != null) {
+                      if (widget.isEdit) {
                         patchWorkbook();
                         Navigator.pop(context);
                         return;
@@ -259,7 +266,8 @@ class NewWorkbookPageState extends State<NewWorkbookPage> {
                         if (locator<WorkbookManager>().workbooks.value.any(
                             (element) =>
                                 element.isbn ==
-                                int.parse(isbnTextFieldController.text))) {
+                                int.parse(isbnTextFieldController.text
+                                    .replaceAll('-', '')))) {
                           locator<NotificationManager>().showSnackBar(
                               NotificationType.error,
                               'Dieses Arbeitsheft gibt es schon!');

@@ -19,7 +19,7 @@ class CompetenceApiService {
   static const String _fetchCompetencesUrl = '/competences/all/flat';
 
   Future<List<Competence>> fetchCompetences() async {
-    notificationManager.isRunningValue(true);
+    notificationManager.apiRunningValue(true);
 
     final response = await _client.get(_fetchCompetencesUrl);
 
@@ -27,7 +27,7 @@ class CompetenceApiService {
       notificationManager.showSnackBar(
           NotificationType.error, 'Failed to fetch competences');
 
-      notificationManager.isRunningValue(false);
+      notificationManager.apiRunningValue(false);
 
       throw ApiException('Failed to fetch competences', response.statusCode);
     }
@@ -35,7 +35,7 @@ class CompetenceApiService {
     final List<Competence> competences =
         (response.data as List).map((e) => Competence.fromJson(e)).toList();
 
-    notificationManager.isRunningValue(false);
+    notificationManager.apiRunningValue(false);
 
     return competences;
   }
@@ -49,7 +49,7 @@ class CompetenceApiService {
       required String competenceName,
       String? competenceLevel,
       String? indicators}) async {
-    notificationManager.isRunningValue(true);
+    notificationManager.apiRunningValue(true);
 
     final data = jsonEncode({
       "parent_competence": parentCompetence,
@@ -65,14 +65,14 @@ class CompetenceApiService {
       notificationManager.showSnackBar(
           NotificationType.error, 'Failed to post a competence');
 
-      notificationManager.isRunningValue(false);
+      notificationManager.apiRunningValue(false);
 
       throw ApiException('Failed to post a competence', response.statusCode);
     }
 
     final Competence newCompetence = Competence.fromJson(response.data);
 
-    notificationManager.isRunningValue(false);
+    notificationManager.apiRunningValue(false);
 
     return newCompetence;
   }
@@ -88,7 +88,7 @@ class CompetenceApiService {
       String competenceName,
       String? competenceLevel,
       String? indicators) async {
-    notificationManager.isRunningValue(true);
+    notificationManager.apiRunningValue(true);
 
     final data = jsonEncode({
       "competence_name": competenceName,
@@ -103,14 +103,14 @@ class CompetenceApiService {
       notificationManager.showSnackBar(
           NotificationType.error, 'Failed to patch a competence');
 
-      notificationManager.isRunningValue(false);
+      notificationManager.apiRunningValue(false);
 
       throw ApiException('Failed to patch a competence', response.statusCode);
     }
 
     final patchedCompetence = Competence.fromJson(response.data);
 
-    notificationManager.isRunningValue(false);
+    notificationManager.apiRunningValue(false);
 
     return patchedCompetence;
   }

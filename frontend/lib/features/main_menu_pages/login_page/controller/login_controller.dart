@@ -46,11 +46,12 @@ class LoginController extends State<Login> {
     final locale = AppLocalizations.of(context)!;
     final String? scanResponse = await scanner(context, locale.scanSchoolId);
     if (scanResponse != null) {
-      locator<EnvManager>().addEnv(scanResponse);
-      locator<NotificationManager>().showSnackBar(NotificationType.success, '');
+      locator<EnvManager>().importNewEnv(scanResponse);
+
       return;
     } else {
-      locator<NotificationManager>().showSnackBar(NotificationType.warning, '');
+      locator<NotificationManager>()
+          .showSnackBar(NotificationType.warning, 'Keine Daten gescannt');
       return;
     }
   }
@@ -72,7 +73,7 @@ class LoginController extends State<Login> {
     if (result != null) {
       File file = File(result.files.single.path!);
       String rawTextResult = await file.readAsString();
-      locator<EnvManager>().addEnv(rawTextResult);
+      locator<EnvManager>().importNewEnv(rawTextResult);
       return;
     }
   }
