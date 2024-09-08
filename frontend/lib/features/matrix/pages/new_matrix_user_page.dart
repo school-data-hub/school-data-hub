@@ -9,14 +9,14 @@ import 'package:schuldaten_hub/features/matrix/services/matrix_policy_manager.da
 import 'package:schuldaten_hub/features/matrix/pages/select_matrix_rooms_list_page/controller/select_matrix_rooms_list_controller.dart';
 import 'package:schuldaten_hub/features/matrix/services/matrix_room_helpers.dart';
 
-class NewMatrixUserView extends StatefulWidget {
-  const NewMatrixUserView({super.key});
+class NewMatrixUserPage extends StatefulWidget {
+  const NewMatrixUserPage({super.key});
 
   @override
-  NewMatrixUserViewState createState() => NewMatrixUserViewState();
+  NewMatrixUserPageState createState() => NewMatrixUserPageState();
 }
 
-class NewMatrixUserViewState extends State<NewMatrixUserView> {
+class NewMatrixUserPageState extends State<NewMatrixUserPage> {
   final TextEditingController matrixIdController = TextEditingController();
   final TextEditingController displayNameController = TextEditingController();
   Set<String> roomIds = {};

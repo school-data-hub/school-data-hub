@@ -140,6 +140,7 @@ class AttendanceApiService {
     bool? returned,
     String? returnedAt,
     ContactedType? contactedType,
+    String? comment,
   }) async {
     notificationManager.apiRunningValue(true);
 
@@ -153,6 +154,7 @@ class AttendanceApiService {
       if (returnedAt != null) "returned_at": returnedAt,
       if (minutesLate != null) "minutes_late": minutesLate,
       if (writtenExcuse != null) "written_excuse": writtenExcuse,
+      if (comment != null) "comment": comment,
     });
 
     final Response response =

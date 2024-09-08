@@ -21,7 +21,6 @@ class MatrixUserRoomsList extends WatchingWidget {
     List<MatrixRoom> namedMatrixRooms =
         locator<MatrixPolicyManager>().matrixRooms.value;
     final user = watch<MatrixUser>(matrixUser);
-    List<MatrixRoom> userRooms = user.matrixRooms;
 
     return Column(
       children: [

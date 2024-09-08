@@ -9,7 +9,7 @@ import 'package:schuldaten_hub/features/credit/credit_list_page/credit_list_page
 import 'package:schuldaten_hub/features/competence/pages/learning_pupil_list_page/learning_pupil_list_page.dart';
 import 'package:schuldaten_hub/features/main_menu_pages/widgets/main_menu_button.dart';
 import 'package:schuldaten_hub/features/learning_support/pages/learning_support_list_page/learning_support_list_page.dart';
-import 'package:schuldaten_hub/features/matrix/pages/room_list_page/room_list_page.dart';
+import 'package:schuldaten_hub/features/matrix/pages/matrix_rooms_list_page/matrix_rooms_list_page.dart';
 import 'package:schuldaten_hub/features/ogs/ogs_list_page.dart';
 import 'package:schuldaten_hub/features/pupil/pages/special_info_page/special_info_list_page.dart';
 import 'package:schuldaten_hub/features/schoolday_events/pages/schoolday_event_list_page/schoolday_event_list_page.dart';

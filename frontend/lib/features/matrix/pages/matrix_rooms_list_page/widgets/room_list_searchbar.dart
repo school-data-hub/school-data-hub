@@ -4,17 +4,15 @@ import 'package:schuldaten_hub/common/constants/colors.dart';
 import 'package:schuldaten_hub/common/constants/enums.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/widgets/matrix_search_text_field.dart';
-import 'package:schuldaten_hub/features/matrix/models/matrix_user.dart';
+import 'package:schuldaten_hub/features/matrix/models/matrix_room.dart';
 import 'package:schuldaten_hub/features/matrix/filters/matrix_policy_filter_manager.dart';
-import 'package:schuldaten_hub/features/pupil/filters/pupil_filter_manager.dart';
-
-import 'package:schuldaten_hub/features/credit/credit_list_page/widgets/credit_filter_bottom_sheet.dart';
+import 'package:schuldaten_hub/features/matrix/pages/matrix_rooms_list_page/widgets/rooms_filter_bottom_sheet.dart';
 import 'package:watch_it/watch_it.dart';
 
-class MatrixUsersListSearchBar extends WatchingWidget {
-  final List<MatrixUser> matrixUsers;
+class RoomListSearchBar extends WatchingWidget {
+  final List<MatrixRoom> matrixRooms;
 
-  const MatrixUsersListSearchBar({required this.matrixUsers, super.key});
+  const RoomListSearchBar({required this.matrixRooms, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -34,19 +32,18 @@ class MatrixUsersListSearchBar extends WatchingWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Icon(
-                    Icons.people_alt_rounded,
+                    Icons.meeting_room_rounded,
                     color: backgroundColor,
                   ),
                   const Gap(10),
                   Text(
-                    matrixUsers.length.toString(),
+                    matrixRooms.length.toString(),
                     style: const TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.bold,
                       fontSize: 20,
                     ),
                   ),
-                  const Gap(10),
                 ],
               ),
             ),
@@ -57,12 +54,12 @@ class MatrixUsersListSearchBar extends WatchingWidget {
               children: [
                 Expanded(
                     child: MatrixSearchTextField(
-                        searchType: SearchType.matrixUser,
-                        hintText: 'Schüler/in suchen',
+                        searchType: SearchType.room,
+                        hintText: 'Raum suchen',
                         refreshFunction: locator<MatrixPolicyFilterManager>()
-                            .setUsersFilterText)),
+                            .setRoomsFilterText)),
                 InkWell(
-                  onTap: () => showCreditFilterBottomSheet(context),
+                  onTap: () => const RoomsFilterBottomSheet(),
                   onLongPress: () => locator<MatrixPolicyFilterManager>()
                       .resetAllMatrixFilters(),
                   // onPressed: () => showBottomSheetFilters(context),

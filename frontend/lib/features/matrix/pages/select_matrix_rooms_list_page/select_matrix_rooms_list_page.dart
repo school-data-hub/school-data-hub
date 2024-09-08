@@ -10,10 +10,10 @@ import 'package:schuldaten_hub/features/matrix/pages/select_matrix_rooms_list_pa
 
 import 'package:watch_it/watch_it.dart';
 
-class SelectMatrixRoomsListView extends WatchingWidget {
+class SelectMatrixRoomsListPage extends WatchingWidget {
   final SelectMatrixRoomsListController controller;
   final List<MatrixRoom> filteredRoomsInLIst;
-  const SelectMatrixRoomsListView(this.controller, this.filteredRoomsInLIst,
+  const SelectMatrixRoomsListPage(this.controller, this.filteredRoomsInLIst,
       {super.key});
 
   @override

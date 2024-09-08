@@ -20,8 +20,6 @@ class MatrixUsersListPage extends WatchingWidget {
     List<MatrixUser> matrixUsers =
         watchValue((MatrixPolicyFilterManager x) => x.filteredMatrixUsers);
 
-    bool filtersOn = watchValue((MatrixPolicyFilterManager x) => x.filtersOn);
-
     return Scaffold(
       backgroundColor: canvasColor,
       appBar: const GenericAppBar(
@@ -36,8 +34,7 @@ class MatrixUsersListPage extends WatchingWidget {
               slivers: [
                 const SliverGap(5),
                 SliverSearchAppBar(
-                    title: MatrixUsersListSearchBar(
-                        matrixUsers: matrixUsers, filtersOn: filtersOn),
+                    title: MatrixUsersListSearchBar(matrixUsers: matrixUsers),
                     height: 110),
                 matrixUsers.isEmpty
                     ? const SliverToBoxAdapter(

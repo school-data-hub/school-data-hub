@@ -3,7 +3,6 @@ import 'package:schuldaten_hub/common/constants/enums.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/features/matrix/filters/matrix_policy_filter_manager.dart';
 
-import 'package:schuldaten_hub/features/pupil/filters/pupils_filter.dart';
 import 'package:watch_it/watch_it.dart';
 
 class MatrixSearchTextField extends WatchingStatefulWidget {
@@ -22,12 +21,13 @@ class MatrixSearchTextField extends WatchingStatefulWidget {
 
 class _SearchTextFieldState extends State<MatrixSearchTextField> {
   FocusNode focusNode = FocusNode();
-  final textEditingController = TextEditingController();
+  final textEditingController =
+      locator<MatrixPolicyFilterManager>().searchController.value;
   final matrixFilterManager = locator<MatrixPolicyFilterManager>();
   @override
   Widget build(BuildContext context) {
     // final textFilter = watch(locator<PupilsFilter>().textFilter);
-    final filtersOn = watchValue((MatrixPolicyFilterManager x) => x.filtersOn);
+    bool filtersOn = watchValue((MatrixPolicyFilterManager x) => x.filtersOn);
 
     return TextField(
       focusNode: focusNode,
@@ -56,7 +56,10 @@ class _SearchTextFieldState extends State<MatrixSearchTextField> {
                 icon: const Icon(
                   Icons.close_outlined,
                 ),
-                onPressed: () => locator<PupilsFilter>().resetFilters(),
+                onPressed: () {
+                  textEditingController.clear();
+                  locator<MatrixPolicyFilterManager>().resetAllMatrixFilters();
+                },
                 color: Colors.black45,
               )
             : IconButton(
@@ -74,7 +77,7 @@ class _SearchTextFieldState extends State<MatrixSearchTextField> {
   @override
   void dispose() {
     focusNode.dispose();
-    textEditingController.dispose();
+
     super.dispose();
   }
 }

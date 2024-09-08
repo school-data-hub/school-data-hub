@@ -5,14 +5,15 @@ import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/widgets/bottom_nav_bar_layouts.dart';
 import 'package:schuldaten_hub/features/matrix/filters/matrix_policy_filter_manager.dart';
 import 'package:schuldaten_hub/features/matrix/pages/matrix_users_list_page/matrix_users_list_page.dart';
-import 'package:schuldaten_hub/features/matrix/pages/room_list_page/widgets/rooms_filter_bottom_sheet.dart';
+import 'package:schuldaten_hub/features/matrix/pages/matrix_rooms_list_page/widgets/rooms_filter_bottom_sheet.dart';
+import 'package:watch_it/watch_it.dart';
 
-class RoomListPageBottomNavBar extends StatelessWidget {
-  final bool filtersOn;
-  const RoomListPageBottomNavBar({required this.filtersOn, super.key});
+class RoomListPageBottomNavBar extends WatchingWidget {
+  const RoomListPageBottomNavBar({super.key});
 
   @override
   Widget build(BuildContext context) {
+    bool filtersOn = watchValue((MatrixPolicyFilterManager x) => x.filtersOn);
     return BottomNavBarLayout(
       bottomNavBar: BottomAppBar(
         padding: const EdgeInsets.all(10),

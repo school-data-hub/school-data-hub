@@ -249,7 +249,8 @@ class MatrixPolicyManager {
     final matrixUsers = [..._matrixUsers.value];
     matrixUsers.add(newUser);
 
-    await printMatrixCredentials(_matrixUrl, newUser, password);
+    await printMatrixCredentials(
+        matrixDomain: _matrixUrl, matrixUser: newUser, password: password);
 
     _pendingChanges.value = true;
     return;

@@ -5,12 +5,10 @@ import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/widgets/bottom_nav_bar_layouts.dart';
 import 'package:schuldaten_hub/features/credit/credit_list_page/widgets/credit_filter_bottom_sheet.dart';
 import 'package:schuldaten_hub/features/matrix/filters/matrix_policy_filter_manager.dart';
-import 'package:schuldaten_hub/features/matrix/pages/new_matrix_user_view.dart';
-import 'package:schuldaten_hub/features/matrix/pages/room_list_page/room_list_page.dart';
+import 'package:schuldaten_hub/features/matrix/pages/new_matrix_user_page.dart';
+import 'package:schuldaten_hub/features/matrix/pages/matrix_rooms_list_page/matrix_rooms_list_page.dart';
 import 'package:schuldaten_hub/features/matrix/services/matrix_policy_manager.dart';
 import 'package:watch_it/watch_it.dart';
-
-import '../../../../pupil/filters/pupil_filter_manager.dart';
 
 class MatrixUsersListViewBottomNavbar extends WatchingWidget {
   const MatrixUsersListViewBottomNavbar({super.key});
@@ -65,7 +63,7 @@ class MatrixUsersListViewBottomNavbar extends WatchingWidget {
                   ),
                   onPressed: () {
                     Navigator.of(context).push(MaterialPageRoute(
-                      builder: (ctx) => const NewMatrixUserView(),
+                      builder: (ctx) => const NewMatrixUserPage(),
                     ));
                   },
                 ),

@@ -3,6 +3,7 @@ import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/widgets/generic_app_bar.dart';
 import 'package:schuldaten_hub/common/widgets/sliver_search_app_bar.dart';
+import 'package:schuldaten_hub/features/matrix/filters/matrix_policy_filter_manager.dart';
 import 'package:schuldaten_hub/features/matrix/models/matrix_room.dart';
 import 'package:schuldaten_hub/features/matrix/models/matrix_user.dart';
 import 'package:schuldaten_hub/features/matrix/pages/matrix_users_list_page/widgets/matrix_user_list_card.dart';
@@ -18,10 +19,15 @@ class MatrixRoomPage extends WatchingWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<MatrixUser> matrixUsers =
+    List<MatrixUser> matrixUsers =
         watchValue((MatrixPolicyManager x) => x.matrixUsers);
-    final List<MatrixUser> matrixUsersInRoom =
-        MatrixRoomHelper.usersInRoom(matrixRoom.id);
+    List<MatrixUser> filteredMatrixUsers =
+        watchValue((MatrixPolicyFilterManager x) => x.filteredMatrixUsers);
+    final List<MatrixUser> matrixUsersInRoom = filteredMatrixUsers
+        .where((user) =>
+            MatrixRoomHelper.usersInRoom(matrixRoom.id).contains(user))
+        .toList();
+
     return Scaffold(
       appBar: GenericAppBar(iconData: Icons.room, title: matrixRoom.name!),
       body: RefreshIndicator(
@@ -35,7 +41,7 @@ class MatrixRoomPage extends WatchingWidget {
                 const SliverGap(5),
                 SliverSearchAppBar(
                     title: MatrixUsersListSearchBar(
-                        matrixUsers: matrixUsersInRoom, filtersOn: false),
+                        matrixUsers: matrixUsersInRoom),
                     height: 110),
                 matrixUsers.isEmpty
                     ? const SliverToBoxAdapter(

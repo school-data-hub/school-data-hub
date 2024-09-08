@@ -57,12 +57,12 @@ class MatrixHelperFunctions {
       BuildContext context, String contact) async {
     final Uri matrixUrl = Uri.parse('https://matrix.to/#/$contact');
     bool canLaunchThis = await canLaunchUrl(matrixUrl);
-    if (!canLaunchThis) {
-      if (context.mounted) {
-        informationDialog(context, 'Verbindung nicht möglich',
-            'Es konnte keine Verbindung mit dem Messenger hergestellt werden.');
-      }
-    }
+    // if (!canLaunchThis) {
+    //   if (context.mounted) {
+    //     informationDialog(context, 'Verbindung nicht möglich',
+    //         'Es konnte keine Verbindung mit dem Messenger hergestellt werden.');
+    //   }
+    // }
     try {
       final bool launched = await launchUrl(
         matrixUrl,

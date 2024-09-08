@@ -6,7 +6,9 @@ import 'package:schuldaten_hub/common/utils/logger.dart';
 import 'package:schuldaten_hub/features/matrix/models/matrix_user.dart';
 
 Future<void> printMatrixCredentials(
-    String matrixDomain, MatrixUser matrixUser, String password) async {
+    {required String matrixDomain,
+    required MatrixUser matrixUser,
+    required String password}) async {
   final pdf = pw.Document();
   final String matrixId =
       matrixUser.id!.replaceAll("@", "").replaceAll(":hermannschule.de", "");

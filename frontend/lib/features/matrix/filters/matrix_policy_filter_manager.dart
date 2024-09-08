@@ -1,22 +1,31 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/features/matrix/models/matrix_room.dart';
 import 'package:schuldaten_hub/features/matrix/models/matrix_user.dart';
 import 'package:schuldaten_hub/features/matrix/services/matrix_policy_manager.dart';
 
 class MatrixPolicyFilterManager {
-  ValueListenable<List<MatrixUser>> get filteredMatrixUsers =>
-      _filteredMatrixUsers;
-  ValueListenable<List<MatrixRoom>> get filteredMatrixRooms =>
-      _filteredMatrixRooms;
-  ValueListenable<String> get searchText => _searchText;
+  final _filtersOn = ValueNotifier<bool>(false);
   ValueListenable<bool> get filtersOn => _filtersOn;
+
   final _filteredMatrixUsers = ValueNotifier<List<MatrixUser>>(
       locator<MatrixPolicyManager>().matrixUsers.value);
+  ValueListenable<List<MatrixUser>> get filteredMatrixUsers =>
+      _filteredMatrixUsers;
+
   final _filteredMatrixRooms = ValueNotifier<List<MatrixRoom>>(
       locator<MatrixPolicyManager>().matrixRooms.value);
+  ValueListenable<List<MatrixRoom>> get filteredMatrixRooms =>
+      _filteredMatrixRooms;
+
   final _searchText = ValueNotifier<String>('');
-  final _filtersOn = ValueNotifier<bool>(false);
+  ValueListenable<String> get searchText => _searchText;
+
+  final _searchController =
+      ValueNotifier<TextEditingController>(TextEditingController());
+  ValueListenable<TextEditingController> get searchController =>
+      _searchController;
 
   MatrixPolicyFilterManager();
 
@@ -26,6 +35,8 @@ class MatrixPolicyFilterManager {
         locator<MatrixPolicyManager>().matrixUsers.value;
     _filteredMatrixRooms.value =
         locator<MatrixPolicyManager>().matrixRooms.value;
+    _filtersOn.value = false;
+    _searchController.value.clear();
   }
 
   refreshFilteredMatrixUsers() {
@@ -49,6 +60,7 @@ class MatrixPolicyFilterManager {
       _searchText.value = text;
       _filteredMatrixUsers.value =
           locator<MatrixPolicyManager>().matrixUsers.value;
+      _filtersOn.value = false;
       return;
     }
     List<MatrixUser> matrixUsers =
@@ -60,6 +72,7 @@ class MatrixPolicyFilterManager {
             user.id!.toLowerCase().contains(text.toLowerCase()))
         .toList();
     _filteredMatrixUsers.value = filteredMatrixUsers;
+    _filtersOn.value = true;
   }
 
   setRoomsFilterText(String text) {
@@ -67,6 +80,7 @@ class MatrixPolicyFilterManager {
       _searchText.value = text;
       _filteredMatrixRooms.value =
           locator<MatrixPolicyManager>().matrixRooms.value;
+      _filtersOn.value = false;
       return;
     }
     final List<MatrixRoom> matrixRooms =
@@ -78,5 +92,6 @@ class MatrixPolicyFilterManager {
             room.id.toLowerCase().contains(text.toLowerCase()))
         .toList();
     _filteredMatrixRooms.value = filteredMatrixRooms;
+    _filtersOn.value = true;
   }
 }

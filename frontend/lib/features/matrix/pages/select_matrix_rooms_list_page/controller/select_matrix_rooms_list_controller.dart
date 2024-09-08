@@ -3,8 +3,9 @@ import 'package:schuldaten_hub/common/constants/enums.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/features/matrix/models/matrix_room.dart';
 import 'package:schuldaten_hub/features/matrix/filters/matrix_policy_filter_manager.dart';
+import 'package:schuldaten_hub/features/matrix/pages/select_matrix_rooms_list_page/select_matrix_rooms_list_page.dart';
 import 'package:schuldaten_hub/features/matrix/services/matrix_policy_manager.dart';
-import 'package:schuldaten_hub/features/matrix/pages/select_matrix_rooms_list_page/select_matrix_rooms_list_view.dart';
+
 import 'package:schuldaten_hub/features/matrix/services/matrix_room_helpers.dart';
 import 'package:schuldaten_hub/features/pupil/filters/pupil_filter_manager.dart';
 
@@ -22,6 +23,7 @@ class SelectMatrixRoomsList extends WatchingStatefulWidget {
 class SelectMatrixRoomsListController extends State<SelectMatrixRoomsList> {
   List<MatrixRoom>? rooms;
   List<MatrixRoom>? filteredRooms;
+  //TODO: This should be cleaned up
   Map<PupilFilter, bool>? inheritedFilters;
   TextEditingController searchController = TextEditingController();
   bool isSearchMode = false;
@@ -101,6 +103,6 @@ class SelectMatrixRoomsListController extends State<SelectMatrixRoomsList> {
         MatrixRoomHelper.roomsFromRoomIds(widget.selectableRooms!)
             .where((room) => filteredRooms.contains(room))
             .toList();
-    return SelectMatrixRoomsListView(this, filteredListedRooms);
+    return SelectMatrixRoomsListPage(this, filteredListedRooms);
   }
 }
