@@ -12,13 +12,35 @@ import 'package:schuldaten_hub/features/learning_support/pages/learning_support_
 import 'package:schuldaten_hub/features/pupil/filters/pupils_filter.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
 import 'package:schuldaten_hub/features/pupil/services/pupil_manager.dart';
+import 'package:schuldaten_hub/features/workbooks/services/workbook_manager.dart';
 import 'package:watch_it/watch_it.dart';
 
-class LearningPupilListPage extends WatchingWidget {
+import '../../../../common/services/base_state.dart';
+
+class LearningPupilListPage extends WatchingStatefulWidget {
   const LearningPupilListPage({super.key});
 
   @override
+  State<LearningPupilListPage> createState() => _LearningPupilListPageState();
+}
+
+class _LearningPupilListPageState extends BaseState<LearningPupilListPage> {
+  @override
+  Future<void> onInitialize() async {
+    await locator.isReady<PupilsFilter>();
+    await locator.isReady<WorkbookManager>();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    if (!isInitialized) {
+      return const Scaffold(
+        backgroundColor: canvasColor,
+        appBar:
+            GenericAppBar(iconData: Icons.lightbulb_rounded, title: 'Lernen'),
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
     bool filtersOn = watchValue((PupilsFilter x) => x.filtersOn);
     // These come from the PupilFilterManager
     List<PupilProxy> pupils = watchValue((PupilsFilter x) => x.filteredPupils);

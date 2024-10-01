@@ -13,7 +13,10 @@ import 'package:schuldaten_hub/features/pupil/filters/pupils_filter.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
 import 'package:schuldaten_hub/features/pupil/filters/pupil_filter_manager.dart';
 import 'package:schuldaten_hub/features/pupil/services/pupil_manager.dart';
+import 'package:schuldaten_hub/features/school_lists/filters/school_list_filter_manager.dart';
 import 'package:watch_it/watch_it.dart';
+
+import '../../common/services/base_state.dart';
 
 List<PupilProxy> ogsFilter(List<PupilProxy> pupils) {
   List<PupilProxy> filteredPupils = [];
@@ -27,11 +30,30 @@ List<PupilProxy> ogsFilter(List<PupilProxy> pupils) {
   return filteredPupils;
 }
 
-class OgsListPage extends WatchingWidget {
+class OgsListPage extends WatchingStatefulWidget {
   const OgsListPage({super.key});
 
   @override
+  State<OgsListPage> createState() => _OgsListPageState();
+}
+
+class _OgsListPageState extends BaseState<OgsListPage> {
+  @override
+  Future<void> onInitialize() async {
+    await locator.isReady<PupilsFilter>();
+    await locator.isReady<SchoolListFilterManager>();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    if (!isInitialized) {
+      return const Scaffold(
+        backgroundColor: canvasColor,
+        appBar: GenericAppBar(
+            iconData: Icons.restaurant_menu_rounded, title: 'OGS Infos'),
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
     bool filtersOn = watchValue((PupilFilterManager x) => x.filtersOn);
 
     List<PupilProxy> pupils = watchValue((PupilsFilter x) => x.filteredPupils);

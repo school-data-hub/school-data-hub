@@ -87,110 +87,130 @@ Future registerDependentManagers() async {
   }
   logger.i('Registering dependent managers');
 
-  locator.registerSingleton<SearchManager>(SearchManager());
+  locator.registerLazySingleton<SearchManager>(() => SearchManager());
 
-  locator.registerSingletonAsync<UserManager>(() async {
+  locator.registerLazySingletonAsync<UserManager>(() async {
     log('Registering UserManager');
+    await locator.isReady<SessionManager>();
     final userManager = UserManager();
     await userManager.init();
     log('UserManager initialized');
     return userManager;
-  }, dependsOn: [SessionManager]);
+  });
 
-  locator.registerSingletonAsync<SchooldayManager>(() async {
+  locator.registerLazySingletonAsync<SchooldayManager>(() async {
     log('Registering SchooldayManager');
+    await locator.isReady<SessionManager>();
     final schooldayManager = SchooldayManager();
     await schooldayManager.init();
     log('SchooldayManager initialized');
     return schooldayManager;
-  }, dependsOn: [SessionManager]);
+  });
 
-  locator.registerSingletonAsync<PupilManager>(() async {
+  locator.registerLazySingletonAsync<PupilManager>(() async {
     log('Registering PupilManager');
+    await locator.isReady<SessionManager>();
+    await locator.isReady<PupilIdentityManager>();
     final pupilManager = PupilManager();
     await pupilManager.init();
     log('PupilManager initialized');
     return pupilManager;
-  }, dependsOn: [SessionManager, PupilIdentityManager]);
+  }); //, dependsOn: [SessionManager, PupilIdentityManager]
 
-  locator.registerSingletonAsync<WorkbookManager>(() async {
+  locator.registerLazySingletonAsync<WorkbookManager>(() async {
     log('Registering WorkbookManager');
+    await locator.isReady<SessionManager>();
+    await locator.isReady<PupilIdentityManager>();
     final workbookManager = WorkbookManager();
     await workbookManager.init();
     log('WorkbookManager initialized');
     return workbookManager;
-  }, dependsOn: [
+  }); /*, dependsOn: [
     PupilManager,
     SessionManager,
-  ]);
+  ]*/
 
-  locator.registerSingletonAsync<CompetenceManager>(() async {
+  locator.registerLazySingletonAsync<CompetenceManager>(() async {
     log('Registering CompetenceManager');
+    await locator.isReady<SessionManager>();
     final competenceManager = CompetenceManager();
     await competenceManager.init();
     log('CompetenceManager initialized');
     return competenceManager;
-  }, dependsOn: [SessionManager]);
+  });
 
-  locator.registerSingletonWithDependencies<CompetenceFilterManager>(
-    () => CompetenceFilterManager(),
-    dependsOn: [CompetenceManager],
-  );
+  locator.registerLazySingletonAsync<CompetenceFilterManager>(() async {
+    await locator.isReady<CompetenceManager>();
+    final competenceFilterManager = CompetenceFilterManager();
+    return competenceFilterManager;
+  });
 
-  locator.registerSingletonAsync<LearningSupportManager>(() async {
+  locator.registerLazySingletonAsync<LearningSupportManager>(() async {
     log('Registering GoalManager');
+    await locator.isReady<SessionManager>();
     final goalManager = LearningSupportManager();
     await goalManager.init();
     log('GoalManager initialized');
     return goalManager;
-  }, dependsOn: [SessionManager]);
+  });
 
-  locator.registerSingletonAsync<AuthorizationManager>(() async {
+  locator.registerLazySingletonAsync<AuthorizationManager>(() async {
     log('Registering AuthorizationManager');
+    await locator.isReady<SessionManager>();
     final authorizationManager = AuthorizationManager();
     await authorizationManager.init();
     log('AuthorizationManager initialized');
     return authorizationManager;
-  }, dependsOn: [SessionManager]);
+  });
 
-  locator.registerSingletonWithDependencies<PupilFilterManager>(
-      () => PupilFilterManager(),
-      dependsOn: [PupilManager]);
+  locator.registerLazySingletonAsync<PupilFilterManager>(() async {
+    await locator.isReady<PupilManager>();
+    final pupilFilterManager = PupilFilterManager();
+    return pupilFilterManager;
+  });
 
-  locator.registerSingletonWithDependencies<SchooldayEventFilterManager>(() {
-    log('SchooldayEventFilterManager initialized');
-    return SchooldayEventFilterManager();
-  }, dependsOn: [PupilManager, PupilFilterManager]);
+  locator.registerLazySingletonAsync<SchooldayEventFilterManager>(() async {
+    await locator.isReady<PupilManager>(); // Ensure PupilManager is ready
+    await locator.isReady<PupilFilterManager>(); // Ensure PupilManager is ready
+    final schooldayEventFilterManager = SchooldayEventFilterManager();
+    return schooldayEventFilterManager;
+  });
 
-  locator.registerSingletonWithDependencies<PupilsFilter>(
-      () => PupilsFilterImplementation(
-            locator<PupilManager>(),
-          ),
-      dependsOn: [
-        PupilManager,
-        PupilFilterManager,
-        SchooldayEventFilterManager
-      ]);
+  locator.registerLazySingletonAsync<PupilsFilter>(() async {
+    await locator.isReady<PupilManager>();
+    await locator.isReady<PupilFilterManager>();
+    await locator.isReady<SchooldayEventFilterManager>();
 
-  locator.registerSingletonWithDependencies<SchoolListFilterManager>(
-      () => SchoolListFilterManager(),
-      dependsOn: [PupilsFilter]);
+    final pupilManager = locator<PupilManager>();
+    return PupilsFilterImplementation(pupilManager);
+  });
 
-  locator.registerSingletonAsync<SchoolListManager>(() async {
+  locator.registerLazySingletonAsync<SchoolListFilterManager>(() async {
+    await locator.isReady<PupilsFilter>(); // Ensure PupilsFilter is ready
+    return SchoolListFilterManager();
+  });
+
+  locator.registerLazySingletonAsync<SchoolListManager>(() async {
     log('Registering SchoolListManager');
+    await locator.isReady<SessionManager>();
+    await locator.isReady<SchoolListFilterManager>();
     final schoolListManager = SchoolListManager();
     await schoolListManager.init();
     log('SchoolListManager initialized');
     return schoolListManager;
-  }, dependsOn: [SchoolListFilterManager, SessionManager]);
+  });
 
-  locator.registerSingletonWithDependencies<AttendanceManager>(
-      () => AttendanceManager(),
-      dependsOn: [SchooldayManager, PupilsFilter]);
+  locator.registerLazySingletonAsync<AttendanceManager>(() async {
+    await locator.isReady<SchooldayManager>();
+    await locator.isReady<PupilsFilter>();
+    return AttendanceManager();
+  });
 
-  locator.registerSingletonWithDependencies<SchooldayEventManager>(
-      () => SchooldayEventManager(),
-      dependsOn: [SchooldayManager, PupilsFilter]);
+  locator.registerLazySingletonAsync<SchooldayEventManager>(() async {
+    await locator.isReady<SchooldayManager>();
+    await locator.isReady<PupilsFilter>();
+    return SchooldayEventManager();
+  });
 
   if (await secureStorageContainsKey('matrix')) {
     await registerMatrixPolicyManager();
@@ -203,16 +223,23 @@ Future<bool> registerMatrixPolicyManager() async {
     return true;
   }
 
-  locator.registerSingletonAsync<MatrixPolicyManager>(() async {
+  locator.registerLazySingletonAsync<MatrixPolicyManager>(() async {
     log('Registering MatrixPolicyManager');
+    await locator.isReady<SessionManager>();
+    await locator.isReady<PupilManager>();
+
     final policyManager = MatrixPolicyManager();
     await policyManager.init();
     log('MatrixPolicyManager initialized');
     locator<NotificationManager>().showSnackBar(
         NotificationType.success, 'Matrix-Räumeverwaltung initialisiert');
     return policyManager;
-  }, dependsOn: [SessionManager, PupilManager]);
+  });
 
+  locator.registerLazySingletonAsync<MatrixPolicyFilterManager>(() async {
+    await locator.isReady<MatrixPolicyManager>();
+    return MatrixPolicyFilterManager();
+  });
   locator.registerSingletonWithDependencies<MatrixPolicyFilterManager>(
     () => MatrixPolicyFilterManager(),
     dependsOn: [MatrixPolicyManager],

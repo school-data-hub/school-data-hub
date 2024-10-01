@@ -14,13 +14,34 @@ import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
 import 'package:schuldaten_hub/features/pupil/services/pupil_manager.dart';
 import 'package:schuldaten_hub/features/pupil/pages/pupil_profile_page/pupil_profile_page.dart';
 
-class PupilInfosContent extends StatelessWidget {
+import '../../../../../../../common/services/base_state.dart';
+import '../../../../../../../common/widgets/generic_app_bar.dart';
+import '../../../../../filters/pupils_filter.dart';
+
+class PupilInfosContent extends StatefulWidget {
   final PupilProxy pupil;
+
   const PupilInfosContent({required this.pupil, super.key});
 
   @override
+  State<PupilInfosContent> createState() => _PupilInfosContentState();
+}
+
+class _PupilInfosContentState extends BaseState<PupilInfosContent> {
+  @override
+  Future<void> onInitialize() async {
+    await locator.isReady<PupilsFilter>();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    List<PupilProxy> pupilSiblings = locator<PupilManager>().siblings(pupil);
+    if (!isInitialized) {
+      return const Card(
+        child: CircularProgressIndicator(),
+      );
+    }
+    List<PupilProxy> pupilSiblings =
+        locator<PupilManager>().siblings(widget.pupil);
     return Card(
       color: pupilProfileCardColor,
       shape: RoundedRectangleBorder(
@@ -59,27 +80,31 @@ class PupilInfosContent extends StatelessWidget {
             InkWell(
               onTap: () async {
                 final String? specialInformation = await longTextFieldDialog(
-                    'Besondere Infos', pupil.specialInformation, context);
+                    'Besondere Infos',
+                    widget.pupil.specialInformation,
+                    context);
                 if (specialInformation == null) return;
-                await locator<PupilManager>().patchPupil(pupil.internalId,
-                    'special_information', specialInformation);
+                await locator<PupilManager>().patchPupil(
+                    widget.pupil.internalId,
+                    'special_information',
+                    specialInformation);
               },
               onLongPress: () async {
-                if (pupil.specialInformation == null) return;
+                if (widget.pupil.specialInformation == null) return;
                 final bool? confirm = await confirmationDialog(
                     context: context,
                     title: 'Besondere Infos löschen',
                     message:
                         'Besondere Informationen für dieses Kind löschen?');
                 if (confirm == false || confirm == null) return;
-                await locator<PupilManager>()
-                    .patchPupil(pupil.internalId, 'special_information', null);
+                await locator<PupilManager>().patchPupil(
+                    widget.pupil.internalId, 'special_information', null);
               },
               child: Row(
                 children: [
                   Flexible(
-                    child: pupil.specialInformation != null
-                        ? Text(pupil.specialInformation!,
+                    child: widget.pupil.specialInformation != null
+                        ? Text(widget.pupil.specialInformation!,
                             softWrap: true,
                             style: const TextStyle(
                                 fontSize: 18.0,
@@ -101,7 +126,7 @@ class PupilInfosContent extends StatelessWidget {
               children: [
                 const Text('Geschlecht:', style: TextStyle(fontSize: 18.0)),
                 const Gap(10),
-                Text(pupil.gender == 'm' ? 'männlich' : 'weiblich',
+                Text(widget.pupil.gender == 'm' ? 'männlich' : 'weiblich',
                     style: const TextStyle(
                         fontSize: 18.0, fontWeight: FontWeight.bold))
               ],
@@ -111,7 +136,7 @@ class PupilInfosContent extends StatelessWidget {
               children: [
                 const Text('Geburtsdatum:', style: TextStyle(fontSize: 18.0)),
                 const Gap(10),
-                Text(pupil.birthday.formatForUser(),
+                Text(widget.pupil.birthday.formatForUser(),
                     style: const TextStyle(
                         fontSize: 18.0, fontWeight: FontWeight.bold))
               ],
@@ -123,20 +148,21 @@ class PupilInfosContent extends StatelessWidget {
                 const Gap(10),
                 InkWell(
                   onTap: () {
-                    if (pupil.contact != null && pupil.contact!.isNotEmpty) {
-                      launchMatrixUrl(context, pupil.contact!);
+                    if (widget.pupil.contact != null &&
+                        widget.pupil.contact!.isNotEmpty) {
+                      launchMatrixUrl(context, widget.pupil.contact!);
                     }
                   },
                   onLongPress: () async {
                     final String? contact = await longTextFieldDialog(
-                        'Kontakt', pupil.contact, context);
+                        'Kontakt', widget.pupil.contact, context);
                     if (contact == null) return;
-                    await locator<PupilManager>()
-                        .patchPupil(pupil.internalId, 'contact', contact);
+                    await locator<PupilManager>().patchPupil(
+                        widget.pupil.internalId, 'contact', contact);
                   },
                   child: Text(
-                      pupil.contact?.isNotEmpty == true
-                          ? pupil.contact!
+                      widget.pupil.contact?.isNotEmpty == true
+                          ? widget.pupil.contact!
                           : 'keine Angabe',
                       style: const TextStyle(
                           fontSize: 18.0,
@@ -160,13 +186,13 @@ class PupilInfosContent extends StatelessWidget {
                   onLongPress: () async {
                     final String? family = await longTextFieldDialog(
                         'Kontakt Familie',
-                        pupil.parentsContact ?? 'keine Angabe',
+                        widget.pupil.parentsContact ?? 'keine Angabe',
                         context);
                     if (family == null) return;
                     await locator<PupilManager>().patchPupil(
-                        pupil.internalId, 'parents_contact', family);
+                        widget.pupil.internalId, 'parents_contact', family);
                   },
-                  child: Text(pupil.parentsContact ?? 'keine Angabe',
+                  child: Text(widget.pupil.parentsContact ?? 'keine Angabe',
                       style: const TextStyle(
                           fontSize: 18.0,
                           fontWeight: FontWeight.bold,
@@ -179,7 +205,7 @@ class PupilInfosContent extends StatelessWidget {
               children: [
                 const Text('Aufnahmedatum:', style: TextStyle(fontSize: 18.0)),
                 const Gap(10),
-                Text(pupil.pupilSince.formatForUser(),
+                Text(widget.pupil.pupilSince.formatForUser(),
                     style: const TextStyle(
                         fontSize: 18.0, fontWeight: FontWeight.bold))
               ],

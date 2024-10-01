@@ -9,12 +9,33 @@ import 'package:schuldaten_hub/features/pupil/services/pupil_manager.dart';
 import 'package:schuldaten_hub/features/pupil/pages/pupil_profile_page/widgets/pupil_profile_page_content/widgets/pupil_communication_content_language_values.dart';
 import 'package:schuldaten_hub/features/pupil/pages/pupil_profile_page/widgets/dialogs/language_dialog.dart';
 
-class PupilCommunicationContent extends StatelessWidget {
+import '../../../../../../../common/services/base_state.dart';
+import '../../../../../filters/pupils_filter.dart';
+
+class PupilCommunicationContent extends StatefulWidget {
   final PupilProxy pupil;
+
   const PupilCommunicationContent({required this.pupil, super.key});
 
   @override
+  State<PupilCommunicationContent> createState() =>
+      _PupilCommunicationContentState();
+}
+
+class _PupilCommunicationContentState
+    extends BaseState<PupilCommunicationContent> {
+  @override
+  Future<void> onInitialize() async {
+    await locator.isReady<PupilsFilter>();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    if (!isInitialized) {
+      return const Card(
+        child: CircularProgressIndicator(),
+      );
+    }
     return Card(
       color: pupilProfileCardColor,
       shape: RoundedRectangleBorder(
@@ -46,7 +67,7 @@ class PupilCommunicationContent extends StatelessWidget {
             children: [
               const Text('Familiensprache:', style: TextStyle(fontSize: 18.0)),
               const Gap(10),
-              Text(pupil.language,
+              Text(widget.pupil.language,
                   style: const TextStyle(
                       fontSize: 18.0, fontWeight: FontWeight.bold))
             ],
@@ -57,8 +78,8 @@ class PupilCommunicationContent extends StatelessWidget {
               const Text('Erstförderung:', style: TextStyle(fontSize: 18.0)),
               const Gap(10),
               Text(
-                  pupil.migrationSupportEnds != null
-                      ? 'bis : ${pupil.migrationSupportEnds!.formatForUser()}'
+                  widget.pupil.migrationSupportEnds != null
+                      ? 'bis : ${widget.pupil.migrationSupportEnds!.formatForUser()}'
                       : 'keine',
                   style: const TextStyle(
                       fontSize: 18.0, fontWeight: FontWeight.bold)),
@@ -89,11 +110,11 @@ class PupilCommunicationContent extends StatelessWidget {
           ),
           const Gap(10),
           InkWell(
-            onTap: () => languageDialog(context, pupil, 'communication_pupil',
-                pupil.communicationPupil),
-            onLongPress: () => locator<PupilManager>()
-                .patchPupil(pupil.internalId, 'communication_pupil', null),
-            child: pupil.communicationPupil == null
+            onTap: () => languageDialog(context, widget.pupil,
+                'communication_pupil', widget.pupil.communicationPupil),
+            onLongPress: () => locator<PupilManager>().patchPupil(
+                widget.pupil.internalId, 'communication_pupil', null),
+            child: widget.pupil.communicationPupil == null
                 ? const Text(
                     'kein Eintrag',
                     style: TextStyle(
@@ -114,7 +135,7 @@ class PupilCommunicationContent extends StatelessWidget {
                           InkWell(
                             child: Container(
                                 child: communicationValues(
-                                    pupil.communicationPupil!)),
+                                    widget.pupil.communicationPupil!)),
                           )
                         ],
                       ),
@@ -133,11 +154,11 @@ class PupilCommunicationContent extends StatelessWidget {
           ),
           const Gap(10),
           InkWell(
-            onTap: () => languageDialog(context, pupil, 'communication_tutor1',
-                pupil.communicationTutor1),
-            onLongPress: () => locator<PupilManager>()
-                .patchPupil(pupil.internalId, 'communication_tutor1', null),
-            child: pupil.communicationTutor1 == null
+            onTap: () => languageDialog(context, widget.pupil,
+                'communication_tutor1', widget.pupil.communicationTutor1),
+            onLongPress: () => locator<PupilManager>().patchPupil(
+                widget.pupil.internalId, 'communication_tutor1', null),
+            child: widget.pupil.communicationTutor1 == null
                 ? const Text(
                     'kein Eintrag',
                     style: TextStyle(
@@ -158,7 +179,7 @@ class PupilCommunicationContent extends StatelessWidget {
                           InkWell(
                             child: Container(
                                 child: communicationValues(
-                                    pupil.communicationTutor1!)),
+                                    widget.pupil.communicationTutor1!)),
                           )
                         ],
                       ),
@@ -177,11 +198,11 @@ class PupilCommunicationContent extends StatelessWidget {
           ),
           const Gap(10),
           InkWell(
-            onTap: () => languageDialog(context, pupil, 'communication_tutor2',
-                pupil.communicationTutor2),
-            onLongPress: () => locator<PupilManager>()
-                .patchPupil(pupil.internalId, 'communication_tutor2', null),
-            child: pupil.communicationTutor2 == null
+            onTap: () => languageDialog(context, widget.pupil,
+                'communication_tutor2', widget.pupil.communicationTutor2),
+            onLongPress: () => locator<PupilManager>().patchPupil(
+                widget.pupil.internalId, 'communication_tutor2', null),
+            child: widget.pupil.communicationTutor2 == null
                 ? const Text(
                     'kein Eintrag',
                     style: TextStyle(
@@ -202,7 +223,7 @@ class PupilCommunicationContent extends StatelessWidget {
                           InkWell(
                             child: Container(
                                 child: communicationValues(
-                                    pupil.communicationTutor2!)),
+                                    widget.pupil.communicationTutor2!)),
                           )
                         ],
                       ),
