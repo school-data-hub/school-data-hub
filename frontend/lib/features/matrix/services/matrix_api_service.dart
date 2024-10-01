@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:schuldaten_hub/common/constants/enums.dart';
 import 'package:schuldaten_hub/common/services/api/api.dart';
@@ -9,10 +9,20 @@ import 'package:schuldaten_hub/common/services/notification_manager.dart';
 import 'package:schuldaten_hub/features/matrix/models/matrix_room.dart';
 import 'package:schuldaten_hub/features/matrix/models/matrix_user.dart';
 import 'package:schuldaten_hub/features/matrix/models/policy.dart';
-
+import 'package:schuldaten_hub/features/matrix/services/matrix_policy_helper_functions.dart';
 import 'package:schuldaten_hub/features/matrix/services/matrix_policy_manager.dart';
 
 enum MatrixAuthType { matrix, corporal }
+
+enum ChatTypePreset {
+  public('public_chat'),
+  private('private_chat'),
+  trustedPrivate('trusted_private_chat'),
+  ;
+
+  final String value;
+  const ChatTypePreset(this.value);
+}
 
 class MatrixApiService {
   final _dioClient = locator<ApiClientService>();
@@ -70,22 +80,61 @@ class MatrixApiService {
   }
 
 //- CREATE ROOM
+// curl --header "Authorization: Bearer <token>" XPOST -d '{
+// "creation_content": {"m.federate": false},
+// "is_direct": false, "name": "TestraumNeu3",  "preset": "private_chat",
+// "room_alias_name": "testraum3", "topic": "Das ist ein Testraum", "visibility": "private",
+// "power_level_content_override": {
+// "ban": 50,
+//       "events": {
+//         "m.room.name": 50,
+//         "m.room.power_levels": 100,
+//         "m.room.history_visibility": 100,
+//         "m.room.canonical_alias": 50,
+//         "m.room.avatar": 50,
+//         "m.room.tombstone": 100,
+//         "m.room.server_acl": 100,
+//         "m.room.encryption": 100,
+//         "m.space.child": 50,
+//         "m.room.topic": 50,
+//         "m.room.pinned_events": 50,
+//         "m.reaction": 65,
+//         "m.room.redaction": 0,
+//         "org.matrix.msc3401.call": 50,
+//         "org.matrix.msc3401.call.member": 50,
+//         "im.vector.modular.widgets": 50,
+//         "io.element.voice_broadcast_info": 50
+//       },
+//       "events_default": 25,
+//       "invite": 50,
+//       "kick": 50,
+//       "notifications": {"room": 20},
+//       "redact": 50,
+//       "state_default": 50,
+//       "users": { "@mxcorporal:hermannschule.de": 100},
+//       "users_default": 0}
 
+// }' "https://post.hermannschule.de/_matrix/client/v3/createRoom"
   static const String _createRoom = '/_matrix/client/v3/createRoom';
-// https://spec.matrix.org/v1.10/client-server-api/#creation
+//- https://spec.matrix.org/v1.10/client-server-api/#creation
 
 // XPOST -d '{
 //   "creation_content": {
 //     "m.federate": false
 //   },
+// "is_direct": false,
 //   "name": "Testraum",
 //   "preset": "private_chat",
 //   "room_alias_name": "testraum",
-//   "topic": "Das ist ein Testraum"
+//   "topic": "Das ist ein Testraum",
+//    "visibility": "private"
 // }' "https://post.hermannschule.de/_matrix/client/v3/createRoom"
 
   Future<MatrixRoom?> createMatrixRoom(
-      String name, String topic, String? aliasName) async {
+      {required String name,
+      required String topic,
+      required ChatTypePreset chatTypePreset,
+      String? aliasName}) async {
     setClientMatrixCredentials(authType: MatrixAuthType.matrix);
 
     MatrixRoom? room;
@@ -93,10 +142,13 @@ class MatrixApiService {
     final data = jsonEncode({
       {
         "creation_content": {"m.federate": false},
+        "is_direct": false,
         "name": name,
         "preset": "private_chat",
-        if (aliasName != null) "room_alias_name": "testraum2",
-        "topic": topic
+        if (aliasName != null) "room_alias_name": aliasName,
+        "topic": topic,
+        "visibility": 'private',
+        "power_level_content_override": ""
       }
     });
 
@@ -130,6 +182,34 @@ class MatrixApiService {
   // }
 
   //- PUT POLICY
+
+  String _putMatrixPolicy() {
+    return '/_matrix/corporal/policy';
+  }
+
+  Future<void> putMatrixPolicy() async {
+    setClientMatrixCredentials(authType: MatrixAuthType.corporal);
+    final File policyFile =
+        await MatrixHelperFunctions.generatePolicyJsonFile();
+    final bytes = policyFile.readAsBytesSync();
+
+    final Response response = await _dioClient.put(
+      _putMatrixPolicy(),
+      data: bytes,
+    );
+    //delete file, we don't need it anymore
+    // policyFile.deleteSync();
+    if (response.statusCode != 200) {
+      notificationManager.showSnackBar(
+          NotificationType.error, 'Fehler: status code ${response.statusCode}');
+      throw ApiException('Fehler beim Setzen der Policy', response.statusCode);
+    }
+
+    notificationManager.showSnackBar(
+        NotificationType.success, 'Policy erfolgreich gesetzt');
+    _dioClient.setDefaultDioClientOptions();
+    return;
+  }
 
   //**- USER
 
@@ -167,6 +247,7 @@ class MatrixApiService {
     final MatrixUser newUser = MatrixUser(
       id: matrixId,
       displayName: displayName,
+      joinedRoomIds: [],
     );
     if (response.statusCode == 200) {
       notificationManager.showSnackBar(
@@ -297,6 +378,7 @@ class MatrixApiService {
 
   //- PUT ROOM POWER LEVELS
   String _putRoomPowerLevels(String roomId) {
+    // ensure that ! and : are properly coded for the url
     final roomIdforUrl = roomId.replaceAllMapped(
       RegExp(r'[!:]'),
       (match) {

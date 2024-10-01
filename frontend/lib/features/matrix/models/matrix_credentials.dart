@@ -2,28 +2,30 @@ class MatrixCredentials {
   final String url;
   final String matrixToken;
   final String policyToken;
-  final List<String> compulsorayRooms;
+  final List<String>? compulsoryRooms;
 
-  MatrixCredentials(
-      {required this.url,
-      required this.matrixToken,
-      required this.policyToken,
-      required this.compulsorayRooms});
+  MatrixCredentials({
+    required this.url,
+    required this.matrixToken,
+    required this.policyToken,
+    this.compulsoryRooms,
+  });
 
   Map<String, dynamic> toJson() {
     return {
       'url': url,
       'matrixToken': matrixToken,
       'policyToken': policyToken,
+      'compulsoryRooms': compulsoryRooms,
     };
   }
 
   factory MatrixCredentials.fromJson(Map<String, dynamic> json) {
     return MatrixCredentials(
-      url: json['url'] as String,
-      matrixToken: json['matrixToken'] as String,
-      policyToken: json['policyToken'] as String,
-      compulsorayRooms: json['compulsorayRooms'] as List<String>,
+      url: json['url'],
+      matrixToken: json['matrixToken'],
+      policyToken: json['policyToken'],
+      compulsoryRooms: List<String>.from(json['compulsoryRooms']),
     );
   }
 }

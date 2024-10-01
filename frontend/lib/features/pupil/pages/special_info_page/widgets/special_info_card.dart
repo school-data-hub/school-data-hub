@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/widgets/avatar.dart';
+import 'package:schuldaten_hub/features/main_menu_pages/widgets/landing_bottom_nav_bar.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
 import 'package:schuldaten_hub/features/pupil/pages/pupil_profile_page/pupil_profile_page.dart';
 import 'package:watch_it/watch_it.dart';
@@ -39,11 +41,13 @@ class SpecialInfoCard extends WatchingWidget {
                         children: [
                           Row(
                             children: [
-                              Flexible(
+                              Expanded(
                                 child: SingleChildScrollView(
                                   scrollDirection: Axis.horizontal,
                                   child: InkWell(
                                     onTap: () {
+                                      locator<BottomNavManager>()
+                                          .setPupilProfileNavPage(0);
                                       Navigator.of(context)
                                           .push(MaterialPageRoute(
                                         builder: (ctx) => PupilProfilePage(
@@ -51,16 +55,33 @@ class SpecialInfoCard extends WatchingWidget {
                                         ),
                                       ));
                                     },
-                                    child: Text(
-                                      '${pupil.firstName} ${pupil.lastName}',
-                                      overflow: TextOverflow.fade,
-                                      softWrap: false,
-                                      textAlign: TextAlign.left,
-                                      style: const TextStyle(
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 18,
-                                      ),
+                                    child: Row(
+                                      children: [
+                                        Text(
+                                          pupil.firstName,
+                                          overflow: TextOverflow.fade,
+                                          softWrap: false,
+                                          textAlign: TextAlign.left,
+                                          style: const TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 18,
+                                          ),
+                                        ),
+                                        const Gap(5),
+                                        Text(
+                                          pupil.lastName,
+                                          overflow: TextOverflow.fade,
+                                          softWrap: false,
+                                          textAlign: TextAlign.left,
+                                          style: const TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.normal,
+                                            fontSize: 18,
+                                          ),
+                                        ),
+                                        const Gap(5),
+                                      ],
                                     ),
                                   ),
                                 ),

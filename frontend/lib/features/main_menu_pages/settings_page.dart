@@ -23,7 +23,6 @@ import 'package:schuldaten_hub/common/widgets/qr_widgets.dart';
 import 'package:schuldaten_hub/features/schooldays/pages/schooldays_calendar_page.dart';
 import 'package:schuldaten_hub/features/main_menu_pages/login_page/controller/login_controller.dart';
 import 'package:schuldaten_hub/features/main_menu_pages/widgets/dialogues/change_env_dialog.dart';
-import 'package:schuldaten_hub/features/matrix/services/matrix_policy_helper_functions.dart';
 import 'package:schuldaten_hub/features/matrix/pages/set_matrix_environment_values_page.dart';
 import 'package:schuldaten_hub/features/matrix/services/matrix_policy_manager.dart';
 import 'package:schuldaten_hub/features/pupil/services/pupil_identity_manager.dart';
@@ -355,17 +354,6 @@ class SettingsPage extends WatchingWidget {
                           }),
                       SettingsTile.navigation(
                           leading: const Icon(Icons.chat_rounded),
-                          title: const Text('Policy generieren'),
-                          onPressed: (context) async {
-                            final bool confirmed =
-                                await generatePolicyJsonFile();
-                            if (confirmed) {
-                              locator<NotificationManager>().showSnackBar(
-                                  NotificationType.error, 'Datei generiert');
-                            }
-                          }),
-                      SettingsTile.navigation(
-                          leading: const Icon(Icons.chat_rounded),
                           title: const Text('Raumverwaltung löschen'),
                           onPressed: (context) async {
                             await locator<MatrixPolicyManager>()
@@ -373,7 +361,7 @@ class SettingsPage extends WatchingWidget {
                           }),
                       SettingsTile.navigation(
                           leading: const Icon(
-                            Icons.calendar_month_rounded,
+                            Icons.group,
                           ),
                           title: const Text('Kontakte bearbeiten'),
                           onPressed: (context) async {

@@ -272,7 +272,7 @@ class AttendanceHelper {
 
 // use one function instead all the set value functions
 // to avoid unnecessary lookups
-  static AttendanceValues setAttendanceInfo(int pupilId, DateTime date) {
+  static AttendanceValues setAttendanceValues(int pupilId, DateTime date) {
     MissedType missedType;
     ContactedType contactedType;
     final PupilProxy pupil = locator<PupilManager>().findPupilById(pupilId)!;

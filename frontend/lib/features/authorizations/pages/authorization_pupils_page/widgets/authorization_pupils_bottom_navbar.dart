@@ -24,7 +24,6 @@ class AuthorizationPupilsBottomNavBar extends WatchingWidget {
 
   @override
   Widget build(BuildContext context) {
-    final filtersOn = watchValue((PupilsFilter x) => x.filtersOn);
     return BottomNavBarLayout(
       bottomNavBar: BottomAppBar(
         padding: const EdgeInsets.all(9),

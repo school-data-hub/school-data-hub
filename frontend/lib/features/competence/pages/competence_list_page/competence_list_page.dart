@@ -3,6 +3,7 @@ import 'package:schuldaten_hub/common/constants/colors.dart';
 import 'package:schuldaten_hub/common/constants/styles.dart';
 import 'package:schuldaten_hub/features/competence/models/competence.dart';
 import 'package:schuldaten_hub/features/competence/filters/competence_filter_manager.dart';
+import 'package:schuldaten_hub/features/competence/pages/competence_pupils_check_list.dart';
 import 'package:schuldaten_hub/features/competence/services/competence_manager.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 
@@ -51,6 +52,14 @@ class _CompetenceListPageState extends BaseState<CompetenceListPage> {
     navigateToPatchCompetenceView(Competence competence) {
       Navigator.of(context).push(MaterialPageRoute(
         builder: (ctx) => PatchCompetenceView(
+          competence: competence,
+        ),
+      ));
+    }
+
+    navigateToCompetenceChecksPage(Competence competence) {
+      Navigator.of(context).push(MaterialPageRoute(
+        builder: (ctx) => CompetencePupilsCheckListPage(
           competence: competence,
         ),
       ));

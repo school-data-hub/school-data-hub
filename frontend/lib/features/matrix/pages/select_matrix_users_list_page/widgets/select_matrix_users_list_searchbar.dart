@@ -4,19 +4,23 @@ import 'package:schuldaten_hub/common/constants/colors.dart';
 import 'package:schuldaten_hub/common/constants/enums.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/widgets/search_text_field.dart';
-import 'package:schuldaten_hub/features/matrix/models/matrix_room.dart';
-import 'package:schuldaten_hub/features/matrix/filters/matrix_policy_filter_manager.dart';
-import 'package:schuldaten_hub/features/matrix/pages/room_list_page/widgets/rooms_filter_bottom_sheet.dart';
-import 'package:schuldaten_hub/features/pupil/filters/pupil_filter_manager.dart';
 
-class RoomListSearchBar extends StatelessWidget {
-  final List<MatrixRoom> matrixRooms;
-  final bool filtersOn;
-  const RoomListSearchBar(
-      {required this.matrixRooms, required this.filtersOn, super.key});
+import 'package:schuldaten_hub/features/matrix/filters/matrix_policy_filter_manager.dart';
+import 'package:schuldaten_hub/features/matrix/models/matrix_user.dart';
+import 'package:schuldaten_hub/features/matrix/pages/select_matrix_users_list_page/controller/select_matrix_users_list_controller.dart';
+
+import 'package:watch_it/watch_it.dart';
+
+class SelectUserListSearchBar extends WatchingWidget {
+  final List<MatrixUser> matrixUsers;
+  final SelectMatrixUsersListController controller;
+  const SelectUserListSearchBar(
+      {required this.matrixUsers, required this.controller, super.key});
 
   @override
   Widget build(BuildContext context) {
+    final bool filtersOn =
+        watchValue((MatrixPolicyFilterManager x) => x.filtersOn);
     return Container(
       decoration: BoxDecoration(
         color: canvasColor,
@@ -37,7 +41,23 @@ class RoomListSearchBar extends StatelessWidget {
                   ),
                   const Gap(10),
                   Text(
-                    matrixRooms.length.toString(),
+                    matrixUsers.length.toString(),
+                    style: const TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                    ),
+                  ),
+                  const Gap(10),
+                  const Text(
+                    'Ausgewählt:',
+                    style: TextStyle(
+                      fontSize: 13,
+                    ),
+                  ),
+                  const Gap(10),
+                  Text(
+                    controller.selectedUsers.length.toString(),
                     style: const TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.bold,
@@ -55,13 +75,13 @@ class RoomListSearchBar extends StatelessWidget {
                 Expanded(
                     child: SearchTextField(
                         searchType: SearchType.room,
-                        hintText: 'Raum suchen',
+                        hintText: 'Matrix-Konto suchen',
                         refreshFunction: locator<MatrixPolicyFilterManager>()
-                            .filterRoomsWithSearchText)),
+                            .setUsersFilterText)),
                 InkWell(
-                  onTap: () => const RoomsFilterBottomSheet(),
-                  onLongPress: () =>
-                      locator<PupilFilterManager>().resetFilters(),
+                  onTap: () => {},
+                  onLongPress: () => locator<MatrixPolicyFilterManager>()
+                      .resetAllMatrixFilters(),
                   // onPressed: () => showBottomSheetFilters(context),
                   child: Padding(
                     padding: const EdgeInsets.all(10.0),

@@ -15,8 +15,9 @@ import 'package:schuldaten_hub/common/widgets/upload_image.dart';
 import 'package:schuldaten_hub/features/workbooks/models/pupil_workbook.dart';
 import 'package:schuldaten_hub/features/workbooks/models/workbook.dart';
 import 'package:schuldaten_hub/features/workbooks/services/workbook_manager.dart';
+import 'package:watch_it/watch_it.dart';
 
-class PupilWorkbookCard extends StatelessWidget {
+class PupilWorkbookCard extends WatchingWidget {
   const PupilWorkbookCard(
       {required this.pupilWorkbook, required this.pupilId, super.key});
   final PupilWorkbook pupilWorkbook;
@@ -39,7 +40,8 @@ class PupilWorkbookCard extends StatelessWidget {
         // },
         onLongPress: () async {
           if (pupilWorkbook.createdBy !=
-              locator<SessionManager>().credentials.value.username) {
+                  locator<SessionManager>().credentials.value.username ||
+              !locator<SessionManager>().credentials.value.isAdmin!) {
             informationDialog(context, 'Keine Berechtigung',
                 'Arbeitshefte können nur von der eintragenden Person bearbeitet werden!');
             return;

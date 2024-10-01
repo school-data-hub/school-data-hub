@@ -20,7 +20,6 @@ import '../../../../../filters/pupils_filter.dart';
 
 class PupilInfosContent extends StatefulWidget {
   final PupilProxy pupil;
-
   const PupilInfosContent({required this.pupil, super.key});
 
   @override
@@ -148,9 +147,9 @@ class _PupilInfosContentState extends BaseState<PupilInfosContent> {
                 const Gap(10),
                 InkWell(
                   onTap: () {
-                    if (widget.pupil.contact != null &&
-                        widget.pupil.contact!.isNotEmpty) {
-                      launchMatrixUrl(context, widget.pupil.contact!);
+                    if (widget.pupil.contact != null && widget.pupil.contact!.isNotEmpty) {
+                      MatrixHelperFunctions.launchMatrixUrl(
+                          context, widget.pupil.contact!);
                     }
                   },
                   onLongPress: () async {

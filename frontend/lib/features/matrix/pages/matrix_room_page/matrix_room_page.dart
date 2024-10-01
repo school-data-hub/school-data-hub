@@ -1,29 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:schuldaten_hub/common/constants/colors.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/widgets/generic_app_bar.dart';
 import 'package:schuldaten_hub/common/widgets/sliver_search_app_bar.dart';
-import 'package:schuldaten_hub/features/matrix/models/matrix_user.dart';
 import 'package:schuldaten_hub/features/matrix/filters/matrix_policy_filter_manager.dart';
+import 'package:schuldaten_hub/features/matrix/models/matrix_room.dart';
+import 'package:schuldaten_hub/features/matrix/models/matrix_user.dart';
 import 'package:schuldaten_hub/features/matrix/pages/matrix_users_list_page/widgets/matrix_user_list_card.dart';
 import 'package:schuldaten_hub/features/matrix/pages/matrix_users_list_page/widgets/matrix_user_list_searchbar.dart';
 import 'package:schuldaten_hub/features/matrix/pages/matrix_users_list_page/widgets/matrix_users_list_view_bottom_navbar.dart';
 import 'package:schuldaten_hub/features/matrix/services/matrix_policy_manager.dart';
+import 'package:schuldaten_hub/features/matrix/services/matrix_room_helpers.dart';
 import 'package:watch_it/watch_it.dart';
 
-class MatrixUsersListPage extends WatchingWidget {
-  const MatrixUsersListPage({super.key});
+class MatrixRoomPage extends WatchingWidget {
+  final MatrixRoom matrixRoom;
+  const MatrixRoomPage({required this.matrixRoom, super.key});
 
   @override
   Widget build(BuildContext context) {
     List<MatrixUser> matrixUsers =
+        watchValue((MatrixPolicyManager x) => x.matrixUsers);
+    List<MatrixUser> filteredMatrixUsers =
         watchValue((MatrixPolicyFilterManager x) => x.filteredMatrixUsers);
+    final List<MatrixUser> matrixUsersInRoom = filteredMatrixUsers
+        .where((user) =>
+            MatrixRoomHelper.usersInRoom(matrixRoom.id).contains(user))
+        .toList();
 
     return Scaffold(
-      backgroundColor: canvasColor,
-      appBar: const GenericAppBar(
-          iconData: Icons.chat_rounded, title: 'Matrix-Konten'),
+      appBar: GenericAppBar(iconData: Icons.room, title: matrixRoom.name!),
       body: RefreshIndicator(
         onRefresh: () async =>
             locator<MatrixPolicyManager>().fetchMatrixPolicy(),
@@ -34,7 +40,8 @@ class MatrixUsersListPage extends WatchingWidget {
               slivers: [
                 const SliverGap(5),
                 SliverSearchAppBar(
-                    title: MatrixUsersListSearchBar(matrixUsers: matrixUsers),
+                    title: MatrixUsersListSearchBar(
+                        matrixUsers: matrixUsersInRoom),
                     height: 110),
                 matrixUsers.isEmpty
                     ? const SliverToBoxAdapter(
@@ -52,9 +59,10 @@ class MatrixUsersListPage extends WatchingWidget {
                         delegate: SliverChildBuilderDelegate(
                           (BuildContext context, int index) {
                             // Your list view items go here
-                            return MatrixUsersListCard(matrixUsers[index]);
+                            return MatrixUsersListCard(
+                                matrixUsersInRoom[index]);
                           },
-                          childCount: matrixUsers
+                          childCount: matrixUsersInRoom
                               .length, // Adjust this based on your data
                         ),
                       ),

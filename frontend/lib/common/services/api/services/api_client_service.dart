@@ -36,6 +36,7 @@ class ApiClientService {
       {String? baseUrl, String? tokenKey, String? token, bool? isFile}) {
     if (baseUrl != null) _dio.options.baseUrl = baseUrl;
     if (tokenKey != null && token != null) {
+      _dio.options.headers.clear();
       _dio.options.headers[tokenKey] = token;
     }
     if (isFile != null) {

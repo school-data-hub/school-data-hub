@@ -19,7 +19,7 @@ class _BarcodeStreamScannerState extends State<BarcodeStreamScanner> {
   );
 
   int _counter = 0;
-  List<String> _scannedQrCodes = [];
+  final List<String> _scannedQrCodes = [];
   String _lastProcessedQrCode = '';
 
   Widget _buildBarcodeStream() {

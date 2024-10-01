@@ -34,10 +34,10 @@ class SearchManager {
     //   locator<PupilFilterManager>().setSearchText(text);
     // }
     if (_searchType.value == SearchType.room) {
-      locator<MatrixPolicyFilterManager>().filterRoomsWithSearchText(text);
+      locator<MatrixPolicyFilterManager>().setRoomsFilterText(text);
     }
     if (_searchType.value == SearchType.matrixUser) {
-      locator<MatrixPolicyFilterManager>().filterUsersWithSearchText(text);
+      locator<MatrixPolicyFilterManager>().setUsersFilterText(text);
     }
     if (_searchType.value == SearchType.list) {
       locator<SchoolListFilterManager>().onSearchEnter(text);
@@ -56,10 +56,10 @@ class SearchManager {
     //   locator<PupilFilterManager>().resetFilters();
     // }
     if (_searchType.value == SearchType.room) {
-      locator<MatrixPolicyFilterManager>().filterRoomsWithSearchText('');
+      locator<MatrixPolicyFilterManager>().setRoomsFilterText('');
     }
     if (_searchType.value == SearchType.matrixUser) {
-      locator<MatrixPolicyFilterManager>().filterUsersWithSearchText('');
+      locator<MatrixPolicyFilterManager>().setUsersFilterText('');
     }
     if (_searchType.value == SearchType.list) {
       locator<SchoolListFilterManager>().onSearchEnter('');

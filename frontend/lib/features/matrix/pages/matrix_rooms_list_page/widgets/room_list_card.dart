@@ -2,12 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/constants/colors.dart';
+import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/widgets/custom_expansion_tile.dart';
 import 'package:schuldaten_hub/common/widgets/custom_list_tiles.dart';
+import 'package:schuldaten_hub/features/credit/credit_list_page/widgets/dialogues/change_credit_dialog.dart';
 import 'package:schuldaten_hub/features/matrix/models/matrix_room.dart';
 import 'package:schuldaten_hub/features/matrix/models/matrix_user.dart';
-import 'package:schuldaten_hub/features/matrix/services/matrix_policy_helper_functions.dart';
-import 'package:schuldaten_hub/features/matrix/pages/room_list_page/widgets/users_in_room_list.dart';
+import 'package:schuldaten_hub/features/matrix/pages/matrix_room_page/matrix_room_page.dart';
+import 'package:schuldaten_hub/features/matrix/pages/matrix_rooms_list_page/widgets/change_power_levels_dialog.dart';
+import 'package:schuldaten_hub/features/matrix/pages/matrix_rooms_list_page/widgets/users_in_room_list.dart';
+import 'package:schuldaten_hub/features/matrix/services/matrix_policy_manager.dart';
+import 'package:schuldaten_hub/features/matrix/services/matrix_room_helpers.dart';
 import 'package:watch_it/watch_it.dart';
 
 class RoomListCard extends WatchingStatefulWidget {
@@ -32,7 +37,7 @@ class _RoomListCardState extends State<RoomListCard> {
     //     .where((element) => element.internalId == widget.passedPupil.internalId)
     //     .first;
     final List<MatrixUser> matrixUsersInRoom =
-        usersInRoom(widget.matrixRoom.id);
+        MatrixRoomHelper.usersInRoom(widget.matrixRoom.id);
     return Card(
       color: Colors.white,
       surfaceTintColor: Colors.white,
@@ -64,11 +69,11 @@ class _RoomListCardState extends State<RoomListCard> {
                               onTap: () {
                                 // locator<BottomNavManager>()
                                 //     .setPupilProfileNavPage(2);
-                                // Navigator.of(context).push(MaterialPageRoute(
-                                //   builder: (ctx) => PupilProfile(
-                                //     pupil,
-                                //   ),
-                                // ));
+                                Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (ctx) => MatrixRoomPage(
+                                    matrixRoom: widget.matrixRoom,
+                                  ),
+                                ));
                               },
                               child: Text(
                                 '${widget.matrixRoom.name}',
@@ -88,6 +93,7 @@ class _RoomListCardState extends State<RoomListCard> {
                     ),
                     const Gap(5),
                     Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Expanded(
                           child: SingleChildScrollView(
@@ -138,11 +144,28 @@ class _RoomListCardState extends State<RoomListCard> {
                                   ),
                                 ),
                                 const Gap(5),
-                                Text(
-                                  widget.matrixRoom.eventsDefault.toString(),
-                                  style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold),
+                                InkWell(
+                                  onTap: () async {
+                                    final int? newPowerLevel =
+                                        await changePowerLevelsDialog(context);
+                                    if (newPowerLevel == null ||
+                                        newPowerLevel < 0) return;
+                                    locator<MatrixPolicyManager>()
+                                        .changeRoomPowerLevels(
+                                      roomId: widget.matrixRoom.id,
+                                      eventsDefault:
+                                          widget.matrixRoom.eventsDefault == 50
+                                              ? 0
+                                              : 50,
+                                    );
+                                  },
+                                  child: Text(
+                                    widget.matrixRoom.eventsDefault.toString(),
+                                    style: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                        color: interactiveColor),
+                                  ),
                                 ),
                                 const Gap(5),
                                 const Text(
@@ -152,12 +175,15 @@ class _RoomListCardState extends State<RoomListCard> {
                                   ),
                                 ),
                                 const Gap(5),
-                                Text(
-                                  widget.matrixRoom.powerLevelReactions
-                                      .toString(),
-                                  style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold),
+                                InkWell(
+                                  child: Text(
+                                    widget.matrixRoom.powerLevelReactions
+                                        .toString(),
+                                    style: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                        color: interactiveColor),
+                                  ),
                                 ),
                                 const Gap(10),
                               ],

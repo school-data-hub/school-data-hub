@@ -5,14 +5,13 @@ import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/widgets/dialogues/confirmation_dialog.dart';
 import 'package:schuldaten_hub/features/matrix/models/matrix_room.dart';
 import 'package:schuldaten_hub/features/matrix/models/matrix_user.dart';
-import 'package:schuldaten_hub/features/matrix/services/matrix_policy_helper_functions.dart';
+import 'package:schuldaten_hub/features/matrix/pages/select_matrix_users_list_page/controller/select_matrix_users_list_controller.dart';
 import 'package:schuldaten_hub/features/matrix/services/matrix_policy_manager.dart';
+import 'package:schuldaten_hub/features/matrix/services/matrix_room_helpers.dart';
+import 'package:schuldaten_hub/features/matrix/services/matrix_user_helpers.dart';
 
 List<Widget> usersInRoomList(
     List<MatrixUser> matrixUsers, String roomId, BuildContext context) {
-  // List<MatrixRoom> namedMatrixRooms =
-  //     locator<MatrixPolicyManager>().matrixRooms.value;
-
   return [
     Padding(
       padding: const EdgeInsets.all(10.0),
@@ -23,10 +22,23 @@ List<Widget> usersInRoomList(
         child: ElevatedButton(
           style: successButtonStyle,
           onPressed: () async {
-            // changeCreditDialog(context, pupil);
+            final availableUsers = MatrixUserHelper.restOfUsers(
+                MatrixUserHelper.userIdsFromUsers(matrixUsers));
+
+            final List<String> selectedUserIds =
+                await Navigator.of(context).push(MaterialPageRoute(
+                      builder: (ctx) => SelectMatrixUsersList(availableUsers),
+                    )) ??
+                    [];
+            if (selectedUserIds.isNotEmpty) {
+              for (final String userId in selectedUserIds) {
+                locator<MatrixPolicyManager>()
+                    .addMatrixUserToRooms(userId, [roomId]);
+              }
+            }
           },
           child: const Text(
-            "BERECHTIGUNGEN ÄNDERN",
+            "KONTO HINZUFÜGEN",
             style: buttonTextStyle,
           ),
         ),
@@ -106,7 +118,9 @@ List<Widget> usersInRoomList(
                         ),
                       ),
                     ),
-                    if (powerLevelInRoom(roomId, matrixUser.id!) != null)
+                    if (MatrixRoomHelper.powerLevelInRoom(
+                            roomId, matrixUser.id!) !=
+                        null)
                       const Icon(
                         Icons.check,
                         color: Colors.green,

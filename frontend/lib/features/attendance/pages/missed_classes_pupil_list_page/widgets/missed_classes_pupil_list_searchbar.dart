@@ -19,7 +19,6 @@ class AttendanceRankingListSearchbar extends WatchingWidget {
 
   @override
   Widget build(BuildContext context) {
-    final filtersOn = watchValue((PupilsFilter x) => x.filtersOn);
     return Container(
       decoration: BoxDecoration(
         color: canvasColor,

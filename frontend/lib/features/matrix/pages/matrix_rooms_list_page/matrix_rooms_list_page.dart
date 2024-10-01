@@ -7,9 +7,9 @@ import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/widgets/generic_sliver_list.dart';
 import 'package:schuldaten_hub/features/matrix/models/matrix_room.dart';
 import 'package:schuldaten_hub/features/matrix/filters/matrix_policy_filter_manager.dart';
-import 'package:schuldaten_hub/features/matrix/pages/room_list_page/widgets/room_list_card.dart';
-import 'package:schuldaten_hub/features/matrix/pages/room_list_page/widgets/room_list_searchbar.dart';
-import 'package:schuldaten_hub/features/matrix/pages/room_list_page/widgets/room_list_view_bottom_navbar.dart';
+import 'package:schuldaten_hub/features/matrix/pages/matrix_rooms_list_page/widgets/room_list_card.dart';
+import 'package:schuldaten_hub/features/matrix/pages/matrix_rooms_list_page/widgets/room_list_searchbar.dart';
+import 'package:schuldaten_hub/features/matrix/pages/matrix_rooms_list_page/widgets/room_list_view_bottom_navbar.dart';
 import 'package:schuldaten_hub/features/matrix/services/matrix_policy_manager.dart';
 
 import 'package:watch_it/watch_it.dart';
@@ -21,8 +21,6 @@ class RoomListPage extends WatchingWidget {
   Widget build(BuildContext context) {
     List<MatrixRoom> matrixRooms =
         watchValue((MatrixPolicyFilterManager x) => x.filteredMatrixRooms);
-
-    bool filtersOn = watchValue((MatrixPolicyFilterManager x) => x.filtersOn);
 
     return Scaffold(
       backgroundColor: canvasColor,
@@ -70,8 +68,7 @@ class RoomListPage extends WatchingWidget {
                     titlePadding: const EdgeInsets.only(
                         left: 5, top: 5, right: 5, bottom: 5),
                     collapseMode: CollapseMode.none,
-                    title: RoomListSearchBar(
-                        matrixRooms: matrixRooms, filtersOn: filtersOn),
+                    title: RoomListSearchBar(matrixRooms: matrixRooms),
                   ),
                 ),
                 GenericSliverListWithEmptyListCheck(
@@ -83,7 +80,7 @@ class RoomListPage extends WatchingWidget {
           ),
         ),
       ),
-      bottomNavigationBar: RoomListPageBottomNavBar(filtersOn: filtersOn),
+      bottomNavigationBar: const RoomListPageBottomNavBar(),
     );
   }
 }

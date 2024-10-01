@@ -3,20 +3,18 @@ import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/constants/colors.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/features/matrix/filters/matrix_policy_filter_manager.dart';
-import 'package:schuldaten_hub/features/matrix/pages/select_matrix_rooms_list_page/controller/select_matrix_rooms_list_controller.dart';
+import 'package:schuldaten_hub/features/matrix/pages/select_matrix_users_list_page/controller/select_matrix_users_list_controller.dart';
 import 'package:schuldaten_hub/features/pupil/pages/select_pupils_list_page/widgets/select_pupils_filter_bottom_sheet.dart';
 import 'package:watch_it/watch_it.dart';
 
-class SelectMatrixRoomsListViewBottomNavBar extends WatchingWidget {
-  final SelectMatrixRoomsListController controller;
-
-  const SelectMatrixRoomsListViewBottomNavBar(
+class SelectMatrixUsersListPageBottomNavBar extends WatchingWidget {
+  final SelectMatrixUsersListController controller;
+  const SelectMatrixUsersListPageBottomNavBar(
       {required this.controller, super.key});
 
   @override
   Widget build(BuildContext context) {
-    final bool filtersOn =
-        watchValue((MatrixPolicyFilterManager x) => x.filtersOn);
+    bool filtersOn = watchValue((MatrixPolicyFilterManager x) => x.filtersOn);
     return BottomAppBar(
       padding: const EdgeInsets.all(9),
       shape: null,
@@ -67,7 +65,7 @@ class SelectMatrixRoomsListViewBottomNavBar extends WatchingWidget {
                   size: 30,
                 ),
                 onPressed: () {
-                  Navigator.pop(context, controller.selectedRooms);
+                  Navigator.pop(context, controller.selectedUsers);
                 },
               ),
               InkWell(

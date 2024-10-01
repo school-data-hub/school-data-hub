@@ -332,6 +332,24 @@ class AttendanceManager {
     return;
   }
 
+  Future<void> changeCommentValue(
+      int pupilId, String? comment, DateTime date) async {
+    final PupilProxy pupil = pupilManager.findPupilById(pupilId)!;
+    final int? missedClass = AttendanceHelper.findMissedClassIndex(pupil, date);
+    if (missedClass == null || missedClass == -1) {
+      return;
+    }
+    final PupilData responsePupil = await apiAttendanceService.patchMissedClass(
+        pupilId: pupilId, date: date, comment: comment);
+
+    locator<PupilManager>().updatePupilProxyWithPupilData(responsePupil);
+
+    notificationManager.showSnackBar(
+        NotificationType.success, 'Eintrag erfolgreich!');
+
+    return;
+  }
+
   Future<void> createManyMissedClasses(
       id, startdate, enddate, missedType) async {
     List<MissedClass> missedClasses = [];

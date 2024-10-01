@@ -1,10 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/constants/colors.dart';
+import 'package:schuldaten_hub/common/constants/styles.dart';
+import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/widgets/custom_expansion_tile.dart';
 import 'package:schuldaten_hub/common/widgets/custom_list_tiles.dart';
+import 'package:schuldaten_hub/common/widgets/dialogues/short_textfield_dialog.dart';
 import 'package:schuldaten_hub/features/matrix/models/matrix_user.dart';
 import 'package:schuldaten_hub/features/matrix/pages/matrix_users_list_page/widgets/pupil_rooms_list.dart';
+import 'package:schuldaten_hub/features/matrix/pages/select_matrix_rooms_list_page/controller/select_matrix_rooms_list_controller.dart';
+import 'package:schuldaten_hub/features/matrix/services/matrix_policy_manager.dart';
+import 'package:schuldaten_hub/features/matrix/services/matrix_room_helpers.dart';
+import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
+import 'package:schuldaten_hub/features/pupil/services/pupil_manager.dart';
 import 'package:watch_it/watch_it.dart';
 
 class MatrixUsersListCard extends WatchingStatefulWidget {
@@ -25,9 +34,12 @@ class _MatrixUsersListCardState extends State<MatrixUsersListCard> {
 
   @override
   Widget build(BuildContext context) {
-    // PupilProxy pupil = watchValue((PupilFilterManager x) => x.filteredPupils)
-    //     .where((element) => element.internalId == widget.passedPupil.internalId)
-    //     .first;
+    final matrixUser = watch<MatrixUser>(widget.matrixUser);
+    final pupilManager = locator<PupilManager>();
+    final List<PupilProxy> pupils = watch<PupilManager>(pupilManager).allPupils;
+    final bool isLinked = pupils.any((pupil) =>
+        pupil.contact == matrixUser.id ||
+        pupil.parentsContact == matrixUser.id);
 
     return Card(
       color: Colors.white,
@@ -57,7 +69,19 @@ class _MatrixUsersListCardState extends State<MatrixUsersListCard> {
                           child: SingleChildScrollView(
                             scrollDirection: Axis.horizontal,
                             child: InkWell(
-                              onTap: () {
+                              onTap: () async {
+                                final String? changedName =
+                                    await shortTextfieldDialog(
+                                        context: context,
+                                        title: 'Name ändern',
+                                        labelText: 'Name ändern',
+                                        hintText: matrixUser.displayName,
+                                        obscureText: false);
+                                if (changedName != null) {
+                                  matrixUser.displayName = changedName;
+                                  locator<MatrixPolicyManager>()
+                                      .pendingChangesHandler(true);
+                                }
                                 // locator<BottomNavManager>()
                                 //     .setPupilProfileNavPage(2);
                                 // Navigator.of(context).push(MaterialPageRoute(
@@ -67,7 +91,7 @@ class _MatrixUsersListCardState extends State<MatrixUsersListCard> {
                                 // ));
                               },
                               child: Text(
-                                widget.matrixUser.displayName,
+                                matrixUser.displayName,
                                 overflow: TextOverflow.fade,
                                 softWrap: false,
                                 textAlign: TextAlign.left,
@@ -91,12 +115,27 @@ class _MatrixUsersListCardState extends State<MatrixUsersListCard> {
                             child: Row(
                               children: [
                                 Text(
-                                  widget.matrixUser.id!,
-                                  style: const TextStyle(
+                                  matrixUser.id!,
+                                  style: TextStyle(
+                                    color: isLinked
+                                        ? Colors.green
+                                        : backgroundColor,
+                                    fontWeight: FontWeight.bold,
                                     fontSize: 16,
                                   ),
                                 ),
-                                const Gap(10),
+                                const Gap(20),
+                                IconButton(
+                                  icon: const Icon(Icons.copy),
+                                  onPressed: () {
+                                    Clipboard.setData(
+                                        ClipboardData(text: matrixUser.id!));
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                          content: Text('Copied to clipboard')),
+                                    );
+                                  },
+                                ),
                               ],
                             ),
                           ),
@@ -120,7 +159,7 @@ class _MatrixUsersListCardState extends State<MatrixUsersListCard> {
                     const Text('Räume'),
                     Center(
                       child: Text(
-                        widget.matrixUser.matrixRooms.length.toString(),
+                        matrixUser.matrixRooms.length.toString(),
                         style: const TextStyle(
                           fontSize: 23,
                           fontWeight: FontWeight.bold,
@@ -134,13 +173,41 @@ class _MatrixUsersListCardState extends State<MatrixUsersListCard> {
               const Gap(20),
             ],
           ),
-          widget.matrixUser.matrixRooms.isEmpty
-              ? const SizedBox.shrink()
-              : CustomListTiles(
-                  title: null,
-                  tileController: _tileController,
-                  widgetList: roomsList(widget.matrixUser,
-                      widget.matrixUser.matrixRooms, context)),
+          CustomListTiles(
+              title: null,
+              tileController: _tileController,
+              widgetList: [
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    //margin: const EdgeInsets.only(bottom: 16),
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      style: successButtonStyle,
+                      onPressed: () async {
+                        final availableRooms = MatrixRoomHelper.restOfRooms(
+                            matrixUser.joinedRoomIds);
+                        final List<String> selectedRoomIds =
+                            await Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (ctx) =>
+                                      SelectMatrixRoomsList(availableRooms),
+                                )) ??
+                                [];
+                        if (selectedRoomIds.isNotEmpty) {
+                          matrixUser.joinRooms(selectedRoomIds);
+                        }
+                      },
+                      child: const Text(
+                        "RÄUME HINZUFÜGEN",
+                        style: buttonTextStyle,
+                      ),
+                    ),
+                  ),
+                ),
+                MatrixUserRoomsList(
+                    matrixUser: matrixUser, matrixRooms: matrixUser.matrixRooms)
+              ]),
         ],
       ),
     );
