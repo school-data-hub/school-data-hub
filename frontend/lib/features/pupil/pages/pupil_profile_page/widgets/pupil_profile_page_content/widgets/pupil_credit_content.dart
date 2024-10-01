@@ -10,12 +10,32 @@ import 'package:schuldaten_hub/features/pupil/models/credit_history_log.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
 import 'package:schuldaten_hub/features/credit/credit_list_page/widgets/dialogues/change_credit_dialog.dart';
 
-class PupilCreditContent extends StatelessWidget {
+import '../../../../../../../common/services/base_state.dart';
+import '../../../../../../../common/services/locator.dart';
+import '../../../../../filters/pupils_filter.dart';
+
+class PupilCreditContent extends StatefulWidget {
   final PupilProxy pupil;
+
   const PupilCreditContent({required this.pupil, super.key});
 
   @override
+  State<PupilCreditContent> createState() => _PupilCreditContentState();
+}
+
+class _PupilCreditContentState extends BaseState<PupilCreditContent> {
+  @override
+  Future<void> onInitialize() async {
+    await locator.isReady<PupilsFilter>();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    if (!isInitialized) {
+      return const Card(
+        child: CircularProgressIndicator(),
+      );
+    }
     return Card(
       color: pupilProfileCardColor,
       shape: RoundedRectangleBorder(
@@ -46,7 +66,7 @@ class PupilCreditContent extends StatelessWidget {
             ),
             const Spacer(),
             Text(
-              pupil.credit.toString(),
+              widget.pupil.credit.toString(),
               style: const TextStyle(
                   color: groupColor, fontSize: 60, fontWeight: FontWeight.bold),
             ),
@@ -62,7 +82,7 @@ class PupilCreditContent extends StatelessWidget {
               child: ElevatedButton(
                 style: successButtonStyle,
                 onPressed: () async {
-                  changeCreditDialog(context, pupil);
+                  changeCreditDialog(context, widget.pupil);
                 },
                 child: const Text(
                   "GUTHABEN ÄNDERN",
@@ -81,7 +101,7 @@ class PupilCreditContent extends StatelessWidget {
                 textAlign: TextAlign.left,
               ),
               const Gap(5),
-              Text(pupil.creditEarned.toString(),
+              Text(widget.pupil.creditEarned.toString(),
                   style: const TextStyle(
                       fontSize: 18.0, fontWeight: FontWeight.bold)),
             ],
@@ -107,10 +127,10 @@ class PupilCreditContent extends StatelessWidget {
             padding: const EdgeInsets.only(left: 20, top: 5, bottom: 15),
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
-            itemCount: pupil.creditHistoryLogs!.length,
+            itemCount: widget.pupil.creditHistoryLogs!.length,
             itemBuilder: (BuildContext context, int index) {
               final List<CreditHistoryLog> pupilCreditHistoryLogs =
-                  List.from(pupil.creditHistoryLogs!);
+                  List.from(widget.pupil.creditHistoryLogs!);
               // order by date latest first
               pupilCreditHistoryLogs
                   .sort((a, b) => b.createdAt.compareTo(a.createdAt));

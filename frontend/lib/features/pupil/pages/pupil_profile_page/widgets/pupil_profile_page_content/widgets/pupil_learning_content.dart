@@ -5,12 +5,36 @@ import 'package:schuldaten_hub/common/constants/paddings.dart';
 import 'package:schuldaten_hub/features/competence/pages/learning_pupil_list_page/widgets/pupil_learning_content_list.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
 
-class PupilLearningContentCard extends StatelessWidget {
+import '../../../../../../../common/services/base_state.dart';
+import '../../../../../../../common/services/locator.dart';
+import '../../../../../../workbooks/services/workbook_manager.dart';
+import '../../../../../filters/pupils_filter.dart';
+
+class PupilLearningContentCard extends StatefulWidget {
   final PupilProxy pupil;
+
   const PupilLearningContentCard({required this.pupil, super.key});
 
   @override
+  State<PupilLearningContentCard> createState() =>
+      _PupilLearningContentCardState();
+}
+
+class _PupilLearningContentCardState
+    extends BaseState<PupilLearningContentCard> {
+  @override
+  Future<void> onInitialize() async {
+    await locator.isReady<PupilsFilter>();
+    await locator.isReady<WorkbookManager>();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    if (!isInitialized) {
+      return const Card(
+        child: CircularProgressIndicator(),
+      );
+    }
     return Card(
       color: pupilProfileCardColor,
       shape: RoundedRectangleBorder(
@@ -34,7 +58,7 @@ class PupilLearningContentCard extends StatelessWidget {
                 ))
           ]),
           const Gap(15),
-          PupilLearningContent(pupil: pupil)
+          PupilLearningContent(pupil: widget.pupil)
         ]),
       ),
     );

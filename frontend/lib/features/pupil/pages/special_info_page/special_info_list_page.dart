@@ -11,7 +11,11 @@ import 'package:schuldaten_hub/features/pupil/services/pupil_manager.dart';
 import 'package:schuldaten_hub/features/pupil/pages/special_info_page/widgets/special_info_card.dart';
 import 'package:schuldaten_hub/features/pupil/pages/special_info_page/widgets/special_info_list_search_bar.dart';
 import 'package:schuldaten_hub/features/pupil/pages/special_info_page/widgets/special_info_list_page_bottom_navbar.dart';
+import 'package:schuldaten_hub/features/school_lists/filters/school_list_filter_manager.dart';
 import 'package:watch_it/watch_it.dart';
+
+import '../../../../common/services/base_state.dart';
+import '../../../../common/widgets/generic_app_bar.dart';
 
 List<PupilProxy> specialInfoFilter(List<PupilProxy> pupils) {
   List<PupilProxy> filteredPupils = [];
@@ -30,11 +34,30 @@ List<PupilProxy> specialInfoFilter(List<PupilProxy> pupils) {
   return filteredPupils;
 }
 
-class SpecialInfoListPage extends WatchingWidget {
+class SpecialInfoListPage extends WatchingStatefulWidget {
   const SpecialInfoListPage({super.key});
 
   @override
+  State<SpecialInfoListPage> createState() => _SpecialInfoListPageState();
+}
+
+class _SpecialInfoListPageState extends BaseState<SpecialInfoListPage> {
+  @override
+  Future<void> onInitialize() async {
+    await locator.isReady<PupilsFilter>();
+    await locator.isReady<SchoolListFilterManager>();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    if (!isInitialized) {
+      return const Scaffold(
+        backgroundColor: canvasColor,
+        appBar: GenericAppBar(
+            iconData: Icons.emergency_rounded, title: 'Besondere Infos'),
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
     bool filtersOn = watchValue((PupilsFilter x) => x.filtersOn);
     List<PupilProxy> filteredPupils =
         watchValue((PupilsFilter x) => x.filteredPupils);

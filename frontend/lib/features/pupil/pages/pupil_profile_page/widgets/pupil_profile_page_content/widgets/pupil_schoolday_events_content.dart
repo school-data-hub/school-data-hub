@@ -6,12 +6,34 @@ import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
 import 'package:schuldaten_hub/features/schoolday_events/pages/schoolday_event_list_page/schoolday_event_list_page.dart';
 import 'package:schuldaten_hub/features/schoolday_events/pages/schoolday_event_list_page/widgets/pupil_schoolday_event_content_list.dart';
 
-class PupilSchooldayEventsContent extends StatelessWidget {
+import '../../../../../../../common/services/base_state.dart';
+import '../../../../../../../common/services/locator.dart';
+import '../../../../../filters/pupils_filter.dart';
+
+class PupilSchooldayEventsContent extends StatefulWidget {
   final PupilProxy pupil;
+
   const PupilSchooldayEventsContent({required this.pupil, super.key});
 
   @override
+  State<PupilSchooldayEventsContent> createState() =>
+      _PupilSchooldayEventsContentState();
+}
+
+class _PupilSchooldayEventsContentState
+    extends BaseState<PupilSchooldayEventsContent> {
+  @override
+  Future<void> onInitialize() async {
+    await locator.isReady<PupilsFilter>();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    if (!isInitialized) {
+      return const Card(
+        child: CircularProgressIndicator(),
+      );
+    }
     return Card(
       color: pupilProfileCardColor,
       shape: RoundedRectangleBorder(
@@ -42,7 +64,7 @@ class PupilSchooldayEventsContent extends StatelessWidget {
             )
           ]),
           const Gap(15),
-          SchooldayEventsContentList(pupil: pupil),
+          SchooldayEventsContentList(pupil: widget.pupil),
         ]),
       ),
     );

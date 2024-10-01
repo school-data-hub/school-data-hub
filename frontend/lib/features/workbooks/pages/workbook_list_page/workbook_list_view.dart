@@ -14,12 +14,36 @@ import 'package:schuldaten_hub/features/workbooks/pages/workbook_list_page/widge
 import 'package:schuldaten_hub/features/workbooks/pages/workbook_list_page/widgets/workbook_list_bottom_navbar.dart';
 import 'package:watch_it/watch_it.dart';
 
-class WorkbookListView extends WatchingWidget {
+import '../../../../common/services/base_state.dart';
+import '../../../../common/widgets/generic_app_bar.dart';
+
+class WorkbookListView extends WatchingStatefulWidget {
   final WorkbookController controller;
+
   const WorkbookListView(this.controller, {super.key});
 
   @override
+  State<WorkbookListView> createState() => _WorkbookListViewState();
+}
+
+class _WorkbookListViewState extends BaseState<WorkbookListView> {
+  @override
+  Future<void> onInitialize() async {
+    await locator.isReady<PupilFilterManager>();
+    await locator.isReady<WorkbookManager>();
+    await locator.isReady<PupilsFilter>();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    if (!isInitialized) {
+      return const Scaffold(
+        backgroundColor: canvasColor,
+        appBar: GenericAppBar(
+            iconData: Icons.note_alt_rounded, title: 'Arbeitshefte'),
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
     bool filtersOn = watchValue((PupilFilterManager x) => x.filtersOn);
 
     //Session session = watchValue((SessionManager x) => x.credentials);

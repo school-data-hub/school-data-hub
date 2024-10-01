@@ -11,16 +11,39 @@ import 'package:schuldaten_hub/features/learning_support/services/learning_suppo
 import 'package:schuldaten_hub/features/learning_support/pages/learning_support_list_page/widgets/learning_support_list_card.dart';
 import 'package:schuldaten_hub/features/learning_support/pages/learning_support_list_page/widgets/learning_support_list_search_bar.dart';
 import 'package:schuldaten_hub/features/learning_support/pages/learning_support_list_page/widgets/learning_support_list_page_bottom_navbar.dart';
+import 'package:schuldaten_hub/features/learning_support/services/learning_support_manager.dart';
 import 'package:schuldaten_hub/features/pupil/filters/pupils_filter.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
 import 'package:schuldaten_hub/features/pupil/services/pupil_manager.dart';
 import 'package:watch_it/watch_it.dart';
 
-class LearningSupportListPage extends WatchingWidget {
+import '../../../../common/services/base_state.dart';
+
+class LearningSupportListPage extends WatchingStatefulWidget {
   const LearningSupportListPage({super.key});
 
   @override
+  State<LearningSupportListPage> createState() =>
+      _LearningSupportListPageState();
+}
+
+class _LearningSupportListPageState extends BaseState<LearningSupportListPage> {
+  @override
+  Future<void> onInitialize() async {
+    await locator.isReady<PupilsFilter>();
+    await locator.isReady<LearningSupportManager>();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    if (!isInitialized) {
+      return const Scaffold(
+        backgroundColor: canvasColor,
+        appBar:
+            GenericAppBar(iconData: Icons.support_rounded, title: 'Förderung'),
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
     bool filtersOn = watchValue((PupilsFilter x) => x.filtersOn);
     // These come from the PupilFilterManager
     List<PupilProxy> filteredPupilsByClassAndSchoolGrade =

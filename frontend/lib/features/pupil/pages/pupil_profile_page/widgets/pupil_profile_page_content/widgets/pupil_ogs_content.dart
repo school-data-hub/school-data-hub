@@ -10,12 +10,31 @@ import 'package:schuldaten_hub/features/pupil/services/pupil_helper_functions.da
 import 'package:schuldaten_hub/features/pupil/services/pupil_manager.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
 
-class PupilOgsContent extends StatelessWidget {
+import '../../../../../../../common/services/base_state.dart';
+import '../../../../../filters/pupils_filter.dart';
+
+class PupilOgsContent extends StatefulWidget {
   final PupilProxy pupil;
+
   const PupilOgsContent({required this.pupil, super.key});
 
   @override
+  State<PupilOgsContent> createState() => _PupilOgsContentState();
+}
+
+class _PupilOgsContentState extends BaseState<PupilOgsContent> {
+  @override
+  Future<void> onInitialize() async {
+    await locator.isReady<PupilsFilter>();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    if (!isInitialized) {
+      return const Card(
+        child: CircularProgressIndicator(),
+      );
+    }
     return Card(
       color: pupilProfileCardColor,
       shape: RoundedRectangleBorder(
@@ -52,12 +71,12 @@ class PupilOgsContent extends StatelessWidget {
                           'Notbetreuungsberechtigung für dieses Kind ändern?');
                   if (confirm == false || confirm == null) return;
                   await locator<PupilManager>().patchPupil(
-                      pupil.internalId,
+                      widget.pupil.internalId,
                       'emergency_care',
-                      pupil.emergencyCare == true ? 'false' : 'true');
+                      widget.pupil.emergencyCare == true ? 'false' : 'true');
                 },
                 child: Text(
-                  pupil.emergencyCare == true ? 'Ja' : 'Nein',
+                  widget.pupil.emergencyCare == true ? 'Ja' : 'Nein',
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
@@ -67,7 +86,7 @@ class PupilOgsContent extends StatelessWidget {
               ),
             ],
           ),
-          if (pupil.ogs == false)
+          if (widget.pupil.ogs == false)
             const Row(
               children: [
                 Gap(25),
@@ -91,26 +110,29 @@ class PupilOgsContent extends StatelessWidget {
                       child: InkWell(
                         onTap: () async {
                           final String? ogsInfo = await longTextFieldDialog(
-                              'OGS Informationen', pupil.ogsInfo, context);
+                              'OGS Informationen',
+                              widget.pupil.ogsInfo,
+                              context);
                           if (ogsInfo == null) return;
                           await locator<PupilManager>().patchPupil(
-                              pupil.internalId, 'ogs_info', ogsInfo);
+                              widget.pupil.internalId, 'ogs_info', ogsInfo);
                         },
                         onLongPress: () async {
-                          if (pupil.ogsInfo == null) return;
+                          if (widget.pupil.ogsInfo == null) return;
                           final bool? confirm = await confirmationDialog(
                               context: context,
                               title: 'OGS Infos löschen',
                               message:
                                   'OGS Informationen für dieses Kind löschen?');
                           if (confirm == false || confirm == null) return;
-                          await locator<PupilManager>()
-                              .patchPupil(pupil.internalId, 'ogs_info', null);
+                          await locator<PupilManager>().patchPupil(
+                              widget.pupil.internalId, 'ogs_info', null);
                         },
                         child: Text(
-                          pupil.ogsInfo == null || pupil.ogsInfo!.isEmpty
+                          widget.pupil.ogsInfo == null ||
+                                  widget.pupil.ogsInfo!.isEmpty
                               ? 'keine Infos'
-                              : pupil.ogsInfo!,
+                              : widget.pupil.ogsInfo!,
                           overflow: TextOverflow.ellipsis,
                           softWrap: true,
                           maxLines: 3,
@@ -134,9 +156,9 @@ class PupilOgsContent extends StatelessWidget {
                         const Gap(5),
                         InkWell(
                           onTap: () => pickUpTimeDialog(
-                              context, pupil, pupil.pickUpTime),
+                              context, widget.pupil, widget.pupil.pickUpTime),
                           child: Text(
-                            pickUpValue(pupil.pickUpTime),
+                            pickUpValue(widget.pupil.pickUpTime),
                             style: const TextStyle(
                                 fontSize: 23,
                                 fontWeight: FontWeight.bold,

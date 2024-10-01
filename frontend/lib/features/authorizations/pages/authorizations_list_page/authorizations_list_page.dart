@@ -15,11 +15,34 @@ import 'package:schuldaten_hub/common/widgets/search_text_field.dart';
 import 'package:schuldaten_hub/features/pupil/filters/pupils_filter.dart';
 import 'package:watch_it/watch_it.dart';
 
-class AuthorizationsListPage extends WatchingWidget {
+import '../../../../common/services/base_state.dart';
+import '../../../../common/widgets/generic_app_bar.dart';
+
+class AuthorizationsListPage extends WatchingStatefulWidget {
   const AuthorizationsListPage({super.key});
 
   @override
+  State<AuthorizationsListPage> createState() => _AuthorizationsListPageState();
+}
+
+class _AuthorizationsListPageState extends BaseState<AuthorizationsListPage> {
+  @override
+  Future<void> onInitialize() async {
+    await locator.isReady<AuthorizationManager>();
+    await locator.isReady<PupilsFilter>();
+    await locator.isReady<PupilFilterManager>();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    if (!isInitialized) {
+      return const Scaffold(
+        backgroundColor: canvasColor,
+        appBar: GenericAppBar(
+            iconData: Icons.fact_check_rounded, title: 'Einwilligungen'),
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
     bool filtersOn = watchValue((PupilFilterManager x) => x.filtersOn);
 
     List<Authorization> authorizations =

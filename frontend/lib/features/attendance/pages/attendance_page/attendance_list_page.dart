@@ -18,25 +18,40 @@ import 'package:watch_it/watch_it.dart';
 
 class AttendanceListPage extends WatchingStatefulWidget {
   const AttendanceListPage({super.key});
+
   @override
   State<AttendanceListPage> createState() => _AttendanceListPageState();
 }
 
 class _AttendanceListPageState extends State<AttendanceListPage> {
   late Timer _timer;
+  bool _isInitialized = false;
 
   @override
   void initState() {
     super.initState();
-    locator<PupilsFilter>().switchAttendanceFilters(true);
+    _initializeData();
+  }
 
-    locator<AttendanceManager>().fetchMissedClassesOnASchoolday(
-        locator<SchooldayManager>().thisDate.value);
+  Future<void> _initializeData() async {
+    try {
+      await locator.isReady<PupilsFilter>();
+      await locator.isReady<SchooldayManager>();
+      await locator.isReady<AttendanceManager>();
+      locator<PupilsFilter>().switchAttendanceFilters(true);
 
-    _timer = Timer.periodic(const Duration(seconds: 10), (timer) {
-      locator<AttendanceManager>().fetchMissedClassesOnASchoolday(
+      await locator<AttendanceManager>().fetchMissedClassesOnASchoolday(
           locator<SchooldayManager>().thisDate.value);
-    });
+
+      _timer = Timer.periodic(const Duration(seconds: 10), (timer) {
+        locator<AttendanceManager>().fetchMissedClassesOnASchoolday(
+            locator<SchooldayManager>().thisDate.value);
+      });
+    } finally {
+      setState(() {
+        _isInitialized = true;
+      });
+    }
   }
 
   @override
@@ -46,9 +61,23 @@ class _AttendanceListPageState extends State<AttendanceListPage> {
     super.dispose();
   }
 
-  final pupilManager = locator<PupilManager>();
   @override
   Widget build(BuildContext context) {
+    if (!_isInitialized) {
+      return Scaffold(
+        backgroundColor: canvasColor,
+        appBar: AppBar(
+          centerTitle: true,
+          backgroundColor: backgroundColor,
+          title: const Text(
+            "Loading...",
+            style: const TextStyle(
+                fontSize: 25, color: Colors.white, fontWeight: FontWeight.bold),
+          ),
+        ),
+        body: const Center(child: CircularProgressIndicator()),
+      );
+    }
     DateTime thisDate = watchValue((SchooldayManager x) => x.thisDate);
     List<int> pupilIds = watchValue((PupilsFilter x) => x.filteredPupilIds);
 
@@ -95,7 +124,8 @@ class _AttendanceListPageState extends State<AttendanceListPage> {
                 SliverSearchAppBar(
                     height: 110,
                     title: AttendanceListSearchBar(
-                      pupils: pupilManager.pupilsFromPupilIds(pupilIds),
+                      pupils:
+                          locator<PupilManager>().pupilsFromPupilIds(pupilIds),
                       thisDate: thisDate,
                     )),
                 GenericSliverListWithEmptyListCheck(
