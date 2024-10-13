@@ -109,6 +109,7 @@ app.config['TAGS'] = [
     {'name': 'Competence Goals', 'description': 'Competence goal endpoints'},
     {'name': 'Competence Report', 'description': 'Competence report for a school semester'},
     {'name': 'Support Categories', 'description': 'Goal category endpoints'},
+    {'name': 'Support Level', 'description': 'Support Level endpoints'},
     {'name': 'Support Category Statuses', 'description': 'Support category status endpoints'},
     {'name': 'Support Goals', 'description': 'Support goal endpoints'},
     {'name': 'Support Goal Checks', 'description': 'Support goal check endpoints'},

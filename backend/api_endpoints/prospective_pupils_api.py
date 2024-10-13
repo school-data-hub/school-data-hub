@@ -10,14 +10,14 @@ from helpers.log_entries import create_log_entry
 from models.log_entry import LogEntry
 from schemas.log_entry_schemas import ApiFileSchema
 
-pupil_api = APIBlueprint('pupils_api', __name__, url_prefix='/api/pupils')
+pupil_api = APIBlueprint('pupils_api', __name__, url_prefix='/api/prospective_pupils')
 
-from models.pupil import CreditHistoryLog, Pupil, SupportLevel
+from models.pupil import ProspectivePupil
 from auth_middleware import token_required
 from schemas.pupil_schemas import *
 
-#- POST PUPIL 
-###############
+#- POST PROSPECTIVE PUPIL 
+#########################
 @pupil_api.route('/new', methods=['POST'])
 @pupil_api.input(pupil_flat_schema, example={
   "avatar_url": None,
@@ -25,10 +25,9 @@ from schemas.pupil_schemas import *
   "communication_tutor1": None,
   "communication_tutor2": None,
   "contact": None,
-  "credit": 0,
-  "credit_earned": 0,
+  
   "five_years": None,
-  "latest_support_level": 0,
+  "individual_development_plan": 0,
   "internal_id": 1234,
   "ogs": True,
   "ogs_info": None,
@@ -55,7 +54,7 @@ def add_pupil(current_user, json_data):
         pick_up_time = data['pick_up_time']
         ogs_info = data['ogs_info']
         five_years = data['five_years']
-        latest_support_level = data['latest_support_level']
+        individual_development_plan = data['individual_development_plan']
         communication_pupil = data['communication_pupil']
         communication_tutor1 = data['communication_tutor1']
         communication_tutor2 = data['communication_tutor2']
@@ -64,7 +63,7 @@ def add_pupil(current_user, json_data):
         special_information = data['special_information']
         
         new_pupil = Pupil(internal_id, contact, parents_contact, credit, credit_earned, ogs, 
-                          pick_up_time, ogs_info, latest_support_level, five_years,
+                          pick_up_time, ogs_info, individual_development_plan, five_years,
                           communication_pupil, communication_tutor1,
                           communication_tutor2, preschool_revision, avatar_url, special_information)       
         db.session.add(new_pupil)
@@ -359,14 +358,14 @@ def delete_avatar(current_user, internal_id):
     return jsonify( {'message': 'Avatar gelöscht!'}), 200
 
 
-#- UPDATE SUPPORT LEVEL
+#- PATCH INDIVIDUAL DEVELOPMENT PLAN
 ####################################
-@pupil_api.route('/<internal_id>/support_level', methods=['PATCH'])
+@pupil_api.route('/<internal_id>/plan', methods=['PATCH'])
 @pupil_api.input(support_level_in_schema)
 @pupil_api.output(pupil_schema)
-@pupil_api.doc(security='ApiKeyAuth', tags=['Support Level'], summary='Update support level of a given pupil')
+@pupil_api.doc(security='ApiKeyAuth', tags=['Pupil'], summary='Patch an individual development plan')
 @token_required
-def update_support_level(current_user, internal_id, json_data):
+def update_plan(current_user, internal_id, json_data):
     pupil = get_pupil_by_id(internal_id)
     if pupil == None:
         return jsonify({'message': 'This pupil does not exist!'}), 404
@@ -375,37 +374,11 @@ def update_support_level(current_user, internal_id, json_data):
     created_at = data['created_at']
     level = data['level']
     comment = data['comment']
-    support_level_id = str(uuid.uuid4().hex)
-    new_support_level = SupportLevel(pupil_id=internal_id, support_level_id=support_level_id, created_by=created_by, created_at=created_at, level=level, comment=comment)
-    pupil.support_level_history.append(new_support_level)
+    new_plan = IndividualDevelopmentPlan(pupil_id=internal_id, created_by=created_by, created_at=created_at, level=level, comment=comment)
+    pupil.support_level_history.append(new_plan)
     pupil.latest_support_level = level
-    db.session.add(new_support_level)
+    db.session.add(new_plan)
     #- LOG ENTRY
     create_log_entry(current_user, request, data)
     db.session.commit()
     return pupil
-
-#- DELETE SUPPORT LEVEL
-####################################
-@pupil_api.route('/<internal_id>/support_level/<support_level_id>', methods=['DELETE'])
-@pupil_api.doc(security='ApiKeyAuth', tags=['Support Level'], summary='Delete support level of a given pupil')
-@pupil_api.output(pupil_schema)
-@token_required
-def delete_support_level(current_user, internal_id, support_level_id):
-    
-    support_level = db.session.query(SupportLevel).filter(SupportLevel.support_level_id == support_level_id).first()
-    db.session.delete(support_level)
-    pupil = get_pupil_by_id(internal_id)
-    if pupil == None:
-        return jsonify({'message': 'This pupil does not exist!'}), 404
-    latest_support_level = db.session.query(SupportLevel).filter(SupportLevel.pupil_id == internal_id).order_by(SupportLevel.id.desc()).first()
-    if latest_support_level == None:
-        pupil.latest_support_level = 0
-    else:
-        pupil.latest_support_level = latest_support_level.level
-    #- LOG ENTRY
-    create_log_entry(current_user, request, {"data": "none"})
-    db.session.commit()
-    return pupil
-
-

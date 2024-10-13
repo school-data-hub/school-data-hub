@@ -62,7 +62,7 @@ def upload_pupils_txt(current_user, files_data):
                             ogs=ogs_value,
                             pick_up_time=None,
                             ogs_info=None,
-                            individual_development_plan=None,
+                            latest_support_level=None,
                             five_years=None,
                             communication_pupil=None,
                             communication_tutor1=None,
@@ -96,8 +96,21 @@ def upload_pupils_txt(current_user, files_data):
         if not os.path.exists(old_pupils_folder):
             os.makedirs(old_pupils_folder)
         for pupil in pupils_to_delete:
+            old_pupil = OldPupil(internal_id=pupil.internal_id,
+                                 credit=pupil.credit,
+                                credit_earned=pupil.credit_earned,
+                                ogs=pupil.ogs,
+                                individual_development_plan=pupil.individual_development_plan,
+                                five_years=pupil.five_years,
+                                communication_pupil=pupil.communication_pupil,
+                                communication_tutor1=pupil.communication_tutor1,
+                                communication_tutor2=pupil.communication_tutor2,
+                                preschool_revision=pupil.preschool_revision,
+                                date_created= datetime.strptime(datetime.now().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S'))
+                                 
             with open(os.path.join(old_pupils_folder, f'pupil_{pupil.internal_id}.json'), 'w') as f:
                 json.dump(pupil_schema.dump(pupil), f)
+            db.session.add(old_pupil)
             db.session.delete(pupil)
             print(f"Pupil {pupil.internal_id} exported and deleted")
 
@@ -147,7 +160,7 @@ def upload_pupils_csv(current_user, files_data):
                                 ogs=ogs_value,
                                 pick_up_time=None,
                                 ogs_info=None,
-                                individual_development_plan=None,
+                                latest_support_level=None,
                                 five_years=None,
                                 communication_pupil=None,
                                 communication_tutor1=None,
