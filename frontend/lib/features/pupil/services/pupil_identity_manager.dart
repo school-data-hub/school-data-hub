@@ -18,6 +18,7 @@ import 'package:schuldaten_hub/common/utils/scanner.dart';
 import 'package:schuldaten_hub/common/utils/secure_storage.dart';
 import 'package:schuldaten_hub/features/main_menu_pages/widgets/landing_bottom_nav_bar.dart';
 import 'package:schuldaten_hub/features/pupil/filters/pupils_filter.dart';
+import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
 import 'package:schuldaten_hub/features/pupil/services/pupil_identity_helper_functions.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_data.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_identity.dart';
@@ -26,6 +27,8 @@ import 'package:schuldaten_hub/features/pupil/services/pupil_manager.dart';
 class PupilIdentityManager {
   Map<int, PupilIdentity> _pupilIdentities = {};
   List<int> get availablePupilIds => _pupilIdentities.keys.toList();
+  Set<String> get availableGroups =>
+      _pupilIdentities.values.map((e) => e.group).toSet();
 
   PupilIdentity getPupilIdentity(int pupilId) {
     if (_pupilIdentities.containsKey(pupilId) == false) {
@@ -56,6 +59,7 @@ class PupilIdentityManager {
         '${SecureStorageKey.pupilIdentities.value}_$envKey');
     _pupilIdentities.clear();
     locator<PupilsFilter>().clearFilteredPupils();
+
     locator<PupilManager>().clearData();
   }
 
@@ -85,30 +89,21 @@ class PupilIdentityManager {
     }
   }
 
-  // Future<void> setNewPupilIdentities(
-  //     List<PupilIdentity> personalIdentitiesList) async {
-  //   _pupilIdentities.clear();
-  //   for (PupilIdentity pupilIdentity in personalIdentitiesList) {
-  //     _pupilIdentities[pupilIdentity.id] = pupilIdentity;
-  //   }
-  //   await secureStorageWrite(
-  //       'pupilIdentities', jsonEncode(personalIdentitiesList));
-  // }
   Future<void> decryptCodesAndAddIdentities(List<String> codes) async {
     String decryptedString = '';
     for (String code in codes) {
       decryptedString += '${customEncrypter.decrypt(code)}\n';
     }
 
-    addNewPupilIdentities(identitiesFromStringLines: decryptedString);
+    addNewPupilIdentities(identitiesInStringLines: decryptedString);
   }
 
   Future<void> addNewPupilIdentities(
-      {required String identitiesFromStringLines}) async {
+      {required String identitiesInStringLines}) async {
     late final String? decryptedIdentitiesAsString;
 
     // If the string is imported in windows, it comes from a .txt file and it's not encrypted
-    decryptedIdentitiesAsString = identitiesFromStringLines;
+    decryptedIdentitiesAsString = identitiesInStringLines;
 
     // The pupils in the string are separated by a '\n' - let's split them apart
     List<String> splittedPupilIdentities =
@@ -119,6 +114,11 @@ class PupilIdentityManager {
       if (data != '') {
         final newPupilIdentity =
             PupilIdentityHelper.pupilIdentityFromString(data);
+        if (!PupilProxy.groupFilters.any((GroupFilter filter) =>
+                filter.name == newPupilIdentity.group) ==
+            false) {
+          //- add the new pupil to the pupilIdentities map
+        }
         _pupilIdentities[newPupilIdentity.id] = newPupilIdentity;
       }
     }
@@ -150,11 +150,6 @@ class PupilIdentityManager {
         '${SecureStorageKey.pupilIdentities.value}_$envKey',
         jsonPupilIdentities);
     log('Pupil identities written to secure storage for ${SecureStorageKey.pupilIdentities.value}_$envKey');
-
-    // final written = await secureStorageContainsKey(
-    //     '${SecureStorageKey.pupilIdentities.value}_${locator<EnvManager>().defaultEnv.value}');
-    // logger.d(
-    //     'Written: $written with key ${SecureStorageKey.pupilIdentities.value}_$envKey');
   }
 
   Future<void> updateBackendPupilsFromSchoolPupilIdentitySource(

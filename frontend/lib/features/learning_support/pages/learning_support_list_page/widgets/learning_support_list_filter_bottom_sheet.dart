@@ -16,9 +16,10 @@ class LearningSupportFilterBottomSheet extends WatchingWidget {
     Map<PupilFilter, bool> activeFilters =
         watchValue((PupilFilterManager x) => x.filterState);
     bool valueSpecialNeeds = activeFilters[PupilFilter.specialNeeds]!;
-    bool valueDevelopmentPlan1 = activeFilters[PupilFilter.developmentPlan1]!;
-    bool valueDevelopmentPlan2 = activeFilters[PupilFilter.developmentPlan2]!;
-    bool valueDevelopmentPlan3 = activeFilters[PupilFilter.developmentPlan3]!;
+    bool valueDevelopmentPlan1 = activeFilters[PupilFilter.supportLevel1]!;
+    bool valueDevelopmentPlan2 = activeFilters[PupilFilter.supportLevel2]!;
+    bool valueDevelopmentPlan3 = activeFilters[PupilFilter.supportLevel3]!;
+    bool valueDevelopmentPlan4 = activeFilters[PupilFilter.supportLevel4]!;
     bool valueMigrationSupport = activeFilters[PupilFilter.migrationSupport]!;
     bool valueSupportAreaMotorics =
         activeFilters[PupilFilter.supportAreaMotorics]!;
@@ -69,11 +70,10 @@ class LearningSupportFilterBottomSheet extends WatchingWidget {
                       ),
                       selected: valueDevelopmentPlan1,
                       onSelected: (val) {
-                        filterLocator.setFilter(
-                            PupilFilter.developmentPlan1, val);
+                        filterLocator.setFilter(PupilFilter.supportLevel1, val);
 
                         valueDevelopmentPlan1 = filterLocator
-                            .filterState.value[PupilFilter.developmentPlan1]!;
+                            .filterState.value[PupilFilter.supportLevel1]!;
                       },
                     ),
                     FilterChip(
@@ -92,11 +92,10 @@ class LearningSupportFilterBottomSheet extends WatchingWidget {
                       ),
                       selected: valueDevelopmentPlan2,
                       onSelected: (val) {
-                        filterLocator.setFilter(
-                            PupilFilter.developmentPlan2, val);
+                        filterLocator.setFilter(PupilFilter.supportLevel2, val);
 
                         valueDevelopmentPlan2 = filterLocator
-                            .filterState.value[PupilFilter.developmentPlan2]!;
+                            .filterState.value[PupilFilter.supportLevel2]!;
                       },
                     ),
                     FilterChip(
@@ -115,11 +114,32 @@ class LearningSupportFilterBottomSheet extends WatchingWidget {
                       ),
                       selected: valueDevelopmentPlan3,
                       onSelected: (val) {
-                        filterLocator.setFilter(
-                            PupilFilter.developmentPlan3, val);
+                        filterLocator.setFilter(PupilFilter.supportLevel3, val);
 
                         valueDevelopmentPlan3 = filterLocator
-                            .filterState.value[PupilFilter.developmentPlan3]!;
+                            .filterState.value[PupilFilter.supportLevel3]!;
+                      },
+                    ),
+                    FilterChip(
+                      padding: filterChipPadding,
+                      labelPadding: filterChipLabelPadding,
+                      shape: filterChipShape,
+                      selectedColor: filterChipSelectedColor,
+                      avatar: const SizedBox(
+                        width: 10,
+                      ),
+                      checkmarkColor: filterChipSelectedCheckColor,
+                      backgroundColor: filterChipUnselectedColor,
+                      label: const Text(
+                        'Regenbogen',
+                        style: filterItemsTextStyle,
+                      ),
+                      selected: valueDevelopmentPlan4,
+                      onSelected: (val) {
+                        filterLocator.setFilter(PupilFilter.supportLevel4, val);
+
+                        valueDevelopmentPlan3 = filterLocator
+                            .filterState.value[PupilFilter.supportLevel4]!;
                       },
                     ),
                     FilterChip(

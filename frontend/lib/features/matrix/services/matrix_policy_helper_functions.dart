@@ -6,7 +6,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 import 'package:schuldaten_hub/common/services/locator.dart';
-import 'package:schuldaten_hub/common/widgets/dialogues/information_dialog.dart';
 
 import 'package:schuldaten_hub/features/matrix/models/policy.dart';
 import 'package:schuldaten_hub/features/matrix/services/matrix_policy_manager.dart';
@@ -56,7 +55,7 @@ class MatrixHelperFunctions {
   static Future<void> launchMatrixUrl(
       BuildContext context, String contact) async {
     final Uri matrixUrl = Uri.parse('https://matrix.to/#/$contact');
-    bool canLaunchThis = await canLaunchUrl(matrixUrl);
+    // bool canLaunchThis = await canLaunchUrl(matrixUrl);
     // if (!canLaunchThis) {
     //   if (context.mounted) {
     //     informationDialog(context, 'Verbindung nicht möglich',

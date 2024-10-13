@@ -144,7 +144,9 @@ class _LearningSupportCardState extends State<LearningSupportCard> {
                     const Text('Ebene'),
                     Center(
                       child: Text(
-                        pupil.individualDevelopmentPlan.toString(),
+                        pupil.individualDevelopmentPlan == 4
+                            ? 'RB'
+                            : pupil.individualDevelopmentPlan.toString(),
                         style: const TextStyle(
                           fontSize: 23,
                           fontWeight: FontWeight.bold,

@@ -6,18 +6,17 @@ part of 'pupil_data.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-IndividualDevelopmentPlan _$IndividualDevelopmentPlanFromJson(
-        Map<String, dynamic> json) =>
-    IndividualDevelopmentPlan(
+SupportLevel _$SupportLevelFromJson(Map<String, dynamic> json) => SupportLevel(
+      supportLevelId: json['support_level_id'] as String,
       level: (json['level'] as num).toInt(),
       comment: json['comment'] as String,
       createdAt: DateTime.parse(json['created_at'] as String),
       createdBy: json['created_by'] as String,
     );
 
-Map<String, dynamic> _$IndividualDevelopmentPlanToJson(
-        IndividualDevelopmentPlan instance) =>
+Map<String, dynamic> _$SupportLevelToJson(SupportLevel instance) =>
     <String, dynamic>{
+      'support_level_id': instance.supportLevelId,
       'level': instance.level,
       'comment': instance.comment,
       'created_at': instance.createdAt.toIso8601String(),
@@ -34,8 +33,7 @@ PupilData _$PupilDataFromJson(Map<String, dynamic> json) => PupilData(
       credit: (json['credit'] as num).toInt(),
       creditEarned: (json['credit_earned'] as num).toInt(),
       fiveYears: json['five_years'] as String?,
-      individualDevelopmentPlan:
-          (json['individual_development_plan'] as num).toInt(),
+      latestSupportLevel: (json['latest_support_level'] as num).toInt(),
       internalId: (json['internal_id'] as num).toInt(),
       ogs: json['ogs'] as bool,
       ogsInfo: json['ogs_info'] as String?,
@@ -71,11 +69,9 @@ PupilData _$PupilDataFromJson(Map<String, dynamic> json) => PupilData(
       competenceChecks: (json['competence_checks'] as List<dynamic>)
           .map((e) => CompetenceCheck.fromJson(e as Map<String, dynamic>))
           .toList(),
-      individualDevelopmentPlans:
-          (json['individual_development_plans'] as List<dynamic>)
-              .map((e) =>
-                  IndividualDevelopmentPlan.fromJson(e as Map<String, dynamic>))
-              .toList(),
+      supportLevelHistory: (json['support_level_history'] as List<dynamic>)
+          .map((e) => SupportLevel.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
 
 Map<String, dynamic> _$PupilDataToJson(PupilData instance) => <String, dynamic>{
@@ -88,7 +84,7 @@ Map<String, dynamic> _$PupilDataToJson(PupilData instance) => <String, dynamic>{
       'credit': instance.credit,
       'credit_earned': instance.creditEarned,
       'five_years': instance.fiveYears,
-      'individual_development_plan': instance.individualDevelopmentPlan,
+      'latest_support_level': instance.latestSupportLevel,
       'internal_id': instance.internalId,
       'ogs': instance.ogs,
       'ogs_info': instance.ogsInfo,
@@ -105,5 +101,5 @@ Map<String, dynamic> _$PupilDataToJson(PupilData instance) => <String, dynamic>{
       'pupil_workbooks': instance.pupilWorkbooks,
       'credit_history_logs': instance.creditHistoryLogs,
       'competence_goals': instance.competenceGoals,
-      'individual_development_plans': instance.individualDevelopmentPlans,
+      'individual_development_plans': instance.supportLevelHistory,
     };

@@ -166,13 +166,12 @@ Future<void> individualDevelopmentPlanDialog(
                         fontWeight: FontWeight.bold),
                   ),
                   onTap: () {
-                    locator<PupilManager>()
-                        .patchPupilWithIndividualDevelopmentPlan(
-                            pupilId: pupil.internalId,
-                            level: dialogDropdownValue,
-                            createdAt: selectedDate,
-                            createdBy: 'Test',
-                            comment: textValue);
+                    locator<PupilManager>().patchPupilWithNewSupportLevel(
+                        pupilId: pupil.internalId,
+                        level: dialogDropdownValue,
+                        createdAt: selectedDate,
+                        createdBy: 'Test',
+                        comment: textValue);
 
                     Navigator.of(context).pop();
                   },

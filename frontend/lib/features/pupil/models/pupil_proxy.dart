@@ -1,7 +1,10 @@
 // ignore_for_file: constant_identifier_names
 
+import 'dart:developer';
+
 import 'package:flutter/foundation.dart';
 import 'package:schuldaten_hub/common/filters/filters.dart';
+import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/features/attendance/models/missed_class.dart';
 import 'package:schuldaten_hub/features/books/models/pupil_book.dart';
 import 'package:schuldaten_hub/features/competence/models/competence_check.dart';
@@ -11,6 +14,7 @@ import 'package:schuldaten_hub/features/learning_support/models/support_goal/sup
 import 'package:schuldaten_hub/features/pupil/models/credit_history_log.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_data.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_identity.dart';
+import 'package:schuldaten_hub/features/pupil/services/pupil_identity_manager.dart';
 import 'package:schuldaten_hub/features/schoolday_events/models/schoolday_event.dart';
 import 'package:schuldaten_hub/features/workbooks/models/pupil_workbook.dart';
 
@@ -213,9 +217,9 @@ class PupilProxy with ChangeNotifier {
   int get credit => _pupilData.credit;
   int get creditEarned => _pupilData.creditEarned;
   String? get fiveYears => _pupilData.fiveYears;
-  int get individualDevelopmentPlan => _pupilData.individualDevelopmentPlan;
-  List<IndividualDevelopmentPlan> get individualDevelopmentPlans =>
-      _pupilData.individualDevelopmentPlans;
+  int get individualDevelopmentPlan => _pupilData.latestSupportLevel;
+  List<SupportLevel> get individualDevelopmentPlans =>
+      _pupilData.supportLevelHistory;
   int get internalId => _pupilData.internalId;
   bool get ogs => _pupilData.ogs;
   String? get ogsInfo => _pupilData.ogsInfo;

@@ -25,7 +25,7 @@ class ScanToolsPage extends WatchingWidget {
             .updateBackendPupilsFromSchoolPupilIdentitySource(rawTextResult);
       } else if (function == 'pupil_identities') {
         locator<PupilIdentityManager>()
-            .addNewPupilIdentities(identitiesFromStringLines: rawTextResult);
+            .addNewPupilIdentities(identitiesInStringLines: rawTextResult);
       }
     } else {
       // User canceled the picker

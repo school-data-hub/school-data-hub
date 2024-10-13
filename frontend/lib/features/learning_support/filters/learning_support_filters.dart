@@ -10,20 +10,26 @@ List<PupilProxy> learningSupportFilters(List<PupilProxy> pupils) {
 
   List<PupilProxy> filteredPupils = [];
   for (PupilProxy pupil in pupils) {
-    if (activeFilters[PupilFilter.developmentPlan1]! &&
+    if (activeFilters[PupilFilter.supportLevel1]! &&
         pupil.individualDevelopmentPlan != 1) {
       locator<PupilsFilter>().setFiltersOnValue(true);
       continue;
     }
-    // Filter development plan 2
-    if (activeFilters[PupilFilter.developmentPlan2]! &&
+    // Filter support level 2
+    if (activeFilters[PupilFilter.supportLevel2]! &&
         pupil.individualDevelopmentPlan != 2) {
       locator<PupilsFilter>().setFiltersOnValue(true);
       continue;
     }
-    // Filter development plan 3
-    if (activeFilters[PupilFilter.developmentPlan3]! &&
+    // Filter support level 3
+    if (activeFilters[PupilFilter.supportLevel3]! &&
         pupil.individualDevelopmentPlan != 3) {
+      locator<PupilsFilter>().setFiltersOnValue(true);
+      continue;
+    }
+    // Filter support level 4
+    if (activeFilters[PupilFilter.supportLevel4]! &&
+        pupil.individualDevelopmentPlan != 4) {
       locator<PupilsFilter>().setFiltersOnValue(true);
       continue;
     }

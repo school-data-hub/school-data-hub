@@ -80,14 +80,12 @@ class PupilLearningContent extends StatelessWidget {
 
               return ClipRRect(
                 borderRadius: BorderRadius.circular(25.0),
-                child: Card(
-                  child: Column(
-                    children: [
-                      PupilWorkbookCard(
-                          pupilWorkbook: pupilWorkbooks[index],
-                          pupilId: pupil.internalId),
-                    ],
-                  ),
+                child: Column(
+                  children: [
+                    PupilWorkbookCard(
+                        pupilWorkbook: pupilWorkbooks[index],
+                        pupilId: pupil.internalId),
+                  ],
                 ),
               );
             },

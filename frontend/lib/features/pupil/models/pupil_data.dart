@@ -13,7 +13,9 @@ import 'package:schuldaten_hub/features/workbooks/models/pupil_workbook.dart';
 part 'pupil_data.g.dart';
 
 @JsonSerializable()
-class IndividualDevelopmentPlan {
+class SupportLevel {
+  @JsonKey(name: 'support_level_id')
+  final String supportLevelId;
   @JsonKey(name: 'level')
   final int level;
   @JsonKey(name: 'comment')
@@ -23,12 +25,13 @@ class IndividualDevelopmentPlan {
   @JsonKey(name: 'created_by')
   final String createdBy;
 
-  factory IndividualDevelopmentPlan.fromJson(Map<String, dynamic> json) =>
-      _$IndividualDevelopmentPlanFromJson(json);
+  factory SupportLevel.fromJson(Map<String, dynamic> json) =>
+      _$SupportLevelFromJson(json);
 
-  Map<String, dynamic> toJson() => _$IndividualDevelopmentPlanToJson(this);
+  Map<String, dynamic> toJson() => _$SupportLevelToJson(this);
 
-  IndividualDevelopmentPlan({
+  SupportLevel({
+    required this.supportLevelId,
     required this.level,
     required this.comment,
     required this.createdAt,
@@ -55,8 +58,8 @@ class PupilData {
   final int creditEarned;
   @JsonKey(name: 'five_years')
   final String? fiveYears;
-  @JsonKey(name: 'individual_development_plan')
-  final int individualDevelopmentPlan;
+  @JsonKey(name: 'latest_support_level')
+  final int latestSupportLevel;
   @JsonKey(name: 'internal_id')
   final int internalId;
   final bool ogs;
@@ -91,8 +94,8 @@ class PupilData {
   @JsonKey(name: "competence_goals")
   final List<CompetenceGoal> competenceGoals;
 
-  @JsonKey(name: 'individual_development_plans')
-  final List<IndividualDevelopmentPlan> individualDevelopmentPlans;
+  @JsonKey(name: 'support_level_history')
+  final List<SupportLevel> supportLevelHistory;
 
   factory PupilData.fromJson(Map<String, dynamic> json) =>
       _$PupilDataFromJson(json);
@@ -109,7 +112,7 @@ class PupilData {
     required this.credit,
     required this.creditEarned,
     required this.fiveYears,
-    required this.individualDevelopmentPlan,
+    required this.latestSupportLevel,
     required this.internalId,
     required this.ogs,
     required this.ogsInfo,
@@ -126,6 +129,6 @@ class PupilData {
     required this.creditHistoryLogs,
     required this.competenceGoals,
     required this.competenceChecks,
-    required this.individualDevelopmentPlans,
+    required this.supportLevelHistory,
   });
 }
