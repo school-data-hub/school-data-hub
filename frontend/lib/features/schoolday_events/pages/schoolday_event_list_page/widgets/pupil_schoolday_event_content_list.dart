@@ -10,6 +10,8 @@ import 'package:schuldaten_hub/common/constants/enums.dart';
 import 'package:schuldaten_hub/common/constants/styles.dart';
 import 'package:schuldaten_hub/common/services/env_manager.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
+import 'package:schuldaten_hub/common/services/session_helper_functions.dart';
+import 'package:schuldaten_hub/features/schoolday_events/pages/schoolday_event_list_page/widgets/dialogues/schoolday_event_type_dialog.dart';
 import 'package:schuldaten_hub/features/schooldays/services/schoolday_manager.dart';
 import 'package:schuldaten_hub/common/services/session_manager.dart';
 import 'package:schuldaten_hub/common/services/notification_manager.dart';
@@ -146,7 +148,7 @@ class SchooldayEventsContentList extends WatchingWidget {
                                                               filteredSchooldayEvents[
                                                                       index]
                                                                   .schooldayEventId,
-                                                          admonishedDay: date);
+                                                          schoolEventDay: date);
                                                   locator<NotificationManager>()
                                                       .showSnackBar(
                                                           NotificationType
@@ -181,10 +183,35 @@ class SchooldayEventsContentList extends WatchingWidget {
                                                 ),
                                               ),
                                         const Gap(5),
-                                        SchooldayEventTypeIcon(
-                                            category:
+                                        InkWell(
+                                          onLongPress: () {
+                                            if (!SessionHelper.isAuthorized(
                                                 filteredSchooldayEvents[index]
-                                                    .schooldayEventType)
+                                                    .admonishingUser)) {
+                                              locator<NotificationManager>()
+                                                  .showSnackBar(
+                                                      NotificationType.error,
+                                                      'Nicht berechtigt!');
+                                              return;
+                                            }
+
+                                            showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return SchooldayEventTypeDialog(
+                                                  schooldayEventId:
+                                                      filteredSchooldayEvents[
+                                                              index]
+                                                          .schooldayEventId,
+                                                );
+                                              },
+                                            );
+                                          },
+                                          child: SchooldayEventTypeIcon(
+                                              category:
+                                                  filteredSchooldayEvents[index]
+                                                      .schooldayEventType),
+                                        )
                                       ],
                                     ),
                                   ),
@@ -346,6 +373,14 @@ class SchooldayEventsContentList extends WatchingWidget {
                                     );
                                   },
                                   onLongPress: () async {
+                                    if (filteredSchooldayEvents[index].fileId ==
+                                        null) {
+                                      locator<NotificationManager>()
+                                          .showSnackBar(
+                                              NotificationType.warning,
+                                              'Kein Dokument vorhanden!');
+                                      return;
+                                    }
                                     bool? confirm = await confirmationDialog(
                                         context: context,
                                         title: 'Dokument löschen',

@@ -46,18 +46,6 @@ class AttendanceRankingListPageBottomNavBar extends WatchingWidget {
                   },
                 ),
                 const Gap(30),
-                IconButton(
-                  tooltip: 'Scan Kinder-IDs',
-                  icon: const Icon(
-                    Icons.qr_code_scanner_rounded,
-                    size: 30,
-                  ),
-                  onPressed: () {
-                    locator<PupilIdentityManager>()
-                        .scanNewPupilIdentities(context);
-                  },
-                ),
-                const Gap(30),
                 InkWell(
                   onTap: () => showAttendanceRankingFilterBottomSheet(context),
                   onLongPress: () => locator<PupilsFilter>().resetFilters(),

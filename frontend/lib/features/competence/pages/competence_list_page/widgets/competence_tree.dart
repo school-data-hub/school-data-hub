@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/features/competence/models/competence.dart';
-import 'package:schuldaten_hub/features/competence/services/competence_manager.dart';
+import 'package:schuldaten_hub/features/competence/services/competence_helper.dart';
 
 List<Widget> buildCompetenceTree(
     {required Function(int) navigateToNewCompetenceView,
@@ -16,8 +15,8 @@ List<Widget> buildCompetenceTree(
   late Color competenceBackgroundColor;
   for (var competence in competences) {
     if (backgroundColor == null) {
-      competenceBackgroundColor = locator<CompetenceManager>()
-          .getCompetenceColor(competence.competenceId);
+      competenceBackgroundColor =
+          CompetenceHelper.getCompetenceColor(competence.competenceId);
     } else {
       competenceBackgroundColor = backgroundColor;
     }

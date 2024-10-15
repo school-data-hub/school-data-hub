@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:schuldaten_hub/common/constants/styles.dart';
-import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/features/competence/models/competence.dart';
-import 'package:schuldaten_hub/features/competence/services/competence_manager.dart';
+import 'package:schuldaten_hub/features/competence/services/competence_helper.dart';
 
 class CompetencePupilsCheckListPage extends StatelessWidget {
   final Competence competence;
@@ -12,8 +11,8 @@ class CompetencePupilsCheckListPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: locator<CompetenceManager>()
-            .getCompetenceColor(competence.competenceId),
+        backgroundColor:
+            CompetenceHelper.getCompetenceColor(competence.competenceId),
         title: Text(
           competence.competenceName,
           style: appBarTextStyle,

@@ -4,7 +4,9 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:schuldaten_hub/common/constants/app_theme.dart';
 import 'package:schuldaten_hub/common/services/api/services/connection_manager.dart';
 import 'package:schuldaten_hub/common/constants/colors.dart';
 import 'package:schuldaten_hub/common/routes/app_routes.dart';
@@ -79,34 +81,38 @@ class MyApp extends WatchingWidget {
             : false
         : false;
 
-    return MaterialApp(
-      localizationsDelegates: const <LocalizationsDelegate<Object>>[
-        AppLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      supportedLocales: const [
-        Locale('de', 'DE'), // Set the default locale to German
-        // Locale('en', 'EN'), // Set the default locale to German
-      ],
-      debugShowCheckedModeBanner: false,
-      title: 'Schuldaten Hub',
-      routes: AppRoutes.routes,
-      home: !isConnected
-          ? const NoConnectionPage()
-          : envIsReady && isAuthenticated
-              ? FutureBuilder(
-                  future: locator.allReady(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      return BottomNavigation();
-                    } else {
-                      return const LoadingPage();
-                    }
-                  },
-                )
-              : const Login(),
+    return ProviderScope(
+      child: MaterialApp(
+        localizationsDelegates: const <LocalizationsDelegate<Object>>[
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: const [
+          Locale('de', 'DE'), // Set the default locale to German
+          // Locale('en', 'EN'), // Set the default locale to German
+        ],
+        debugShowCheckedModeBanner: false,
+        title: 'Schuldaten Hub',
+        theme: lightTheme,
+        // darkTheme: darkTheme,
+        routes: AppRoutes.routes,
+        home: !isConnected
+            ? const NoConnectionPage()
+            : envIsReady && isAuthenticated
+                ? FutureBuilder(
+                    future: locator.allReady(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        return BottomNavigation();
+                      } else {
+                        return const LoadingPage();
+                      }
+                    },
+                  )
+                : const Login(),
+      ),
     );
   }
 }

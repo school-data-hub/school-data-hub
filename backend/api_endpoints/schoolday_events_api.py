@@ -245,6 +245,7 @@ def delete_schoolday_event_file(current_user, schoolday_event_id):
     if len(str(schoolday_event.file_url)) > 4:
         os.remove(str(schoolday_event.file_url))
     schoolday_event.file_url = None
+    schoolday_event.file_id = None
     #- LOG ENTRY
     create_log_entry(current_user, request, {'data': 'file'})
 
@@ -269,6 +270,7 @@ def delete_schoolday_event_processed_file(current_user, schoolday_event_id):
     if len(str(schoolday_event.processed_file_url)) > 4:
         os.remove(str(schoolday_event.processed_file_url))
     schoolday_event.processed_file_url = None
+    schoolday_event.processed_file_id = None
     #- LOG ENTRY
     create_log_entry(current_user, request, {'data': 'none'})
     db.session.commit()

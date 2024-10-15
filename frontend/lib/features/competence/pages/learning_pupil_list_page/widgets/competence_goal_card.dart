@@ -3,6 +3,7 @@ import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/utils/extensions.dart';
 import 'package:schuldaten_hub/features/competence/models/competence_goal.dart';
+import 'package:schuldaten_hub/features/competence/services/competence_helper.dart';
 import 'package:schuldaten_hub/features/competence/services/competence_manager.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
 
@@ -33,7 +34,7 @@ class CompetenceGoalCard extends StatelessWidget {
             const Gap(5),
             Row(
               children: [
-                locator<CompetenceManager>().getLastCompetenceCheckSymbol(
+                CompetenceHelper.getLastCompetenceCheckSymbol(
                     pupil, pupilGoal.competenceId),
                 const Gap(10),
                 Flexible(

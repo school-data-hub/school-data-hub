@@ -11,31 +11,45 @@ import 'package:schuldaten_hub/features/schoolday_events/filters/schoolday_event
 // TODO: this is an old class and the rests being used should be migrated to PupilsFilterImplementation
 
 class PupilFilterManager {
-  ValueListenable<bool> get filtersOn => _filtersOn;
-  ValueListenable<String> get searchText => _searchText;
-  ValueListenable<List<PupilProxy>> get filteredPupils => _filteredPupils;
-  ValueListenable<Map<PupilFilter, bool>> get filterState => _filterState;
-  ValueListenable<Map<PupilSortMode, bool>> get sortMode => _sortMode;
-
   final _filtersOn = ValueNotifier<bool>(false);
+  ValueListenable<bool> get filtersOn => _filtersOn;
+
   final _searchText = ValueNotifier<String>('');
-  final _filteredPupils =
-      ValueNotifier<List<PupilProxy>>(locator<PupilManager>().allPupils);
-  final _filterState =
-      ValueNotifier<Map<PupilFilter, bool>>(initialFilterValues);
+  ValueListenable<String> get searchText => _searchText;
+
+  final _pupilFilterState =
+      ValueNotifier<Map<PupilFilter, bool>>(initialPupilFilterValues);
+  ValueListenable<Map<PupilFilter, bool>> get pupilFilterState =>
+      _pupilFilterState;
+
+  final _supportLevelFilterState = ValueNotifier<Map<SupportLevelFilter, bool>>(
+      initialSupportLevelFilterValues);
+  ValueListenable<Map<SupportLevelFilter, bool>> get supportLevelFilterState =>
+      _supportLevelFilterState;
+
+  final _supportAreaFilterState = ValueNotifier<Map<SupportAreaFilter, bool>>(
+      initialSupportAreaFilterValues);
+  ValueListenable<Map<SupportAreaFilter, bool>> get supportAreaFilterState =>
+      _supportAreaFilterState;
+
   final _sortMode =
       ValueNotifier<Map<PupilSortMode, bool>>(initialSortModeValues);
+  ValueListenable<Map<PupilSortMode, bool>> get sortMode => _sortMode;
+
+  final _filteredPupils =
+      ValueNotifier<List<PupilProxy>>(locator<PupilManager>().allPupils);
+  ValueListenable<List<PupilProxy>> get filteredPupils => _filteredPupils;
 
   PupilFilterManager();
 
   void filtersOnSwitch(bool value) {
-    if (_filterState.value == initialFilterValues) {
+    if (_pupilFilterState.value == initialPupilFilterValues) {
       _filtersOn.value = value;
     }
   }
 
   resetFilters() {
-    _filterState.value = {...initialFilterValues};
+    _pupilFilterState.value = {...initialPupilFilterValues};
     locator<SearchManager>().searchController.value.clear();
     locator<SearchManager>().changeSearchState(false);
     locator<SchooldayEventFilterManager>().resetFilters();
@@ -46,9 +60,25 @@ class PupilFilterManager {
   }
 
   // Set modified filter value
-  void setFilter(PupilFilter filter, bool isActive) {
-    _filterState.value = {
-      ..._filterState.value,
+  void setPupilFilter(PupilFilter filter, bool isActive) {
+    _pupilFilterState.value = {
+      ..._pupilFilterState.value,
+      filter: isActive,
+    };
+    locator<PupilsFilter>().refreshs();
+  }
+
+  void setSupportLevelFilter(SupportLevelFilter filter, bool isActive) {
+    _supportLevelFilterState.value = {
+      ..._supportLevelFilterState.value,
+      filter: isActive,
+    };
+    locator<PupilsFilter>().refreshs();
+  }
+
+  void setSupportAreaFilter(SupportAreaFilter filter, bool isActive) {
+    _supportAreaFilterState.value = {
+      ..._supportAreaFilterState.value,
       filter: isActive,
     };
     locator<PupilsFilter>().refreshs();

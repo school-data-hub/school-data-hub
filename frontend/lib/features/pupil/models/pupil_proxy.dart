@@ -1,10 +1,7 @@
 // ignore_for_file: constant_identifier_names
 
-import 'dart:developer';
-
 import 'package:flutter/foundation.dart';
 import 'package:schuldaten_hub/common/filters/filters.dart';
-import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/features/attendance/models/missed_class.dart';
 import 'package:schuldaten_hub/features/books/models/pupil_book.dart';
 import 'package:schuldaten_hub/features/competence/models/competence_check.dart';
@@ -14,7 +11,6 @@ import 'package:schuldaten_hub/features/learning_support/models/support_goal/sup
 import 'package:schuldaten_hub/features/pupil/models/credit_history_log.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_data.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_identity.dart';
-import 'package:schuldaten_hub/features/pupil/services/pupil_identity_manager.dart';
 import 'package:schuldaten_hub/features/schoolday_events/models/schoolday_event.dart';
 import 'package:schuldaten_hub/features/workbooks/models/pupil_workbook.dart';
 
@@ -105,6 +101,7 @@ class PupilProxy with ChangeNotifier {
     GroupFilter(GroupId.C2),
     GroupFilter(GroupId.C3),
   ];
+
   static List<SchoolGradeFilter> schoolGradeFilters = [
     SchoolGradeFilter(SchoolGrade.E1),
     SchoolGradeFilter(SchoolGrade.E2),

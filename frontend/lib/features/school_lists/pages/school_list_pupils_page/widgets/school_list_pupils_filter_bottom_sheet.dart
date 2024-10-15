@@ -15,7 +15,7 @@ class SchoolListFilterBottomSheet extends WatchingWidget {
   @override
   Widget build(BuildContext context) {
     Map<PupilFilter, bool> activeFilters =
-        watchValue((PupilFilterManager x) => x.filterState);
+        watchValue((PupilFilterManager x) => x.pupilFilterState);
     bool valueYesResponse = activeFilters[PupilFilter.schoolListYesResponse]!;
     bool valueNoResponse = activeFilters[PupilFilter.schoolListNoResponse]!;
     bool valueNullResponse = activeFilters[PupilFilter.schoolListNullResponse]!;
@@ -57,15 +57,15 @@ class SchoolListFilterBottomSheet extends WatchingWidget {
                 ),
                 selected: valueYesResponse,
                 onSelected: (val) {
-                  filterLocator.setFilter(
+                  filterLocator.setPupilFilter(
                       PupilFilter.schoolListYesResponse, val);
 
                   if (val) {
-                    filterLocator.setFilter(
+                    filterLocator.setPupilFilter(
                         PupilFilter.schoolListNoResponse, false);
-                    filterLocator.setFilter(
+                    filterLocator.setPupilFilter(
                         PupilFilter.schoolListNullResponse, false);
-                    filterLocator.setFilter(
+                    filterLocator.setPupilFilter(
                         PupilFilter.schoolListCommentResponse, false);
                   }
                 },
@@ -86,15 +86,15 @@ class SchoolListFilterBottomSheet extends WatchingWidget {
                 ),
                 selected: valueNoResponse,
                 onSelected: (val) {
-                  filterLocator.setFilter(
+                  filterLocator.setPupilFilter(
                       PupilFilter.schoolListNoResponse, val);
 
                   if (val) {
-                    filterLocator.setFilter(
+                    filterLocator.setPupilFilter(
                         PupilFilter.schoolListYesResponse, false);
-                    filterLocator.setFilter(
+                    filterLocator.setPupilFilter(
                         PupilFilter.schoolListNullResponse, false);
-                    filterLocator.setFilter(
+                    filterLocator.setPupilFilter(
                         PupilFilter.schoolListCommentResponse, false);
                   }
                 },
@@ -115,15 +115,15 @@ class SchoolListFilterBottomSheet extends WatchingWidget {
                 ),
                 selected: valueNullResponse,
                 onSelected: (val) {
-                  filterLocator.setFilter(
+                  filterLocator.setPupilFilter(
                       PupilFilter.schoolListNullResponse, val);
 
                   if (val) {
-                    filterLocator.setFilter(
+                    filterLocator.setPupilFilter(
                         PupilFilter.schoolListYesResponse, false);
-                    filterLocator.setFilter(
+                    filterLocator.setPupilFilter(
                         PupilFilter.schoolListNoResponse, false);
-                    filterLocator.setFilter(
+                    filterLocator.setPupilFilter(
                         PupilFilter.schoolListCommentResponse, false);
                   }
                 },
@@ -144,15 +144,15 @@ class SchoolListFilterBottomSheet extends WatchingWidget {
                 ),
                 selected: valueCommentResponse,
                 onSelected: (val) {
-                  filterLocator.setFilter(
+                  filterLocator.setPupilFilter(
                       PupilFilter.schoolListCommentResponse, val);
 
                   if (val) {
-                    filterLocator.setFilter(
+                    filterLocator.setPupilFilter(
                         PupilFilter.schoolListYesResponse, false);
-                    filterLocator.setFilter(
+                    filterLocator.setPupilFilter(
                         PupilFilter.schoolListNoResponse, false);
-                    filterLocator.setFilter(
+                    filterLocator.setPupilFilter(
                         PupilFilter.schoolListNullResponse, false);
                   }
                 },

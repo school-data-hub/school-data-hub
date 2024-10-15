@@ -122,7 +122,7 @@ class SettingsPage extends WatchingWidget {
                     leading: const Icon(Icons.punch_clock_rounded),
                     title: const Text('Token gültig noch:'),
                     value: Text(
-                      tokenLifetimeLeft(session.jwt!).toString(),
+                      SessionHelper.tokenLifetimeLeft(session.jwt!).toString(),
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
                       ),
@@ -265,7 +265,7 @@ class SettingsPage extends WatchingWidget {
                               title: 'Achtung!',
                               message: 'Ausloggen und alle Daten löschen?');
                           if (confirm == true && context.mounted) {
-                            logoutAndDeleteAllData(context);
+                            SessionHelper.logoutAndDeleteAllData(context);
                           }
                           return;
                         },

@@ -12,7 +12,7 @@ from schemas.log_entry_schemas import ApiFileSchema
 
 pupil_api = APIBlueprint('pupils_api', __name__, url_prefix='/api/prospective_pupils')
 
-from models.pupil import ProspectivePupil
+from models.pupil import CreditHistoryLog, ProspectivePupil
 from auth_middleware import token_required
 from schemas.pupil_schemas import *
 
@@ -62,7 +62,7 @@ def add_pupil(current_user, json_data):
         avatar_url = data['avatar_url']
         special_information = data['special_information']
         
-        new_pupil = Pupil(internal_id, contact, parents_contact, credit, credit_earned, ogs, 
+        new_pupil = ProspectivePupil(internal_id, contact, parents_contact, credit, credit_earned, ogs, 
                           pick_up_time, ogs_info, individual_development_plan, five_years,
                           communication_pupil, communication_tutor1,
                           communication_tutor2, preschool_revision, avatar_url, special_information)       

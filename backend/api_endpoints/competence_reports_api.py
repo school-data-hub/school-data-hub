@@ -14,17 +14,21 @@ competence_report_api = APIBlueprint('competence_report_api', __name__, url_pref
 
 #- POST COMPETENCE REPORT
 #########################
-@competence_report_api.route('/<internal_id>', methods=['POST'])
+@competence_report_api.route('/new', methods=['POST'])
 @competence_report_api.doc(security='ApiKeyAuth', tags=['Competence Report'], summary='Post a competence report')
+@competence_report_api.input(competence_report_in_schema)
+@competence_report_api.output(competence_report_flat_schema)
 @token_required
-def post_competence_report(current_user, internal_id, json_data):
-    pupil = Pupil.query.filter_by(internal_id = internal_id).first()
+def post_competence_report(current_user,json_data):
+   
+
+
+    data = json_data
+    pupil = Pupil.query.filter_by(internal_id = data['pupil_id']).first()
     if pupil == None:
         return jsonify({'message': 'Dieses Kind existiert nicht!'}), 404
     pupil_id = pupil.internal_id
-    report_id = str(uuid.uuid4().hex)
-    created_by = current_user.name
-    data = json_data
+    created_by = data['created_by']
     created_at = data['created_at']
     created_at = datetime.strptime(created_at, '%Y-%m-%d').date() 
     school_semester = db.session.query(SchoolSemester).filter(and_(
@@ -32,7 +36,7 @@ def post_competence_report(current_user, internal_id, json_data):
         created_at <= SchoolSemester.end_date)).first()
     if school_semester is None:
         return jsonify({'message' : 'Das Datum ist nicht innerhalb eines Schulhalbjahres!'}),404
-
+    report_id = str(uuid.uuid4().hex)
     competence_checks = db.session.query(CompetenceCheck).filter(and_(
     CompetenceCheck.created_at >= school_semester.start_date,
     CompetenceCheck.created_at <= school_semester.end_date,
@@ -41,7 +45,7 @@ def post_competence_report(current_user, internal_id, json_data):
     new_competence_report.competence_checks.extend(competence_checks)
     db.session.add(new_competence_report)
     db.session.commit()
-    return competence_report_schema.jsonify(new_competence_report)
+    return new_competence_report
 
 #- GET ALL COMPETENCE REPORTS
 #############################

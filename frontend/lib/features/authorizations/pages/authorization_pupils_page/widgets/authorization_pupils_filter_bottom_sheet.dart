@@ -14,7 +14,7 @@ class AuthorizationPupilsFilterBottomSheet extends WatchingWidget {
   @override
   Widget build(BuildContext context) {
     Map<PupilFilter, bool> activeFilters =
-        watchValue((PupilFilterManager x) => x.filterState);
+        watchValue((PupilFilterManager x) => x.pupilFilterState);
     bool valueYesResponse =
         activeFilters[PupilFilter.authorizationYesResponse]!;
     bool valueNoResponse = activeFilters[PupilFilter.authorizationNoResponse]!;
@@ -60,15 +60,15 @@ class AuthorizationPupilsFilterBottomSheet extends WatchingWidget {
                 ),
                 selected: valueYesResponse,
                 onSelected: (val) {
-                  filterLocator.setFilter(
+                  filterLocator.setPupilFilter(
                       PupilFilter.authorizationYesResponse, val);
 
                   if (val) {
-                    filterLocator.setFilter(
+                    filterLocator.setPupilFilter(
                         PupilFilter.authorizationNoResponse, false);
-                    filterLocator.setFilter(
+                    filterLocator.setPupilFilter(
                         PupilFilter.authorizationNullResponse, false);
-                    filterLocator.setFilter(
+                    filterLocator.setPupilFilter(
                         PupilFilter.authorizationCommentResponse, false);
                   }
                 },
@@ -89,15 +89,15 @@ class AuthorizationPupilsFilterBottomSheet extends WatchingWidget {
                 ),
                 selected: valueNoResponse,
                 onSelected: (val) {
-                  filterLocator.setFilter(
+                  filterLocator.setPupilFilter(
                       PupilFilter.authorizationNoResponse, val);
 
                   if (val) {
-                    filterLocator.setFilter(
+                    filterLocator.setPupilFilter(
                         PupilFilter.authorizationYesResponse, false);
-                    filterLocator.setFilter(
+                    filterLocator.setPupilFilter(
                         PupilFilter.authorizationNullResponse, false);
-                    filterLocator.setFilter(
+                    filterLocator.setPupilFilter(
                         PupilFilter.authorizationCommentResponse, false);
                   }
                 },
@@ -118,15 +118,15 @@ class AuthorizationPupilsFilterBottomSheet extends WatchingWidget {
                 ),
                 selected: valueNullResponse,
                 onSelected: (val) {
-                  filterLocator.setFilter(
+                  filterLocator.setPupilFilter(
                       PupilFilter.authorizationNullResponse, val);
 
                   if (val) {
-                    filterLocator.setFilter(
+                    filterLocator.setPupilFilter(
                         PupilFilter.authorizationYesResponse, false);
-                    filterLocator.setFilter(
+                    filterLocator.setPupilFilter(
                         PupilFilter.authorizationNoResponse, false);
-                    filterLocator.setFilter(
+                    filterLocator.setPupilFilter(
                         PupilFilter.authorizationCommentResponse, false);
                   }
                 },
@@ -147,15 +147,15 @@ class AuthorizationPupilsFilterBottomSheet extends WatchingWidget {
                 ),
                 selected: valueCommentResponse,
                 onSelected: (val) {
-                  filterLocator.setFilter(
+                  filterLocator.setPupilFilter(
                       PupilFilter.authorizationCommentResponse, val);
 
                   if (val) {
-                    filterLocator.setFilter(
+                    filterLocator.setPupilFilter(
                         PupilFilter.authorizationYesResponse, false);
-                    filterLocator.setFilter(
+                    filterLocator.setPupilFilter(
                         PupilFilter.authorizationNoResponse, false);
-                    filterLocator.setFilter(
+                    filterLocator.setPupilFilter(
                         PupilFilter.authorizationNullResponse, false);
                   }
                 },
@@ -176,7 +176,7 @@ class AuthorizationPupilsFilterBottomSheet extends WatchingWidget {
                 ),
                 selected: valueFileResponse,
                 onSelected: (val) {
-                  filterLocator.setFilter(
+                  filterLocator.setPupilFilter(
                       PupilFilter.authorizationFileResponse, val);
 
                   // if (val) {

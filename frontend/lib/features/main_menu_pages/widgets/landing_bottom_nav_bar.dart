@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/constants/colors.dart';
 import 'package:schuldaten_hub/common/constants/enums.dart';
@@ -16,6 +17,8 @@ import 'package:schuldaten_hub/features/main_menu_pages/scan_tools_page.dart';
 import 'package:schuldaten_hub/features/main_menu_pages/school_lists_page.dart';
 import 'package:schuldaten_hub/features/main_menu_pages/settings_page.dart';
 import 'package:watch_it/watch_it.dart';
+
+final bottomNavigationProvider = StateProvider<int>((ref) => 0);
 
 class BottomNavManager {
   ValueListenable<int> get bottomNavState => _bottomNavState;
@@ -84,7 +87,7 @@ class BottomNavigation extends WatchingWidget {
           ScanToolsPage(),
           SettingsPage(),
         ],
-        //onPageChanged: (index) => manager.setBottomNavPage(index),
+        onPageChanged: (index) => manager.setBottomNavPage(index),
       ),
       bottomNavigationBar: BottomNavBarLayout(
         bottomNavBar: BottomNavigationBar(

@@ -8,7 +8,7 @@ import 'package:schuldaten_hub/common/utils/extensions.dart';
 import 'package:schuldaten_hub/features/learning_support/models/support_category/support_category_status.dart';
 import 'package:schuldaten_hub/features/learning_support/services/learning_support_manager.dart';
 import 'package:schuldaten_hub/features/learning_support/services/learning_support_helper_functions.dart';
-import 'package:schuldaten_hub/features/learning_support/pages/new_category_item_page/controller/new_category_item_controller.dart';
+import 'package:schuldaten_hub/features/learning_support/pages/new_support_category_goal_page/controller/new_support_category_goal_controller.dart';
 import 'package:schuldaten_hub/features/learning_support/widgets/support_category_widgets/category_tree_ancestors_names.dart';
 import 'package:schuldaten_hub/features/learning_support/widgets/support_category_widgets/support_category_status_entry.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
@@ -70,7 +70,7 @@ List<Widget> pupilCategoryStatusesList(PupilProxy pupil, BuildContext context) {
                           child: InkWell(
                             onLongPress: () {
                               Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (ctx) => NewCategoryItem(
+                                  builder: (ctx) => NewSupportCategoryGoal(
                                         appBarTitle: 'Neuer Förderbereich',
                                         pupilId: pupil.internalId,
                                         goalCategoryId:
@@ -118,7 +118,7 @@ List<Widget> pupilCategoryStatusesList(PupilProxy pupil, BuildContext context) {
                       style: actionButtonStyle,
                       onPressed: () async {
                         await Navigator.of(context).push(MaterialPageRoute(
-                            builder: (ctx) => NewCategoryItem(
+                            builder: (ctx) => NewSupportCategoryGoal(
                                   appBarTitle: 'Neues Förderziel',
                                   pupilId: pupil.internalId,
                                   goalCategoryId: status.supportCategoryId,
@@ -182,7 +182,7 @@ List<Widget> pupilCategoryStatusesList(PupilProxy pupil, BuildContext context) {
                       child: InkWell(
                         onLongPress: () {
                           Navigator.of(context).push(MaterialPageRoute(
-                              builder: (ctx) => NewCategoryItem(
+                              builder: (ctx) => NewSupportCategoryGoal(
                                     appBarTitle: 'Neuer Förderbereich',
                                     pupilId: pupil.internalId,
                                     goalCategoryId: key,
@@ -262,7 +262,7 @@ List<Widget> pupilCategoryStatusesList(PupilProxy pupil, BuildContext context) {
                   style: actionButtonStyle,
                   onPressed: () async {
                     await Navigator.of(context).push(MaterialPageRoute(
-                        builder: (ctx) => NewCategoryItem(
+                        builder: (ctx) => NewSupportCategoryGoal(
                               appBarTitle: 'Neues Förderziel',
                               pupilId: pupil.internalId,
                               goalCategoryId: key,

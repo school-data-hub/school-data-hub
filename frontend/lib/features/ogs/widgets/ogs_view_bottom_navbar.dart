@@ -34,18 +34,6 @@ class OgsListPageBottomNavBar extends StatelessWidget {
                 },
               ),
               const Gap(30),
-              IconButton(
-                tooltip: 'Scan Kinder-IDs',
-                icon: const Icon(
-                  Icons.qr_code_scanner_rounded,
-                  size: 30,
-                ),
-                onPressed: () {
-                  locator<PupilIdentityManager>()
-                      .scanNewPupilIdentities(context);
-                },
-              ),
-              const Gap(30),
               const FilterButton(
                   isSearchBar: true,
                   showBottomSheetFunction: showOgsFilterBottomSheet),

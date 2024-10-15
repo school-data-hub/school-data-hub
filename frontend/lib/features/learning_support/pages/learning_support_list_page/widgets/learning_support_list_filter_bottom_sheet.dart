@@ -13,24 +13,32 @@ class LearningSupportFilterBottomSheet extends WatchingWidget {
 
   @override
   Widget build(BuildContext context) {
-    Map<PupilFilter, bool> activeFilters =
-        watchValue((PupilFilterManager x) => x.filterState);
-    bool valueSpecialNeeds = activeFilters[PupilFilter.specialNeeds]!;
-    bool valueDevelopmentPlan1 = activeFilters[PupilFilter.supportLevel1]!;
-    bool valueDevelopmentPlan2 = activeFilters[PupilFilter.supportLevel2]!;
-    bool valueDevelopmentPlan3 = activeFilters[PupilFilter.supportLevel3]!;
-    bool valueDevelopmentPlan4 = activeFilters[PupilFilter.supportLevel4]!;
-    bool valueMigrationSupport = activeFilters[PupilFilter.migrationSupport]!;
+    Map<SupportLevelFilter, bool> supportLevelFilters =
+        watchValue((PupilFilterManager x) => x.supportLevelFilterState);
+    Map<SupportAreaFilter, bool> supportAreaFilters =
+        watchValue((PupilFilterManager x) => x.supportAreaFilterState);
+    bool valueSpecialNeeds =
+        supportLevelFilters[SupportLevelFilter.specialNeeds]!;
+    bool valueSupportLevel1 =
+        supportLevelFilters[SupportLevelFilter.supportLevel1]!;
+    bool valueSupportLevel2 =
+        supportLevelFilters[SupportLevelFilter.supportLevel2]!;
+    bool valueSupportLevel3 =
+        supportLevelFilters[SupportLevelFilter.supportLevel3]!;
+    bool valueSupportLevel4 =
+        supportLevelFilters[SupportLevelFilter.supportLevel4]!;
+    bool valueMigrationSupport =
+        supportLevelFilters[SupportLevelFilter.migrationSupport]!;
     bool valueSupportAreaMotorics =
-        activeFilters[PupilFilter.supportAreaMotorics]!;
+        supportAreaFilters[SupportAreaFilter.motorics]!;
     bool valueSupportAreaEmotions =
-        activeFilters[PupilFilter.supportAreaEmotions]!;
-    bool valueSupportAreaMath = activeFilters[PupilFilter.supportAreaMath]!;
+        supportAreaFilters[SupportAreaFilter.emotions]!;
+    bool valueSupportAreaMath = supportAreaFilters[SupportAreaFilter.math]!;
     bool valueSupportAreaLearning =
-        activeFilters[PupilFilter.supportAreaLearning]!;
-    bool valueSupportAreaGerman = activeFilters[PupilFilter.supportAreaGerman]!;
+        supportAreaFilters[SupportAreaFilter.learning]!;
+    bool valueSupportAreaGerman = supportAreaFilters[SupportAreaFilter.german]!;
     bool valueSupportAreaLanguage =
-        activeFilters[PupilFilter.supportAreaLanguage]!;
+        supportAreaFilters[SupportAreaFilter.language]!;
     final filterLocator = locator<PupilFilterManager>();
     return Padding(
       padding: const EdgeInsets.only(left: 20.0, right: 20, top: 8),
@@ -68,12 +76,14 @@ class LearningSupportFilterBottomSheet extends WatchingWidget {
                         'Ebene 1',
                         style: filterItemsTextStyle,
                       ),
-                      selected: valueDevelopmentPlan1,
+                      selected: valueSupportLevel1,
                       onSelected: (val) {
-                        filterLocator.setFilter(PupilFilter.supportLevel1, val);
+                        filterLocator.setSupportLevelFilter(
+                            SupportLevelFilter.supportLevel1, val);
 
-                        valueDevelopmentPlan1 = filterLocator
-                            .filterState.value[PupilFilter.supportLevel1]!;
+                        valueSupportLevel1 = filterLocator
+                            .supportLevelFilterState
+                            .value[SupportLevelFilter.supportLevel1]!;
                       },
                     ),
                     FilterChip(
@@ -90,12 +100,14 @@ class LearningSupportFilterBottomSheet extends WatchingWidget {
                         'Ebene 2',
                         style: filterItemsTextStyle,
                       ),
-                      selected: valueDevelopmentPlan2,
+                      selected: valueSupportLevel2,
                       onSelected: (val) {
-                        filterLocator.setFilter(PupilFilter.supportLevel2, val);
+                        filterLocator.setSupportLevelFilter(
+                            SupportLevelFilter.supportLevel2, val);
 
-                        valueDevelopmentPlan2 = filterLocator
-                            .filterState.value[PupilFilter.supportLevel2]!;
+                        valueSupportLevel2 = filterLocator
+                            .supportLevelFilterState
+                            .value[SupportLevelFilter.supportLevel2]!;
                       },
                     ),
                     FilterChip(
@@ -112,12 +124,14 @@ class LearningSupportFilterBottomSheet extends WatchingWidget {
                         'Ebene 3',
                         style: filterItemsTextStyle,
                       ),
-                      selected: valueDevelopmentPlan3,
+                      selected: valueSupportLevel3,
                       onSelected: (val) {
-                        filterLocator.setFilter(PupilFilter.supportLevel3, val);
+                        filterLocator.setSupportLevelFilter(
+                            SupportLevelFilter.supportLevel3, val);
 
-                        valueDevelopmentPlan3 = filterLocator
-                            .filterState.value[PupilFilter.supportLevel3]!;
+                        valueSupportLevel3 = filterLocator
+                            .supportLevelFilterState
+                            .value[SupportLevelFilter.supportLevel3]!;
                       },
                     ),
                     FilterChip(
@@ -134,12 +148,14 @@ class LearningSupportFilterBottomSheet extends WatchingWidget {
                         'Regenbogen',
                         style: filterItemsTextStyle,
                       ),
-                      selected: valueDevelopmentPlan4,
+                      selected: valueSupportLevel4,
                       onSelected: (val) {
-                        filterLocator.setFilter(PupilFilter.supportLevel4, val);
+                        filterLocator.setSupportLevelFilter(
+                            SupportLevelFilter.supportLevel4, val);
 
-                        valueDevelopmentPlan3 = filterLocator
-                            .filterState.value[PupilFilter.supportLevel4]!;
+                        valueSupportLevel4 = filterLocator
+                            .supportLevelFilterState
+                            .value[SupportLevelFilter.supportLevel4]!;
                       },
                     ),
                     FilterChip(
@@ -158,10 +174,12 @@ class LearningSupportFilterBottomSheet extends WatchingWidget {
                       ),
                       selected: valueSpecialNeeds,
                       onSelected: (val) {
-                        filterLocator.setFilter(PupilFilter.specialNeeds, val);
+                        filterLocator.setSupportLevelFilter(
+                            SupportLevelFilter.specialNeeds, val);
 
                         valueSpecialNeeds = filterLocator
-                            .filterState.value[PupilFilter.specialNeeds]!;
+                            .supportLevelFilterState
+                            .value[SupportLevelFilter.specialNeeds]!;
                       },
                     ),
                   ],
@@ -195,11 +213,12 @@ class LearningSupportFilterBottomSheet extends WatchingWidget {
                       ),
                       selected: valueSupportAreaMotorics,
                       onSelected: (val) {
-                        filterLocator.setFilter(
-                            PupilFilter.supportAreaMotorics, val);
+                        filterLocator.setSupportAreaFilter(
+                            SupportAreaFilter.motorics, val);
 
-                        valueSupportAreaMotorics = filterLocator.filterState
-                            .value[PupilFilter.supportAreaMotorics]!;
+                        valueSupportAreaMotorics = filterLocator
+                            .supportAreaFilterState
+                            .value[SupportAreaFilter.motorics]!;
                       },
                     ),
                     FilterChip(
@@ -218,11 +237,12 @@ class LearningSupportFilterBottomSheet extends WatchingWidget {
                       ),
                       selected: valueSupportAreaEmotions,
                       onSelected: (val) {
-                        filterLocator.setFilter(
-                            PupilFilter.supportAreaEmotions, val);
+                        filterLocator.setSupportAreaFilter(
+                            SupportAreaFilter.emotions, val);
 
-                        valueSupportAreaEmotions = filterLocator.filterState
-                            .value[PupilFilter.supportAreaEmotions]!;
+                        valueSupportAreaEmotions = filterLocator
+                            .supportAreaFilterState
+                            .value[SupportAreaFilter.emotions]!;
                       },
                     ),
                     FilterChip(
@@ -241,11 +261,12 @@ class LearningSupportFilterBottomSheet extends WatchingWidget {
                       ),
                       selected: valueSupportAreaMath,
                       onSelected: (val) {
-                        filterLocator.setFilter(
-                            PupilFilter.supportAreaMath, val);
+                        filterLocator.setSupportAreaFilter(
+                            SupportAreaFilter.math, val);
 
                         valueSupportAreaMath = filterLocator
-                            .filterState.value[PupilFilter.supportAreaMath]!;
+                            .supportAreaFilterState
+                            .value[SupportAreaFilter.math]!;
                       },
                     ),
                     FilterChip(
@@ -264,11 +285,12 @@ class LearningSupportFilterBottomSheet extends WatchingWidget {
                       ),
                       selected: valueSupportAreaLearning,
                       onSelected: (val) {
-                        filterLocator.setFilter(
-                            PupilFilter.supportAreaLearning, val);
+                        filterLocator.setSupportAreaFilter(
+                            SupportAreaFilter.learning, val);
 
-                        valueSupportAreaLearning = filterLocator.filterState
-                            .value[PupilFilter.supportAreaLearning]!;
+                        valueSupportAreaLearning = filterLocator
+                            .supportAreaFilterState
+                            .value[SupportAreaFilter.learning]!;
                       },
                     ),
                     FilterChip(
@@ -287,11 +309,12 @@ class LearningSupportFilterBottomSheet extends WatchingWidget {
                       ),
                       selected: valueSupportAreaGerman,
                       onSelected: (val) {
-                        filterLocator.setFilter(
-                            PupilFilter.supportAreaGerman, val);
+                        filterLocator.setSupportAreaFilter(
+                            SupportAreaFilter.german, val);
 
                         valueSupportAreaGerman = filterLocator
-                            .filterState.value[PupilFilter.supportAreaGerman]!;
+                            .supportAreaFilterState
+                            .value[SupportAreaFilter.german]!;
                       },
                     ),
                     FilterChip(
@@ -310,11 +333,12 @@ class LearningSupportFilterBottomSheet extends WatchingWidget {
                       ),
                       selected: valueSupportAreaLanguage,
                       onSelected: (val) {
-                        filterLocator.setFilter(
-                            PupilFilter.supportAreaLanguage, val);
+                        filterLocator.setSupportAreaFilter(
+                            SupportAreaFilter.language, val);
 
-                        valueSupportAreaLanguage = filterLocator.filterState
-                            .value[PupilFilter.supportAreaLanguage]!;
+                        valueSupportAreaLanguage = filterLocator
+                            .supportAreaFilterState
+                            .value[SupportAreaFilter.language]!;
                       },
                     ),
                     FilterChip(
@@ -333,11 +357,11 @@ class LearningSupportFilterBottomSheet extends WatchingWidget {
                       ),
                       selected: valueMigrationSupport,
                       onSelected: (val) {
-                        filterLocator.setFilter(
+                        filterLocator.setPupilFilter(
                             PupilFilter.migrationSupport, val);
 
-                        valueMigrationSupport = filterLocator
-                            .filterState.value[PupilFilter.migrationSupport]!;
+                        valueMigrationSupport = filterLocator.pupilFilterState
+                            .value[PupilFilter.migrationSupport]!;
                       },
                     ),
                   ],

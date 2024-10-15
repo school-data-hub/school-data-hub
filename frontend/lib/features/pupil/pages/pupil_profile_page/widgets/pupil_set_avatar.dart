@@ -9,18 +9,35 @@ import 'package:path_provider/path_provider.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
 import 'package:schuldaten_hub/features/pupil/services/pupil_manager.dart';
+import 'package:image_picker_platform_interface/image_picker_platform_interface.dart';
 
 setAvatar(context, PupilProxy pupil) async {
-  XFile? image = await ImagePicker().pickImage(
-      source: ImageSource.camera,
-      preferredCameraDevice:
-          Platform.isWindows ? CameraDevice.front : CameraDevice.rear);
-  if (image == null) {
-    return;
+  XFile? image;
+  if (Platform.isWindows) {
+    ImageSource source =
+        ImageSource.gallery; // or ImageSource.camera based on your requirement
+    final ImagePickerPlatform picker = ImagePickerPlatform.instance;
+    image = await picker.getImageFromSource(
+      source: source,
+      // options: ImagePickerOptions(
+      //   maxWidth: maxWidth,
+      //   maxHeight: maxHeight,
+      //   imageQuality: quality,
+      // ),
+    );
+  } else {
+    XFile? image = await ImagePicker().pickImage(
+        source: ImageSource.camera,
+        preferredCameraDevice:
+            Platform.isWindows ? CameraDevice.front : CameraDevice.rear);
+    if (image == null) {
+      return;
+    }
   }
+
   File imageFile = await Navigator.push(
     context,
-    MaterialPageRoute(builder: (context) => CropAvatarView(image: image)),
+    MaterialPageRoute(builder: (context) => CropAvatarView(image: image!)),
   );
   locator<PupilManager>().postAvatarImage(imageFile, pupil);
 }

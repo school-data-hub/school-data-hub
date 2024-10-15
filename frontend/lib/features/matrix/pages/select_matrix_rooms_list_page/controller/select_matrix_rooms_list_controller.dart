@@ -37,7 +37,7 @@ class SelectMatrixRoomsListController extends State<SelectMatrixRoomsList> {
   void initState() {
     //locator<PupilFilterManager>().refreshFilteredPupils();
     setState(() {
-      inheritedFilters = locator<PupilFilterManager>().filterState.value;
+      inheritedFilters = locator<PupilFilterManager>().pupilFilterState.value;
       rooms = locator<MatrixPolicyManager>().matrixRooms.value;
     });
     super.initState();

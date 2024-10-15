@@ -5,6 +5,7 @@ import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/utils/extensions.dart';
 import 'package:schuldaten_hub/common/widgets/dialogues/confirmation_dialog.dart';
 import 'package:schuldaten_hub/features/learning_support/services/learning_support_manager.dart';
+import 'package:schuldaten_hub/features/learning_support/widgets/support_category_widgets/category_status_widgets.dart';
 import 'package:schuldaten_hub/features/learning_support/widgets/support_category_widgets/support_category_card_banner.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
 
@@ -69,9 +70,8 @@ class SupportGoalCard extends StatelessWidget {
                     children: [
                       Padding(
                         padding: const EdgeInsets.only(top: 4.0),
-                        child: locator<LearningSupportManager>()
-                            .getLastCategoryStatusSymbol(pupil,
-                                pupil.pupilGoals![goalIndex].supportCategoryId),
+                        child: getLastCategoryStatusSymbol(pupil,
+                            pupil.pupilGoals![goalIndex].supportCategoryId),
                       ),
                       const Gap(10),
                       Flexible(

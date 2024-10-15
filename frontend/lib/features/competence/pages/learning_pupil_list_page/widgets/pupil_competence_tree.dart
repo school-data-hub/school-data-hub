@@ -2,25 +2,30 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/constants/colors.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
+import 'package:schuldaten_hub/common/services/session_manager.dart';
 import 'package:schuldaten_hub/features/competence/models/competence.dart';
+import 'package:schuldaten_hub/features/competence/pages/widgets/competence_status_dialog.dart';
+import 'package:schuldaten_hub/features/competence/pages/widgets/dialogues/comptence_check_widgets.dart';
+import 'package:schuldaten_hub/features/competence/services/competence_helper.dart';
 import 'package:schuldaten_hub/features/competence/services/competence_manager.dart';
 import 'package:schuldaten_hub/features/learning_support/widgets/support_category_widgets/support_category_status_comment.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
-import 'package:schuldaten_hub/features/learning_support/widgets/dialogs/support_category_status_dialog.dart';
-import 'package:schuldaten_hub/features/learning_support/services/learning_support_manager.dart';
 
-import 'package:schuldaten_hub/features/learning_support/pages/new_category_item_page/controller/new_category_item_controller.dart';
+import 'package:schuldaten_hub/features/learning_support/pages/new_support_category_goal_page/controller/new_support_category_goal_controller.dart';
 
 List<Widget> buildPupilCompetenceTree(PupilProxy pupil, int? parentId,
     double indentation, Color? passedBackGroundColor, BuildContext context) {
   List<Widget> competenceWidgets = [];
   final competenceLocator = locator<CompetenceManager>();
-  List<Competence> competences = competenceLocator.competences.value;
+  List<Competence> competences = competenceLocator.competences.value
+      .where((Competence competence) =>
+          competence.competenceLevel!.contains(pupil.schoolyear))
+      .toList();
   Color competenceBackgroundColor = backgroundColor;
   for (var competence in competences) {
     if (passedBackGroundColor == null) {
-      competenceBackgroundColor = locator<CompetenceManager>()
-          .getCompetenceColor(competence.competenceId);
+      competenceBackgroundColor =
+          CompetenceHelper.getCompetenceColor(competence.competenceId);
     } else {
       competenceBackgroundColor = passedBackGroundColor;
     }
@@ -70,9 +75,8 @@ List<Widget> buildPupilCompetenceTree(PupilProxy pupil, int? parentId,
                                         //   ),
                                         // ));
                                       },
-                                      child: locator<LearningSupportManager>()
-                                          .getLastCategoryStatusSymbol(
-                                              pupil, competence.competenceId),
+                                      child: getLastCompetenceCheckSymbol(
+                                          pupil, competence.competenceId),
                                     ),
                                   ),
                                   Flexible(
@@ -106,20 +110,23 @@ List<Widget> buildPupilCompetenceTree(PupilProxy pupil, int? parentId,
                           Padding(
                             padding: const EdgeInsets.all(5.0),
                             child: InkWell(
-                              onTap: () => supportCategoryStatusDialog(
-                                  pupil, competence.competenceId, context),
+                              // onTap: () => competenceStatusDialog(
+                              //     pupil, competence.competenceId, context),
                               onLongPress: () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (ctx) => NewCategoryItem(
-                                    appBarTitle: 'Neues Förderziel',
-                                    pupilId: pupil.internalId,
-                                    goalCategoryId: competence.competenceId,
-                                    elementType: 'goal',
-                                  ),
-                                ));
+                                if (locator<SessionManager>().isAdmin.value ==
+                                    true) {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (ctx) => NewSupportCategoryGoal(
+                                      appBarTitle: 'Neues Förderziel',
+                                      pupilId: pupil.internalId,
+                                      goalCategoryId: competence.competenceId,
+                                      elementType: 'goal',
+                                    ),
+                                  ));
+                                }
                               },
-                              child: locator<CompetenceManager>()
-                                  .getLastCompetenceCheckSymbol(
+                              child:
+                                  CompetenceHelper.getLastCompetenceCheckSymbol(
                                       pupil, competence.competenceId),
                             ),
                           ),

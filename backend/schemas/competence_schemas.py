@@ -106,6 +106,20 @@ competence_checks_schema = CompetenceCheckSchema(many=True)
 #- COMPETENCE REPORT SCHEMA
 ############################
 
+class CompetenceReportInSchema(Schema):
+   
+    created_by = fields.String()
+    created_at = fields.Date()
+    pupil_id = fields.Integer()
+    school_semester_id = fields.Integer()
+    
+    class Meta:
+        fields = ('report_id', 'created_by', 'created_at', 
+                 'pupil_id', 'school_semester_id')
+
+competence_report_in_schema = CompetenceReportInSchema()
+competence_reports_in_schema = CompetenceReportInSchema(many=True)
+
 class CompetenceReportSchema(Schema):
     report_id = fields.String()
     created_by = fields.String()
@@ -119,6 +133,20 @@ class CompetenceReportSchema(Schema):
 
 competence_report_schema = CompetenceReportSchema()
 competence_reports_schema = CompetenceReportSchema(many=True)
+
+class CompetenceReportFlatSchema(Schema):
+    report_id = fields.String()
+    created_by = fields.String()
+    created_at = fields.Date()
+    pupil_id = fields.Integer()
+    school_semester_id = fields.Integer()
+    
+    class Meta:
+        fields = ('report_id', 'created_by', 'created_at', 
+                 'pupil_id', 'school_semester_id')
+
+competence_report_flat_schema = CompetenceReportFlatSchema()
+competence_reports_flat_schema = CompetenceReportFlatSchema(many=True)
 
 #- COMPETENCE SCHEMA
 ############################

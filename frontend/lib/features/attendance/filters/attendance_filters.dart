@@ -10,7 +10,7 @@ import 'package:schuldaten_hub/features/pupil/filters/pupil_filter_manager.dart'
 
 List<PupilProxy> attendanceFilters(List<PupilProxy> pupils) {
   final thisDate = locator<SchooldayManager>().thisDate.value;
-  final activeFilters = locator<PupilFilterManager>().filterState.value;
+  final activeFilters = locator<PupilFilterManager>().pupilFilterState.value;
   List<PupilProxy> filteredPupils = [];
 
   for (final PupilProxy pupil in pupils) {

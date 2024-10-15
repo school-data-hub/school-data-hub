@@ -39,7 +39,7 @@ class _SelectPupilsListPageState extends State<SelectPupilsListPage> {
   @override
   void initState() {
     setState(() {
-      inheritedFilters = locator<PupilFilterManager>().filterState.value;
+      inheritedFilters = locator<PupilFilterManager>().pupilFilterState.value;
     });
     super.initState();
   }

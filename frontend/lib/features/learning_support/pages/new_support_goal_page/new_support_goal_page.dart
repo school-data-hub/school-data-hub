@@ -3,7 +3,7 @@ import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/constants/colors.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/features/learning_support/services/learning_support_manager.dart';
-import 'package:schuldaten_hub/features/learning_support/pages/new_category_item_page/controller/new_category_item_controller.dart';
+import 'package:schuldaten_hub/features/learning_support/pages/new_support_category_goal_page/controller/new_support_category_goal_controller.dart';
 import 'package:schuldaten_hub/features/learning_support/pages/selectable_support_category_tree_page/controller/selectable_category_tree_controller.dart';
 
 import 'package:schuldaten_hub/features/learning_support/widgets/support_category_widgets/support_category_status_dropdown_items.dart';
@@ -11,7 +11,7 @@ import 'package:schuldaten_hub/features/learning_support/widgets/support_categor
 import 'package:schuldaten_hub/features/pupil/services/pupil_manager.dart';
 
 class NewSupportGoalPage extends StatelessWidget {
-  final NewCategoryGoalController controller;
+  final NewSupportCategoryGoalController controller;
   const NewSupportGoalPage(this.controller, {super.key});
 
   @override

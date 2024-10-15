@@ -15,7 +15,7 @@ class AttendanceFilterBottomSheet extends WatchingWidget {
   @override
   Widget build(BuildContext context) {
     Map<PupilFilter, bool> activeFilters =
-        watchValue((PupilFilterManager x) => x.filterState);
+        watchValue((PupilFilterManager x) => x.pupilFilterState);
     bool valuePresent = activeFilters[PupilFilter.present]!;
     bool valueNotPresent = activeFilters[PupilFilter.notPresent]!;
     bool valueUnexcused = activeFilters[PupilFilter.unexcused]!;
@@ -63,15 +63,16 @@ class AttendanceFilterBottomSheet extends WatchingWidget {
                         ),
                         selected: valuePresent,
                         onSelected: (val) {
-                          filterLocator.setFilter(PupilFilter.present, val);
+                          filterLocator.setPupilFilter(
+                              PupilFilter.present, val);
 
                           valuePresent = filterLocator
-                              .filterState.value[PupilFilter.present]!;
+                              .pupilFilterState.value[PupilFilter.present]!;
                           if (valuePresent == true) {
                             //_valueNotPresent = false;
-                            filterLocator.setFilter(
+                            filterLocator.setPupilFilter(
                                 PupilFilter.notPresent, false);
-                            filterLocator.setFilter(
+                            filterLocator.setPupilFilter(
                                 PupilFilter.unexcused, false);
                           }
                         },
@@ -92,12 +93,14 @@ class AttendanceFilterBottomSheet extends WatchingWidget {
                         ),
                         selected: valueNotPresent,
                         onSelected: (val) {
-                          filterLocator.setFilter(PupilFilter.notPresent, val);
+                          filterLocator.setPupilFilter(
+                              PupilFilter.notPresent, val);
                           valueNotPresent = filterLocator
-                              .filterState.value[PupilFilter.notPresent]!;
+                              .pupilFilterState.value[PupilFilter.notPresent]!;
                           if (valueNotPresent == true) {
                             //_valuePresent = false;
-                            filterLocator.setFilter(PupilFilter.present, false);
+                            filterLocator.setPupilFilter(
+                                PupilFilter.present, false);
                           }
                         },
                       ),
@@ -117,11 +120,13 @@ class AttendanceFilterBottomSheet extends WatchingWidget {
                         ),
                         selected: valueUnexcused,
                         onSelected: (val) {
-                          filterLocator.setFilter(PupilFilter.unexcused, val);
+                          filterLocator.setPupilFilter(
+                              PupilFilter.unexcused, val);
                           valueUnexcused = filterLocator
-                              .filterState.value[PupilFilter.unexcused]!;
+                              .pupilFilterState.value[PupilFilter.unexcused]!;
                           if (valueUnexcused == true) {
-                            filterLocator.setFilter(PupilFilter.present, false);
+                            filterLocator.setPupilFilter(
+                                PupilFilter.present, false);
                           }
                         },
                       ),
@@ -142,10 +147,11 @@ class AttendanceFilterBottomSheet extends WatchingWidget {
                         selected: valueOgs,
                         onSelected: (val) {
                           if (val == true) {
-                            filterLocator.setFilter(PupilFilter.notOgs, false);
-                            filterLocator.setFilter(PupilFilter.ogs, val);
+                            filterLocator.setPupilFilter(
+                                PupilFilter.notOgs, false);
+                            filterLocator.setPupilFilter(PupilFilter.ogs, val);
                           } else {
-                            filterLocator.setFilter(PupilFilter.ogs, val);
+                            filterLocator.setPupilFilter(PupilFilter.ogs, val);
                           }
                         },
                       ),
@@ -166,10 +172,13 @@ class AttendanceFilterBottomSheet extends WatchingWidget {
                         selected: valueNotOgs,
                         onSelected: (val) {
                           if (val == true) {
-                            filterLocator.setFilter(PupilFilter.ogs, false);
-                            filterLocator.setFilter(PupilFilter.notOgs, val);
+                            filterLocator.setPupilFilter(
+                                PupilFilter.ogs, false);
+                            filterLocator.setPupilFilter(
+                                PupilFilter.notOgs, val);
                           } else {
-                            filterLocator.setFilter(PupilFilter.notOgs, val);
+                            filterLocator.setPupilFilter(
+                                PupilFilter.notOgs, val);
                           }
                         },
                       ),

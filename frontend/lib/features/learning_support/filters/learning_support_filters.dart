@@ -6,35 +6,36 @@ import 'package:schuldaten_hub/features/pupil/filters/pupil_filter_manager.dart'
 import 'package:schuldaten_hub/features/pupil/services/pupil_helper_functions.dart';
 
 List<PupilProxy> learningSupportFilters(List<PupilProxy> pupils) {
-  final activeFilters = locator<PupilFilterManager>().filterState.value;
+  final activeFilters =
+      locator<PupilFilterManager>().supportLevelFilterState.value;
 
   List<PupilProxy> filteredPupils = [];
   for (PupilProxy pupil in pupils) {
-    if (activeFilters[PupilFilter.supportLevel1]! &&
+    if (!activeFilters[SupportLevelFilter.supportLevel1]! &&
         pupil.individualDevelopmentPlan != 1) {
       locator<PupilsFilter>().setFiltersOnValue(true);
       continue;
     }
     // Filter support level 2
-    if (activeFilters[PupilFilter.supportLevel2]! &&
+    if (activeFilters[SupportLevelFilter.supportLevel2]! &&
         pupil.individualDevelopmentPlan != 2) {
       locator<PupilsFilter>().setFiltersOnValue(true);
       continue;
     }
     // Filter support level 3
-    if (activeFilters[PupilFilter.supportLevel3]! &&
+    if (activeFilters[SupportLevelFilter.supportLevel3]! &&
         pupil.individualDevelopmentPlan != 3) {
       locator<PupilsFilter>().setFiltersOnValue(true);
       continue;
     }
     // Filter support level 4
-    if (activeFilters[PupilFilter.supportLevel4]! &&
+    if (activeFilters[SupportLevelFilter.supportLevel4]! &&
         pupil.individualDevelopmentPlan != 4) {
       locator<PupilsFilter>().setFiltersOnValue(true);
       continue;
     }
     // Filter special needs
-    if (activeFilters[PupilFilter.specialNeeds]! &&
+    if (activeFilters[SupportLevelFilter.specialNeeds]! &&
         pupil.specialNeeds == null) {
       locator<PupilsFilter>().setFiltersOnValue(true);
       continue;
@@ -44,7 +45,7 @@ List<PupilProxy> learningSupportFilters(List<PupilProxy> pupils) {
     //- Learning filters -//
 
     // Filter migrationSupport
-    if (activeFilters[PupilFilter.migrationSupport]! &&
+    if (activeFilters[SupportLevelFilter.migrationSupport]! &&
         hasLanguageSupport(pupil.migrationSupportEnds) != true) {
       locator<PupilsFilter>().setFiltersOnValue(true);
       continue;
