@@ -1,7 +1,7 @@
 import 'dart:developer';
 
-import 'package:http/http.dart' as http;
 import 'package:html/parser.dart' show parse;
+import 'package:http/http.dart' as http;
 
 //- TODO: This is experimental code and should be tested before using in production
 class ISBNImageAndTitle {

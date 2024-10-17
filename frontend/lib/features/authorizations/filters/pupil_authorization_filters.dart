@@ -1,5 +1,4 @@
 import 'package:schuldaten_hub/common/constants/enums.dart';
-
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/features/authorizations/models/pupil_authorization.dart';
 import 'package:schuldaten_hub/features/pupil/filters/pupil_filter_manager.dart';

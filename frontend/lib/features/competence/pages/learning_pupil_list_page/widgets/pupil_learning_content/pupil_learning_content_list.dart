@@ -7,7 +7,7 @@ import 'package:schuldaten_hub/common/services/notification_manager.dart';
 import 'package:schuldaten_hub/common/utils/scanner.dart';
 import 'package:schuldaten_hub/features/competence/models/competence_goal.dart';
 import 'package:schuldaten_hub/features/competence/pages/learning_pupil_list_page/widgets/pupil_competence_goals/competence_goal_card.dart';
-import 'package:schuldaten_hub/features/competence/pages/learning_pupil_list_page/widgets/pupil_competence_tree/pupil_competence_tree_function.dart';
+import 'package:schuldaten_hub/features/competence/pages/learning_pupil_list_page/widgets/pupil_competence_tree/pupil_competence_status_tree.dart';
 import 'package:schuldaten_hub/features/competence/pages/learning_pupil_list_page/widgets/pupil_learning_content/pupil_learning_goals_widget.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
 import 'package:schuldaten_hub/features/workbooks/models/pupil_workbook.dart';
@@ -145,7 +145,7 @@ class PupilLearningContentList extends StatelessWidget {
         ),
         // PupilCompetenceStatusTree(
         //     pupil: pupil, parentId: null, indentation: 0, context: context),
-        ...buildPupilCompetenceTree(
+        ...buildPupilCompetenceStatusTree(
             pupil: pupil,
             parentId: null,
             indentation: 0,
@@ -275,7 +275,7 @@ List<Widget> pupilLearningContentList(PupilProxy pupil, BuildContext context) {
         ),
       ],
     ),
-    ...buildPupilCompetenceTree(
+    ...buildPupilCompetenceStatusTree(
         pupil: pupil,
         parentId: null,
         indentation: 0,

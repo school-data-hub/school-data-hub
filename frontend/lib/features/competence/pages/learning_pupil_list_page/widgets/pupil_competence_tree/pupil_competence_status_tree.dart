@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/constants/colors.dart';
-
 import 'package:schuldaten_hub/features/competence/models/competence_check.dart';
 import 'package:schuldaten_hub/features/competence/pages/learning_pupil_list_page/widgets/pupil_competence_tree/competence_card.dart';
 import 'package:schuldaten_hub/features/competence/pages/learning_pupil_list_page/widgets/pupil_competence_tree/competence_check_card.dart';
@@ -11,7 +10,7 @@ import 'package:schuldaten_hub/features/competence/services/competence_helper.da
 import 'package:schuldaten_hub/features/learning_support/widgets/support_category_widgets/support_category_status_comment.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
 
-List<Widget> buildPupilCompetenceTree(
+List<Widget> buildPupilCompetenceStatusTree(
     {required PupilProxy pupil,
     int? parentId,
     required double indentation,
@@ -35,7 +34,7 @@ List<Widget> buildPupilCompetenceTree(
     }
 
     if (competence.parentCompetence == parentId) {
-      final children = buildPupilCompetenceTree(
+      final children = buildPupilCompetenceStatusTree(
           pupil: pupil,
           parentId: competence.competenceId,
           indentation: indentation + 15,
@@ -51,35 +50,10 @@ List<Widget> buildPupilCompetenceTree(
                   children: [
                     CompetenceCard(
                       backgroundColor: competenceBackgroundColor,
-                      competenceStatus: getLastCompetenceCheckSymbol(
+                      competenceStatus: getCompetenceReportCheckSymbol(
                           pupil, competence.competenceId),
-                      title: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Flexible(
-                                  child: Text(
-                                    competence.competenceName,
-                                    maxLines: 3,
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            // locator<GoalManager>().getCategoryStatusComment(
-                            //     pupil, competence.competenceId),
-                          ],
-                        ),
-                      ),
+                      isReport: children.isEmpty,
+                      title: competence.competenceName,
                       children: pupilCompetenceChecksMap
                               .containsKey(competence.competenceId)
                           ? [
@@ -107,19 +81,7 @@ List<Widget> buildPupilCompetenceTree(
                                 child: InkWell(
                                   onTap: () => competenceStatusDialog(
                                       pupil, competence.competenceId, context),
-                                  onLongPress: () {
-                                    // if (locator<SessionManager>().isAdmin.value ==
-                                    //     true) {
-                                    //   Navigator.of(context).push(MaterialPageRoute(
-                                    //     builder: (ctx) => NewSupportCategoryGoal(
-                                    //       appBarTitle: 'Neues Förderziel',
-                                    //       pupilId: pupil.internalId,
-                                    //       goalCategoryId: competence.competenceId,
-                                    //       elementType: 'goal',
-                                    //     ),
-                                    //   ));
-                                    // }
-                                  },
+                                  onLongPress: () {},
                                   child: CompetenceHelper
                                       .getLastCompetenceCheckSymbol(
                                           pupil: pupil,

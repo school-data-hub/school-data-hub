@@ -8,7 +8,6 @@ import 'package:schuldaten_hub/common/widgets/search_text_field.dart';
 import 'package:schuldaten_hub/features/authorizations/pages/authorization_pupils_page/widgets/authorization_pupils_filter_bottom_sheet.dart';
 import 'package:schuldaten_hub/features/pupil/filters/pupils_filter.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
-
 import 'package:watch_it/watch_it.dart';
 
 class AuthorizationPupilListSearchBar extends WatchingWidget {

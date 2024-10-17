@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'package:schuldaten_hub/common/widgets/custom_expansion_tile/custom_expansion_tile.dart';
 
 class CustomExpansionTileContent extends StatelessWidget {

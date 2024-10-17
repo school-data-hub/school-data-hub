@@ -5,7 +5,6 @@ import 'package:schuldaten_hub/common/constants/enums.dart';
 import 'package:schuldaten_hub/common/constants/styles.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/widgets/common_pupil_filters.dart';
-
 import 'package:schuldaten_hub/features/pupil/filters/pupil_filter_manager.dart';
 import 'package:watch_it/watch_it.dart';
 
