@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/features/competence/models/competence_check.dart';
-import 'package:schuldaten_hub/features/learning_support/services/learning_support_manager.dart';
+import 'package:schuldaten_hub/features/competence/services/competence_helper.dart';
+import 'package:schuldaten_hub/features/competence/services/competence_manager.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
 
 class CompetenceChecksBatches extends StatelessWidget {
@@ -26,26 +26,25 @@ class CompetenceChecksBatches extends StatelessWidget {
         continue;
       }
       countedCompetenceIds.add(competenceCheck.competenceId);
-      int rootCategoryId = locator<LearningSupportManager>()
-          .getRootSupportCategory(competenceCheck.competenceId)
-          .categoryId;
-      if (competenceCounts.containsKey(rootCategoryId)) {
-        competenceCounts[rootCategoryId] =
-            competenceCounts[rootCategoryId]! + 1;
+      int rootCompetenceId = locator<CompetenceManager>()
+          .getRootCompetence(competenceCheck.competenceId)
+          .competenceId;
+      if (competenceCounts.containsKey(rootCompetenceId)) {
+        competenceCounts[rootCompetenceId] =
+            competenceCounts[rootCompetenceId]! + 1;
       } else {
-        competenceCounts[rootCategoryId] = 1;
+        competenceCounts[rootCompetenceId] = 1;
       }
     }
-    // TODO: implement colors in CompetenceManger analog to this
-    competenceCounts.forEach((categoryId, count) {
+
+    competenceCounts.forEach((competenceId, count) {
       widgetList.add(
         Container(
           width: 21.0,
           height: 21.0,
           decoration: BoxDecoration(
-            color: locator<LearningSupportManager>()
-                .getRootSupportCategoryColor(locator<LearningSupportManager>()
-                    .getRootSupportCategory(categoryId)),
+            color: CompetenceHelper.getRootCompetenceColor(
+                locator<CompetenceManager>().getCompetence(competenceId)),
             shape: BoxShape.circle,
           ),
           child: Center(

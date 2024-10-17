@@ -127,6 +127,8 @@ class PupilIdentityManager {
         envKey: locator<EnvManager>().defaultEnv.value);
 
     await locator<PupilManager>().fetchAllPupils();
+    locator<BottomNavManager>().setBottomNavPage(0);
+    locator<BottomNavManager>().pageViewController.value.jumpToPage(0);
   }
 
   Future<Map<int, PupilIdentity>> readPupilIdentitiesFromStorage(
@@ -207,7 +209,7 @@ class PupilIdentityManager {
         '${_pupilIdentities.length} Schülerdaten wurden aktualisiert!');
 
     locator<BottomNavManager>().setBottomNavPage(0);
-
+    locator<BottomNavManager>().pageViewController.value.jumpToPage(0);
     return;
   }
 

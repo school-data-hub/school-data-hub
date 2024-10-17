@@ -111,7 +111,7 @@ enum PupilFilter {
   authorizationFileResponse,
 }
 
-enum SupportLevelFilter {
+enum SupportLevel {
   supportLevel1,
   supportLevel2,
   supportLevel3,
@@ -120,13 +120,13 @@ enum SupportLevelFilter {
   migrationSupport,
 }
 
-Map<SupportLevelFilter, bool> initialSupportLevelFilterValues = {
-  SupportLevelFilter.supportLevel1: false,
-  SupportLevelFilter.supportLevel2: false,
-  SupportLevelFilter.supportLevel3: false,
-  SupportLevelFilter.supportLevel4: false,
-  SupportLevelFilter.specialNeeds: false,
-  SupportLevelFilter.migrationSupport: false,
+Map<SupportLevel, bool> initialSupportLevelFilterValues = {
+  SupportLevel.supportLevel1: false,
+  SupportLevel.supportLevel2: false,
+  SupportLevel.supportLevel3: false,
+  SupportLevel.supportLevel4: false,
+  SupportLevel.specialNeeds: false,
+  SupportLevel.migrationSupport: false,
 };
 
 enum SupportAreaFilter {

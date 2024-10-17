@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/constants/colors.dart';
+import 'package:schuldaten_hub/common/services/locator.dart';
+import 'package:schuldaten_hub/features/competence/pages/widgets/competence_check_dropdown_items.dart';
+import 'package:schuldaten_hub/features/competence/services/competence_manager.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
-import 'package:schuldaten_hub/features/learning_support/widgets/support_category_widgets/support_category_status_dropdown_items.dart';
 
 final GlobalKey<FormState> _competenceStatusKey = GlobalKey<FormState>();
 final TextEditingController _textEditingController = TextEditingController();
@@ -10,11 +12,11 @@ final TextEditingController _textEditingController = TextEditingController();
 // based on https://mobikul.com/creating-stateful-dialog-form-in-flutter/
 
 Future competenceStatusDialog(
-    PupilProxy pupil, int goalCategoryId, BuildContext parentContext) async {
+    PupilProxy pupil, int competenceId, BuildContext parentContext) async {
   return await showDialog(
       context: parentContext,
       builder: (context) {
-        String categoryStatusValue = 'white';
+        int competenceCheckStatusValue = 1;
         return StatefulBuilder(builder: (statefulContext, setState) {
           return AlertDialog(
             content: Form(
@@ -51,18 +53,18 @@ Future competenceStatusDialog(
                         Padding(
                           padding: const EdgeInsets.only(right: 5.0),
                           child: DropdownButtonHideUnderline(
-                            child: DropdownButton<String>(
+                            child: DropdownButton<int>(
                               icon: const Visibility(
                                   visible: false,
                                   child: Icon(Icons.arrow_downward)),
                               onTap: () {
                                 FocusManager.instance.primaryFocus!.unfocus();
                               },
-                              value: categoryStatusValue,
-                              items: supportCategoryStatusDropdownItems,
+                              value: competenceCheckStatusValue,
+                              items: competenceCheckDropdownItems,
                               onChanged: (newValue) {
                                 setState(() {
-                                  categoryStatusValue = newValue!;
+                                  competenceCheckStatusValue = newValue!;
                                 });
                               },
                             ),
@@ -72,7 +74,7 @@ Future competenceStatusDialog(
                     ),
                   ],
                 )),
-            title: const Text('Neuer Kategoriestatus'),
+            title: const Text('Neuer Competence Check'),
             actions: <Widget>[
               Padding(
                 padding:
@@ -102,13 +104,18 @@ Future competenceStatusDialog(
                       backgroundColor: Colors.green,
                       minimumSize: const Size.fromHeight(50)),
                   onPressed: () {
-                    // if (_competenceStatusKey.currentState!.validate()) {
-                    //   locator<CompetenceManager>().po(pupil, goalCategoryId,
-                    //       categoryStatusValue, _textEditingController.text);
+                    if (_competenceStatusKey.currentState!.validate()) {
+                      locator<CompetenceManager>().postCompetenceCheck(
+                          pupilId: pupil.internalId,
+                          competenceId: competenceId,
+                          competenceStatus: competenceCheckStatusValue,
+                          competenceComment: _textEditingController.text,
+                          isReport: false,
+                          reportId: null);
 
-                    //   _textEditingController.clear();
-                    //   Navigator.of(parentContext).pop();
-                    // }
+                      _textEditingController.clear();
+                      Navigator.of(parentContext).pop();
+                    }
                   },
                   child: const Text(
                     "OKAY",

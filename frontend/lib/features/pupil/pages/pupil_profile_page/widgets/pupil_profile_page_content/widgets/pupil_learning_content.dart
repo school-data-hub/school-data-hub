@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/constants/colors.dart';
 import 'package:schuldaten_hub/common/constants/paddings.dart';
-import 'package:schuldaten_hub/features/competence/pages/learning_pupil_list_page/widgets/pupil_learning_content_list.dart';
+import 'package:schuldaten_hub/features/competence/pages/learning_pupil_list_page/widgets/pupil_learning_content/pupil_learning_content_list.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
 
-class PupilLearningContentCard extends StatelessWidget {
+class PupilLearningContent extends StatelessWidget {
   final PupilProxy pupil;
-  const PupilLearningContentCard({required this.pupil, super.key});
+  const PupilLearningContent({required this.pupil, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +34,7 @@ class PupilLearningContentCard extends StatelessWidget {
                 ))
           ]),
           const Gap(15),
-          PupilLearningContent(pupil: pupil)
+          PupilLearningContentList(pupil: pupil)
         ]),
       ),
     );

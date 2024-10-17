@@ -3,10 +3,10 @@ import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/constants/colors.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/widgets/avatar.dart';
-import 'package:schuldaten_hub/common/widgets/custom_expansion_tile.dart';
-import 'package:schuldaten_hub/common/widgets/custom_list_tiles.dart';
+import 'package:schuldaten_hub/common/widgets/custom_expansion_tile/custom_expansion_tile.dart';
+import 'package:schuldaten_hub/common/widgets/custom_expansion_tile/custom_expansion_tile_content.dart';
 import 'package:schuldaten_hub/features/competence/pages/learning_pupil_list_page/widgets/competence_checks_batches.dart';
-import 'package:schuldaten_hub/features/competence/pages/learning_pupil_list_page/widgets/pupil_learning_content_list.dart';
+import 'package:schuldaten_hub/features/competence/pages/learning_pupil_list_page/widgets/pupil_learning_content/pupil_learning_content_list.dart';
 import 'package:schuldaten_hub/features/main_menu_pages/widgets/landing_bottom_nav_bar.dart';
 import 'package:schuldaten_hub/features/learning_support/services/learning_support_helper_functions.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
@@ -170,10 +170,10 @@ class _LearningSupportCardState extends State<LearningCard> {
           ),
           Padding(
             padding: const EdgeInsets.all(5),
-            child: CustomListTiles(
+            child: CustomExpansionTileContent(
                 title: null,
                 tileController: _tileController,
-                widgetList: [PupilLearningContent(pupil: pupil)]),
+                widgetList: [PupilLearningContentList(pupil: pupil)]),
           )
         ],
       ),

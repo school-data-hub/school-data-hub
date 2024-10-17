@@ -35,7 +35,7 @@ class PupilProfilePageContent extends WatchingWidget {
           if (navState == 6) PupilSchoolListsContent(pupil: pupil),
           if (navState == 7) PupilAuthorizationsContent(pupil: pupil),
           if (navState == 8) PupilLearningSupportContent(pupil: pupil),
-          if (navState == 9) PupilLearningContentCard(pupil: pupil),
+          if (navState == 9) PupilLearningContent(pupil: pupil),
           const Gap(20),
         ],
       ),

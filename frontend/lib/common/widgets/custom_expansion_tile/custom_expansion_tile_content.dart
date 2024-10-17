@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-import 'package:schuldaten_hub/common/widgets/custom_expansion_tile.dart';
+import 'package:schuldaten_hub/common/widgets/custom_expansion_tile/custom_expansion_tile.dart';
 
-class CustomListTiles extends StatelessWidget {
+class CustomExpansionTileContent extends StatelessWidget {
   final List<Widget> widgetList;
   final CustomExpansionTileController? tileController;
   final Widget? title;
 
-  const CustomListTiles(
+  const CustomExpansionTileContent(
       {super.key, required this.widgetList, this.tileController, this.title});
 
   @override
@@ -18,6 +18,7 @@ class CustomListTiles extends StatelessWidget {
       horizontalTitleGap: 0.0,
       minLeadingWidth: 0,
       minVerticalPadding: 0,
+      tileColor: Colors.transparent,
       child: Theme(
         data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
         child: CustomExpansionTile(

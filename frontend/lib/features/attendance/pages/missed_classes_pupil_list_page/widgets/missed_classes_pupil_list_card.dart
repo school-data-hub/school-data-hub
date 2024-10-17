@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/widgets/avatar.dart';
-import 'package:schuldaten_hub/common/widgets/custom_expansion_tile.dart';
-import 'package:schuldaten_hub/common/widgets/custom_list_tiles.dart';
+import 'package:schuldaten_hub/common/widgets/custom_expansion_tile/custom_expansion_tile.dart';
+import 'package:schuldaten_hub/common/widgets/custom_expansion_tile/custom_expansion_tile_content.dart';
 import 'package:schuldaten_hub/features/attendance/services/attendance_manager.dart';
 import 'package:schuldaten_hub/features/attendance/pages/widgets/attendance_stats_pupil.dart';
 import 'package:schuldaten_hub/features/pupil/pages/pupil_profile_page/pupil_profile_page.dart';
@@ -170,7 +170,7 @@ class _AttendanceRankingListCardState extends State<AttendanceRankingListCard> {
               ),
             ],
           ),
-          CustomListTiles(
+          CustomExpansionTileContent(
               title: null,
               tileController: _tileController,
               widgetList: pupilAttendanceContentList(pupil, context)),

@@ -56,6 +56,9 @@ dependencies:
   hooks_riverpod: ^2.5.4
   riverpod_annotation: ^2.5.3
   flutter_hooks: ^0.20.5
+  html: ^0.15.4
+  http: ^1.2.2
+  flutterware: ^0.5.1
 
 dev_dependencies:
   flutter_test: 
@@ -64,6 +67,7 @@ dev_dependencies:
   msix: ^3.16.8
   build_runner: ^2.4.6
   json_serializable: ^6.8.0
+
 
 flutter:
   uses-material-design: true

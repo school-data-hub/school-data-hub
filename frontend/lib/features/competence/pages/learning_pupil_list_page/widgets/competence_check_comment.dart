@@ -6,7 +6,7 @@ import 'package:schuldaten_hub/features/competence/services/competence_helper.da
 import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
 
 Widget getCompetenceCheckComment(PupilProxy pupil, int competenceId) {
-  if (pupil.competenceChecks!.isNotEmpty) {
+  if (pupil.supportCategoryStatuses!.isNotEmpty) {
     final CompetenceCheck? competenceCheck =
         CompetenceHelper.getLastCompetenceCheckOfCompetence(
             pupil, competenceId);

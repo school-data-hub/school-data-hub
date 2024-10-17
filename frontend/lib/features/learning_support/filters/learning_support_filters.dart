@@ -11,31 +11,31 @@ List<PupilProxy> learningSupportFilters(List<PupilProxy> pupils) {
 
   List<PupilProxy> filteredPupils = [];
   for (PupilProxy pupil in pupils) {
-    if (!activeFilters[SupportLevelFilter.supportLevel1]! &&
+    if (!activeFilters[SupportLevel.supportLevel1]! &&
         pupil.individualDevelopmentPlan != 1) {
       locator<PupilsFilter>().setFiltersOnValue(true);
       continue;
     }
     // Filter support level 2
-    if (activeFilters[SupportLevelFilter.supportLevel2]! &&
+    if (activeFilters[SupportLevel.supportLevel2]! &&
         pupil.individualDevelopmentPlan != 2) {
       locator<PupilsFilter>().setFiltersOnValue(true);
       continue;
     }
     // Filter support level 3
-    if (activeFilters[SupportLevelFilter.supportLevel3]! &&
+    if (activeFilters[SupportLevel.supportLevel3]! &&
         pupil.individualDevelopmentPlan != 3) {
       locator<PupilsFilter>().setFiltersOnValue(true);
       continue;
     }
     // Filter support level 4
-    if (activeFilters[SupportLevelFilter.supportLevel4]! &&
+    if (activeFilters[SupportLevel.supportLevel4]! &&
         pupil.individualDevelopmentPlan != 4) {
       locator<PupilsFilter>().setFiltersOnValue(true);
       continue;
     }
     // Filter special needs
-    if (activeFilters[SupportLevelFilter.specialNeeds]! &&
+    if (activeFilters[SupportLevel.specialNeeds]! &&
         pupil.specialNeeds == null) {
       locator<PupilsFilter>().setFiltersOnValue(true);
       continue;
@@ -45,7 +45,7 @@ List<PupilProxy> learningSupportFilters(List<PupilProxy> pupils) {
     //- Learning filters -//
 
     // Filter migrationSupport
-    if (activeFilters[SupportLevelFilter.migrationSupport]! &&
+    if (activeFilters[SupportLevel.migrationSupport]! &&
         hasLanguageSupport(pupil.migrationSupportEnds) != true) {
       locator<PupilsFilter>().setFiltersOnValue(true);
       continue;

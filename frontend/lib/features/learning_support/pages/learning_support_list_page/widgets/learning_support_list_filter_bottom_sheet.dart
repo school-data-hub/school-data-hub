@@ -13,22 +13,17 @@ class LearningSupportFilterBottomSheet extends WatchingWidget {
 
   @override
   Widget build(BuildContext context) {
-    Map<SupportLevelFilter, bool> supportLevelFilters =
+    Map<SupportLevel, bool> supportLevelFilters =
         watchValue((PupilFilterManager x) => x.supportLevelFilterState);
     Map<SupportAreaFilter, bool> supportAreaFilters =
         watchValue((PupilFilterManager x) => x.supportAreaFilterState);
-    bool valueSpecialNeeds =
-        supportLevelFilters[SupportLevelFilter.specialNeeds]!;
-    bool valueSupportLevel1 =
-        supportLevelFilters[SupportLevelFilter.supportLevel1]!;
-    bool valueSupportLevel2 =
-        supportLevelFilters[SupportLevelFilter.supportLevel2]!;
-    bool valueSupportLevel3 =
-        supportLevelFilters[SupportLevelFilter.supportLevel3]!;
-    bool valueSupportLevel4 =
-        supportLevelFilters[SupportLevelFilter.supportLevel4]!;
+    bool valueSpecialNeeds = supportLevelFilters[SupportLevel.specialNeeds]!;
+    bool valueSupportLevel1 = supportLevelFilters[SupportLevel.supportLevel1]!;
+    bool valueSupportLevel2 = supportLevelFilters[SupportLevel.supportLevel2]!;
+    bool valueSupportLevel3 = supportLevelFilters[SupportLevel.supportLevel3]!;
+    bool valueSupportLevel4 = supportLevelFilters[SupportLevel.supportLevel4]!;
     bool valueMigrationSupport =
-        supportLevelFilters[SupportLevelFilter.migrationSupport]!;
+        supportLevelFilters[SupportLevel.migrationSupport]!;
     bool valueSupportAreaMotorics =
         supportAreaFilters[SupportAreaFilter.motorics]!;
     bool valueSupportAreaEmotions =
@@ -79,11 +74,11 @@ class LearningSupportFilterBottomSheet extends WatchingWidget {
                       selected: valueSupportLevel1,
                       onSelected: (val) {
                         filterLocator.setSupportLevelFilter(
-                            SupportLevelFilter.supportLevel1, val);
+                            SupportLevel.supportLevel1, val);
 
                         valueSupportLevel1 = filterLocator
                             .supportLevelFilterState
-                            .value[SupportLevelFilter.supportLevel1]!;
+                            .value[SupportLevel.supportLevel1]!;
                       },
                     ),
                     FilterChip(
@@ -103,11 +98,11 @@ class LearningSupportFilterBottomSheet extends WatchingWidget {
                       selected: valueSupportLevel2,
                       onSelected: (val) {
                         filterLocator.setSupportLevelFilter(
-                            SupportLevelFilter.supportLevel2, val);
+                            SupportLevel.supportLevel2, val);
 
                         valueSupportLevel2 = filterLocator
                             .supportLevelFilterState
-                            .value[SupportLevelFilter.supportLevel2]!;
+                            .value[SupportLevel.supportLevel2]!;
                       },
                     ),
                     FilterChip(
@@ -127,11 +122,11 @@ class LearningSupportFilterBottomSheet extends WatchingWidget {
                       selected: valueSupportLevel3,
                       onSelected: (val) {
                         filterLocator.setSupportLevelFilter(
-                            SupportLevelFilter.supportLevel3, val);
+                            SupportLevel.supportLevel3, val);
 
                         valueSupportLevel3 = filterLocator
                             .supportLevelFilterState
-                            .value[SupportLevelFilter.supportLevel3]!;
+                            .value[SupportLevel.supportLevel3]!;
                       },
                     ),
                     FilterChip(
@@ -151,11 +146,11 @@ class LearningSupportFilterBottomSheet extends WatchingWidget {
                       selected: valueSupportLevel4,
                       onSelected: (val) {
                         filterLocator.setSupportLevelFilter(
-                            SupportLevelFilter.supportLevel4, val);
+                            SupportLevel.supportLevel4, val);
 
                         valueSupportLevel4 = filterLocator
                             .supportLevelFilterState
-                            .value[SupportLevelFilter.supportLevel4]!;
+                            .value[SupportLevel.supportLevel4]!;
                       },
                     ),
                     FilterChip(
@@ -175,11 +170,11 @@ class LearningSupportFilterBottomSheet extends WatchingWidget {
                       selected: valueSpecialNeeds,
                       onSelected: (val) {
                         filterLocator.setSupportLevelFilter(
-                            SupportLevelFilter.specialNeeds, val);
+                            SupportLevel.specialNeeds, val);
 
                         valueSpecialNeeds = filterLocator
                             .supportLevelFilterState
-                            .value[SupportLevelFilter.specialNeeds]!;
+                            .value[SupportLevel.specialNeeds]!;
                       },
                     ),
                   ],

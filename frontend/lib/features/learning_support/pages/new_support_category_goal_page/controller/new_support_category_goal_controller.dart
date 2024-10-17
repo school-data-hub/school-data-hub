@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:schuldaten_hub/features/learning_support/services/learning_support_manager.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
-import 'package:schuldaten_hub/features/learning_support/pages/new_support_category_goal_page/new_supporz_category_goal_page.dart';
+import 'package:schuldaten_hub/features/learning_support/pages/new_support_category_goal_page/new_support_category_goal_page.dart';
 
 class NewSupportCategoryGoal extends StatefulWidget {
   final String appBarTitle;

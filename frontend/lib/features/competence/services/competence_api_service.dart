@@ -1,13 +1,13 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:schuldaten_hub/common/constants/enums.dart';
 import 'package:schuldaten_hub/common/services/api/api.dart';
 import 'package:schuldaten_hub/common/services/api/services/api_client_service.dart';
-
-import 'package:schuldaten_hub/common/constants/enums.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_manager.dart';
 import 'package:schuldaten_hub/features/competence/models/competence.dart';
+import 'package:schuldaten_hub/features/pupil/models/pupil_data.dart';
 
 class CompetenceApiService {
   final ApiClientService _client = locator<ApiClientService>();
@@ -130,8 +130,40 @@ class CompetenceApiService {
 
   //- POST
 
-  String postCompetenceCheck(int pupilId) {
+  String _postCompetenceCheck(int pupilId) {
     return '/competence_checks/$pupilId/new';
+  }
+
+  Future<PupilData> postCompetenceCheck({
+    required int pupilId,
+    required int competenceId,
+    required int competenceStatus,
+    required bool isReport,
+    required String? reportId,
+    required String comment,
+  }) async {
+    final data = jsonEncode({
+      "competence_id": competenceId,
+      "competence_status": competenceStatus,
+      "is_report": isReport,
+      "report_id": reportId,
+      "comment": comment
+    });
+    notificationManager.apiRunningValue(true);
+    final Response response =
+        await _client.post(_postCompetenceCheck(pupilId), data: data);
+    notificationManager.apiRunningValue(false);
+    if (response.statusCode != 200) {
+      notificationManager.showSnackBar(
+          NotificationType.error, 'Failed to post a competence check');
+
+      throw ApiException(
+          'Failed to post a competence check', response.statusCode);
+    }
+
+    final pupilData = PupilData.fromJson(response.data);
+
+    return pupilData;
   }
 
   String postCompetenceCheckFile(String competenceCheckId) {

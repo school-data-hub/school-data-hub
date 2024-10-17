@@ -22,9 +22,9 @@ class PupilFilterManager {
   ValueListenable<Map<PupilFilter, bool>> get pupilFilterState =>
       _pupilFilterState;
 
-  final _supportLevelFilterState = ValueNotifier<Map<SupportLevelFilter, bool>>(
-      initialSupportLevelFilterValues);
-  ValueListenable<Map<SupportLevelFilter, bool>> get supportLevelFilterState =>
+  final _supportLevelFilterState =
+      ValueNotifier<Map<SupportLevel, bool>>(initialSupportLevelFilterValues);
+  ValueListenable<Map<SupportLevel, bool>> get supportLevelFilterState =>
       _supportLevelFilterState;
 
   final _supportAreaFilterState = ValueNotifier<Map<SupportAreaFilter, bool>>(
@@ -68,7 +68,7 @@ class PupilFilterManager {
     locator<PupilsFilter>().refreshs();
   }
 
-  void setSupportLevelFilter(SupportLevelFilter filter, bool isActive) {
+  void setSupportLevelFilter(SupportLevel filter, bool isActive) {
     _supportLevelFilterState.value = {
       ..._supportLevelFilterState.value,
       filter: isActive,

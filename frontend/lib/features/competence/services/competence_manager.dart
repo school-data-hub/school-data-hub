@@ -7,6 +7,8 @@ import 'package:schuldaten_hub/common/services/notification_manager.dart';
 import 'package:schuldaten_hub/features/competence/models/competence.dart';
 import 'package:schuldaten_hub/features/competence/filters/competence_filter_manager.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
+import 'package:schuldaten_hub/features/pupil/models/pupil_data.dart';
+import 'package:schuldaten_hub/features/pupil/services/pupil_manager.dart';
 
 class CompetenceManager {
   ValueListenable<List<Competence>> get competences => _competences;
@@ -103,6 +105,29 @@ class CompetenceManager {
     return;
   }
 
+  Future<void> postCompetenceCheck({
+    required int pupilId,
+    required int competenceId,
+    required int competenceStatus,
+    required String competenceComment,
+    required bool isReport,
+    required String? reportId,
+  }) async {
+    final PupilData updatedPupilData =
+        await apiCompetenceService.postCompetenceCheck(
+      pupilId: pupilId,
+      competenceId: competenceId,
+      competenceStatus: competenceStatus,
+      comment: competenceComment,
+      isReport: isReport,
+      reportId: reportId,
+    );
+    locator<PupilManager>().updatePupilProxyWithPupilData(updatedPupilData);
+    notificationManager.showSnackBar(
+        NotificationType.success, 'Kompetenzcheck erstellt');
+
+    return;
+  }
   //- hier werden keine API Calls gemacht, nur die Kompetenz aus der Liste geholt
 
   Competence getCompetence(int competenceId) {

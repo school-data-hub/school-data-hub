@@ -20,12 +20,6 @@ class PupilProfilePage extends WatchingWidget {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(
-      const SystemUiOverlayStyle(
-        statusBarColor: backgroundColor,
-      ),
-    );
-
     return Scaffold(
       backgroundColor: canvasColor,
       body: RefreshIndicator(

@@ -39,11 +39,14 @@ void main() async {
       await windowManager.focus();
     });
   }
+  // set status bar color
   SystemChrome.setSystemUIOverlayStyle(
-    const SystemUiOverlayStyle(
+    const SystemUiOverlayStyle().copyWith(
       statusBarColor: backgroundColor,
+      statusBarBrightness: Brightness.light,
     ),
   );
+
   registerBaseManagers();
   await locator.allReady();
 

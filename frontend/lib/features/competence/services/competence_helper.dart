@@ -1,4 +1,3 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:schuldaten_hub/common/constants/colors.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
@@ -6,13 +5,19 @@ import 'package:schuldaten_hub/features/competence/models/competence.dart';
 import 'package:schuldaten_hub/features/competence/models/competence_check.dart';
 import 'package:schuldaten_hub/features/competence/services/competence_manager.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
+import 'package:schuldaten_hub/features/pupil/services/pupil_manager.dart';
 
 class CompetenceHelper {
-  static CompetenceCheck? getCompetenceCheck(
+  static CompetenceCheck? getLastCompetenceCheckOfCompetence(
       PupilProxy pupil, int competenceId) {
-    if (pupil.competenceChecks!.isNotEmpty) {
-      return pupil.competenceChecks!
-          .firstWhereOrNull((element) => element.competenceId == competenceId);
+    if (pupil.competenceChecks != null && pupil.competenceChecks!.isNotEmpty) {
+      final filteredChecks = pupil.competenceChecks!
+          .where((element) => element.competenceId == competenceId)
+          .toList();
+      if (filteredChecks.isNotEmpty) {
+        return filteredChecks
+            .reduce((a, b) => a.createdAt.isAfter(b.createdAt) ? a : b);
+      }
     }
     return null;
   }
@@ -49,25 +54,25 @@ class CompetenceHelper {
   }
 
   static Widget getLastCompetenceCheckSymbol(
-      PupilProxy pupil, int competenceId) {
+      {required PupilProxy pupil, required int competenceId}) {
     if (pupil.competenceChecks!.isNotEmpty) {
-      final CompetenceCheck? competenceCheck = pupil.competenceChecks!
-          .lastWhereOrNull((element) => element.competenceId == competenceId);
+      final CompetenceCheck? competenceCheck =
+          getLastCompetenceCheckOfCompetence(pupil, competenceId);
 
       if (competenceCheck != null) {
         switch (competenceCheck.competenceStatus) {
-          case 0:
-            return SizedBox(
-                width: 50, child: Image.asset('assets/growth_1-4.png'));
           case 1:
             return SizedBox(
-                width: 50, child: Image.asset('assets/growth_2-4.png'));
+                width: 50, child: Image.asset('assets/growth_1-4.png'));
           case 2:
+            return SizedBox(
+                width: 50, child: Image.asset('assets/growth_2-4.png'));
+          case 3:
             return SizedBox(
                 width: 50, child: Image.asset('assets/growth_3-4.png'));
           // case 'orange':
           //   return Colors.orange;
-          case 3:
+          case 4:
             return SizedBox(
                 width: 50, child: Image.asset('assets/growth_4-4.png'));
         }
@@ -77,5 +82,33 @@ class CompetenceHelper {
     }
 
     return const SizedBox(width: 40, child: Icon(Icons.question_mark_rounded));
+  }
+
+  static Map<int, List<CompetenceCheck>> getCompetenceChecksMapOfPupil(
+      int pupilId) {
+    final Map<int, List<CompetenceCheck>> competenceChecksMap = {};
+
+    final PupilProxy pupil = locator<PupilManager>().findPupilById(pupilId)!;
+    if (pupil.competenceChecks == null || pupil.competenceChecks!.isEmpty) {
+      return {};
+    }
+    for (CompetenceCheck competenceCheck in pupil.competenceChecks!) {
+      if (competenceChecksMap[competenceCheck.competenceId] == null) {
+        competenceChecksMap[competenceCheck.competenceId] = [];
+      }
+      // add the competence check to the list of the competence checks of the competence
+      competenceChecksMap[competenceCheck.competenceId]!.add(competenceCheck);
+    }
+
+    return competenceChecksMap;
+  }
+
+  static List<Competence> getAllowedCompetencesForThisPupil(PupilProxy pupil) {
+    return locator<CompetenceManager>()
+        .competences
+        .value
+        .where((Competence competence) =>
+            competence.competenceLevel!.contains(pupil.schoolyear))
+        .toList();
   }
 }

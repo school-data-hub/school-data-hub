@@ -1,20 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/constants/colors.dart';
-
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/utils/extensions.dart';
 import 'package:schuldaten_hub/common/widgets/avatar.dart';
-import 'package:schuldaten_hub/common/widgets/custom_expansion_tile.dart';
-import 'package:schuldaten_hub/common/widgets/custom_list_tiles.dart';
-import 'package:schuldaten_hub/features/pupil/pages/pupil_profile_page/pupil_profile_page.dart';
-import 'package:schuldaten_hub/features/schoolday_events/models/schoolday_event.dart';
-import 'package:schuldaten_hub/features/schoolday_events/filters/schoolday_event_filter_manager.dart';
-import 'package:schuldaten_hub/features/schoolday_events/services/schoolday_event_helper_functions.dart';
-import 'package:schuldaten_hub/features/schoolday_events/pages/schoolday_event_list_page/widgets/pupil_schoolday_event_content_list.dart';
+import 'package:schuldaten_hub/common/widgets/custom_expansion_tile/custom_expansion_tile.dart';
+import 'package:schuldaten_hub/common/widgets/custom_expansion_tile/custom_expansion_tile_content.dart';
 import 'package:schuldaten_hub/features/main_menu_pages/widgets/landing_bottom_nav_bar.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
-
+import 'package:schuldaten_hub/features/pupil/pages/pupil_profile_page/pupil_profile_page.dart';
+import 'package:schuldaten_hub/features/schoolday_events/filters/schoolday_event_filter_manager.dart';
+import 'package:schuldaten_hub/features/schoolday_events/models/schoolday_event.dart';
+import 'package:schuldaten_hub/features/schoolday_events/pages/schoolday_event_list_page/widgets/pupil_schoolday_event_content_list.dart';
+import 'package:schuldaten_hub/features/schoolday_events/services/schoolday_event_helper_functions.dart';
 import 'package:watch_it/watch_it.dart';
 
 class SchooldayEventListCard extends WatchingStatefulWidget {
@@ -37,8 +35,7 @@ class _SchooldayEventListCardState extends State<SchooldayEventListCard> {
   @override
   Widget build(BuildContext context) {
     PupilProxy pupil = watch(widget.passedPupil);
-    final activeFilters = watchValue(
-        (SchooldayEventFilterManager x) => x.schooldayEventsFilterState);
+
     schooldayEvents =
         locator<SchooldayEventFilterManager>().filteredSchooldayEvents(pupil);
 
@@ -178,7 +175,7 @@ class _SchooldayEventListCardState extends State<SchooldayEventListCard> {
             Padding(
                 padding:
                     const EdgeInsets.only(left: 5.0, right: 5.0, bottom: 5.0),
-                child: CustomListTiles(
+                child: CustomExpansionTileContent(
                   title: const Text('Vorfälle',
                       style:
                           TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),

@@ -1,4 +1,3 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:schuldaten_hub/common/services/api/api.dart';
@@ -12,8 +11,6 @@ import 'package:schuldaten_hub/features/learning_support/models/support_goal/sup
 import 'package:schuldaten_hub/features/pupil/models/pupil_data.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
 import 'package:schuldaten_hub/features/pupil/services/pupil_manager.dart';
-
-import '../models/support_category/support_category_status.dart';
 
 class LearningSupportManager {
   ValueListenable<List<SupportCategory>> get goalCategories => _goalCategories;

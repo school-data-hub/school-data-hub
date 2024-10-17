@@ -1,7 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:schuldaten_hub/features/competence/models/competence_check.dart';
-import 'package:schuldaten_hub/features/learning_support/models/support_category/support_category_status.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
 
 Widget getCompetenceCheckSymbol(
