@@ -213,7 +213,7 @@ class PupilProxy with ChangeNotifier {
   String? get parentsContact => _pupilData.parentsContact;
   int get credit => _pupilData.credit;
   int get creditEarned => _pupilData.creditEarned;
-  String? get fiveYears => _pupilData.fiveYears;
+  DateTime? get fiveYears => _pupilData.fiveYears;
   int get individualDevelopmentPlan => _pupilData.latestSupportLevel;
   List<SupportLevel> get individualDevelopmentPlans =>
       _pupilData.supportLevelHistory;

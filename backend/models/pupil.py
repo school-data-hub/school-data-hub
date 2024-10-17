@@ -80,7 +80,7 @@ class Pupil(db.Model):
     ogs_info = db.Column(db.String(50), nullable=True)
     #- individual_development_plan is the last value of a list of objects with date, reason and created_by
     latest_support_level = db.Column(db.Integer, default = 0)
-    five_years = db.Column(db.String(2), nullable = True)
+    five_years = db.Column(db.Date, nullable = True)
     communication_pupil = db.Column(db.String(8), nullable=True)
     communication_tutor1 = db.Column(db.String(8), nullable=True)
     communication_tutor2 = db.Column(db.String(8), nullable=True)

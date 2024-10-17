@@ -32,7 +32,9 @@ PupilData _$PupilDataFromJson(Map<String, dynamic> json) => PupilData(
       parentsContact: json['parents_contact'] as String?,
       credit: (json['credit'] as num).toInt(),
       creditEarned: (json['credit_earned'] as num).toInt(),
-      fiveYears: json['five_years'] as String?,
+      fiveYears: json['five_years'] == null
+          ? null
+          : DateTime.parse(json['five_years'] as String),
       latestSupportLevel: (json['latest_support_level'] as num).toInt(),
       internalId: (json['internal_id'] as num).toInt(),
       ogs: json['ogs'] as bool,
@@ -83,7 +85,7 @@ Map<String, dynamic> _$PupilDataToJson(PupilData instance) => <String, dynamic>{
       'parents_contact': instance.parentsContact,
       'credit': instance.credit,
       'credit_earned': instance.creditEarned,
-      'five_years': instance.fiveYears,
+      'five_years': instance.fiveYears?.toIso8601String(),
       'latest_support_level': instance.latestSupportLevel,
       'internal_id': instance.internalId,
       'ogs': instance.ogs,
@@ -101,5 +103,5 @@ Map<String, dynamic> _$PupilDataToJson(PupilData instance) => <String, dynamic>{
       'pupil_workbooks': instance.pupilWorkbooks,
       'credit_history_logs': instance.creditHistoryLogs,
       'competence_goals': instance.competenceGoals,
-      'individual_development_plans': instance.supportLevelHistory,
+      'support_level_history': instance.supportLevelHistory,
     };
