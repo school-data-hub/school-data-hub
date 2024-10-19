@@ -2,14 +2,12 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:schuldaten_hub/common/constants/enums.dart';
 import 'package:schuldaten_hub/common/services/api/api.dart';
 import 'package:schuldaten_hub/common/services/api/services/api_client_service.dart';
-
-import 'package:schuldaten_hub/common/constants/enums.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_manager.dart';
 import 'package:schuldaten_hub/common/utils/custom_encrypter.dart';
-import 'package:schuldaten_hub/common/utils/isbn_image_and_title_scraper.dart';
 import 'package:schuldaten_hub/common/utils/logger.dart';
 import 'package:schuldaten_hub/features/workbooks/models/workbook.dart';
 
@@ -127,11 +125,14 @@ class WorkbookApiService {
         filename: fileName,
       ),
     });
+
     notificationManager.apiRunningValue(true);
+
     final Response response = await _client.patch(
       _patchWorkbookWithImageUrl(isbn),
       data: formData,
     );
+
     notificationManager.apiRunningValue(false);
 
     // Handle errors.
@@ -158,9 +159,14 @@ class WorkbookApiService {
     return '/workbooks/$isbn';
   }
 
+  String _deleteWorkbookImage(int isbn) {
+    return '/workbooks/$isbn/image';
+  }
+
   Future<Workbook> deleteWorkbookFile(int isbn) async {
     notificationManager.apiRunningValue(true);
-    final Response response = await _client.delete(getWorkbookImage(isbn));
+
+    final Response response = await _client.delete(_deleteWorkbookImage(isbn));
     notificationManager.apiRunningValue(false);
 
     if (response.statusCode != 200) {
