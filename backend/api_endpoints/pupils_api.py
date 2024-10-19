@@ -398,12 +398,13 @@ def delete_avatar(current_user, internal_id):
     if pupil == None:
         abort(404, message="Der Schüler/die Schülerin existiert nicht!")
 
-    if len(str(pupil.avatar_url)) < 5:
+    if len(str(pupil.avatar_id)) < 5:
         abort(404, message="Der Schüler/die Schülerin hat keinen Avatar!")
 
     if len(str(pupil.avatar_url)) > 4:
         os.remove(str(pupil.avatar_url))
     pupil.avatar_url = None
+    pupil.avatar_id = None
     # - LOG ENTRY
     create_log_entry(current_user, request, {"data": "none"})
 
