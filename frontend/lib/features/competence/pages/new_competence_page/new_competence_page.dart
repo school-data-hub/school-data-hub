@@ -2,19 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/constants/colors.dart';
 import 'package:schuldaten_hub/common/constants/styles.dart';
-import 'package:schuldaten_hub/features/competence/services/competence_manager.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
+import 'package:schuldaten_hub/features/competence/services/competence_manager.dart';
 
-class NewCompetenceView extends StatefulWidget {
+class NewCompetencePage extends StatefulWidget {
   final int parentCompetence;
 
-  const NewCompetenceView({super.key, required this.parentCompetence});
+  const NewCompetencePage({super.key, required this.parentCompetence});
 
   @override
-  NewCompetenceViewState createState() => NewCompetenceViewState();
+  NewCompetencePageState createState() => NewCompetencePageState();
 }
 
-class NewCompetenceViewState extends State<NewCompetenceView> {
+class NewCompetencePageState extends State<NewCompetencePage> {
   final TextEditingController competenceNameController =
       TextEditingController();
   final TextEditingController competenceGradeController =

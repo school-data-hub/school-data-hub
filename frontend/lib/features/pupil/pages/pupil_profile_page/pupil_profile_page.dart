@@ -6,11 +6,11 @@ import 'package:schuldaten_hub/common/constants/colors.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/widgets/bottom_nav_bar_layouts.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
-import 'package:schuldaten_hub/features/pupil/services/pupil_manager.dart';
 import 'package:schuldaten_hub/features/pupil/pages/pupil_profile_page/widgets/pupil_profile_bottom_navbar.dart';
-import 'package:schuldaten_hub/features/pupil/pages/pupil_profile_page/widgets/pupil_profile_page_content/pupil_profile_page_content.dart';
 import 'package:schuldaten_hub/features/pupil/pages/pupil_profile_page/widgets/pupil_profile_head_widget.dart';
 import 'package:schuldaten_hub/features/pupil/pages/pupil_profile_page/widgets/pupil_profile_navigation.dart';
+import 'package:schuldaten_hub/features/pupil/pages/pupil_profile_page/widgets/pupil_profile_page_content/pupil_profile_page_content.dart';
+import 'package:schuldaten_hub/features/pupil/services/pupil_manager.dart';
 import 'package:watch_it/watch_it.dart';
 
 class PupilProfilePage extends WatchingWidget {
@@ -38,7 +38,7 @@ class PupilProfilePage extends WatchingWidget {
                         slivers: [
                           SliverAppBar(
                             systemOverlayStyle: const SystemUiOverlayStyle(
-                                statusBarColor: canvasColor),
+                                statusBarColor: backgroundColor),
                             pinned: false,
                             floating: true,
                             scrolledUnderElevation: null,

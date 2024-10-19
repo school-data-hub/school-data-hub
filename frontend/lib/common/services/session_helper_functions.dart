@@ -31,8 +31,8 @@ class SessionHelper {
         .showSnackBar(NotificationType.success, 'Alle Daten gelöscht!');
   }
 
-  static bool isAuthorized(String user) {
-    return locator<SessionManager>().credentials.value.username == user ||
+  static bool isAuthorized(String createdBy) {
+    return locator<SessionManager>().credentials.value.username == createdBy ||
             locator<SessionManager>().credentials.value.isAdmin!
         ? true
         : false;

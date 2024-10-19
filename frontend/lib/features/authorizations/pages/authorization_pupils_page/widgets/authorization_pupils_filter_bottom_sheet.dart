@@ -202,8 +202,11 @@ class AuthorizationPupilsFilterBottomSheet extends WatchingWidget {
 showAuthorizationPupilsFilterBottomSheet(BuildContext context) {
   return showModalBottomSheet(
     constraints: const BoxConstraints(maxWidth: 800),
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(20.0),
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.only(
+        topLeft: Radius.circular(20.0),
+        topRight: Radius.circular(20.0),
+      ),
     ),
     context: context,
     builder: (_) => const AuthorizationPupilsFilterBottomSheet(),

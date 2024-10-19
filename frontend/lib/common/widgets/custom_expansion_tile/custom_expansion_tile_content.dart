@@ -21,7 +21,7 @@ class CustomExpansionTileContent extends StatelessWidget {
       child: Theme(
         data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
         child: CustomExpansionTile(
-            collapsedBackgroundColor: Colors.white,
+            collapsedBackgroundColor: Colors.transparent,
             tilePadding: const EdgeInsets.all(0),
             title: title ?? const SizedBox.shrink(),
             controller: tileController,

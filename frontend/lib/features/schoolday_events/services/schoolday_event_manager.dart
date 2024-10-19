@@ -1,12 +1,12 @@
 import 'dart:io';
 
-import 'package:schuldaten_hub/common/services/api/api.dart';
 import 'package:schuldaten_hub/common/constants/enums.dart';
-import 'package:schuldaten_hub/features/schooldays/services/schoolday_manager.dart';
-import 'package:schuldaten_hub/common/services/notification_manager.dart';
-import 'package:schuldaten_hub/features/pupil/services/pupil_manager.dart';
-import 'package:schuldaten_hub/features/pupil/models/pupil_data.dart';
+import 'package:schuldaten_hub/common/services/api/api.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
+import 'package:schuldaten_hub/common/services/notification_manager.dart';
+import 'package:schuldaten_hub/features/pupil/models/pupil_data.dart';
+import 'package:schuldaten_hub/features/pupil/services/pupil_manager.dart';
+import 'package:schuldaten_hub/features/schooldays/services/schoolday_manager.dart';
 
 class SchooldayEventManager {
   final pupilManager = locator<PupilManager>();
@@ -42,7 +42,7 @@ class SchooldayEventManager {
 
   Future<void> patchSchooldayEvent(
       {required String schooldayEventId,
-      String? admonisher,
+      String? createdBy,
       String? reason,
       bool? processed,
       String? processedBy,
@@ -52,7 +52,7 @@ class SchooldayEventManager {
     final PupilData responsePupil =
         await apiSchooldayEventService.patchSchooldayEvent(
             id: schooldayEventId,
-            creator: admonisher,
+            creator: createdBy,
             reason: reason,
             processed: processed,
             processedBy: processedBy,

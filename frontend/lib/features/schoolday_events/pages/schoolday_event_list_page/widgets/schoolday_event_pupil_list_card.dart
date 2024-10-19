@@ -15,15 +15,16 @@ import 'package:schuldaten_hub/features/schoolday_events/pages/schoolday_event_l
 import 'package:schuldaten_hub/features/schoolday_events/services/schoolday_event_helper_functions.dart';
 import 'package:watch_it/watch_it.dart';
 
-class SchooldayEventListCard extends WatchingStatefulWidget {
+class SchooldayEventPupilListCard extends WatchingStatefulWidget {
   final PupilProxy passedPupil;
-  const SchooldayEventListCard(this.passedPupil, {super.key});
+  const SchooldayEventPupilListCard(this.passedPupil, {super.key});
 
   @override
-  State<SchooldayEventListCard> createState() => _SchooldayEventListCardState();
+  State<SchooldayEventPupilListCard> createState() =>
+      _SchooldayEventListCardState();
 }
 
-class _SchooldayEventListCardState extends State<SchooldayEventListCard> {
+class _SchooldayEventListCardState extends State<SchooldayEventPupilListCard> {
   late CustomExpansionTileController _tileController;
   late List<SchooldayEvent> schooldayEvents;
   @override

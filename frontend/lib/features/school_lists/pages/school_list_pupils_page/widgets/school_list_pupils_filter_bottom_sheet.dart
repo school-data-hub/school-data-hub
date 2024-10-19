@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/constants/colors.dart';
-
 import 'package:schuldaten_hub/common/constants/enums.dart';
 import 'package:schuldaten_hub/common/constants/styles.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
@@ -168,8 +167,11 @@ class SchoolListFilterBottomSheet extends WatchingWidget {
 Future<dynamic> showPupilListFilterBottomSheet(BuildContext context) {
   return showModalBottomSheet(
     constraints: const BoxConstraints(maxWidth: 800),
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(20.0),
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.only(
+        topLeft: Radius.circular(20.0),
+        topRight: Radius.circular(20.0),
+      ),
     ),
     context: context,
     builder: (_) => const SchoolListFilterBottomSheet(),

@@ -53,6 +53,24 @@ class CompetenceHelper {
     return const Color.fromARGB(255, 157, 36, 36);
   }
 
+  static Widget getCompetenceCheckSymbol(int status) {
+    switch (status) {
+      case 1:
+        return SizedBox(width: 50, child: Image.asset('assets/growth_1-4.png'));
+      case 2:
+        return SizedBox(width: 50, child: Image.asset('assets/growth_2-4.png'));
+      case 3:
+        return SizedBox(width: 50, child: Image.asset('assets/growth_3-4.png'));
+      // case 'orange':
+      //   return Colors.orange;
+      case 4:
+        return SizedBox(width: 50, child: Image.asset('assets/growth_4-4.png'));
+    }
+    return const SizedBox(
+        width: 50,
+        child: Icon(Icons.question_mark_rounded, color: Colors.white));
+  }
+
   static Widget getLastCompetenceCheckSymbol(
       {required PupilProxy pupil, required int competenceId}) {
     if (pupil.competenceChecks!.isNotEmpty) {
@@ -60,28 +78,18 @@ class CompetenceHelper {
           getLastCompetenceCheckOfCompetence(pupil, competenceId);
 
       if (competenceCheck != null) {
-        switch (competenceCheck.competenceStatus) {
-          case 1:
-            return SizedBox(
-                width: 50, child: Image.asset('assets/growth_1-4.png'));
-          case 2:
-            return SizedBox(
-                width: 50, child: Image.asset('assets/growth_2-4.png'));
-          case 3:
-            return SizedBox(
-                width: 50, child: Image.asset('assets/growth_3-4.png'));
-          // case 'orange':
-          //   return Colors.orange;
-          case 4:
-            return SizedBox(
-                width: 50, child: Image.asset('assets/growth_4-4.png'));
-        }
+        getCompetenceCheckSymbol(competenceCheck.competenceStatus);
       }
       return const SizedBox(
-          width: 50, child: Icon(Icons.question_mark_rounded));
+          width: 50,
+          child: Icon(
+            Icons.question_mark_rounded,
+            color: Colors.white,
+          ));
     }
 
-    return const SizedBox(width: 40, child: Icon(Icons.question_mark_rounded));
+    return const SizedBox(
+        width: 40, child: Icon(Icons.error, color: Colors.white));
   }
 
   static Map<int, List<CompetenceCheck>> getCompetenceChecksMapOfPupil(

@@ -30,7 +30,7 @@ class SchoolDayEventHelper {
 
   static bool isAuthorizedToChangeStatus(SchooldayEvent schooldayEvent) {
     if (locator<SessionManager>().isAdmin.value == true ||
-        schooldayEvent.admonishingUser ==
+        schooldayEvent.createdBy ==
             locator<SessionManager>().credentials.value.username) {
       return true;
     }

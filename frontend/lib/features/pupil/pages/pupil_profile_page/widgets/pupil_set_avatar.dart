@@ -5,11 +5,11 @@ import 'package:crop_image/crop_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:image_picker_platform_interface/image_picker_platform_interface.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
 import 'package:schuldaten_hub/features/pupil/services/pupil_manager.dart';
-import 'package:image_picker_platform_interface/image_picker_platform_interface.dart';
 
 setAvatar(context, PupilProxy pupil) async {
   XFile? image;
@@ -26,7 +26,7 @@ setAvatar(context, PupilProxy pupil) async {
       // ),
     );
   } else {
-    XFile? image = await ImagePicker().pickImage(
+    image = await ImagePicker().pickImage(
         source: ImageSource.camera,
         preferredCameraDevice:
             Platform.isWindows ? CameraDevice.front : CameraDevice.rear);

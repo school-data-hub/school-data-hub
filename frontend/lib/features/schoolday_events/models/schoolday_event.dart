@@ -13,7 +13,7 @@ class SchooldayEvent {
   @JsonKey(name: 'schoolday_event_reason')
   final String schooldayEventReason;
   @JsonKey(name: 'created_by')
-  final String admonishingUser;
+  final String createdBy;
   @JsonKey(name: 'processed')
   final bool processed;
   @JsonKey(name: 'processed_by')
@@ -33,7 +33,7 @@ class SchooldayEvent {
       {required this.schooldayEventId,
       required this.schooldayEventType,
       required this.schooldayEventReason,
-      required this.admonishingUser,
+      required this.createdBy,
       required this.processed,
       required this.processedBy,
       required this.processedAt,
