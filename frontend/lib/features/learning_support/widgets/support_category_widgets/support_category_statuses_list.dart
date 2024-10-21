@@ -3,12 +3,12 @@ import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/constants/colors.dart';
 import 'package:schuldaten_hub/common/constants/styles.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
-import 'package:schuldaten_hub/common/utils/logger.dart';
 import 'package:schuldaten_hub/common/utils/extensions.dart';
+import 'package:schuldaten_hub/common/utils/logger.dart';
 import 'package:schuldaten_hub/features/learning_support/models/support_category/support_category_status.dart';
-import 'package:schuldaten_hub/features/learning_support/services/learning_support_manager.dart';
-import 'package:schuldaten_hub/features/learning_support/services/learning_support_helper_functions.dart';
 import 'package:schuldaten_hub/features/learning_support/pages/new_support_category_goal_page/controller/new_support_category_goal_controller.dart';
+import 'package:schuldaten_hub/features/learning_support/services/learning_support_helper_functions.dart';
+import 'package:schuldaten_hub/features/learning_support/services/learning_support_manager.dart';
 import 'package:schuldaten_hub/features/learning_support/widgets/support_category_widgets/category_tree_ancestors_names.dart';
 import 'package:schuldaten_hub/features/learning_support/widgets/support_category_widgets/support_category_status_entry.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
@@ -20,6 +20,8 @@ List<Widget> pupilCategoryStatusesList(PupilProxy pupil, BuildContext context) {
     Map<int, List<SupportCategoryStatus>> statusesWithDuplicateGoalCategory =
         {};
     for (SupportCategoryStatus status in pupil.supportCategoryStatuses!) {
+      final categoryColor = locator<LearningSupportManager>()
+          .getCategoryColor(status.supportCategoryId);
       if (pupil.supportCategoryStatuses!.any((element) =>
           element.supportCategoryId == status.supportCategoryId &&
           pupil.supportCategoryStatuses!.indexOf(element) !=
@@ -38,8 +40,6 @@ List<Widget> pupilCategoryStatusesList(PupilProxy pupil, BuildContext context) {
         logger.i(
             'Adding status vom ${status.createdAt.formatForUser()} erstellt von ${status.createdBy}');
       } else {
-        //- GECHECKT
-        //- This one is returning a unique status for this category
         statusesWidgetList.add(
           Padding(
             padding: const EdgeInsets.only(bottom: 8.0),
@@ -61,51 +61,58 @@ List<Widget> pupilCategoryStatusesList(PupilProxy pupil, BuildContext context) {
                     children: [
                       const Gap(10),
                       Expanded(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5.0),
-                            color: locator<LearningSupportManager>()
-                                .getCategoryColor(status.supportCategoryId),
-                          ),
-                          child: InkWell(
-                            onLongPress: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (ctx) => NewSupportCategoryGoal(
-                                        appBarTitle: 'Neuer Förderbereich',
-                                        pupilId: pupil.internalId,
-                                        goalCategoryId:
-                                            status.supportCategoryId,
-                                        elementType: 'status',
-                                      )));
-                            },
-                            child: Column(children: [
-                              const Gap(5),
-                              ...categoryTreeAncestorsNames(
-                                status.supportCategoryId,
-                              ),
-                            ]),
-                          ),
+                        child: InkWell(
+                          onLongPress: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (ctx) => NewSupportCategoryGoal(
+                                      appBarTitle: 'Neuer Status Förderbereich',
+                                      pupilId: pupil.internalId,
+                                      goalCategoryId: status.supportCategoryId,
+                                      elementType: 'status',
+                                    )));
+                          },
+                          child: Column(children: [
+                            const Gap(5),
+                            ...categoryTreeAncestorsNames(
+                              categoryId: status.supportCategoryId,
+                              categoryColor: categoryColor,
+                            ),
+                          ]),
                         ),
                       ),
                       const Gap(10),
                     ],
                   ),
-                  Row(
-                    children: [
-                      const Gap(15),
-                      Flexible(
-                        child: Text(
-                          locator<LearningSupportManager>()
-                              .getSupportCategory(status.supportCategoryId)
-                              .categoryName,
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                              color: locator<LearningSupportManager>()
-                                  .getCategoryColor(status.supportCategoryId)),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5.0),
+                        color: locator<LearningSupportManager>()
+                            .getCategoryColor(status.supportCategoryId),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 5.0),
+                        child: Row(
+                          children: [
+                            const Gap(10),
+                            Flexible(
+                              child: Text(
+                                locator<LearningSupportManager>()
+                                    .getSupportCategory(
+                                        status.supportCategoryId)
+                                    .categoryName,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                    ],
+                    ),
                   ),
                   const Gap(10),
                   SupportCategoryStatusEntry(
@@ -192,7 +199,9 @@ List<Widget> pupilCategoryStatusesList(PupilProxy pupil, BuildContext context) {
                         child: Column(
                           children: [
                             ...categoryTreeAncestorsNames(
-                              key,
+                              categoryId: key,
+                              categoryColor: locator<LearningSupportManager>()
+                                  .getCategoryColor(key),
                             ),
                           ],
                         ),

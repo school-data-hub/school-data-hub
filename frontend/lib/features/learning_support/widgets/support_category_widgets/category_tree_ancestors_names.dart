@@ -4,7 +4,8 @@ import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/features/learning_support/models/support_category/support_category.dart';
 import 'package:schuldaten_hub/features/learning_support/services/learning_support_manager.dart';
 
-List<Widget> categoryTreeAncestorsNames(int categoryId) {
+List<Widget> categoryTreeAncestorsNames(
+    {required int categoryId, required Color categoryColor}) {
   // Create an empty list to store ancestors
   List<Widget> ancestors = [];
 
@@ -30,10 +31,10 @@ List<Widget> categoryTreeAncestorsNames(int categoryId) {
                   locator<LearningSupportManager>()
                       .getRootSupportCategory(categoryId)
                       .categoryName,
-                  style: const TextStyle(
+                  style: TextStyle(
                     overflow: TextOverflow.fade,
-                    color: Colors.white,
-                    fontSize: 20,
+                    color: categoryColor,
+                    fontSize: 15,
                     fontWeight: FontWeight.bold,
                   )),
             ),
@@ -55,8 +56,8 @@ List<Widget> categoryTreeAncestorsNames(int categoryId) {
               Flexible(
                 child: Text(
                   currentCategory.categoryName,
-                  style: const TextStyle(
-                    color: Colors.white,
+                  style: TextStyle(
+                    color: categoryColor,
                     fontWeight: FontWeight.bold,
                     fontSize: 14,
                   ),

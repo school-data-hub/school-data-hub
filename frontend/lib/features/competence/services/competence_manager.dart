@@ -60,6 +60,27 @@ class CompetenceManager {
     return;
   }
 
+  Future<void> deleteCompetence(int competenceId) async {
+    final bool success =
+        await competenceApiService.deleteCompetence(competenceId);
+
+    if (success) {
+      final List<Competence> competences = List.from(_competences.value);
+      competences
+          .removeWhere((element) => element.competenceId == competenceId);
+
+      _competences.value = competences;
+      locator<CompetenceFilterManager>()
+          .refreshFilteredCompetences(_competences.value);
+
+      notificationManager.showSnackBar(
+          NotificationType.success, 'Kompetenz gelöscht');
+    } else {
+      notificationManager.showSnackBar(
+          NotificationType.error, 'Fehler beim Löschen der Kompetenz');
+    }
+  }
+
   Future<void> postNewCompetence({
     int? parentCompetence,
     required String competenceName,
@@ -84,12 +105,12 @@ class CompetenceManager {
     return;
   }
 
-  Future<void> updateCompetenceProperty(
-    int competenceId,
-    String competenceName,
-    String? competenceLevel,
-    String? indicators,
-  ) async {
+  Future<void> updateCompetenceProperty({
+    required int competenceId,
+    required String competenceName,
+    required String? competenceLevel,
+    required String? indicators,
+  }) async {
     final Competence updatedCompetence =
         await competenceApiService.updateCompetenceProperty(
             competenceId, competenceName, competenceLevel, indicators);

@@ -6,8 +6,7 @@ import 'package:schuldaten_hub/features/competence/filters/competence_filter_man
 import 'package:schuldaten_hub/features/competence/models/competence.dart';
 import 'package:schuldaten_hub/features/competence/pages/competence_list_page/widgets/competence_list_view_bottom_navbar.dart';
 import 'package:schuldaten_hub/features/competence/pages/competence_list_page/widgets/competence_tree.dart';
-import 'package:schuldaten_hub/features/competence/pages/new_competence_page/new_competence_page.dart';
-import 'package:schuldaten_hub/features/competence/pages/patch_competence_page/patch_competence_view.dart';
+import 'package:schuldaten_hub/features/competence/pages/post_or_patch_competence_page/post_or_patch_competence_page.dart';
 import 'package:schuldaten_hub/features/competence/services/competence_manager.dart';
 import 'package:watch_it/watch_it.dart';
 
@@ -19,7 +18,7 @@ class CompetenceListPage extends WatchingWidget {
     //TODO: functions in the build method don't feel right
     navigateToNewCompetenceview(int competenceId) {
       Navigator.of(context).push(MaterialPageRoute(
-        builder: (ctx) => NewCompetencePage(
+        builder: (ctx) => PostOrPatchCompetencePage(
           parentCompetence: competenceId,
         ),
       ));
@@ -27,7 +26,7 @@ class CompetenceListPage extends WatchingWidget {
 
     navigateToPatchCompetenceView(Competence competence) {
       Navigator.of(context).push(MaterialPageRoute(
-        builder: (ctx) => PatchCompetenceView(
+        builder: (ctx) => PostOrPatchCompetencePage(
           competence: competence,
         ),
       ));

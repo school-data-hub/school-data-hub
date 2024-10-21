@@ -112,11 +112,45 @@ class CompetenceHelper {
   }
 
   static List<Competence> getAllowedCompetencesForThisPupil(PupilProxy pupil) {
+    SchoolGrade schoolGrade = pupil.schoolGrade;
+    if (pupil.specialNeeds != null && pupil.specialNeeds!.contains('LE')) {
+      return locator<CompetenceManager>().competences.value;
+    }
+    if ((pupil.fiveYears != null) || pupil.schoolGrade.value == 'E3') {
+      switch (pupil.schoolGrade.value) {
+        case 'E1':
+          schoolGrade = SchoolGrade.E1;
+          break;
+        case 'E2':
+          schoolGrade = SchoolGrade.E1;
+          break;
+        case 'E3':
+          schoolGrade = SchoolGrade.E2;
+          break;
+      }
+    }
     return locator<CompetenceManager>()
         .competences
         .value
         .where((Competence competence) =>
-            competence.competenceLevel!.contains(pupil.schoolyear))
+            competence.competenceLevel!.contains(schoolGrade.value))
         .toList();
+  }
+
+  static ({int total, int checked}) competenceChecksStats(PupilProxy pupil) {
+    final competences = getAllowedCompetencesForThisPupil(pupil);
+    final Map<int, List<CompetenceCheck>> pupilCompetenceChecksMap =
+        getCompetenceChecksMapOfPupil(pupil.internalId);
+    int count = 0;
+    int competencesWithCheck = 0;
+    for (Competence competence in competences) {
+      if (!locator<CompetenceManager>().isCompetenceWithChildren(competence)) {
+        count++;
+      }
+      if (pupilCompetenceChecksMap.containsKey(competence.competenceId)) {
+        competencesWithCheck++;
+      }
+    }
+    return (total: count, checked: competencesWithCheck);
   }
 }

@@ -123,9 +123,9 @@ class CompetenceApiService {
 
   //- GET
 
-  String _getCompetenceCheckFileUrl(String fileId) {
-    return '/competence_checks/$fileId';
-  }
+  // String _getCompetenceCheckFileUrl(String fileId) {
+  //   return '/competence_checks/$fileId/file';
+  // }
 
   //- POST
 

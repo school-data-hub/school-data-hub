@@ -6,9 +6,7 @@ import 'package:schuldaten_hub/common/services/api/api.dart';
 import 'package:schuldaten_hub/common/services/api/services/api_client_service.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_manager.dart';
-import 'package:schuldaten_hub/common/utils/extensions.dart';
 import 'package:schuldaten_hub/features/competence/models/competence.dart';
-import 'package:schuldaten_hub/features/pupil/models/pupil_data.dart';
 
 class CompetenceApiService {
   final ApiClientService _client = locator<ApiClientService>();
@@ -118,8 +116,25 @@ class CompetenceApiService {
 
   //- all endpoints below are not implemented
 
-  String deleteCompetence(int id) {
+  String _deleteCompetence(int id) {
     return '/competences/$id/delete';
+  }
+
+  Future<bool> deleteCompetence(int id) async {
+    notificationManager.apiRunningValue(true);
+
+    final Response response = await _client.delete(_deleteCompetence(id));
+
+    notificationManager.apiRunningValue(false);
+
+    if (response.statusCode != 200) {
+      notificationManager.showSnackBar(
+          NotificationType.error, 'Failed to delete a competence');
+
+      throw ApiException('Failed to delete a competence', response.statusCode);
+    }
+
+    return true;
   }
 
   //- COMPETENCE GOALS -------------------------------------------------

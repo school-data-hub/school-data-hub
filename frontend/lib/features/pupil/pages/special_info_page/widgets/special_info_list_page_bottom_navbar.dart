@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/constants/colors.dart';
-import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/widgets/bottom_nav_bar_layouts.dart';
-import 'package:schuldaten_hub/features/pupil/services/pupil_identity_manager.dart';
 import 'package:schuldaten_hub/common/widgets/filter_button.dart';
 import 'package:schuldaten_hub/features/pupil/pages/special_info_page/widgets/special_info_filter_bottom_sheet.dart';
 

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-
 import 'package:schuldaten_hub/common/constants/colors.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/widgets/generic_app_bar.dart';
@@ -22,11 +21,7 @@ class LearningPupilListPage extends WatchingWidget {
     bool filtersOn = watchValue((PupilsFilter x) => x.filtersOn);
     // These come from the PupilFilterManager
     List<PupilProxy> pupils = watchValue((PupilsFilter x) => x.filteredPupils);
-    // // We want them to go through the learning support filters first
-    // List<PupilProxy> filteredPupilsByCategoryGoals =
-    //     categoryGoalFilteredPupils(filteredPupilsByClassAndSchoolGrade);
-    // List<PupilProxy> pupils =
-    //     learningSupportFilters(filteredPupilsByCategoryGoals);
+
     return Scaffold(
       backgroundColor: canvasColor,
       appBar: const GenericAppBar(

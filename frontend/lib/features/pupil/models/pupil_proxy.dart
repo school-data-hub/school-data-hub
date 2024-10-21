@@ -28,6 +28,7 @@ enum SchoolGrade {
     'S3': SchoolGrade.S3,
     'S4': SchoolGrade.S4,
   };
+
   final String value;
   const SchoolGrade(this.value);
 }

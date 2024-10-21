@@ -3,11 +3,13 @@ import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/constants/colors.dart';
 import 'package:schuldaten_hub/common/constants/enums.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
+import 'package:schuldaten_hub/common/widgets/generic_filter_bottom_sheet.dart';
 import 'package:schuldaten_hub/common/widgets/search_text_field.dart';
-import 'package:schuldaten_hub/features/attendance/pages/attendance_page/widgets/attendance_filter_bottom_sheet.dart';
+import 'package:schuldaten_hub/features/attendance/pages/attendance_page/widgets/attendance_filters.dart';
 import 'package:schuldaten_hub/features/attendance/services/attendance_helper_functions.dart';
 import 'package:schuldaten_hub/features/pupil/filters/pupils_filter.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
+import 'package:schuldaten_hub/features/pupil/pages/widgets/common_pupil_filters.dart';
 import 'package:watch_it/watch_it.dart';
 
 class AttendanceListSearchBar extends WatchingWidget {
@@ -99,7 +101,12 @@ class AttendanceListSearchBar extends WatchingWidget {
                         hintText: 'Schüler/in suchen',
                         refreshFunction: locator<PupilsFilter>().refreshs)),
                 InkWell(
-                  onTap: () => showAttendanceFilterBottomSheet(context),
+                  onTap: () => showGenericFilterBottomSheet(
+                      context: context,
+                      filterList: const [
+                        CommonPupilFiltersWidget(),
+                        AttendanceFilters(),
+                      ]),
                   onLongPress: () => locator<PupilsFilter>().resetFilters(),
                   // onPressed: () => showBottomSheetFilters(context),
                   child: Padding(

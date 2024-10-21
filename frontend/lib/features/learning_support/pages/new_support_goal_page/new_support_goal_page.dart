@@ -2,12 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/constants/colors.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
-import 'package:schuldaten_hub/features/learning_support/services/learning_support_manager.dart';
 import 'package:schuldaten_hub/features/learning_support/pages/new_support_category_goal_page/controller/new_support_category_goal_controller.dart';
 import 'package:schuldaten_hub/features/learning_support/pages/selectable_support_category_tree_page/controller/selectable_category_tree_controller.dart';
-
-import 'package:schuldaten_hub/features/learning_support/widgets/support_category_widgets/support_category_status_dropdown_items.dart';
+import 'package:schuldaten_hub/features/learning_support/services/learning_support_manager.dart';
 import 'package:schuldaten_hub/features/learning_support/widgets/support_category_widgets/category_tree_ancestors_names.dart';
+import 'package:schuldaten_hub/features/learning_support/widgets/support_category_widgets/support_category_status_dropdown_items.dart';
 import 'package:schuldaten_hub/features/pupil/services/pupil_manager.dart';
 
 class NewSupportGoalPage extends StatelessWidget {
@@ -100,7 +99,11 @@ class NewSupportGoalPage extends StatelessWidget {
                                   crossAxisAlignment: WrapCrossAlignment.center,
                                   children: [
                                     ...categoryTreeAncestorsNames(
-                                      controller.goalCategoryId!,
+                                      categoryId: controller.goalCategoryId!,
+                                      categoryColor:
+                                          locator<LearningSupportManager>()
+                                              .getCategoryColor(
+                                                  controller.goalCategoryId!),
                                     ),
                                   ],
                                 ),

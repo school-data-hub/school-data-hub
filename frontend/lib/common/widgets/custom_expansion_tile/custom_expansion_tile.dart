@@ -66,6 +66,15 @@ class CustomExpansionTileController {
     }
   }
 
+  void collapseExpand() {
+    assert(_state != null);
+    if (isExpanded) {
+      _state!._toggleCollapseExpansion();
+    } else {
+      _state!._toggleExpansion();
+    }
+  }
+
   /// Collapses the [ExpansionTile] that was built with this controller.
   ///
   /// Normally the tile is collapsed automatically when the user taps on the header.
@@ -564,6 +573,24 @@ class _ExpansionTileState extends State<CustomExpansionTile>
     widget.onExpansionChanged?.call(_isExpanded);
   }
 
+  void _toggleCollapseExpansion() {
+    setState(() {
+      if (_isExpanded) {
+        _animationController.forward().whenComplete(() {
+          _animationController.reverse().then<void>((void value) {
+            if (!mounted) {
+              return;
+            }
+            setState(() {
+              // Rebuild without widget.children.
+            });
+          });
+        });
+      } else {}
+      PageStorage.maybeOf(context)?.writeState(context, _isExpanded);
+    });
+    widget.onExpansionChanged?.call(_isExpanded);
+  }
   // void _handleTap() {
   //   _toggleExpansion();
   // }

@@ -63,9 +63,9 @@ class CompetenceChecksBatches extends StatelessWidget {
       );
     });
     return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
+      mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.center,
-      children: [...widgetList],
+      children: [const Gap(5), ...widgetList],
     );
   }
 }

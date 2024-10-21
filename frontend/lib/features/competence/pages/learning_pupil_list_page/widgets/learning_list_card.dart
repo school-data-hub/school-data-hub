@@ -6,13 +6,22 @@ import 'package:schuldaten_hub/common/widgets/avatar.dart';
 import 'package:schuldaten_hub/common/widgets/custom_expansion_tile/custom_expansion_tile.dart';
 import 'package:schuldaten_hub/common/widgets/custom_expansion_tile/custom_expansion_tile_content.dart';
 import 'package:schuldaten_hub/features/competence/pages/learning_pupil_list_page/widgets/competence_checks_batches.dart';
-import 'package:schuldaten_hub/features/competence/pages/learning_pupil_list_page/widgets/pupil_learning_content/pupil_learning_content_list.dart';
+import 'package:schuldaten_hub/features/competence/pages/learning_pupil_list_page/widgets/pupil_learning_content/pupil_learning_content_competence_goals.dart';
+import 'package:schuldaten_hub/features/competence/pages/learning_pupil_list_page/widgets/pupil_learning_content/pupil_learning_content_competence_statuses.dart';
+import 'package:schuldaten_hub/features/competence/pages/learning_pupil_list_page/widgets/pupil_learning_content/pupil_learning_content_workbooks.dart';
+import 'package:schuldaten_hub/features/competence/services/competence_helper.dart';
 import 'package:schuldaten_hub/features/main_menu_pages/widgets/landing_bottom_nav_bar.dart';
-import 'package:schuldaten_hub/features/learning_support/services/learning_support_helper_functions.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
 import 'package:schuldaten_hub/features/pupil/pages/pupil_profile_page/pupil_profile_page.dart';
-
 import 'package:watch_it/watch_it.dart';
+
+enum SelectedContent {
+  competenceStatuses,
+  competenceGoals,
+  workbooks,
+  books,
+  none,
+}
 
 class LearningCard extends WatchingStatefulWidget {
   final PupilProxy pupil;
@@ -23,12 +32,22 @@ class LearningCard extends WatchingStatefulWidget {
 }
 
 class _LearningSupportCardState extends State<LearningCard> {
+  late SelectedContent selectedContent;
+
+  @override
+  initState() {
+    selectedContent = SelectedContent.none;
+    super.initState();
+  }
+
   final CustomExpansionTileController _tileController =
       CustomExpansionTileController();
   @override
   Widget build(BuildContext context) {
     final PupilProxy pupil = watch(widget.pupil);
-
+    final competenceCheckstats = CompetenceHelper.competenceChecksStats(pupil);
+    final totalCompetencesToReport = competenceCheckstats.total;
+    final totalCompetencesChecked = competenceCheckstats.checked;
     return Card(
       color: Colors.white,
       surfaceTintColor: Colors.white,
@@ -99,20 +118,6 @@ class _LearningSupportCardState extends State<LearningCard> {
                       ],
                     ),
                     const Gap(5),
-                    Row(
-                      children: [
-                        const Text('ärztl. U.:'),
-                        const Gap(10),
-                        Text(
-                          LearningSupportHelper.preschoolRevision(
-                              pupil.preschoolRevision!),
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14,
-                          ),
-                        ),
-                      ],
-                    ),
                     const Gap(15),
                     if (pupil.competenceChecks!.isNotEmpty)
                       InkWell(
@@ -128,22 +133,22 @@ class _LearningSupportCardState extends State<LearningCard> {
               ),
               const Gap(8),
               InkWell(
-                onTap: () {
-                  _tileController.isExpanded
-                      ? _tileController.collapse()
-                      : _tileController.expand();
-                },
+                // onTap: () {
+                //   _tileController.isExpanded
+                //       ? _tileController.collapse()
+                //       : _tileController.expand();
+                // },
                 child: Column(
                   children: [
                     const Gap(20),
                     //const Text('Ebene'),
                     SizedBox(
-                      width: 40.0,
+                      width: 50.0,
                       child: Center(
                         child: Text(
-                          pupil.pupilWorkbooks!.length.toString(),
+                          '$totalCompetencesChecked/$totalCompetencesToReport',
                           style: const TextStyle(
-                            fontSize: 23,
+                            fontSize: 15,
                             fontWeight: FontWeight.bold,
                             color: backgroundColor,
                           ),
@@ -168,12 +173,142 @@ class _LearningSupportCardState extends State<LearningCard> {
               const Gap(15),
             ],
           ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              IconButton(
+                isSelected:
+                    selectedContent == SelectedContent.competenceStatuses,
+                icon: const Icon(
+                  Icons.lightbulb,
+                  color: backgroundColor,
+                ),
+                selectedIcon: const Icon(
+                  Icons.lightbulb,
+                  color: accentColor,
+                ),
+                onPressed: () {
+                  setState(
+                    () {
+                      if (selectedContent !=
+                          SelectedContent.competenceStatuses) {
+                        if (_tileController.isExpanded) {
+                          _tileController.collapse();
+                          setState(() {
+                            selectedContent =
+                                SelectedContent.competenceStatuses;
+                          });
+                          _tileController.expand();
+                          return;
+                        }
+                        setState(() {
+                          selectedContent = SelectedContent.competenceStatuses;
+                        });
+                        _tileController.expand();
+                        return;
+                      }
+                      _tileController.isExpanded
+                          ? _tileController.collapse()
+                          : _tileController.expand();
+                    },
+                  );
+                },
+              ),
+              IconButton(
+                isSelected: selectedContent == SelectedContent.competenceGoals,
+                icon: const Icon(
+                  Icons.emoji_nature_rounded,
+                  color: backgroundColor,
+                ),
+                selectedIcon: const Icon(
+                  Icons.emoji_nature_rounded,
+                  color: accentColor,
+                ),
+                onPressed: () {
+                  setState(
+                    () {
+                      if (selectedContent != SelectedContent.competenceGoals) {
+                        setState(() {
+                          selectedContent = SelectedContent.competenceGoals;
+                        });
+                        if (_tileController.isExpanded) {
+                          return;
+                        }
+                        setState(() {
+                          selectedContent = SelectedContent.competenceGoals;
+                        });
+                        _tileController.expand();
+                        return;
+                      }
+                      _tileController.isExpanded
+                          ? _tileController.collapse()
+                          : _tileController.expand();
+                    },
+                  );
+                },
+              ),
+              IconButton(
+                isSelected: selectedContent == SelectedContent.workbooks,
+                icon: const Icon(
+                  Icons.note_alt,
+                  color: backgroundColor,
+                ),
+                selectedIcon: const Icon(
+                  Icons.note_alt,
+                  color: accentColor,
+                ),
+                onPressed: () {
+                  setState(
+                    () {
+                      if (selectedContent != SelectedContent.workbooks) {
+                        if (_tileController.isExpanded) {
+                          _tileController.collapse();
+                          setState(() {
+                            selectedContent = SelectedContent.workbooks;
+                          });
+                          _tileController.expand();
+                          return;
+                        }
+                        setState(() {
+                          selectedContent = SelectedContent.workbooks;
+                        });
+                        _tileController.expand();
+                        return;
+                      }
+                      _tileController.isExpanded
+                          ? _tileController.collapse()
+                          : _tileController.expand();
+                    },
+                  );
+                },
+              ),
+              IconButton(
+                isSelected: selectedContent == SelectedContent.books,
+                icon: const Icon(
+                  Icons.book,
+                  color: backgroundColor,
+                ),
+                selectedIcon: const Icon(
+                  Icons.book,
+                  color: accentColor,
+                ),
+                onPressed: () {},
+              ),
+            ],
+          ),
           Padding(
             padding: const EdgeInsets.all(5),
             child: CustomExpansionTileContent(
                 title: null,
                 tileController: _tileController,
-                widgetList: [PupilLearningContentList(pupil: pupil)]),
+                widgetList: [
+                  if (selectedContent == SelectedContent.competenceStatuses)
+                    PupilLearningContentCompetenceStatuses(pupil: pupil),
+                  if (selectedContent == SelectedContent.competenceGoals)
+                    PupilLearningContentCompetenceGoals(pupil: pupil),
+                  if (selectedContent == SelectedContent.workbooks)
+                    PupilLearningContentWorkbooks(pupil: pupil)
+                ]),
           )
         ],
       ),

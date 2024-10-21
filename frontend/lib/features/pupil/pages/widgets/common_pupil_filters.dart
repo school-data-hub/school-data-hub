@@ -3,6 +3,7 @@ import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/constants/colors.dart';
 import 'package:schuldaten_hub/common/constants/styles.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
+import 'package:schuldaten_hub/common/widgets/themed_filter_chip.dart';
 import 'package:schuldaten_hub/features/pupil/filters/pupils_filter.dart';
 import 'package:watch_it/watch_it.dart';
 
@@ -55,40 +56,13 @@ class CommonPupilFiltersWidget extends WatchingWidget {
           crossAxisAlignment: WrapCrossAlignment.center,
           children: [
             for (final schoolGradeFilter in schoolGradeFilters)
-              FilterChip(
-                autofocus: true,
-                elevation: 0,
-                pressElevation: 0,
-                padding: filterChipPadding,
-                labelPadding: filterChipLabelPadding,
-                shape: filterChipShape,
-                avatar: const CircleAvatar(
-                  backgroundColor: Colors.transparent,
-                  child: SizedBox(
-                    width: 10,
-                  ),
-                ),
-                selectedColor: filterChipSelectedColor,
-                checkmarkColor: filterChipSelectedCheckColor,
-                backgroundColor: filterChipUnselectedColor,
-                label: Text(
-                  schoolGradeFilter.displayName,
-                  style: filterItemsTextStyle,
-                ),
+              ThemedFilterChip(
+                label: schoolGradeFilter.displayName,
                 selected: watch(schoolGradeFilter).isActive,
                 onSelected: (val) {
                   schoolGradeFilter.toggle(val);
                 },
               ),
-            // just an example how it could be done with radio buttons
-            // if (filter is RadioButtonsFilter)
-            //   RadioButtonWidget(
-            //     value: stufenFilter,
-            //     groupValue: filter.selectedStufeFilter,
-            //     onChanged: (val) {
-            //       filter.selectedStufeFilter = stufenFilter;
-            //     },
-            //   )
           ],
         ),
         const Row(
@@ -105,20 +79,8 @@ class CommonPupilFiltersWidget extends WatchingWidget {
           crossAxisAlignment: WrapCrossAlignment.center,
           children: [
             for (final groupFilter in groupFilters)
-              FilterChip(
-                padding: filterChipPadding,
-                labelPadding: filterChipLabelPadding,
-                shape: filterChipShape,
-                avatar: const SizedBox(
-                  width: 10,
-                ),
-                selectedColor: filterChipSelectedColor,
-                checkmarkColor: filterChipSelectedCheckColor,
-                backgroundColor: filterChipUnselectedColor,
-                label: Text(
-                  groupFilter.displayName,
-                  style: filterItemsTextStyle,
-                ),
+              ThemedFilterChip(
+                label: groupFilter.displayName,
                 selected: watch(groupFilter).isActive,
                 onSelected: (val) {
                   groupFilter.toggle(val);

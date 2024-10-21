@@ -4,12 +4,14 @@ import 'package:schuldaten_hub/common/constants/colors.dart';
 import 'package:schuldaten_hub/common/constants/enums.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/widgets/filter_button.dart';
+import 'package:schuldaten_hub/common/widgets/generic_filter_bottom_sheet.dart';
 import 'package:schuldaten_hub/common/widgets/search_text_field.dart';
-import 'package:schuldaten_hub/features/attendance/pages/missed_classes_pupil_list_page/widgets/missed_classes_filter_bottom_sheet.dart';
+import 'package:schuldaten_hub/features/attendance/pages/missed_classes_pupil_list_page/widgets/missed_classes_filters.dart';
 import 'package:schuldaten_hub/features/attendance/pages/widgets/attendance_badges.dart';
 import 'package:schuldaten_hub/features/attendance/services/attendance_helper_functions.dart';
 import 'package:schuldaten_hub/features/pupil/filters/pupils_filter.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
+import 'package:schuldaten_hub/features/pupil/pages/widgets/common_pupil_filters.dart';
 import 'package:watch_it/watch_it.dart';
 
 class AttendanceRankingListSearchbar extends WatchingWidget {
@@ -119,10 +121,17 @@ class AttendanceRankingListSearchbar extends WatchingWidget {
                         hintText: 'Schüler/in suchen',
                         refreshFunction: locator<PupilsFilter>().refreshs)),
                 const Gap(5),
-                const FilterButton(
+                FilterButton(
                     isSearchBar: true,
-                    showBottomSheetFunction:
-                        showAttendanceRankingFilterBottomSheet),
+                    showBottomSheetFunction: () {
+                      showGenericFilterBottomSheet(
+                        context: context,
+                        filterList: [
+                          const CommonPupilFiltersWidget(),
+                          const MissedClassFilters()
+                        ],
+                      );
+                    }),
               ],
             ),
           ),

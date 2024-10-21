@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/constants/colors.dart';
-import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/widgets/bottom_nav_bar_layouts.dart';
+import 'package:schuldaten_hub/common/widgets/filter_button.dart';
+import 'package:schuldaten_hub/common/widgets/generic_filter_bottom_sheet.dart';
 import 'package:schuldaten_hub/features/attendance/pages/missed_classes_pupil_list_page/widgets/missed_classes_badges_info_dialog.dart';
-import 'package:schuldaten_hub/features/attendance/pages/missed_classes_pupil_list_page/widgets/missed_classes_filter_bottom_sheet.dart';
+import 'package:schuldaten_hub/features/attendance/pages/missed_classes_pupil_list_page/widgets/missed_classes_filters.dart';
 import 'package:schuldaten_hub/features/pupil/filters/pupils_filter.dart';
+import 'package:schuldaten_hub/features/pupil/pages/widgets/common_pupil_filters.dart';
 import 'package:watch_it/watch_it.dart';
 
 class AttendanceRankingListPageBottomNavBar extends WatchingWidget {
@@ -45,15 +47,17 @@ class AttendanceRankingListPageBottomNavBar extends WatchingWidget {
                   },
                 ),
                 const Gap(30),
-                InkWell(
-                  onTap: () => showAttendanceRankingFilterBottomSheet(context),
-                  onLongPress: () => locator<PupilsFilter>().resetFilters(),
-                  child: Icon(
-                    Icons.filter_list,
-                    color: filtersOn ? Colors.deepOrange : Colors.white,
-                    size: 30,
-                  ),
-                ),
+                FilterButton(
+                    isSearchBar: false,
+                    showBottomSheetFunction: () {
+                      showGenericFilterBottomSheet(
+                        context: context,
+                        filterList: [
+                          const CommonPupilFiltersWidget(),
+                          const MissedClassFilters()
+                        ],
+                      );
+                    }),
                 const Gap(15)
               ],
             ),
