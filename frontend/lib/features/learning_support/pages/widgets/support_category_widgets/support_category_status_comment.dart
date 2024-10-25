@@ -1,16 +1,15 @@
 // import 'package:flutter/material.dart';
 // import 'package:gap/gap.dart';
 // import 'package:schuldaten_hub/common/utils/extensions.dart';
-// import 'package:schuldaten_hub/features/competence/models/competence_check.dart';
-// import 'package:schuldaten_hub/features/competence/services/competence_helper.dart';
+// import 'package:schuldaten_hub/features/learning_support/models/support_category/support_category_status.dart';
+// import 'package:schuldaten_hub/features/learning_support/services/learning_support_helper_functions.dart';
 // import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
 
-// Widget getCompetenceCheckComment(PupilProxy pupil, int competenceId) {
+// Widget getSupportCategoryStatusComment(PupilProxy pupil, int goalCategoryId) {
 //   if (pupil.supportCategoryStatuses!.isNotEmpty) {
-//     final CompetenceCheck? competenceCheck =
-//         CompetenceHelper.getLastCompetenceCheckOfCompetence(
-//             pupil, competenceId);
-//     if (competenceCheck != null) {
+//     final SupportCategoryStatus? categoryStatus =
+//         LearningSupportHelper.getCategoryStatus(pupil, goalCategoryId);
+//     if (categoryStatus != null) {
 //       return Padding(
 //         padding: const EdgeInsets.only(left: 35),
 //         child: Column(
@@ -19,7 +18,7 @@
 //               crossAxisAlignment: CrossAxisAlignment.start,
 //               children: [
 //                 Text(
-//                   competenceCheck.comment,
+//                   categoryStatus.comment,
 //                   maxLines: 2,
 //                   textAlign: TextAlign.start,
 //                   style: const TextStyle(
@@ -41,7 +40,7 @@
 //                   ),
 //                 ),
 //                 Text(
-//                   competenceCheck.createdBy,
+//                   categoryStatus.createdBy,
 //                   style: const TextStyle(
 //                       color: Colors.white,
 //                       fontSize: 12,
@@ -57,7 +56,7 @@
 //                 ),
 //                 const Gap(5),
 //                 Text(
-//                   competenceCheck.createdAt.formatForUser(),
+//                   categoryStatus.createdAt.formatForUser(),
 //                   style: const TextStyle(
 //                       color: Colors.white,
 //                       fontSize: 12,

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:schuldaten_hub/common/constants/colors.dart';
 import 'package:schuldaten_hub/common/constants/styles.dart';
-import 'package:schuldaten_hub/features/learning_support/pages/selectable_support_category_tree_page/controller/selectable_category_tree_controller.dart';
-import 'package:schuldaten_hub/features/learning_support/widgets/support_category_widgets/pupil_support_category_tree.dart';
+import 'package:schuldaten_hub/features/learning_support/pages/select_support_category_page/controller/select_support_category_controller.dart';
+import 'package:schuldaten_hub/features/learning_support/pages/widgets/support_category_widgets/pupil_support_category_tree.dart';
 
-class SelectableSupportCategoryTreePage extends StatelessWidget {
-  final SelectableCategoryTreeController controller;
-  const SelectableSupportCategoryTreePage(this.controller, {super.key});
+class SelectSupportCategoryPage extends StatelessWidget {
+  final SelectCategoryPageController controller;
+  const SelectSupportCategoryPage(this.controller, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -46,8 +46,14 @@ class SelectableSupportCategoryTreePage extends StatelessWidget {
                       ],
                     ),
                   ),
-                  ...pupilSupportCategoryTree(context, controller.widget.pupil,
-                      null, 0, null, controller, controller.widget.elementType),
+                  ...pupilSupportCategoryTree(
+                      context: context,
+                      pupil: controller.widget.pupil,
+                      parentCategoryId: null,
+                      indentation: 0,
+                      backGroundColor: null,
+                      controller: controller,
+                      elementType: controller.widget.elementType),
                 ]),
               ),
             ),

@@ -4,16 +4,16 @@ import 'package:schuldaten_hub/common/constants/colors.dart';
 import 'package:schuldaten_hub/common/constants/styles.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/features/learning_support/pages/new_support_category_goal_page/controller/new_support_category_goal_controller.dart';
-import 'package:schuldaten_hub/features/learning_support/pages/selectable_support_category_tree_page/controller/selectable_category_tree_controller.dart';
+import 'package:schuldaten_hub/features/learning_support/pages/select_support_category_page/controller/select_support_category_controller.dart';
+import 'package:schuldaten_hub/features/learning_support/pages/widgets/dialogs/goal_examples_dialog.dart';
+import 'package:schuldaten_hub/features/learning_support/pages/widgets/support_category_parents_names.dart';
+import 'package:schuldaten_hub/features/learning_support/pages/widgets/support_category_widgets/support_category_status_dropdown.dart';
 import 'package:schuldaten_hub/features/learning_support/services/learning_support_manager.dart';
-import 'package:schuldaten_hub/features/learning_support/widgets/dialogs/goal_examples_dialog.dart';
-import 'package:schuldaten_hub/features/learning_support/widgets/support_category_widgets/category_tree_ancestors_names.dart';
-import 'package:schuldaten_hub/features/learning_support/widgets/support_category_widgets/support_category_status_dropdown_items.dart';
 import 'package:schuldaten_hub/features/pupil/services/pupil_manager.dart';
 
-class NewCategoryGoalView extends StatelessWidget {
-  final NewSupportCategoryGoalController controller;
-  const NewCategoryGoalView(this.controller, {super.key});
+class NewSupportCategoryStatusPage extends StatelessWidget {
+  final NewSupportCategoryStatusController controller;
+  const NewSupportCategoryStatusPage(this.controller, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -66,17 +66,16 @@ class NewCategoryGoalView extends StatelessWidget {
                                     backgroundColor: backgroundColor,
                                     minimumSize: const Size.fromHeight(60)),
                                 onPressed: () async {
-                                  final int? categoryId =
-                                      await Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                              builder: (ctx) =>
-                                                  SelectableCategoryTree(
-                                                      locator<PupilManager>()
-                                                          .findPupilById(
-                                                              controller.widget
-                                                                  .pupilId)!,
-                                                      controller.widget
-                                                          .elementType)));
+                                  final int? categoryId = await Navigator.of(
+                                          context)
+                                      .push(MaterialPageRoute(
+                                          builder: (ctx) =>
+                                              SelectSupportCategory(
+                                                  pupil: locator<PupilManager>()
+                                                      .findPupilById(controller
+                                                          .widget.pupilId)!,
+                                                  elementType: controller
+                                                      .widget.elementType)));
                                   if (categoryId == null) {
                                     return;
                                   }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:schuldaten_hub/features/competence/pages/learning_pupil_list_page/widgets/pupil_competence_tree/pupil_competence_status_tree.dart';
+import 'package:schuldaten_hub/features/competence/pages/learning_pupil_list_page/widgets/pupil_competence_checks/pupil_competence_status_tree.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
 
 class PupilLearningContentCompetenceStatuses extends StatelessWidget {

@@ -29,9 +29,15 @@ class CompetenceCheckCard extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(left: 15.0, right: 5),
       child: InkWell(
-        onLongPress: () {
-          locator<CompetenceManager>()
-              .deleteCompetenceCheck(competenceCheck.checkId);
+        onLongPress: () async {
+          final bool? confirm = await confirmationDialog(
+              context: context,
+              title: 'Kompetenzcheck löschen',
+              message: 'Kompetenzcheck löschen?');
+          if (confirm == true) {
+            locator<CompetenceManager>()
+                .deleteCompetenceCheck(competenceCheck.checkId);
+          }
         },
         child: Card(
           color: cardInCardColor,

@@ -4,7 +4,7 @@ import 'package:schuldaten_hub/common/constants/colors.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
 import 'package:schuldaten_hub/features/learning_support/services/learning_support_manager.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
-import 'package:schuldaten_hub/features/learning_support/widgets/support_category_widgets/support_category_status_dropdown_items.dart';
+import 'package:schuldaten_hub/features/learning_support/pages/widgets/support_category_widgets/support_category_status_dropdown.dart';
 
 final GlobalKey<FormState> _categoryStatusKey = GlobalKey<FormState>();
 final TextEditingController _textEditingController = TextEditingController();

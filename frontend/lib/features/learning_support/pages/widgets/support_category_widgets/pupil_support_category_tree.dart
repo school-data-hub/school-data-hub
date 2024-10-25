@@ -1,25 +1,24 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/session_manager.dart';
 import 'package:schuldaten_hub/common/widgets/dialogues/confirmation_dialog.dart';
-
 import 'package:schuldaten_hub/features/learning_support/models/support_category/support_category.dart';
 import 'package:schuldaten_hub/features/learning_support/models/support_category/support_category_status.dart';
-import 'package:schuldaten_hub/features/learning_support/pages/selectable_support_category_tree_page/controller/selectable_category_tree_controller.dart';
-import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
+import 'package:schuldaten_hub/features/learning_support/pages/select_support_category_page/controller/select_support_category_controller.dart';
 import 'package:schuldaten_hub/features/learning_support/services/learning_support_manager.dart';
-import 'package:schuldaten_hub/common/services/locator.dart';
+import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
 
-List<Widget> pupilSupportCategoryTree(
-  BuildContext context,
-  PupilProxy pupil,
-  int? parentId,
-  double indentation,
+List<Widget> pupilSupportCategoryTree({
+  required BuildContext context,
+  required PupilProxy pupil,
+  int? parentCategoryId,
+  required double indentation,
   Color? backGroundColor,
-  SelectableCategoryTreeController controller,
-  String elementType,
-) {
+  required SelectCategoryPageController controller,
+  required String elementType,
+}) {
   List<Widget> supportCategoryWidgets = [];
   final supportCategoryLocator = locator<LearningSupportManager>();
   List<SupportCategory> supportCategories =
@@ -34,15 +33,15 @@ List<Widget> pupilSupportCategoryTree(
       categoryBackgroundColor = backGroundColor;
     }
 
-    if (supportCategory.parentCategory == parentId) {
+    if (supportCategory.parentCategory == parentCategoryId) {
       final children = pupilSupportCategoryTree(
-          context,
-          pupil,
-          supportCategory.categoryId,
-          indentation + 15,
-          categoryBackgroundColor,
-          controller,
-          elementType);
+          context: context,
+          pupil: pupil,
+          parentCategoryId: supportCategory.categoryId,
+          indentation: indentation + 15,
+          backGroundColor: categoryBackgroundColor,
+          controller: controller,
+          elementType: elementType);
 
       supportCategoryWidgets.add(
         Padding(

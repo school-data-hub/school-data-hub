@@ -4,6 +4,7 @@ import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/features/competence/models/competence.dart';
 import 'package:schuldaten_hub/features/competence/models/competence_check.dart';
 import 'package:schuldaten_hub/features/competence/services/competence_manager.dart';
+import 'package:schuldaten_hub/features/pupil/filters/pupil_filter_manager.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
 import 'package:schuldaten_hub/features/pupil/services/pupil_manager.dart';
 
@@ -152,5 +153,24 @@ class CompetenceHelper {
       }
     }
     return (total: count, checked: competencesWithCheck);
+  }
+
+  static List<PupilProxy> getFilteredPupilsByCompetence(
+      {required Competence competence}) {
+    List<PupilProxy> pupils = [];
+    final filteredPupils = locator<PupilFilterManager>().filteredPupils;
+    for (PupilProxy pupil in filteredPupils.value) {
+      if (pupil.specialNeeds != null && pupil.specialNeeds!.contains('LE')) {
+        pupils.add(pupil);
+        continue;
+      } else {
+        final allowedCompetences = getAllowedCompetencesForThisPupil(pupil);
+        if (allowedCompetences.contains(competence)) {
+          pupils.add(pupil);
+          continue;
+        }
+      }
+    }
+    return pupils;
   }
 }

@@ -8,6 +8,7 @@ import 'package:schuldaten_hub/common/services/api/services/connection_manager.d
 import 'package:schuldaten_hub/common/services/env_manager.dart';
 import 'package:schuldaten_hub/common/services/notification_manager.dart';
 import 'package:schuldaten_hub/common/services/search_textfield_manager.dart';
+import 'package:schuldaten_hub/common/services/sse.dart';
 import 'package:schuldaten_hub/common/utils/logger.dart';
 import 'package:schuldaten_hub/common/utils/secure_storage.dart';
 import 'package:schuldaten_hub/features/attendance/services/attendance_manager.dart';
@@ -88,6 +89,10 @@ Future registerDependentManagers() async {
 
   locator.registerSingleton<SearchManager>(SearchManager());
 
+  locator.registerSingletonWithDependencies<EventFluxService>(
+    () => EventFluxService(),
+    dependsOn: [SessionManager],
+  );
   locator.registerSingletonAsync<UserManager>(() async {
     log('Registering UserManager');
     final userManager = UserManager();
@@ -194,6 +199,7 @@ Future registerDependentManagers() async {
   if (await secureStorageContainsKey('matrix')) {
     await registerMatrixPolicyManager();
   }
+
   locator<EnvManager>().setDependentManagersRegistered(true);
 }
 

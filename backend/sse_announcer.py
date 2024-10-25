@@ -23,7 +23,10 @@ class MessageAnnouncer:
                 print("Message sent to listener {i}", file=sys.stderr)
             except queue.Full:
                 del self.listeners[i]
-        print("announce method called", file=sys.stderr)
+            except Exception as e:
+                from app import app
+
+                app.logger.error(e, exc_info=True)
 
 
 def format_sse(data: str, event=None) -> str:

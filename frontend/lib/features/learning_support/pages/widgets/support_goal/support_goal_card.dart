@@ -4,9 +4,9 @@ import 'package:schuldaten_hub/common/constants/colors.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/utils/extensions.dart';
 import 'package:schuldaten_hub/common/widgets/dialogues/confirmation_dialog.dart';
+import 'package:schuldaten_hub/features/learning_support/pages/widgets/support_catagory_status/widgets/support_category_status_entry/support_category_status_symbol.dart';
+import 'package:schuldaten_hub/features/learning_support/pages/widgets/support_goal/support_goal_card_banner.dart';
 import 'package:schuldaten_hub/features/learning_support/services/learning_support_manager.dart';
-import 'package:schuldaten_hub/features/learning_support/widgets/support_category_widgets/category_status_widgets.dart';
-import 'package:schuldaten_hub/features/learning_support/widgets/support_category_widgets/support_category_card_banner.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
 
 class SupportGoalCard extends StatelessWidget {
@@ -36,11 +36,8 @@ class SupportGoalCard extends StatelessWidget {
           },
           child: Card(
             shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0),
-                side: const BorderSide(
-                  color: groupColor,
-                  width: 2,
-                )),
+              borderRadius: BorderRadius.circular(10.0),
+            ),
             color: cardInCardColor,
             child: Column(
               children: [

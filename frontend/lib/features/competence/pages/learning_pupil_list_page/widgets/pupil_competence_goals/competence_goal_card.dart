@@ -22,22 +22,25 @@ class CompetenceGoalCard extends StatelessWidget {
           padding: const EdgeInsets.all(8.0),
           child: Column(
             children: [
-              Row(
-                children: [
-                  Text(
-                    locator<CompetenceManager>()
-                        .getRootCompetence(pupilGoal.competenceId)
-                        .competenceName,
-                    style: const TextStyle(
-                        fontSize: 19, fontWeight: FontWeight.bold),
-                  )
-                ],
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(5.0),
+                  color: CompetenceHelper.getCompetenceColor(
+                      pupilGoal.competenceId),
+                ),
+                child: Text(
+                  locator<CompetenceManager>()
+                      .getRootCompetence(pupilGoal.competenceId)
+                      .competenceName,
+                  style: const TextStyle(
+                      fontSize: 19, fontWeight: FontWeight.bold),
+                ),
               ),
               const Gap(5),
               Row(
                 children: [
-                  CompetenceHelper.getLastCompetenceCheckSymbol(
-                      pupil: pupil, competenceId: pupilGoal.competenceId),
+                  CompetenceHelper.getCompetenceCheckSymbol(
+                      pupilGoal.achieved ?? 0),
                   const Gap(10),
                   Flexible(
                     child: Text(

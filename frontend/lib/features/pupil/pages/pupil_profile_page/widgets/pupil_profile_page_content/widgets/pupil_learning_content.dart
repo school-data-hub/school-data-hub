@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/constants/colors.dart';
 import 'package:schuldaten_hub/common/constants/paddings.dart';
-import 'package:schuldaten_hub/features/competence/pages/learning_pupil_list_page/widgets/pupil_learning_content/pupil_learning_content_list.dart';
+import 'package:schuldaten_hub/features/competence/pages/widgets/pupil_learning_content_expansion_tile_nav_bar.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
 
 class PupilLearningContent extends StatelessWidget {
@@ -34,7 +34,9 @@ class PupilLearningContent extends StatelessWidget {
                 ))
           ]),
           const Gap(15),
-          PupilLearningContentList(pupil: pupil)
+          PupilLearningContentExpansionTileNavBar(
+            pupil: pupil,
+          ),
         ]),
       ),
     );

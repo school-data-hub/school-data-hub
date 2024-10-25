@@ -6,7 +6,6 @@ import 'package:schuldaten_hub/common/widgets/filter_button.dart';
 import 'package:schuldaten_hub/common/widgets/generic_filter_bottom_sheet.dart';
 import 'package:schuldaten_hub/features/attendance/pages/missed_classes_pupil_list_page/widgets/missed_classes_badges_info_dialog.dart';
 import 'package:schuldaten_hub/features/attendance/pages/missed_classes_pupil_list_page/widgets/missed_classes_filters.dart';
-import 'package:schuldaten_hub/features/pupil/filters/pupils_filter.dart';
 import 'package:schuldaten_hub/features/pupil/pages/widgets/common_pupil_filters.dart';
 import 'package:watch_it/watch_it.dart';
 
@@ -15,7 +14,6 @@ class AttendanceRankingListPageBottomNavBar extends WatchingWidget {
 
   @override
   Widget build(BuildContext context) {
-    final filtersOn = watchValue((PupilsFilter x) => x.filtersOn);
     return BottomNavBarLayout(
       bottomNavBar: BottomAppBar(
         padding: const EdgeInsets.all(10),

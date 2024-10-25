@@ -17,6 +17,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   dio: ^5.7.0
   encrypt: ^5.0.3
+  eventflux: ^2.2.1
   extended_image: ^8.3.1
   file_picker: ^8.1.2
   flutter:
@@ -59,6 +60,9 @@ dependencies:
   html: ^0.15.4
   http: ^1.2.2
   flutterware: ^0.5.1
+  zxing_lib: ^1.1.2
+  buffer_image: ^0.3.12
+  qr_code_vision: ^0.1.2
 
 dev_dependencies:
   flutter_test: 

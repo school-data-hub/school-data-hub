@@ -74,7 +74,7 @@ Future newCompetenceCheckDialog(
                     ),
                   ],
                 )),
-            title: const Text('Neuer Competence Check'),
+            title: const Text('Neuer Kompetenzcheck'),
             actions: <Widget>[
               Padding(
                 padding:

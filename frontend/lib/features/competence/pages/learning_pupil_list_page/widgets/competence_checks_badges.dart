@@ -6,9 +6,9 @@ import 'package:schuldaten_hub/features/competence/services/competence_helper.da
 import 'package:schuldaten_hub/features/competence/services/competence_manager.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
 
-class CompetenceChecksBatches extends StatelessWidget {
+class CompetenceChecksBadges extends StatelessWidget {
   final PupilProxy pupil;
-  const CompetenceChecksBatches({
+  const CompetenceChecksBadges({
     super.key,
     required this.pupil,
   });

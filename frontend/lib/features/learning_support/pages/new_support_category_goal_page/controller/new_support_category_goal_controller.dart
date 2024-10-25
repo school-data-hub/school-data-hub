@@ -18,11 +18,11 @@ class NewSupportCategoryGoal extends StatefulWidget {
       required this.elementType});
 
   @override
-  NewSupportCategoryGoalController createState() =>
-      NewSupportCategoryGoalController();
+  NewSupportCategoryStatusController createState() =>
+      NewSupportCategoryStatusController();
 }
 
-class NewSupportCategoryGoalController extends State<NewSupportCategoryGoal> {
+class NewSupportCategoryStatusController extends State<NewSupportCategoryGoal> {
   @override
   void initState() {
     super.initState();
@@ -61,7 +61,7 @@ class NewSupportCategoryGoalController extends State<NewSupportCategoryGoal> {
 
   @override
   Widget build(BuildContext context) {
-    return NewCategoryGoalView(this);
+    return NewSupportCategoryStatusPage(this);
   }
 
   @override

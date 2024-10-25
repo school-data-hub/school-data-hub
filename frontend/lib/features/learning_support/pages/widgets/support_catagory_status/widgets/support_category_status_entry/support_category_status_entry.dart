@@ -10,7 +10,7 @@ import 'package:schuldaten_hub/common/widgets/dialogues/short_textfield_dialog.d
 import 'package:schuldaten_hub/features/learning_support/models/support_category/support_category_status.dart';
 import 'package:schuldaten_hub/features/learning_support/services/learning_support_helper_functions.dart';
 import 'package:schuldaten_hub/features/learning_support/services/learning_support_manager.dart';
-import 'package:schuldaten_hub/features/learning_support/widgets/support_category_widgets/category_status_widgets.dart';
+import 'package:schuldaten_hub/features/learning_support/pages/widgets/support_catagory_status/widgets/support_category_status_entry/support_category_status_symbol.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
 
 class SupportCategoryStatusEntry extends StatelessWidget {

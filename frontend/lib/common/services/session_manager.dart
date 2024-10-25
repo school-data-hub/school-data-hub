@@ -34,6 +34,7 @@ class SessionManager {
   SessionManager();
   Future<SessionManager> init() async {
     await checkStoredCredentials();
+
     log('Returning SessionManager instance!');
     return this;
   }
@@ -139,7 +140,7 @@ class SessionManager {
 
       return;
     }
-
+    logger.i('Session found for ${linkedSession.server!}');
     _credentials.value = linkedSession;
 
     // check if the session is still valid

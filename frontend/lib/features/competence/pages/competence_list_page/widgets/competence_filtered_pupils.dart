@@ -1,25 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/constants/colors.dart';
-import 'package:schuldaten_hub/common/services/locator.dart';
+import 'package:schuldaten_hub/common/utils/custom_expasion_tile_hook.dart';
 import 'package:schuldaten_hub/common/widgets/avatar.dart';
-import 'package:schuldaten_hub/features/competence/pages/learning_pupil_list_page/widgets/competence_checks_badges.dart';
-import 'package:schuldaten_hub/features/competence/pages/widgets/pupil_learning_content_expansion_tile_nav_bar.dart';
+import 'package:schuldaten_hub/common/widgets/custom_expansion_tile/custom_expansion_tile_content.dart';
+import 'package:schuldaten_hub/features/competence/models/competence.dart';
 import 'package:schuldaten_hub/features/competence/services/competence_helper.dart';
-import 'package:schuldaten_hub/features/main_menu_pages/widgets/landing_bottom_nav_bar.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
-import 'package:schuldaten_hub/features/pupil/pages/pupil_profile_page/pupil_profile_page.dart';
-import 'package:watch_it/watch_it.dart';
 
-class LearningCard extends WatchingWidget {
-  final PupilProxy passedPupil;
-  const LearningCard(this.passedPupil, {super.key});
+List<Widget> competenceFilteredPupils({required Competence competence}) {
+  List<Widget> finalPupils = [];
+  final competenceFilteredPupils =
+      CompetenceHelper.getFilteredPupilsByCompetence(competence: competence);
+  for (final pupil in competenceFilteredPupils) {
+    finalPupils.add(PupilCompetenceCheckCard(pupil: pupil));
+  }
+  return finalPupils;
+}
+
+class PupilCompetenceCheckCard extends HookWidget {
+  final PupilProxy pupil;
+  const PupilCompetenceCheckCard({required this.pupil, super.key});
+
   @override
   Widget build(BuildContext context) {
-    final PupilProxy pupil = watch(passedPupil);
-    final competenceCheckstats = CompetenceHelper.competenceChecksStats(pupil);
-    final totalCompetencesToReport = competenceCheckstats.total;
-    final totalCompetencesChecked = competenceCheckstats.checked;
+    final tileController = useCustomExpansionTileController();
     return Card(
       color: Colors.white,
       surfaceTintColor: Colors.white,
@@ -48,13 +54,13 @@ class LearningCard extends WatchingWidget {
                             scrollDirection: Axis.horizontal,
                             child: InkWell(
                               onTap: () {
-                                locator<BottomNavManager>()
-                                    .setPupilProfileNavPage(9);
-                                Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (ctx) => PupilProfilePage(
-                                    pupil: pupil,
-                                  ),
-                                ));
+                                // locator<BottomNavManager>()
+                                //     .setPupilProfileNavPage(2);
+                                // Navigator.of(context).push(MaterialPageRoute(
+                                //   builder: (ctx) => PupilProfilePage(
+                                //     pupil: pupil,
+                                //   ),
+                                // ));
                               },
                               child: Row(
                                 children: [
@@ -90,48 +96,62 @@ class LearningCard extends WatchingWidget {
                       ],
                     ),
                     const Gap(5),
-                    const Gap(15),
-                    if (pupil.competenceChecks!.isNotEmpty)
-                      CompetenceChecksBadges(pupil: pupil),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              children: [
+                                const Text('bisjetzt verdient:'),
+                                const Gap(10),
+                                Text(
+                                  pupil.creditEarned.toString(),
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ],
                 ),
               ),
-              const Gap(8),
-              Column(
-                children: [
-                  const Gap(20),
-                  SizedBox(
-                    width: 50.0,
-                    child: Center(
+              const Gap(20),
+              InkWell(
+                onTap: () {
+                  tileController.isExpanded
+                      ? tileController.collapse()
+                      : tileController.expand();
+                },
+                child: Column(
+                  children: [
+                    const Gap(20),
+                    const Text('Credit'),
+                    Center(
                       child: Text(
-                        '$totalCompetencesChecked/$totalCompetencesToReport',
+                        pupil.credit.toString(),
                         style: const TextStyle(
-                          fontSize: 15,
+                          fontSize: 23,
                           fontWeight: FontWeight.bold,
                           color: backgroundColor,
                         ),
                       ),
                     ),
-                  ),
-                  Text(
-                    pupil.specialNeeds != null
-                        ? pupil.specialNeeds!.length == 4
-                            ? '${pupil.specialNeeds!.substring(0, 2)} ${pupil.specialNeeds!.substring(2, 4)}'
-                            : pupil.specialNeeds!.substring(0, 2)
-                        : '',
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                      color: groupColor,
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-              const Gap(15),
+              const Gap(20),
             ],
           ),
-          PupilLearningContentExpansionTileNavBar(
-            pupil: pupil,
+          CustomExpansionTileContent(
+            title: null,
+            tileController: tileController,
+            widgetList: const [],
           ),
         ],
       ),

@@ -48,34 +48,35 @@ class CompetenceCard extends HookWidget {
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(5.0),
               child: Row(mainAxisSize: MainAxisSize.max, children: [
                 const Gap(10),
                 Expanded(
-                    child: isReport
-                        ? Text(
-                            competence.competenceName,
-                            maxLines: 4,
-                            softWrap: true,
-                            textAlign: TextAlign.start,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              //fontWeight: FontWeight.bold,
-                              fontSize: 15,
-                            ),
-                          )
-                        : Text(
-                            competence.competenceName,
-                            maxLines: 3,
-                            softWrap: true,
-                            textAlign: TextAlign.start,
-                            style: TextStyle(
-                              fontSize:
-                                  competence.parentCompetence == null ? 20 : 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          )),
+                  child: isReport
+                      ? Text(
+                          competence.competenceName,
+                          maxLines: 4,
+                          softWrap: true,
+                          textAlign: TextAlign.start,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            //fontWeight: FontWeight.bold,
+                            fontSize: 15,
+                          ),
+                        )
+                      : Text(
+                          competence.competenceName,
+                          maxLines: 3,
+                          softWrap: true,
+                          textAlign: TextAlign.start,
+                          style: TextStyle(
+                            fontSize:
+                                competence.parentCompetence == null ? 20 : 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                ),
                 Row(children: [
                   const Gap(20),
                   if (isReport) ...<Widget>[
@@ -114,10 +115,14 @@ class CompetenceCard extends HookWidget {
                     ),
                     const Gap(10)
                   ],
+                  if (competenceChecks.isEmpty && !isReport) const Gap(35),
                   if (locator<CompetenceManager>()
                       .isCompetenceWithChildren(competence))
-                    CustomExpansionTileSwitch(
-                      customExpansionTileController: controller,
+                    Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: CustomExpansionTileSwitch(
+                        customExpansionTileController: controller,
+                      ),
                     ),
                   const Gap(10),
                   InkWell(
