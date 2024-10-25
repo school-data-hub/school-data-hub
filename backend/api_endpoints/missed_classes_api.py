@@ -3,7 +3,6 @@ from datetime import datetime
 from apiflask import APIBlueprint, abort
 from flask import jsonify, request
 
-from app import db
 from auth_middleware import token_required
 from helpers.db_helpers import (
     get_missed_class_by_pupil_and_schoolday,
@@ -13,6 +12,7 @@ from helpers.db_helpers import (
 from helpers.log_entries import create_log_entry
 from models.pupil import Pupil
 from models.schoolday import MissedClass, Schoolday
+from models.shared import db
 from schemas.missed_class_schemas import *
 from schemas.pupil_schemas import *
 

@@ -3,11 +3,11 @@ from typing import List, Optional
 
 from sqlalchemy import or_
 
-from app import db
 from models.authorization import Authorization
 from models.pupil import Pupil
 from models.school_list import SchoolList
 from models.schoolday import MissedClass, Schoolday, SchooldayEvent
+from models.shared import db
 from models.support_category import SupportCategory, SupportGoal
 from models.workbook import Workbook
 

@@ -5,12 +5,12 @@ from datetime import datetime
 from apiflask import APIBlueprint, FileSchema, abort
 from flask import current_app, request, send_file
 
-from app import db
 from auth_middleware import token_required
 from helpers.db_helpers import date_string_to_date, get_pupil_by_id, now_as_date
 from helpers.log_entries import create_log_entry
 from models.competence import Competence, CompetenceCheck, CompetenceCheckFile
 from models.pupil import Pupil
+from models.shared import db
 from schemas.competence_schemas import *
 from schemas.log_entry_schemas import ApiFileSchema
 from schemas.pupil_schemas import *

@@ -5,11 +5,11 @@ from datetime import datetime
 from apiflask import APIBlueprint, FileSchema, abort
 from flask import current_app, json, jsonify, request, send_file
 
-from app import db
 from auth_middleware import token_required
 from helpers.db_helpers import get_workbook_by_isbn
 from helpers.log_entries import create_log_entry
 from models.log_entry import LogEntry
+from models.shared import db
 from models.workbook import Workbook
 from schemas.log_entry_schemas import ApiFileSchema
 from schemas.workbook_schemas import *

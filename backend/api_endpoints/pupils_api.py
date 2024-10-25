@@ -5,11 +5,11 @@ from datetime import datetime
 from apiflask import APIBlueprint, FileSchema, abort
 from flask import current_app, json, jsonify, request, send_file
 
-from app import db
 from helpers.db_helpers import date_string_to_date, get_pupil_by_id
 from helpers.error_message_helpers import pupil_not_found
 from helpers.log_entries import create_log_entry
 from models.log_entry import LogEntry
+from models.shared import db
 from schemas.log_entry_schemas import ApiFileSchema
 
 pupil_api = APIBlueprint("pupils_api", __name__, url_prefix="/api/pupils")
