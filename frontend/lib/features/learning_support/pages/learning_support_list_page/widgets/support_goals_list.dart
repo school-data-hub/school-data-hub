@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
-import 'package:schuldaten_hub/features/learning_support/widgets/support_category_widgets/support_goal_card.dart';
+import 'package:schuldaten_hub/features/learning_support/pages/widgets/support_goal/support_goal_card.dart';
 
 class SupportGoalsList extends StatelessWidget {
   final PupilProxy pupil;

@@ -81,14 +81,15 @@ class SchooldayEventApiService {
   }
 
   Future<PupilData> patchSchooldayEvent(
-      {required String schooldayEventId,
-      String? admonisher,
+      {required String id,
+      String? creator,
+      String? type,
       String? reason,
       bool? processed,
       //String? file,
       String? processedBy,
       DateTime? processedAt,
-      DateTime? admonishedDay}) async {
+      DateTime? day}) async {
     notificationManager.apiRunningValue(true);
 
     // if the schooldayEvent is patched as processed,
@@ -108,19 +109,19 @@ class SchooldayEventApiService {
     }
 
     final data = jsonEncode({
-      if (admonisher != null) "created_by": admonisher,
+      if (creator != null) "created_by": creator,
+      if (type != null) "schoolday_event_type": type,
       if (reason != null) "schoolday_event_reason": reason,
       if (processed != null) "processed": processed,
       if (processedBy != null) "processed_by": processedBy,
       if (processed == false) "processed_by": null,
       if (processedAt != null) "processed_at": processedAt.formatForJson(),
       if (processed == false) "processed_at": null,
-      if (admonishedDay != null)
-        "schoolday_event_day": admonishedDay.formatForJson(),
+      if (day != null) "schoolday_event_day": day.formatForJson(),
     });
 
-    final Response response = await _client
-        .patch(_patchSchooldayEventUrl(schooldayEventId), data: data);
+    final Response response =
+        await _client.patch(_patchSchooldayEventUrl(id), data: data);
 
     if (response.statusCode != 200) {
       notificationManager.showSnackBar(
@@ -233,7 +234,7 @@ class SchooldayEventApiService {
     return '/schoolday_events/$id/processed_file';
   }
 
-  deleteSchooldayEventFile(
+  Future<PupilData> deleteSchooldayEventFile(
       String schooldayEventId, String cacheKey, bool isProcessed) async {
     locator<NotificationManager>().apiRunningValue(true);
 

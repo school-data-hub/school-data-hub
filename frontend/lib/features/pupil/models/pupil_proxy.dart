@@ -28,6 +28,7 @@ enum SchoolGrade {
     'S3': SchoolGrade.S3,
     'S4': SchoolGrade.S4,
   };
+
   final String value;
   const SchoolGrade(this.value);
 }
@@ -101,6 +102,7 @@ class PupilProxy with ChangeNotifier {
     GroupFilter(GroupId.C2),
     GroupFilter(GroupId.C3),
   ];
+
   static List<SchoolGradeFilter> schoolGradeFilters = [
     SchoolGradeFilter(SchoolGrade.E1),
     SchoolGradeFilter(SchoolGrade.E2),
@@ -212,10 +214,10 @@ class PupilProxy with ChangeNotifier {
   String? get parentsContact => _pupilData.parentsContact;
   int get credit => _pupilData.credit;
   int get creditEarned => _pupilData.creditEarned;
-  String? get fiveYears => _pupilData.fiveYears;
-  int get individualDevelopmentPlan => _pupilData.individualDevelopmentPlan;
-  List<IndividualDevelopmentPlan> get individualDevelopmentPlans =>
-      _pupilData.individualDevelopmentPlans;
+  DateTime? get fiveYears => _pupilData.fiveYears;
+  int get individualDevelopmentPlan => _pupilData.latestSupportLevel;
+  List<SupportLevel> get individualDevelopmentPlans =>
+      _pupilData.supportLevelHistory;
   int get internalId => _pupilData.internalId;
   bool get ogs => _pupilData.ogs;
   String? get ogsInfo => _pupilData.ogsInfo;

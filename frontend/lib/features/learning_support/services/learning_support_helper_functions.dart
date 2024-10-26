@@ -75,6 +75,19 @@ class LearningSupportHelper {
     return [];
   }
 
+  //- TODO: Is this necessary?
+  static SupportGoal? getGoalForCategory(PupilProxy pupil, int goalCategoryId) {
+    if (pupil.pupilGoals != null) {
+      if (pupil.pupilGoals!.isNotEmpty) {
+        final SupportGoal? goal = pupil.pupilGoals!.lastWhereOrNull(
+            (element) => element.supportCategoryId == goalCategoryId);
+        return goal;
+      }
+      return null;
+    }
+    return null;
+  }
+
   static SupportCategoryStatus? getCategoryStatus(
       PupilProxy pupil, int goalCategoryId) {
     if (pupil.supportCategoryStatuses != null) {
@@ -84,18 +97,6 @@ class LearningSupportHelper {
                 (element) => element.supportCategoryId == goalCategoryId);
         return categoryStatus;
       }
-    }
-    return null;
-  }
-
-  static SupportGoal? getGoalForCategory(PupilProxy pupil, int goalCategoryId) {
-    if (pupil.pupilGoals != null) {
-      if (pupil.pupilGoals!.isNotEmpty) {
-        final SupportGoal? goal = pupil.pupilGoals!.lastWhereOrNull(
-            (element) => element.supportCategoryId == goalCategoryId);
-        return goal;
-      }
-      return null;
     }
     return null;
   }

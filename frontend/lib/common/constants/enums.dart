@@ -84,7 +84,7 @@ enum PupilFilter {
   goneHome,
   present,
   notPresent,
-  specialNeeds,
+
   ogs,
   notOgs,
   specialInfo,
@@ -93,9 +93,7 @@ enum PupilFilter {
   preSchoolRevision1,
   preSchoolRevision2,
   preSchoolRevision3,
-  developmentPlan1,
-  developmentPlan2,
-  developmentPlan3,
+
   fiveYears,
   communicationPupil,
   communicationTutor1,
@@ -111,15 +109,45 @@ enum PupilFilter {
   authorizationNullResponse,
   authorizationCommentResponse,
   authorizationFileResponse,
-  supportAreaMotorics,
-  supportAreaLanguage,
-  supportAreaMath,
-  supportAreaGerman,
-  supportAreaEmotions,
-  supportAreaLearning,
 }
 
-Map<PupilFilter, bool> initialFilterValues = {
+enum SupportLevel {
+  supportLevel1,
+  supportLevel2,
+  supportLevel3,
+  supportLevel4,
+  specialNeeds,
+  migrationSupport,
+}
+
+Map<SupportLevel, bool> initialSupportLevelFilterValues = {
+  SupportLevel.supportLevel1: false,
+  SupportLevel.supportLevel2: false,
+  SupportLevel.supportLevel3: false,
+  SupportLevel.supportLevel4: false,
+  SupportLevel.specialNeeds: false,
+  SupportLevel.migrationSupport: false,
+};
+
+enum SupportAreaFilter {
+  motorics,
+  language,
+  math,
+  german,
+  emotions,
+  learning,
+}
+
+Map<SupportAreaFilter, bool> initialSupportAreaFilterValues = {
+  SupportAreaFilter.motorics: false,
+  SupportAreaFilter.language: false,
+  SupportAreaFilter.math: false,
+  SupportAreaFilter.german: false,
+  SupportAreaFilter.emotions: false,
+  SupportAreaFilter.learning: false,
+};
+
+Map<PupilFilter, bool> initialPupilFilterValues = {
   PupilFilter.late: false,
   PupilFilter.missed: false,
   PupilFilter.home: false,
@@ -128,7 +156,6 @@ Map<PupilFilter, bool> initialFilterValues = {
   PupilFilter.goneHome: false,
   PupilFilter.present: false,
   PupilFilter.notPresent: false,
-  PupilFilter.specialNeeds: false,
   PupilFilter.ogs: false,
   PupilFilter.notOgs: false,
   PupilFilter.specialInfo: false,
@@ -137,9 +164,6 @@ Map<PupilFilter, bool> initialFilterValues = {
   PupilFilter.preSchoolRevision1: false,
   PupilFilter.preSchoolRevision2: false,
   PupilFilter.preSchoolRevision3: false,
-  PupilFilter.developmentPlan1: false,
-  PupilFilter.developmentPlan2: false,
-  PupilFilter.developmentPlan3: false,
   PupilFilter.fiveYears: false,
   PupilFilter.communicationPupil: false,
   PupilFilter.communicationTutor1: false,
@@ -155,10 +179,4 @@ Map<PupilFilter, bool> initialFilterValues = {
   PupilFilter.authorizationNullResponse: false,
   PupilFilter.authorizationCommentResponse: false,
   PupilFilter.authorizationFileResponse: false,
-  PupilFilter.supportAreaMotorics: false,
-  PupilFilter.supportAreaLanguage: false,
-  PupilFilter.supportAreaMath: false,
-  PupilFilter.supportAreaGerman: false,
-  PupilFilter.supportAreaEmotions: false,
-  PupilFilter.supportAreaLearning: false,
 };

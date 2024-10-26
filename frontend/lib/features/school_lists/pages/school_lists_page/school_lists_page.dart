@@ -3,16 +3,13 @@ import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/constants/colors.dart';
 import 'package:schuldaten_hub/common/constants/enums.dart';
 import 'package:schuldaten_hub/common/constants/styles.dart';
-import 'package:schuldaten_hub/common/models/session.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
-import 'package:schuldaten_hub/common/services/session_manager.dart';
 import 'package:schuldaten_hub/common/widgets/search_text_field.dart';
-import 'package:schuldaten_hub/features/school_lists/models/school_list.dart';
 import 'package:schuldaten_hub/features/school_lists/filters/school_list_filter_manager.dart';
-import 'package:schuldaten_hub/features/school_lists/services/school_list_manager.dart';
+import 'package:schuldaten_hub/features/school_lists/models/school_list.dart';
 import 'package:schuldaten_hub/features/school_lists/pages/school_lists_page/widgets/school_list_card.dart';
 import 'package:schuldaten_hub/features/school_lists/pages/school_lists_page/widgets/school_lists_bottom_navbar.dart';
-
+import 'package:schuldaten_hub/features/school_lists/services/school_list_manager.dart';
 import 'package:watch_it/watch_it.dart';
 
 class SchoolListsPage extends WatchingWidget {
@@ -22,7 +19,6 @@ class SchoolListsPage extends WatchingWidget {
   Widget build(BuildContext context) {
     bool filtersOn = watchValue((SchoolListFilterManager x) => x.filterState);
 
-    Session session = watchValue((SessionManager x) => x.credentials);
     List<SchoolList> schoolLists =
         watchValue((SchoolListFilterManager x) => x.filteredSchoolLists);
     // List<SchoolList> visibleSchoolLists = schoolLists

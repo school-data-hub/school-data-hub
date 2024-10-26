@@ -325,19 +325,29 @@ class PupilManager extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> patchPupilWithIndividualDevelopmentPlan(
+  Future<void> patchPupilWithNewSupportLevel(
       {required int pupilId,
       required int level,
       required DateTime createdAt,
       required String createdBy,
       required String comment}) async {
-    final PupilData updatedPupil =
-        await apiPupilService.patchPupilWithIndividualDevelopmentPlan(
+    final PupilData updatedPupil = await apiPupilService.updateSupportLevel(
       internalId: pupilId,
-      individualDevelopmentPlanLevel: level,
+      newSupportLevel: level,
       createdAt: createdAt,
       createdBy: createdBy,
       comment: comment,
+    );
+
+    _pupils[pupilId]!.updatePupil(updatedPupil);
+  }
+
+  Future<void> deleteSupportLevelHistoryItem(
+      {required int pupilId, required String supportLevelId}) async {
+    final PupilData updatedPupil =
+        await apiPupilService.deleteSupportLevelHistoryItem(
+      internalId: pupilId,
+      supportLevelId: supportLevelId,
     );
 
     _pupils[pupilId]!.updatePupil(updatedPupil);

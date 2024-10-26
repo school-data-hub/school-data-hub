@@ -1,13 +1,13 @@
-export '../../../features/schoolday_events/services/schoolday_event_api_service.dart';
+export '../../../features/attendance/services/attendance_api_service.dart';
 export '../../../features/authorizations/services/authorization_api_service.dart';
 export '../../../features/competence/services/competence_api_service.dart';
 export '../../../features/learning_support/services/learning_support_api_service.dart';
-export '../../../features/attendance/services/attendance_api_service.dart';
 export '../../../features/pupil/services/pupil_data_api_service.dart';
-export '../../../features/workbooks/services/pupil_workbook_api_service.dart';
 export '../../../features/school_lists/services/school_list_api_service.dart';
+export '../../../features/schoolday_events/services/schoolday_event_api_service.dart';
 export '../../../features/schooldays/services/schoolday_api_service.dart';
 export '../../../features/users/services/user_api_service.dart';
+export '../../../features/workbooks/services/pupil_workbook_api_service.dart';
 export '../../../features/workbooks/services/workbook_api_service.dart';
 
 class ApiSettings {

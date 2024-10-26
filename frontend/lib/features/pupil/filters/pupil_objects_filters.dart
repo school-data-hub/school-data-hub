@@ -9,7 +9,7 @@ import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
 
 bool attendanceFilters(PupilProxy pupil) {
   final thisDate = locator<SchooldayManager>().thisDate.value;
-  final activeFilters = locator<PupilFilterManager>().filterState.value;
+  final activeFilters = locator<PupilFilterManager>().pupilFilterState.value;
 
   // Filter pupils present
   if ((activeFilters[PupilFilter.present]! &&

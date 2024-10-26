@@ -48,25 +48,25 @@ class SchoolListFilterManager {
     bool filterIsOn = false;
     for (PupilList pupilList in pupilLists) {
       if (oldFilterManager
-              .filterState.value[PupilFilter.schoolListYesResponse]! &&
+              .pupilFilterState.value[PupilFilter.schoolListYesResponse]! &&
           pupilList.pupilListStatus != true) {
         filterIsOn = true;
         continue;
       }
       if (oldFilterManager
-              .filterState.value[PupilFilter.schoolListNoResponse]! &&
+              .pupilFilterState.value[PupilFilter.schoolListNoResponse]! &&
           pupilList.pupilListStatus != false) {
         filterIsOn = true;
         continue;
       }
       if (oldFilterManager
-              .filterState.value[PupilFilter.schoolListNullResponse]! &&
+              .pupilFilterState.value[PupilFilter.schoolListNullResponse]! &&
           pupilList.pupilListStatus != null) {
         filterIsOn = true;
         continue;
       }
       if (oldFilterManager
-              .filterState.value[PupilFilter.schoolListCommentResponse]! &&
+              .pupilFilterState.value[PupilFilter.schoolListCommentResponse]! &&
           pupilList.pupilListComment == null) {
         filterIsOn = true;
         continue;

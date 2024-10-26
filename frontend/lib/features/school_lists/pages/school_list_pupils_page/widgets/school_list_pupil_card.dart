@@ -21,13 +21,17 @@ import 'package:watch_it/watch_it.dart';
 
 class SchoolListPupilCard extends WatchingWidget {
   final int internalId;
+
   final SchoolList originList;
+
   SchoolListPupilCard(this.internalId, this.originList, {super.key});
+
   final schoolListLocator = locator<SchoolListManager>();
+
   @override
   Widget build(BuildContext context) {
-    final PupilProxy pupil =
-        watch(locator<PupilManager>().findPupilById(internalId)!);
+    final PupilProxy pupil = locator<PupilManager>().findPupilById(internalId)!;
+
     final thisSchoolList = watchValue((SchoolListManager x) => x.schoolLists)
         .firstWhere((element) => element.listId == originList.listId);
 

@@ -105,12 +105,22 @@ class PupilsFilterImplementation with ChangeNotifier implements PupilsFilter {
     bool filtersOn = false;
     // checks if any not yet migrated filters are active
     final bool specificFiltersOn = locator<PupilFilterManager>()
-            .filterState
+            .pupilFilterState
             .value
             .values
             .any((x) => x == true) ||
         locator<SchooldayEventFilterManager>()
             .schooldayEventsFilterState
+            .value
+            .values
+            .any((x) => x == true) ||
+        locator<PupilFilterManager>()
+            .supportLevelFilterState
+            .value
+            .values
+            .any((x) => x == true) ||
+        locator<PupilFilterManager>()
+            .supportAreaFilterState
             .value
             .values
             .any((x) => x == true);

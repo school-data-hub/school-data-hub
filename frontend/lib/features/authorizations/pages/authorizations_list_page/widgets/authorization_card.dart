@@ -4,7 +4,6 @@ import 'package:schuldaten_hub/common/constants/colors.dart';
 import 'package:schuldaten_hub/features/authorizations/models/authorization.dart';
 import 'package:schuldaten_hub/features/authorizations/pages/authorization_pupils_page/authorization_pupils_page.dart';
 import 'package:schuldaten_hub/features/authorizations/pages/authorizations_list_page/widgets/authorization_list_stats_row.dart';
-
 import 'package:watch_it/watch_it.dart';
 
 class AuthorizationCard extends WatchingWidget {

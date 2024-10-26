@@ -9,18 +9,16 @@ import 'package:schuldaten_hub/common/services/notification_manager.dart';
 import 'package:schuldaten_hub/common/utils/logger.dart';
 import 'package:schuldaten_hub/common/widgets/avatar.dart';
 import 'package:schuldaten_hub/common/widgets/dialogues/long_textfield_dialog.dart';
-import 'package:schuldaten_hub/features/attendance/services/attendance_helper_functions.dart';
-import 'package:schuldaten_hub/features/attendance/services/attendance_manager.dart';
 import 'package:schuldaten_hub/features/attendance/pages/attendance_page/widgets/attendance_dropdown_menu_items.dart';
 import 'package:schuldaten_hub/features/attendance/pages/attendance_page/widgets/dialogues/late_in_minutes_dialog.dart';
 import 'package:schuldaten_hub/features/attendance/pages/attendance_page/widgets/dialogues/multiple_entries_dialog.dart';
 import 'package:schuldaten_hub/features/attendance/pages/attendance_page/widgets/dialogues/returned_time_picker.dart';
+import 'package:schuldaten_hub/features/attendance/services/attendance_helper_functions.dart';
+import 'package:schuldaten_hub/features/attendance/services/attendance_manager.dart';
 import 'package:schuldaten_hub/features/main_menu_pages/widgets/landing_bottom_nav_bar.dart';
-import 'package:schuldaten_hub/features/pupil/services/pupil_manager.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
-
 import 'package:schuldaten_hub/features/pupil/pages/pupil_profile_page/pupil_profile_page.dart';
-
+import 'package:schuldaten_hub/features/pupil/services/pupil_manager.dart';
 import 'package:watch_it/watch_it.dart';
 
 class AttendanceCard extends WatchingWidget {

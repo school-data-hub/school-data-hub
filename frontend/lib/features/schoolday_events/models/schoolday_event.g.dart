@@ -11,7 +11,7 @@ SchooldayEvent _$SchooldayEventFromJson(Map<String, dynamic> json) =>
       schooldayEventId: json['schoolday_event_id'] as String,
       schooldayEventType: json['schoolday_event_type'] as String,
       schooldayEventReason: json['schoolday_event_reason'] as String,
-      admonishingUser: json['created_by'] as String,
+      createdBy: json['created_by'] as String,
       processed: json['processed'] as bool,
       processedBy: json['processed_by'] as String?,
       processedAt: json['processed_at'] == null
@@ -28,7 +28,7 @@ Map<String, dynamic> _$SchooldayEventToJson(SchooldayEvent instance) =>
       'schoolday_event_id': instance.schooldayEventId,
       'schoolday_event_type': instance.schooldayEventType,
       'schoolday_event_reason': instance.schooldayEventReason,
-      'created_by': instance.admonishingUser,
+      'created_by': instance.createdBy,
       'processed': instance.processed,
       'processed_by': instance.processedBy,
       'processed_at': instance.processedAt?.toIso8601String(),
