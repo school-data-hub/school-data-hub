@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-
+import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/features/learning_support/models/support_category/support_category.dart';
 import 'package:schuldaten_hub/features/learning_support/services/learning_support_manager.dart';
-import 'package:schuldaten_hub/common/services/locator.dart';
 
 class SupportCategoryTree extends StatelessWidget {
   final int? parentId;
@@ -46,7 +45,7 @@ class SupportCategoryTree extends StatelessWidget {
 
         goalCategoryWidgets.add(
           Padding(
-            padding: EdgeInsets.only(top: 10, left: 16.0 * indentation),
+            padding: EdgeInsets.only(top: 10, left: 5.0 * indentation),
             child: children.isNotEmpty
                 ? Wrap(
                     children: [
@@ -71,8 +70,13 @@ class SupportCategoryTree extends StatelessWidget {
                                 Flexible(
                                   child: Text(
                                     goalCategory.categoryName,
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.bold),
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize:
+                                          goalCategory.parentCategory == null
+                                              ? 20
+                                              : 16,
+                                    ),
                                   ),
                                 ),
                               ],
@@ -145,7 +149,7 @@ List<Widget> buildCategoryTree(
 
       goalCategoryWidgets.add(
         Padding(
-          padding: EdgeInsets.only(top: 10, left: 16.0 * indentation),
+          padding: EdgeInsets.only(top: 10, left: 5.0 * indentation),
           child: children.isNotEmpty
               ? Wrap(
                   children: [

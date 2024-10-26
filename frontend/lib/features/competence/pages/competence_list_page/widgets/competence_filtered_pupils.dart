@@ -5,6 +5,7 @@ import 'package:schuldaten_hub/common/constants/colors.dart';
 import 'package:schuldaten_hub/common/utils/custom_expasion_tile_hook.dart';
 import 'package:schuldaten_hub/common/widgets/avatar.dart';
 import 'package:schuldaten_hub/common/widgets/custom_expansion_tile/custom_expansion_tile_content.dart';
+import 'package:schuldaten_hub/common/widgets/custom_expansion_tile/custom_expansion_tile_switch.dart';
 import 'package:schuldaten_hub/features/competence/models/competence.dart';
 import 'package:schuldaten_hub/features/competence/services/competence_helper.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
@@ -26,6 +27,7 @@ class PupilCompetenceCheckCard extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final tileController = useCustomExpansionTileController();
+    final radioButtonValue = useState(0);
     return Card(
       color: Colors.white,
       surfaceTintColor: Colors.white,
@@ -40,7 +42,7 @@ class PupilCompetenceCheckCard extends HookWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              AvatarWithBadges(pupil: pupil, size: 80),
+              AvatarWithBadges(pupil: pupil, size: 70),
               Expanded(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -102,15 +104,43 @@ class PupilCompetenceCheckCard extends HookWidget {
                           child: SingleChildScrollView(
                             scrollDirection: Axis.horizontal,
                             child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                const Text('bisjetzt verdient:'),
-                                const Gap(10),
-                                Text(
-                                  pupil.creditEarned.toString(),
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 18,
-                                  ),
+                                Image.asset('assets/growth_1-4.png',
+                                    width: 40, height: 40),
+                                Radio<int>(
+                                  value: 1,
+                                  groupValue: radioButtonValue.value,
+                                  onChanged: (value) {
+                                    radioButtonValue.value = value!;
+                                  },
+                                ),
+                                Image.asset('assets/growth_2-4.png',
+                                    width: 40, height: 40),
+                                Radio<int>(
+                                  value: 2,
+                                  groupValue: radioButtonValue.value,
+                                  onChanged: (value) {
+                                    radioButtonValue.value = value!;
+                                  },
+                                ),
+                                Image.asset('assets/growth_3-4.png',
+                                    width: 40, height: 40),
+                                Radio<int>(
+                                  value: 3,
+                                  groupValue: radioButtonValue.value,
+                                  onChanged: (value) {
+                                    radioButtonValue.value = value!;
+                                  },
+                                ),
+                                Image.asset('assets/growth_4-4.png',
+                                    width: 40, height: 40),
+                                Radio<int>(
+                                  value: 4,
+                                  groupValue: radioButtonValue.value,
+                                  onChanged: (value) {
+                                    radioButtonValue.value = value!;
+                                  },
                                 ),
                               ],
                             ),
@@ -122,29 +152,30 @@ class PupilCompetenceCheckCard extends HookWidget {
                 ),
               ),
               const Gap(20),
-              InkWell(
-                onTap: () {
-                  tileController.isExpanded
-                      ? tileController.collapse()
-                      : tileController.expand();
-                },
-                child: Column(
-                  children: [
-                    const Gap(20),
-                    const Text('Credit'),
-                    Center(
-                      child: Text(
-                        pupil.credit.toString(),
-                        style: const TextStyle(
-                          fontSize: 23,
-                          fontWeight: FontWeight.bold,
-                          color: backgroundColor,
-                        ),
-                      ),
-                    ),
-                  ],
+              if (radioButtonValue.value != 0)
+                InkWell(
+                  onTap: () {
+                    tileController.isExpanded
+                        ? tileController.collapse()
+                        : tileController.expand();
+                  },
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Gap(40),
+                      Center(
+                        child: CustomExpansionTileSwitch(
+                            expansionSwitchWidget: Icon(
+                              tileController.isExpanded
+                                  ? Icons.keyboard_arrow_up
+                                  : Icons.keyboard_arrow_down,
+                              color: interactiveColor,
+                            ),
+                            customExpansionTileController: tileController),
+                      )
+                    ],
+                  ),
                 ),
-              ),
               const Gap(20),
             ],
           ),

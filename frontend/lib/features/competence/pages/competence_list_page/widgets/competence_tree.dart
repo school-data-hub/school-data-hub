@@ -34,32 +34,25 @@ List<Widget> buildCommonCompetenceTree(
 
       competenceWidgets.add(
         children.isNotEmpty
-            ? Padding(
-                padding:
-                    EdgeInsets.only(top: 2.5, left: indentation.toDouble()),
-                child: Wrap(
-                  children: [
-                    CommonCompetenceCard(
-                        competence: competence,
-                        competenceBackgroundColor: competenceBackgroundColor,
-                        navigateToNewOrPatchCompetencePage:
-                            navigateToNewOrPatchCompetencePage,
-                        children: children)
-                  ],
-                ),
-              )
-            : Padding(
-                padding: EdgeInsets.only(left: 5.0 * indentation, bottom: 5.0),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                  child: InkWell(
-                    onLongPress: () => locator<CompetenceManager>()
-                        .deleteCompetence(competence.competenceId),
-                    child: LastChildCompetenceCard(
+            ? Wrap(
+                children: [
+                  CommonCompetenceCard(
                       competence: competence,
+                      competenceBackgroundColor: competenceBackgroundColor,
                       navigateToNewOrPatchCompetencePage:
                           navigateToNewOrPatchCompetencePage,
-                    ),
+                      children: children)
+                ],
+              )
+            : Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                child: InkWell(
+                  onLongPress: () => locator<CompetenceManager>()
+                      .deleteCompetence(competence.competenceId),
+                  child: LastChildCompetenceCard(
+                    competence: competence,
+                    navigateToNewOrPatchCompetencePage:
+                        navigateToNewOrPatchCompetencePage,
                   ),
                 ),
               ),

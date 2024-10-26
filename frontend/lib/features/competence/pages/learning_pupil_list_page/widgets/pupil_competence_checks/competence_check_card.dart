@@ -27,7 +27,7 @@ class CompetenceCheckCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final isAuthorized = SessionHelper.isAuthorized(competenceCheck.createdBy);
     return Padding(
-      padding: const EdgeInsets.only(left: 15.0, right: 5),
+      padding: const EdgeInsets.only(left: 5.0, right: 5),
       child: InkWell(
         onLongPress: () async {
           final bool? confirm = await confirmationDialog(

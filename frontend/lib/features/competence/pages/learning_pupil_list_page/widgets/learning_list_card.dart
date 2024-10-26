@@ -40,7 +40,7 @@ class LearningCard extends WatchingWidget {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Gap(15),
+                    const Gap(10),
                     Row(
                       children: [
                         Expanded(
@@ -81,7 +81,6 @@ class LearningCard extends WatchingWidget {
                                       fontSize: 18,
                                     ),
                                   ),
-                                  const Gap(5),
                                 ],
                               ),
                             ),
@@ -90,48 +89,35 @@ class LearningCard extends WatchingWidget {
                       ],
                     ),
                     const Gap(5),
-                    const Gap(15),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        const Text('Items dokumentiert: '),
+                        const Gap(5),
+                        Text(
+                          '$totalCompetencesChecked/$totalCompetencesToReport',
+                          style: const TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                            color: backgroundColor,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const Gap(5),
                     if (pupil.competenceChecks!.isNotEmpty)
                       CompetenceChecksBadges(pupil: pupil),
                   ],
                 ),
               ),
-              const Gap(8),
-              Column(
-                children: [
-                  const Gap(20),
-                  SizedBox(
-                    width: 50.0,
-                    child: Center(
-                      child: Text(
-                        '$totalCompetencesChecked/$totalCompetencesToReport',
-                        style: const TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
-                          color: backgroundColor,
-                        ),
-                      ),
-                    ),
-                  ),
-                  Text(
-                    pupil.specialNeeds != null
-                        ? pupil.specialNeeds!.length == 4
-                            ? '${pupil.specialNeeds!.substring(0, 2)} ${pupil.specialNeeds!.substring(2, 4)}'
-                            : pupil.specialNeeds!.substring(0, 2)
-                        : '',
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                      color: groupColor,
-                    ),
-                  ),
-                ],
-              ),
-              const Gap(15),
             ],
           ),
-          PupilLearningContentExpansionTileNavBar(
-            pupil: pupil,
+          const Gap(5),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 5.0),
+            child: PupilLearningContentExpansionTileNavBar(
+              pupil: pupil,
+            ),
           ),
         ],
       ),

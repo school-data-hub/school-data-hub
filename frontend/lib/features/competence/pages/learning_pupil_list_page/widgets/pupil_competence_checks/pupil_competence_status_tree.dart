@@ -31,6 +31,19 @@ List<Widget> buildPupilCompetenceStatusTree(
     } else {
       competenceBackgroundColor = passedBackGroundColor;
     }
+    double? averageCompetenceStatus;
+    if (pupilCompetenceChecksMap.containsKey(competence.competenceId)) {
+      final filteredChecks = pupilCompetenceChecksMap[competence.competenceId]!
+          .where((check) => check.competenceStatus != 0)
+          .toList();
+
+      if (filteredChecks.isNotEmpty) {
+        final totalStatus = filteredChecks
+            .map((check) => check.competenceStatus)
+            .reduce((a, b) => a + b);
+        averageCompetenceStatus = totalStatus / filteredChecks.length;
+      }
+    }
 
     if (competence.parentCompetence == parentId) {
       final isReport =
@@ -66,6 +79,7 @@ List<Widget> buildPupilCompetenceStatusTree(
                                 })
                               ]
                             : [],
+                        checksAverageValue: averageCompetenceStatus,
                         children: children,
                       ),
                     ],
@@ -76,6 +90,7 @@ List<Widget> buildPupilCompetenceStatusTree(
                     competence: competence,
                     pupil: pupil,
                     competenceChecks: const [],
+                    checksAverageValue: averageCompetenceStatus,
                     children: children)),
       );
     }

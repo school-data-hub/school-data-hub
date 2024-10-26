@@ -39,6 +39,7 @@ class CommonCompetenceCard extends HookWidget {
               padding: const EdgeInsets.all(10.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   const Gap(10),
                   Expanded(
@@ -52,18 +53,21 @@ class CommonCompetenceCard extends HookWidget {
                         maxLines: 4,
                         softWrap: true,
                         textAlign: TextAlign.start,
-                        style: const TextStyle(
+                        style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
-                          fontSize: 15,
+                          fontSize:
+                              competence.parentCompetence == null ? 20 : 16,
                         ),
                       ),
                     ),
                   ),
-                  if (children.isNotEmpty)
+                  if (children.isNotEmpty) ...<Widget>[
                     CustomExpansionTileSwitch(
                       customExpansionTileController: childrenController,
                     ),
+                    const Gap(10),
+                  ],
                   CustomExpansionTileSwitch(
                     customExpansionTileController: pupilListController,
                     expansionSwitchWidget: const Icon(

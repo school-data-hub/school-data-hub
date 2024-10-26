@@ -12,7 +12,10 @@ final TextEditingController _textEditingController = TextEditingController();
 // based on https://mobikul.com/creating-stateful-dialog-form-in-flutter/
 
 Future newCompetenceCheckDialog(
-    PupilProxy pupil, int competenceId, BuildContext parentContext) async {
+    {required PupilProxy pupil,
+    required int competenceId,
+    required bool isReport,
+    required BuildContext parentContext}) async {
   return await showDialog(
       context: parentContext,
       builder: (context) {
@@ -110,8 +113,10 @@ Future newCompetenceCheckDialog(
                           competenceId: competenceId,
                           competenceStatus: competenceCheckStatusValue,
                           competenceComment: _textEditingController.text,
-                          isReport: false,
+                          isReport: isReport,
                           reportId: null);
+                      // reportId:
+                      //     locator<SchooldayManager>().currentReportId);
 
                       _textEditingController.clear();
                       Navigator.of(parentContext).pop();

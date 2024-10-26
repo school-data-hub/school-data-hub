@@ -107,6 +107,9 @@ class CompetenceHelper {
       }
       // add the competence check to the list of the competence checks of the competence
       competenceChecksMap[competenceCheck.competenceId]!.add(competenceCheck);
+      // order the competence checks by the date of creation latest first
+      competenceChecksMap[competenceCheck.competenceId]!
+          .sort((a, b) => b.createdAt.isAfter(a.createdAt) ? 1 : -1);
     }
 
     return competenceChecksMap;

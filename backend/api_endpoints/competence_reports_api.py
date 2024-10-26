@@ -37,7 +37,7 @@ def post_competence_report(current_user, json_data):
     pupil_id = pupil.internal_id
     created_by = data["created_by"]
     created_at = data["created_at"]
-    created_at = datetime.strptime(created_at, "%Y-%m-%d").date()
+
     school_semester = (
         db.session.query(SchoolSemester)
         .filter(
@@ -56,21 +56,21 @@ def post_competence_report(current_user, json_data):
             404,
         )
     report_id = str(uuid.uuid4().hex)
-    competence_checks = (
-        db.session.query(CompetenceCheck)
-        .filter(
-            and_(
-                CompetenceCheck.created_at >= school_semester.start_date,
-                CompetenceCheck.created_at <= school_semester.end_date,
-                CompetenceCheck.is_report == True,
-            )
-        )
-        .all()
-    )
+    # competence_checks = (
+    #     db.session.query(CompetenceCheck)
+    #     .filter(
+    #         and_(
+    #             CompetenceCheck.created_at >= school_semester.start_date,
+    #             CompetenceCheck.created_at <= school_semester.end_date,
+    #             CompetenceCheck.is_report == True,
+    #         )
+    #     )
+    #     .all()
+    # )
     new_competence_report = CompetenceReport(
         report_id, created_by, created_at, pupil_id, school_semester.id
     )
-    new_competence_report.competence_checks.extend(competence_checks)
+    #  new_competence_report.competence_checks.extend(competence_checks)
     db.session.add(new_competence_report)
     db.session.commit()
     return new_competence_report
