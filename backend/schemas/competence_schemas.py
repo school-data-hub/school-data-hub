@@ -1,4 +1,5 @@
 from apiflask import Schema, fields
+from marshmallow import post_dump
 
 # - COMPETENCE CHECK FILE SCHEMA
 ###############################
@@ -205,6 +206,19 @@ class CompetenceReportSchema(Schema):
             "school_semester_id",
             "competence_checks",
         )
+
+    @post_dump(pass_many=False)
+    def filter_report_checks(self, data, **kwargs):
+
+        if "competence_checks" in data:
+
+            data["competence_checks"] = [
+                check
+                for check in data["competence_checks"]
+                if (check["is_report"] == True)
+            ]
+
+        return data
 
 
 competence_report_schema = CompetenceReportSchema()
