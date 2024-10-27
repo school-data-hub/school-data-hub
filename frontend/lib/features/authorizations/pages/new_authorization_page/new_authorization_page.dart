@@ -6,10 +6,10 @@ import 'package:schuldaten_hub/common/constants/styles.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/widgets/avatar.dart';
 import 'package:schuldaten_hub/features/authorizations/services/authorization_manager.dart';
-import 'package:schuldaten_hub/features/pupil/services/pupil_manager.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
 import 'package:schuldaten_hub/features/pupil/pages/pupil_profile_page/pupil_profile_page.dart';
 import 'package:schuldaten_hub/features/pupil/pages/select_pupils_list_page/select_pupils_list_page.dart';
+import 'package:schuldaten_hub/features/pupil/services/pupil_manager.dart';
 
 class NewAuthorizationPage extends StatefulWidget {
   const NewAuthorizationPage({super.key});

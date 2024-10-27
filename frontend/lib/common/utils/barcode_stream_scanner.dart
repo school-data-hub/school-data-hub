@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:schuldaten_hub/common/constants/styles.dart';
@@ -19,7 +20,7 @@ class _BarcodeStreamScannerState extends State<BarcodeStreamScanner> {
   );
 
   int _counter = 0;
-  List<String> _scannedQrCodes = [];
+  final List<String> _scannedQrCodes = [];
   String _lastProcessedQrCode = '';
 
   Widget _buildBarcodeStream() {

@@ -2,12 +2,12 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
-import 'package:schuldaten_hub/features/schooldays/services/schoolday_manager.dart';
 import 'package:schuldaten_hub/common/utils/extensions.dart';
 import 'package:schuldaten_hub/common/widgets/date_picker.dart';
 import 'package:schuldaten_hub/features/attendance/services/attendance_manager.dart';
-import 'package:schuldaten_hub/features/pupil/services/pupil_manager.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
+import 'package:schuldaten_hub/features/pupil/services/pupil_manager.dart';
+import 'package:schuldaten_hub/features/schooldays/services/schoolday_manager.dart';
 
 class AttendanceValues {
   final MissedType missedTypeValue;
@@ -272,7 +272,7 @@ class AttendanceHelper {
 
 // use one function instead all the set value functions
 // to avoid unnecessary lookups
-  static AttendanceValues setAttendanceInfo(int pupilId, DateTime date) {
+  static AttendanceValues setAttendanceValues(int pupilId, DateTime date) {
     MissedType missedType;
     ContactedType contactedType;
     final PupilProxy pupil = locator<PupilManager>().findPupilById(pupilId)!;

@@ -6,13 +6,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:schuldaten_hub/common/constants/enums.dart';
-import 'package:schuldaten_hub/common/services/api/services/api_client_service.dart';
 import 'package:schuldaten_hub/common/models/env.dart';
+import 'package:schuldaten_hub/common/services/api/services/api_client_service.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_manager.dart';
-import 'package:schuldaten_hub/features/pupil/filters/pupils_filter.dart';
-
-import 'package:schuldaten_hub/features/schooldays/services/schoolday_manager.dart';
 import 'package:schuldaten_hub/common/services/session_manager.dart';
 import 'package:schuldaten_hub/common/utils/logger.dart';
 import 'package:schuldaten_hub/common/utils/secure_storage.dart';
@@ -20,9 +17,11 @@ import 'package:schuldaten_hub/features/authorizations/services/authorization_ma
 import 'package:schuldaten_hub/features/competence/services/competence_manager.dart';
 import 'package:schuldaten_hub/features/learning_support/services/learning_support_manager.dart';
 import 'package:schuldaten_hub/features/main_menu_pages/widgets/landing_bottom_nav_bar.dart';
+import 'package:schuldaten_hub/features/pupil/filters/pupils_filter.dart';
 import 'package:schuldaten_hub/features/pupil/services/pupil_identity_manager.dart';
 import 'package:schuldaten_hub/features/pupil/services/pupil_manager.dart';
 import 'package:schuldaten_hub/features/school_lists/services/school_list_manager.dart';
+import 'package:schuldaten_hub/features/schooldays/services/schoolday_manager.dart';
 import 'package:schuldaten_hub/features/users/services/user_manager.dart';
 import 'package:schuldaten_hub/features/workbooks/services/workbook_manager.dart';
 

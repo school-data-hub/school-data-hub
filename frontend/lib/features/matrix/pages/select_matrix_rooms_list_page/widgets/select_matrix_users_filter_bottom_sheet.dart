@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/constants/styles.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
-import 'package:schuldaten_hub/common/widgets/common_pupil_filters.dart';
+import 'package:schuldaten_hub/features/pupil/pages/widgets/common_pupil_filters.dart';
 import 'package:schuldaten_hub/features/pupil/filters/pupil_filter_manager.dart';
 import 'package:watch_it/watch_it.dart';
 
@@ -65,8 +65,11 @@ class SelectMatrixUsersFilterBottomSheet extends WatchingWidget {
 showSelectMatrixUsersFilterBottomSheet(BuildContext context) {
   return showModalBottomSheet(
     constraints: const BoxConstraints(maxWidth: 800),
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(20.0),
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.only(
+        topLeft: Radius.circular(20.0),
+        topRight: Radius.circular(20.0),
+      ),
     ),
     context: context,
     builder: (_) => const SelectMatrixUsersFilterBottomSheet(),

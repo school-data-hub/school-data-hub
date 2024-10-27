@@ -15,16 +15,18 @@ class SchoolListManager {
   ValueListenable<List<SchoolList>> get schoolLists => _schoolLists;
 
   ValueListenable<List<PupilList>> get pupilSchoolLists => _pupilSchoolLists;
-  ValueListenable<Map<int, List<PupilList>>> get pupilListMap => _pupilListMap;
 
   final _pupilSchoolLists = ValueNotifier<List<PupilList>>([]);
 
   final _schoolLists = ValueNotifier<List<SchoolList>>([]);
-  final _pupilListMap = ValueNotifier<Map<int, List<PupilList>>>({});
 
   // Let's define maps to make lookups faster
-  // with the key being the listId
-  Map<String, SchoolList> _schoolListMap = {};
+  // for schoolLists with the key being the listId
+  final Map<String, SchoolList> _schoolListMap = {};
+  // for pupilLists with the key being the pupilId
+  final _pupilListMap = ValueNotifier<Map<int, List<PupilList>>>({});
+
+  ValueListenable<Map<int, List<PupilList>>> get pupilListMap => _pupilListMap;
 
   SchoolListManager();
 
@@ -32,6 +34,7 @@ class SchoolListManager {
     _schoolLists.value = [];
     _pupilSchoolLists.value = [];
     _pupilListMap.value = {};
+    _schoolListMap.clear();
   }
 
   Future<SchoolListManager> init() async {
@@ -98,10 +101,18 @@ class SchoolListManager {
       if (!_pupilListMap.value.containsKey(pupilList.listedPupilId)) {
         _pupilListMap.value[pupilList.listedPupilId] = [];
       }
-      Set<PupilList> pupilListEntries =
-          _pupilListMap.value[pupilList.listedPupilId]!.toSet();
-      pupilListEntries.add(pupilList);
-      _pupilListMap.value[pupilList.listedPupilId] = pupilListEntries.toList();
+      List<PupilList> pupilListEntries =
+          List.from(_pupilListMap.value[pupilList.listedPupilId]!);
+      // find the pupil list entry and update it
+      final index = pupilListEntries
+          .indexWhere((element) => element.originList == pupilList.originList);
+      if (index != -1) {
+        pupilListEntries[index] = pupilList;
+      } else {
+        pupilListEntries.add(pupilList);
+      }
+
+      _pupilListMap.value[pupilList.listedPupilId] = pupilListEntries;
     }
     _pupilSchoolLists.value =
         _pupilListMap.value.values.expand((list) => list).toList();
@@ -139,7 +150,6 @@ class SchoolListManager {
 
     _schoolListMap[updatedSchoolList.listId] = updatedSchoolList;
     _updateRepositories();
-
     _updatePupilListsFromSchoolList(updatedSchoolList);
 
     notificationManager.showSnackBar(

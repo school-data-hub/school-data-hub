@@ -22,7 +22,7 @@ class FilterButton extends WatchingWidget {
         watchValue((SchoolListFilterManager x) => x.filterState);
 
     return InkWell(
-      onTap: () => showBottomSheetFunction(context),
+      onTap: () => showBottomSheetFunction(),
       onLongPress: () {
         locator<PupilsFilter>().resetFilters();
 

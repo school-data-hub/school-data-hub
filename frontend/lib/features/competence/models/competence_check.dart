@@ -50,11 +50,8 @@ class CompetenceCheckFile {
   final String checkId;
   @JsonKey(name: "file_id")
   final String fileId;
-  @JsonKey(name: "file_url")
-  final String fileUrl;
 
-  CompetenceCheckFile(
-      {required this.checkId, required this.fileId, required this.fileUrl});
+  CompetenceCheckFile({required this.checkId, required this.fileId});
 
   factory CompetenceCheckFile.fromJson(Map<String, dynamic> json) =>
       _$CompetenceCheckFileFromJson(json);

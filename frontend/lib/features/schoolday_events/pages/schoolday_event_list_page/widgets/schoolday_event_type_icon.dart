@@ -12,12 +12,7 @@ class SchooldayEventTypeIcon extends StatelessWidget {
       case 'Eg':
         return const Row(
           children: [
-            Icon(
-              Icons.group_rounded,
-              color: accentColor,
-            ),
-            Gap(5),
-            Icon(Icons.message, color: backgroundColor),
+            Text('👪️'),
           ],
         );
       case 'rk':
@@ -55,7 +50,7 @@ class SchooldayEventTypeIcon extends StatelessWidget {
           )
         ]);
       default:
-        return const Icon(Icons.local_offer_rounded, color: Colors.black);
+        return const Icon(Icons.question_mark_rounded, color: Colors.red);
     }
   }
 }

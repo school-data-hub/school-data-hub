@@ -84,7 +84,7 @@ class BottomNavigation extends WatchingWidget {
           ScanToolsPage(),
           SettingsPage(),
         ],
-        //onPageChanged: (index) => manager.setBottomNavPage(index),
+        onPageChanged: (index) => manager.setBottomNavPage(index),
       ),
       bottomNavigationBar: BottomNavBarLayout(
         bottomNavBar: BottomNavigationBar(

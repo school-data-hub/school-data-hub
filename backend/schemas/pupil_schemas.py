@@ -16,18 +16,31 @@ from schemas.school_list_schemas import PupilProfileListSchema
 from schemas.workbook_schemas import PupilWorkbookSchema
 
 
-class IndividualDevelopmentPlanInSchema(Schema):
+class SupportLevelInSchema(Schema):
+
     comment = fields.String()
     created_by = fields.String()
     created_at = fields.Date()
     level = fields.Integer()
 
     class Meta:
-        fields = ('pupil_id', 'level', 'comment', 'created_by', 'created_at')
+        fields = ('level', 'comment', 'created_by', 'created_at')
 
 
-individual_development_plan_in_schema = IndividualDevelopmentPlanInSchema()
-individual_development_plans_in_schema = IndividualDevelopmentPlanInSchema(many=True)
+support_level_in_schema = SupportLevelInSchema()
+support_levels_in_schema = SupportLevelInSchema(many = True)
+
+class SupportLevelOutSchema(Schema):
+    support_level_id = fields.String()
+    comment = fields.String()
+    created_by = fields.String()
+    created_at = fields.Date()
+    level = fields.Integer()
+    class Meta:
+        fields = ('support_level_id', 'level', 'comment', 'created_by', 'created_at')
+
+support_level_in_schema = SupportLevelInSchema()
+support_levels_in_schema = SupportLevelInSchema(many = True)
 
 
 class PupilSchema(Schema):
@@ -41,13 +54,13 @@ class PupilSchema(Schema):
     ogs = fields.Boolean()
     pick_up_time = fields.String()
     ogs_info = fields.String()
-    individual_development_plan = fields.Integer()
-    five_years = fields.String()
+    latest_support_level = fields.Integer()
+    five_years = fields.Date(allow_none=True)
     communication_pupil = fields.String(allow_none=True)
     communication_tutor1 = fields.String(allow_none=True)
     communication_tutor2 = fields.String(allow_none=True)
     preschool_revision = fields.Integer()
-    individual_development_plans = fields.List(fields.Nested(IndividualDevelopmentPlanInSchema))
+    support_level_history = fields.List(fields.Nested(SupportLevelOutSchema))
     pupil_missed_classes = fields.List(fields.Nested(MissedClassSchema))
     pupil_schoolday_events = fields.List(fields.Nested(SchooldayEventSchema))
     support_goals = fields.List(fields.Nested(SupportGoalSchema))
@@ -65,14 +78,13 @@ class PupilSchema(Schema):
 
     class Meta:
         fields = (
-            'avatar_id', 'internal_id', 'name', 'contact', 'parents_contact', 'credit', 'credit_earned', 'ogs',
-            'pick_up_time', 'ogs_info', 'individual_development_plan', 'five_years', 'communication_pupil',
-            'communication_tutor1',
-            'communication_tutor2', 'preschool_revision', 'individual_development_plans', 'pupil_missed_classes',
-            'pupil_schoolday_events', 'support_goals',
-            'competence_goals', 'support_category_statuses', 'pupil_workbooks', 'pupil_books', 'pupil_lists',
-            'competence_checks',
-            'competence_reports',
+
+            'avatar_id', 'internal_id', 'name', 'contact', 'parents_contact','credit', 'credit_earned', 'ogs',
+            'pick_up_time', 'ogs_info', 'latest_support_level', 'five_years', 'communication_pupil', 'communication_tutor1',
+            'communication_tutor2', 'preschool_revision', 'support_level_history', 'pupil_missed_classes', 'pupil_schoolday_events', 'support_goals',
+            'competence_goals', 'support_category_statuses', 'pupil_workbooks', 'pupil_books', 'pupil_lists', 'competence_checks',
+            'competence_reports', 
+
             # 'authorizations', 
             'credit_history_logs', 'special_information', 'emergency_care')
 
@@ -125,6 +137,12 @@ class PupilSchema(Schema):
                             event['schoolday_event_day'], '%Y-%m-%d').date() <= previous_semester.end_date)
                 )
             ]
+            
+            data["competence_checks"] = [
+                check
+                for check in data["competence_checks"]
+                if (check["is_report"] == False)
+            ]
 
         return data
 
@@ -143,7 +161,7 @@ class PupilFlatSchema(Schema):
     pick_up_time = fields.String(allow_none=True)
     ogs_info = fields.String(allow_none=True)
     individual_development_plan = fields.Integer()
-    five_years = fields.String(allow_none=True)
+    five_years = fields.Date(allow_none=True)
     communication_pupil = fields.String(allow_none=True)
     communication_tutor1 = fields.String(allow_none=True)
     communication_tutor2 = fields.String(allow_none=True)
@@ -180,7 +198,6 @@ pupils_only_goal_schema = PupilOnlyGoalSchema(many=True)
 class PupilIdListSchema(Schema):
     pupils = fields.List(fields.Integer())
 
-
 pupil_id_list_schema = PupilIdListSchema()
 
 
@@ -193,3 +210,27 @@ class PupilSiblingsPatchSchema(Schema):
 
 
 pupil_siblings_patch_schema = PupilSiblingsPatchSchema()
+
+class ProspectivePupilSchema(Schema):
+    internal_id = fields.Integer(required = True)
+    contact =  fields.String(allow_none=True)
+    parents_contact = fields.String(allow_none=True)
+    ogs = fields.Boolean()
+    ogs_info = fields.String()
+    individual_development_plan = fields.Integer()
+    communication_pupil = fields.String(allow_none=True)
+    communication_tutor1 = fields.String(allow_none=True)
+    communication_tutor2 = fields.String(allow_none=True)
+    preschool_revision = fields.Integer()
+    avatar_id = fields.String(allow_none=True)
+    avatar_url = fields.String(allow_none=True)
+    special_information = fields.String(allow_none=True)
+    emergency_care = fields.Boolean(allow_none=True)
+    date_created = fields.Date()
+    class Meta:
+        fields = ('internal_id', 'contact', 'parents_contact', 'ogs', 'ogs_info', 'individual_development_plan',
+                  'communication_pupil', 'communication_tutor1', 'communication_tutor2', 'preschool_revision',
+                  'avatar_id', 'avatar_url', 'special_information', 'emergency_care', 'date_created')
+    
+prospective_pupil_schema = ProspectivePupilSchema()
+prospective_pupils_schema = ProspectivePupilSchema(many = True)

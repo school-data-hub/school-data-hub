@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:schuldaten_hub/common/widgets/common_pupil_filters.dart';
+import 'package:schuldaten_hub/features/pupil/pages/widgets/common_pupil_filters.dart';
 import 'package:watch_it/watch_it.dart';
 
 class SpecialInfoFilterBottomSheet extends WatchingWidget {

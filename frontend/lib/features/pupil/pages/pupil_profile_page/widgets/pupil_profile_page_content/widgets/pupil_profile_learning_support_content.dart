@@ -2,15 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/constants/colors.dart';
 import 'package:schuldaten_hub/common/constants/styles.dart';
+import 'package:schuldaten_hub/common/services/locator.dart';
+import 'package:schuldaten_hub/common/services/session_manager.dart';
 import 'package:schuldaten_hub/common/utils/extensions.dart';
-import 'package:schuldaten_hub/features/learning_support/pages/new_category_item_page/controller/new_category_item_controller.dart';
 import 'package:schuldaten_hub/features/learning_support/pages/learning_support_list_page/widgets/support_goals_list.dart';
-import 'package:schuldaten_hub/features/learning_support/widgets/support_category_widgets/support_category_statuses_list.dart';
+import 'package:schuldaten_hub/features/learning_support/pages/new_support_category_goal_page/controller/new_support_category_goal_controller.dart';
+import 'package:schuldaten_hub/features/learning_support/pages/widgets/dialogs/individual_development_plan_dialog.dart';
+import 'package:schuldaten_hub/features/learning_support/pages/widgets/dialogs/preschool_revision_dialog.dart';
+import 'package:schuldaten_hub/features/learning_support/pages/widgets/support_catagory_status/support_category_statuses_list.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_data.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
 import 'package:schuldaten_hub/features/pupil/services/pupil_helper_functions.dart';
-import 'package:schuldaten_hub/features/learning_support/widgets/dialogs/individual_development_plan_dialog.dart';
-import 'package:schuldaten_hub/features/learning_support/widgets/dialogs/preschool_revision_dialog.dart';
+import 'package:schuldaten_hub/features/pupil/services/pupil_manager.dart';
 
 List<Widget> pupilLearningSupportContentList(
     PupilProxy pupil, BuildContext context) {
@@ -97,7 +100,7 @@ List<Widget> pupilLearningSupportContentList(
         style: actionButtonStyle,
         onPressed: () {
           Navigator.of(context).push(MaterialPageRoute(
-              builder: (ctx) => NewCategoryItem(
+              builder: (ctx) => NewSupportCategoryGoal(
                     appBarTitle: 'Neuer Förderbereich',
                     pupilId: pupil.internalId,
                     goalCategoryId: 0,
@@ -145,8 +148,7 @@ class _IndividualDevelopmentPlanExpansionTileState
   @override
   Widget build(BuildContext context) {
     final PupilProxy pupil = widget.pupil;
-    final List<IndividualDevelopmentPlan> plans =
-        widget.pupil.individualDevelopmentPlans;
+    final List<SupportLevel> plans = widget.pupil.individualDevelopmentPlans;
     return ListTileTheme(
       contentPadding: const EdgeInsets.all(0),
       dense: true,
@@ -172,7 +174,9 @@ class _IndividualDevelopmentPlanExpansionTileState
                             ? 'Förderebene 1'
                             : pupil.individualDevelopmentPlan == 2
                                 ? 'Förderebene 2'
-                                : 'Förderebene 3',
+                                : pupil.individualDevelopmentPlan == 3
+                                    ? 'Förderebene 3'
+                                    : 'Regenbogenförderung',
                     style: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
@@ -190,44 +194,58 @@ class _IndividualDevelopmentPlanExpansionTileState
                   itemBuilder: (context, index) {
                     return Padding(
                       padding: const EdgeInsets.symmetric(vertical: 4.0),
-                      child: Row(
-                        children: [
-                          Text(
-                            widget.pupil.individualDevelopmentPlans[index]
-                                .createdAt
-                                .formatForUser(),
-                            style: const TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18),
-                          ),
-                          const Gap(20),
-                          const Text('Förderebene ',
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18)),
-                          Text(
-                            widget.pupil.individualDevelopmentPlans[index].level
-                                .toString(),
-                            style: const TextStyle(
-                                color: backgroundColor,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18),
-                          ),
-                          const Gap(10),
-                          Text(pupil.individualDevelopmentPlans[index].comment,
-                              style: const TextStyle(
-                                  color: Colors.black, fontSize: 16)),
-                          const Spacer(),
-                          Text(
-                              pupil.individualDevelopmentPlans[index].createdBy,
+                      child: GestureDetector(
+                        onLongPress: () {
+                          if (locator<SessionManager>().isAdmin.value) {
+                            locator<PupilManager>()
+                                .deleteSupportLevelHistoryItem(
+                                    pupilId: pupil.internalId,
+                                    supportLevelId:
+                                        plans[index].supportLevelId);
+                          }
+                        },
+                        child: Row(
+                          children: [
+                            Text(
+                              widget.pupil.individualDevelopmentPlans[index]
+                                  .createdAt
+                                  .formatForUser(),
                               style: const TextStyle(
                                   color: Colors.black,
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 18)),
-                          const Gap(10),
-                        ],
+                                  fontSize: 18),
+                            ),
+                            const Gap(20),
+                            const Text('Förderebene ',
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18)),
+                            Text(
+                              widget
+                                  .pupil.individualDevelopmentPlans[index].level
+                                  .toString(),
+                              style: const TextStyle(
+                                  color: backgroundColor,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18),
+                            ),
+                            const Gap(10),
+                            Text(
+                                pupil.individualDevelopmentPlans[index].comment,
+                                style: const TextStyle(
+                                    color: Colors.black, fontSize: 16)),
+                            const Spacer(),
+                            Text(
+                                pupil.individualDevelopmentPlans[index]
+                                    .createdBy,
+                                style: const TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18)),
+                            const Gap(10),
+                          ],
+                        ),
                       ),
                     );
                   }),

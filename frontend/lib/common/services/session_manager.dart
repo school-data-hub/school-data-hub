@@ -4,13 +4,13 @@ import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
-import 'package:schuldaten_hub/common/services/api/api.dart';
-import 'package:schuldaten_hub/common/services/api/services/api_client_service.dart';
 import 'package:schuldaten_hub/common/constants/enums.dart';
 import 'package:schuldaten_hub/common/models/session.dart';
+import 'package:schuldaten_hub/common/services/api/api.dart';
+import 'package:schuldaten_hub/common/services/api/services/api_client_service.dart';
 import 'package:schuldaten_hub/common/services/env_manager.dart';
-import 'package:schuldaten_hub/common/services/notification_manager.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
+import 'package:schuldaten_hub/common/services/notification_manager.dart';
 import 'package:schuldaten_hub/common/utils/logger.dart';
 import 'package:schuldaten_hub/common/utils/secure_storage.dart';
 import 'package:schuldaten_hub/features/main_menu_pages/widgets/landing_bottom_nav_bar.dart';
@@ -34,6 +34,7 @@ class SessionManager {
   SessionManager();
   Future<SessionManager> init() async {
     await checkStoredCredentials();
+
     log('Returning SessionManager instance!');
     return this;
   }
@@ -139,7 +140,7 @@ class SessionManager {
 
       return;
     }
-
+    logger.i('Session found for ${linkedSession.server!}');
     _credentials.value = linkedSession;
 
     // check if the session is still valid

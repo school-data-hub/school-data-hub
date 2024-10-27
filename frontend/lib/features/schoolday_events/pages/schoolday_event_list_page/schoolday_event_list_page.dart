@@ -5,12 +5,12 @@ import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/widgets/generic_app_bar.dart';
 import 'package:schuldaten_hub/common/widgets/generic_sliver_list.dart';
 import 'package:schuldaten_hub/common/widgets/sliver_search_app_bar.dart';
-import 'package:schuldaten_hub/features/pupil/services/pupil_manager.dart';
 import 'package:schuldaten_hub/features/pupil/filters/pupils_filter.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
-import 'package:schuldaten_hub/features/schoolday_events/pages/schoolday_event_list_page/widgets/schoolday_event_list_card.dart';
+import 'package:schuldaten_hub/features/pupil/services/pupil_manager.dart';
 import 'package:schuldaten_hub/features/schoolday_events/pages/schoolday_event_list_page/widgets/schoolday_event_list_page_bottom_navbar.dart';
 import 'package:schuldaten_hub/features/schoolday_events/pages/schoolday_event_list_page/widgets/schoolday_event_list_page_search_bar.dart';
+import 'package:schuldaten_hub/features/schoolday_events/pages/schoolday_event_list_page/widgets/schoolday_event_pupil_list_card.dart';
 import 'package:watch_it/watch_it.dart';
 
 class SchooldayEventListPage extends WatchingWidget {
@@ -44,7 +44,8 @@ class SchooldayEventListPage extends WatchingWidget {
                 ),
                 GenericSliverListWithEmptyListCheck(
                     items: pupils,
-                    itemBuilder: (_, pupil) => SchooldayEventListCard(pupil)),
+                    itemBuilder: (_, pupil) =>
+                        SchooldayEventPupilListCard(pupil)),
               ],
             ),
           ),

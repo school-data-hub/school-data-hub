@@ -1,17 +1,19 @@
 import 'dart:convert';
-import 'package:flutter/foundation.dart';
 
-import 'package:schuldaten_hub/features/matrix/models/matrix_credentials.dart';
-import 'package:schuldaten_hub/features/matrix/services/matrix_api_service.dart';
+import 'package:flutter/foundation.dart';
 import 'package:schuldaten_hub/common/constants/enums.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_manager.dart';
 import 'package:schuldaten_hub/common/services/session_manager.dart';
 import 'package:schuldaten_hub/common/utils/logger.dart';
 import 'package:schuldaten_hub/common/utils/secure_storage.dart';
+//import 'package:schuldaten_hub/features/matrix/filters/matrix_policy_filter_manager.dart';
+
+import 'package:schuldaten_hub/features/matrix/models/matrix_credentials.dart';
 import 'package:schuldaten_hub/features/matrix/models/matrix_room.dart';
 import 'package:schuldaten_hub/features/matrix/models/matrix_user.dart';
 import 'package:schuldaten_hub/features/matrix/models/policy.dart';
+import 'package:schuldaten_hub/features/matrix/services/matrix_api_service.dart';
 import 'package:schuldaten_hub/features/matrix/services/matrix_policy_helper_functions.dart';
 import 'package:schuldaten_hub/features/matrix/services/pdf_printer/matrix_credentials_printer.dart';
 
@@ -32,8 +34,6 @@ class MatrixPolicyManager {
   Policy? _matrixPolicy;
   Policy? get matrixPolicy => _matrixPolicy;
   bool get isMatrixPolicyLoaded => _matrixPolicy != null;
-  bool _pendingChanges = false;
-  bool get pendingChanges => _pendingChanges;
 
   final _matrixUsers = ValueNotifier<List<MatrixUser>>([]);
   ValueListenable<List<MatrixUser>> get matrixUsers => _matrixUsers;
@@ -41,6 +41,8 @@ class MatrixPolicyManager {
   final _matrixRooms = ValueNotifier<List<MatrixRoom>>([]);
   ValueListenable<List<MatrixRoom>> get matrixRooms => _matrixRooms;
 
+  final _pendingChanges = ValueNotifier<bool>(false);
+  ValueListenable<bool> get pendingChanges => _pendingChanges;
   final _compulsoryRooms = List<String>.empty(growable: true);
   List<String> get compulsoryRooms => _compulsoryRooms;
 
@@ -67,8 +69,8 @@ class MatrixPolicyManager {
           // set the variables in the matrixApiService
           matrixApiService.setMatrixEnvironmentValues(
               url: _matrixUrl,
-              matrixToken: _matrixToken!,
-              policyToken: _corporalToken!);
+              matrixToken: matrixToken!,
+              policyToken: corporalToken!);
           notificationManager.showSnackBar(NotificationType.success,
               'Matrix-Räumeverwaltung wird geladen...');
           await fetchMatrixPolicy();
@@ -83,9 +85,9 @@ class MatrixPolicyManager {
     return this;
   }
 
-  void pendingChangesHandler(bool value) {
-    if (value == _pendingChanges) return;
-    _pendingChanges = value;
+  void pendingChangesHandler(bool newValue) {
+    if (newValue == _pendingChanges.value) return;
+    _pendingChanges.value = newValue;
   }
 
   MatrixUser getUserById(String userId) {
@@ -105,11 +107,10 @@ class MatrixPolicyManager {
     secureStorageWrite(
         SecureStorageKey.matrix.value,
         jsonEncode(MatrixCredentials(
-                url: url,
-                matrixToken: matrixToken,
-                policyToken: policyToken,
-                compulsorayRooms: _compulsoryRooms)
-            .toJson()));
+            url: url,
+            matrixToken: matrixToken,
+            policyToken: policyToken,
+            compulsoryRooms: [..._compulsoryRooms]).toJson()));
 
     await fetchMatrixPolicy();
   }
@@ -117,7 +118,7 @@ class MatrixPolicyManager {
   Future<void> deleteAndDeregisterMatrixPolicyManager() async {
     _matrixAdminId = null;
     _matrixPolicy = null;
-    _pendingChanges = false;
+    _pendingChanges.value = false;
     _matrixToken = null;
     _matrixUsers.value = [];
     _matrixRooms.value = [];
@@ -134,6 +135,7 @@ class MatrixPolicyManager {
   Future<void> fetchMatrixPolicy() async {
     final Policy? policy = await matrixApiService.fetchMatrixPolicy();
     if (policy == null) {
+      logger.e('Error fetching Matrix policy!');
       return;
     }
 
@@ -149,7 +151,10 @@ class MatrixPolicyManager {
     notificationManager.showSnackBar(
         NotificationType.success, 'Matrix-Räume werden geladen...');
 
-    for (String roomId in policy.managedRoomIds) {
+    // remove duplicates
+    final List<String> roomIds = policy.managedRoomIds.toSet().toList();
+
+    for (String roomId in roomIds) {
       MatrixRoom namedRoom =
           await matrixApiService.fetchAdditionalRoomInfos(roomId);
       rooms.add(namedRoom);
@@ -162,10 +167,15 @@ class MatrixPolicyManager {
     notificationManager.showSnackBar(NotificationType.success, 'Räume geladen');
 
     logger.i('Fetched Matrix policy!');
-
+    _pendingChanges.value = false;
     locator<SessionManager>().changeMatrixPolicyManagerRegistrationStatus(true);
 
     return;
+  }
+
+  Future<void> putPolicy() async {
+    await matrixApiService.putMatrixPolicy();
+    _pendingChanges.value = false;
   }
 
   MatrixRoom getRoomById(String roomId) {
@@ -175,9 +185,15 @@ class MatrixPolicyManager {
   //- ROOM REPOSITORY
 
   Future<void> createNewRoom(
-      String name, String topic, String? aliasName) async {
-    final MatrixRoom? room =
-        await matrixApiService.createMatrixRoom(name, topic, aliasName);
+      {required String name,
+      required String topic,
+      required String? aliasName,
+      required ChatTypePreset chatTypePreset}) async {
+    final MatrixRoom? room = await matrixApiService.createMatrixRoom(
+        name: name,
+        topic: topic,
+        aliasName: aliasName,
+        chatTypePreset: chatTypePreset);
     if (room == null) {
       return;
     }
@@ -197,7 +213,7 @@ class MatrixPolicyManager {
 
     admin.joinRoom(newRoom);
 
-    _pendingChanges = true;
+    _pendingChanges.value = true;
   }
 
   Future<void> changeRoomPowerLevels(
@@ -221,7 +237,7 @@ class MatrixPolicyManager {
   //- USER REPOSITORY
 
   Future createNewMatrixUser(String matrixId, String displayName) async {
-    final password = generatePassword();
+    final password = MatrixHelperFunctions.generatePassword();
     final MatrixUser? newUser = await matrixApiService.createNewMatrixUser(
       matrixId: matrixId,
       displayName: displayName,
@@ -234,9 +250,10 @@ class MatrixPolicyManager {
     final matrixUsers = [..._matrixUsers.value];
     matrixUsers.add(newUser);
 
-    await printMatrixCredentials(_matrixUrl, newUser, password);
+    await printMatrixCredentials(
+        matrixDomain: _matrixUrl, matrixUser: newUser, password: password);
 
-    _pendingChanges = true;
+    _pendingChanges.value = true;
     return;
   }
 
@@ -249,16 +266,21 @@ class MatrixPolicyManager {
       _matrixUsers.value = matrixUsers;
       notificationManager.showSnackBar(
           NotificationType.success, 'Benutzer gelöscht');
-      _pendingChanges = true;
+      _pendingChanges.value = true;
     }
   }
 
-  Future addMatrixUserToRooms(String matrixUserId, List<String> roomIds) async {
+  void addMatrixUserToRooms(String matrixUserId, List<String> roomIds) {
     final user =
         _matrixUsers.value.firstWhere((element) => element.id == matrixUserId);
     for (String roomId in roomIds) {
-      user.joinRoom(MatrixRoom.fromPolicyId(roomId));
+      user.joinRoom(MatrixRoom(id: roomId));
     }
-    _pendingChanges = true;
+    _pendingChanges.value = true;
+  }
+
+  void addMatrixUserToGroupRooms(MatrixUser matrixUser) {
+    List<MatrixRoom> matrixRooms = List.from(_matrixRooms.value);
+    for (MatrixRoom room in matrixRooms) {}
   }
 }

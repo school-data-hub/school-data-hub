@@ -225,15 +225,15 @@ class PupilDataApiService {
     return;
   }
 
-  //- post individual development plan change
+  //- update support level
 
-  String _patchWithIndividualDevelopmentPlan(int internalId) {
-    return '/pupils/$internalId/plan';
+  String _updateSupportLevel(int internalId) {
+    return '/pupils/$internalId/support_level';
   }
 
-  Future<PupilData> patchPupilWithIndividualDevelopmentPlan({
+  Future<PupilData> updateSupportLevel({
     required int internalId,
-    required int individualDevelopmentPlanLevel,
+    required int newSupportLevel,
     required DateTime createdAt,
     required String createdBy,
     required String comment,
@@ -241,14 +241,14 @@ class PupilDataApiService {
     notificationManager.apiRunningValue(true);
 
     final data = jsonEncode({
-      'level': individualDevelopmentPlanLevel,
+      'level': newSupportLevel,
       'created_at': createdAt.formatForJson(),
       'created_by': createdBy,
       'comment': comment,
     });
 
-    final response = await _client
-        .patch(_patchWithIndividualDevelopmentPlan(internalId), data: data);
+    final response =
+        await _client.patch(_updateSupportLevel(internalId), data: data);
 
     if (response.statusCode != 200) {
       notificationManager.showSnackBar(NotificationType.error,
@@ -258,6 +258,36 @@ class PupilDataApiService {
 
       throw ApiException(
           'Failed to patch individual development plan', response.statusCode);
+    }
+
+    final PupilData responsePupil = PupilData.fromJson(response.data);
+
+    notificationManager.apiRunningValue(false);
+
+    return responsePupil;
+  }
+
+  String _deleteSupportLevelHistoryItem(int internalId, String supportLevelId) {
+    return '/pupils/$internalId/support_level/$supportLevelId';
+  }
+
+  Future<PupilData> deleteSupportLevelHistoryItem({
+    required int internalId,
+    required String supportLevelId,
+  }) async {
+    notificationManager.apiRunningValue(true);
+
+    final response = await _client
+        .delete(_deleteSupportLevelHistoryItem(internalId, supportLevelId));
+
+    if (response.statusCode != 200) {
+      notificationManager.showSnackBar(NotificationType.error,
+          'Die Förderstufe konnte nicht gelöscht werden: ${response.statusCode}');
+
+      notificationManager.apiRunningValue(false);
+
+      throw ApiException(
+          'Failed to delete individual development plan', response.statusCode);
     }
 
     final PupilData responsePupil = PupilData.fromJson(response.data);

@@ -2,8 +2,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
-import 'package:schuldaten_hub/common/services/api/services/api_client_service.dart';
 import 'package:schuldaten_hub/common/constants/enums.dart';
+import 'package:schuldaten_hub/common/services/api/services/api_client_service.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_manager.dart';
 import 'package:schuldaten_hub/common/utils/custom_encrypter.dart';
@@ -38,8 +38,10 @@ Future<Widget> downloadOrCachedAndDecryptImage(
   if (fileInfo != null && await fileInfo.file.exists()) {
     // File is already cached, decrypt it before using
     final encryptedBytes = await fileInfo.file.readAsBytes();
-    final decryptedBytes =
-        await compute(customEncrypter.decryptTheseBytes, encryptedBytes);
+    //- This is because isolate performance is horrible in debug mode
+    final decryptedBytes = (kReleaseMode || kProfileMode)
+        ? await compute(customEncrypter.decryptTheseBytes, encryptedBytes)
+        : customEncrypter.decryptTheseBytes(encryptedBytes);
     return Image.memory(decryptedBytes);
   }
 
@@ -56,7 +58,9 @@ Future<Widget> downloadOrCachedAndDecryptImage(
   // Cache the encrypted bytes
   await cacheManager.putFile(cacheKey, encryptedBytes);
   // Decrypt the bytes before returning
-  final decryptedBytes =
-      await compute(customEncrypter.decryptTheseBytes, encryptedBytes);
+  //- This is because isolate performance is horrible in debug mode
+  final decryptedBytes = (kReleaseMode || kProfileMode)
+      ? await compute(customEncrypter.decryptTheseBytes, encryptedBytes)
+      : customEncrypter.decryptTheseBytes(encryptedBytes);
   return Image.memory(decryptedBytes);
 }

@@ -1,20 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/constants/colors.dart';
+import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/widgets/sliver_search_app_bar.dart';
+import 'package:schuldaten_hub/features/authorizations/filters/pupil_authorization_filters.dart';
 import 'package:schuldaten_hub/features/authorizations/models/authorization.dart';
 import 'package:schuldaten_hub/features/authorizations/models/pupil_authorization.dart';
-import 'package:schuldaten_hub/features/authorizations/services/authorization_manager.dart';
+import 'package:schuldaten_hub/features/authorizations/pages/authorization_pupils_page/widgets/authorization_pupil_card.dart';
 import 'package:schuldaten_hub/features/authorizations/pages/authorization_pupils_page/widgets/authorization_pupil_list_searchbar.dart';
-import 'package:schuldaten_hub/features/authorizations/filters/pupil_authorization_filters.dart';
+import 'package:schuldaten_hub/features/authorizations/pages/authorization_pupils_page/widgets/authorization_pupils_bottom_navbar.dart';
+import 'package:schuldaten_hub/features/authorizations/services/authorization_manager.dart';
 import 'package:schuldaten_hub/features/pupil/filters/pupils_filter.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
-import 'package:schuldaten_hub/common/services/locator.dart';
-import 'package:schuldaten_hub/features/authorizations/pages/authorization_pupils_page/widgets/authorization_pupil_card.dart';
-import 'package:schuldaten_hub/features/authorizations/pages/authorization_pupils_page/widgets/authorization_pupils_bottom_navbar.dart';
-
 import 'package:schuldaten_hub/features/pupil/services/pupil_manager.dart';
-
 import 'package:watch_it/watch_it.dart';
 
 class AuthorizationPupilsPage extends WatchingWidget {

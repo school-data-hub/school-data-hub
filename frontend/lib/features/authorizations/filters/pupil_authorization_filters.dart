@@ -1,5 +1,4 @@
 import 'package:schuldaten_hub/common/constants/enums.dart';
-
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/features/authorizations/models/pupil_authorization.dart';
 import 'package:schuldaten_hub/features/pupil/filters/pupil_filter_manager.dart';
@@ -120,30 +119,31 @@ List<PupilAuthorization> addAuthorizationFiltersToPupilAuthorizations(
   bool filterIsOn = false;
   for (PupilAuthorization pupilAuthorization in pupilAuthorizations) {
     if (activeFilters
-            .filterState.value[PupilFilter.authorizationYesResponse]! &&
+            .pupilFilterState.value[PupilFilter.authorizationYesResponse]! &&
         pupilAuthorization.status != true) {
       filterIsOn = true;
       continue;
     }
-    if (activeFilters.filterState.value[PupilFilter.authorizationNoResponse]! &&
+    if (activeFilters
+            .pupilFilterState.value[PupilFilter.authorizationNoResponse]! &&
         pupilAuthorization.status != false) {
       filterIsOn = true;
       continue;
     }
     if (activeFilters
-            .filterState.value[PupilFilter.authorizationNullResponse]! &&
+            .pupilFilterState.value[PupilFilter.authorizationNullResponse]! &&
         pupilAuthorization.status != null) {
       filterIsOn = true;
       continue;
     }
-    if (activeFilters
-            .filterState.value[PupilFilter.authorizationCommentResponse]! &&
+    if (activeFilters.pupilFilterState
+            .value[PupilFilter.authorizationCommentResponse]! &&
         pupilAuthorization.comment == null) {
       filterIsOn = true;
       continue;
     }
     if (activeFilters
-            .filterState.value[PupilFilter.authorizationFileResponse]! &&
+            .pupilFilterState.value[PupilFilter.authorizationFileResponse]! &&
         pupilAuthorization.fileId == null) {
       filterIsOn = true;
       continue;

@@ -105,12 +105,22 @@ class PupilsFilterImplementation with ChangeNotifier implements PupilsFilter {
     bool filtersOn = false;
     // checks if any not yet migrated filters are active
     final bool specificFiltersOn = locator<PupilFilterManager>()
-            .filterState
+            .pupilFilterState
             .value
             .values
             .any((x) => x == true) ||
         locator<SchooldayEventFilterManager>()
             .schooldayEventsFilterState
+            .value
+            .values
+            .any((x) => x == true) ||
+        locator<PupilFilterManager>()
+            .supportLevelFilterState
+            .value
+            .values
+            .any((x) => x == true) ||
+        locator<PupilFilterManager>()
+            .supportAreaFilterState
             .value
             .values
             .any((x) => x == true);
@@ -137,14 +147,17 @@ class PupilsFilterImplementation with ChangeNotifier implements PupilsFilter {
       bool isMatchedByGroupFilter = !isAnyGroupFilterActive ||
           groupFilters
               .any((filter) => filter.isActive && filter.matches(pupil));
-
+      if (!isMatchedByGroupFilter) {
+        filtersOn = true;
+        continue;
+      }
       // matches if no stufen filter is active or if the stufen matches the pupil's stufe
       bool isMatchedBySchoolGradeFilter = !isAnySchoolGradeFilterActive ||
           schoolGradeFilters
               .any((filter) => filter.isActive && filter.matches(pupil));
 
       // if the pupil is not matched by any group or stufen filter, skip the pupil
-      if (!isMatchedByGroupFilter || !isMatchedBySchoolGradeFilter) {
+      if (!isMatchedBySchoolGradeFilter) {
         filtersOn = true;
         continue;
       }

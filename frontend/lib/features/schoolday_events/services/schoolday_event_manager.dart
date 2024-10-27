@@ -1,12 +1,12 @@
 import 'dart:io';
 
-import 'package:schuldaten_hub/common/services/api/api.dart';
 import 'package:schuldaten_hub/common/constants/enums.dart';
-import 'package:schuldaten_hub/features/schooldays/services/schoolday_manager.dart';
-import 'package:schuldaten_hub/common/services/notification_manager.dart';
-import 'package:schuldaten_hub/features/pupil/services/pupil_manager.dart';
-import 'package:schuldaten_hub/features/pupil/models/pupil_data.dart';
+import 'package:schuldaten_hub/common/services/api/api.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
+import 'package:schuldaten_hub/common/services/notification_manager.dart';
+import 'package:schuldaten_hub/features/pupil/models/pupil_data.dart';
+import 'package:schuldaten_hub/features/pupil/services/pupil_manager.dart';
+import 'package:schuldaten_hub/features/schooldays/services/schoolday_manager.dart';
 
 class SchooldayEventManager {
   final pupilManager = locator<PupilManager>();
@@ -42,21 +42,23 @@ class SchooldayEventManager {
 
   Future<void> patchSchooldayEvent(
       {required String schooldayEventId,
-      String? admonisher,
+      String? createdBy,
       String? reason,
       bool? processed,
       String? processedBy,
       DateTime? processedAt,
-      DateTime? admonishedDay}) async {
+      DateTime? schoolEventDay,
+      String? schoolEventType}) async {
     final PupilData responsePupil =
         await apiSchooldayEventService.patchSchooldayEvent(
-            schooldayEventId: schooldayEventId,
-            admonisher: admonisher,
+            id: schooldayEventId,
+            creator: createdBy,
             reason: reason,
             processed: processed,
             processedBy: processedBy,
             processedAt: processedAt,
-            admonishedDay: admonishedDay);
+            day: schoolEventDay,
+            type: schoolEventType);
 
     pupilManager.updatePupilProxyWithPupilData(responsePupil);
 

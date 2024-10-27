@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/constants/colors.dart';
-
 import 'package:schuldaten_hub/common/constants/enums.dart';
 import 'package:schuldaten_hub/common/constants/styles.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
-import 'package:schuldaten_hub/common/widgets/common_pupil_filters.dart';
+import 'package:schuldaten_hub/features/pupil/pages/widgets/common_pupil_filters.dart';
 import 'package:schuldaten_hub/features/pupil/filters/pupil_filter_manager.dart';
 import 'package:watch_it/watch_it.dart';
 
@@ -15,7 +14,7 @@ class SchoolListFilterBottomSheet extends WatchingWidget {
   @override
   Widget build(BuildContext context) {
     Map<PupilFilter, bool> activeFilters =
-        watchValue((PupilFilterManager x) => x.filterState);
+        watchValue((PupilFilterManager x) => x.pupilFilterState);
     bool valueYesResponse = activeFilters[PupilFilter.schoolListYesResponse]!;
     bool valueNoResponse = activeFilters[PupilFilter.schoolListNoResponse]!;
     bool valueNullResponse = activeFilters[PupilFilter.schoolListNullResponse]!;
@@ -57,15 +56,15 @@ class SchoolListFilterBottomSheet extends WatchingWidget {
                 ),
                 selected: valueYesResponse,
                 onSelected: (val) {
-                  filterLocator.setFilter(
+                  filterLocator.setPupilFilter(
                       PupilFilter.schoolListYesResponse, val);
 
                   if (val) {
-                    filterLocator.setFilter(
+                    filterLocator.setPupilFilter(
                         PupilFilter.schoolListNoResponse, false);
-                    filterLocator.setFilter(
+                    filterLocator.setPupilFilter(
                         PupilFilter.schoolListNullResponse, false);
-                    filterLocator.setFilter(
+                    filterLocator.setPupilFilter(
                         PupilFilter.schoolListCommentResponse, false);
                   }
                 },
@@ -86,15 +85,15 @@ class SchoolListFilterBottomSheet extends WatchingWidget {
                 ),
                 selected: valueNoResponse,
                 onSelected: (val) {
-                  filterLocator.setFilter(
+                  filterLocator.setPupilFilter(
                       PupilFilter.schoolListNoResponse, val);
 
                   if (val) {
-                    filterLocator.setFilter(
+                    filterLocator.setPupilFilter(
                         PupilFilter.schoolListYesResponse, false);
-                    filterLocator.setFilter(
+                    filterLocator.setPupilFilter(
                         PupilFilter.schoolListNullResponse, false);
-                    filterLocator.setFilter(
+                    filterLocator.setPupilFilter(
                         PupilFilter.schoolListCommentResponse, false);
                   }
                 },
@@ -115,15 +114,15 @@ class SchoolListFilterBottomSheet extends WatchingWidget {
                 ),
                 selected: valueNullResponse,
                 onSelected: (val) {
-                  filterLocator.setFilter(
+                  filterLocator.setPupilFilter(
                       PupilFilter.schoolListNullResponse, val);
 
                   if (val) {
-                    filterLocator.setFilter(
+                    filterLocator.setPupilFilter(
                         PupilFilter.schoolListYesResponse, false);
-                    filterLocator.setFilter(
+                    filterLocator.setPupilFilter(
                         PupilFilter.schoolListNoResponse, false);
-                    filterLocator.setFilter(
+                    filterLocator.setPupilFilter(
                         PupilFilter.schoolListCommentResponse, false);
                   }
                 },
@@ -144,15 +143,15 @@ class SchoolListFilterBottomSheet extends WatchingWidget {
                 ),
                 selected: valueCommentResponse,
                 onSelected: (val) {
-                  filterLocator.setFilter(
+                  filterLocator.setPupilFilter(
                       PupilFilter.schoolListCommentResponse, val);
 
                   if (val) {
-                    filterLocator.setFilter(
+                    filterLocator.setPupilFilter(
                         PupilFilter.schoolListYesResponse, false);
-                    filterLocator.setFilter(
+                    filterLocator.setPupilFilter(
                         PupilFilter.schoolListNoResponse, false);
-                    filterLocator.setFilter(
+                    filterLocator.setPupilFilter(
                         PupilFilter.schoolListNullResponse, false);
                   }
                 },
@@ -168,8 +167,11 @@ class SchoolListFilterBottomSheet extends WatchingWidget {
 Future<dynamic> showPupilListFilterBottomSheet(BuildContext context) {
   return showModalBottomSheet(
     constraints: const BoxConstraints(maxWidth: 800),
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(20.0),
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.only(
+        topLeft: Radius.circular(20.0),
+        topRight: Radius.circular(20.0),
+      ),
     ),
     context: context,
     builder: (_) => const SchoolListFilterBottomSheet(),

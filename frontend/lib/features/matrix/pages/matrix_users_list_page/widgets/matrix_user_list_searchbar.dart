@@ -3,21 +3,21 @@ import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/constants/colors.dart';
 import 'package:schuldaten_hub/common/constants/enums.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
-import 'package:schuldaten_hub/common/widgets/search_text_field.dart';
+import 'package:schuldaten_hub/common/widgets/matrix_search_text_field.dart';
 import 'package:schuldaten_hub/features/matrix/models/matrix_user.dart';
 import 'package:schuldaten_hub/features/matrix/filters/matrix_policy_filter_manager.dart';
-import 'package:schuldaten_hub/features/pupil/filters/pupil_filter_manager.dart';
 
 import 'package:schuldaten_hub/features/credit/credit_list_page/widgets/credit_filter_bottom_sheet.dart';
+import 'package:watch_it/watch_it.dart';
 
-class MatrixUsersListSearchBar extends StatelessWidget {
+class MatrixUsersListSearchBar extends WatchingWidget {
   final List<MatrixUser> matrixUsers;
-  final bool filtersOn;
-  const MatrixUsersListSearchBar(
-      {required this.matrixUsers, required this.filtersOn, super.key});
+
+  const MatrixUsersListSearchBar({required this.matrixUsers, super.key});
 
   @override
   Widget build(BuildContext context) {
+    bool filtersOn = watchValue((MatrixPolicyFilterManager x) => x.filtersOn);
     return Container(
       decoration: BoxDecoration(
         color: canvasColor,
@@ -46,23 +46,6 @@ class MatrixUsersListSearchBar extends StatelessWidget {
                     ),
                   ),
                   const Gap(10),
-                  const Text(
-                    'BIP:',
-                    style: TextStyle(
-                        fontSize: 13,
-                        color: backgroundColor,
-                        fontWeight: FontWeight.bold),
-                  ),
-                  const Gap(10),
-                  const Gap(10),
-                  const Text(
-                    'in Umlauf: ',
-                    style: TextStyle(
-                        fontSize: 13,
-                        color: backgroundColor,
-                        fontWeight: FontWeight.bold),
-                  ),
-                  const Gap(10),
                 ],
               ),
             ),
@@ -72,15 +55,15 @@ class MatrixUsersListSearchBar extends StatelessWidget {
             child: Row(
               children: [
                 Expanded(
-                    child: SearchTextField(
+                    child: MatrixSearchTextField(
                         searchType: SearchType.matrixUser,
                         hintText: 'Schüler/in suchen',
                         refreshFunction: locator<MatrixPolicyFilterManager>()
-                            .filterUsersWithSearchText)),
+                            .setUsersFilterText)),
                 InkWell(
                   onTap: () => showCreditFilterBottomSheet(context),
-                  onLongPress: () =>
-                      locator<PupilFilterManager>().resetFilters(),
+                  onLongPress: () => locator<MatrixPolicyFilterManager>()
+                      .resetAllMatrixFilters(),
                   // onPressed: () => showBottomSheetFilters(context),
                   child: Padding(
                     padding: const EdgeInsets.all(10.0),

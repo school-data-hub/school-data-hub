@@ -4,7 +4,6 @@ import 'package:schuldaten_hub/common/constants/colors.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/widgets/bottom_nav_bar_layouts.dart';
 import 'package:schuldaten_hub/features/learning_support/pages/learning_support_list_page/widgets/learning_support_list_filter_bottom_sheet.dart';
-import 'package:schuldaten_hub/features/pupil/services/pupil_identity_manager.dart';
 import 'package:schuldaten_hub/features/pupil/filters/pupils_filter.dart';
 
 class LearningSupportListPageBottomNavBar extends StatelessWidget {
@@ -16,7 +15,7 @@ class LearningSupportListPageBottomNavBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return BottomNavBarLayout(
       bottomNavBar: BottomAppBar(
-        padding: const EdgeInsets.all(10),
+        padding: const EdgeInsets.all(15),
         shape: null,
         color: backgroundColor,
         child: IconTheme(
@@ -32,18 +31,6 @@ class LearningSupportListPageBottomNavBar extends StatelessWidget {
                 ),
                 onPressed: () {
                   Navigator.pop(context);
-                },
-              ),
-              const Gap(30),
-              IconButton(
-                tooltip: 'Scan Kinder-IDs',
-                icon: const Icon(
-                  Icons.qr_code_scanner_rounded,
-                  size: 30,
-                ),
-                onPressed: () {
-                  locator<PupilIdentityManager>()
-                      .scanNewPupilIdentities(context);
                 },
               ),
               const Gap(30),

@@ -9,7 +9,7 @@ import 'package:schuldaten_hub/features/matrix/filters/matrix_policy_filter_mana
 import 'package:schuldaten_hub/features/matrix/pages/matrix_users_list_page/widgets/matrix_user_list_card.dart';
 import 'package:schuldaten_hub/features/matrix/pages/matrix_users_list_page/widgets/matrix_user_list_searchbar.dart';
 import 'package:schuldaten_hub/features/matrix/pages/matrix_users_list_page/widgets/matrix_users_list_view_bottom_navbar.dart';
-import 'package:schuldaten_hub/features/pupil/services/pupil_manager.dart';
+import 'package:schuldaten_hub/features/matrix/services/matrix_policy_manager.dart';
 import 'package:watch_it/watch_it.dart';
 
 class MatrixUsersListPage extends WatchingWidget {
@@ -20,14 +20,13 @@ class MatrixUsersListPage extends WatchingWidget {
     List<MatrixUser> matrixUsers =
         watchValue((MatrixPolicyFilterManager x) => x.filteredMatrixUsers);
 
-    bool filtersOn = watchValue((MatrixPolicyFilterManager x) => x.filtersOn);
-
     return Scaffold(
       backgroundColor: canvasColor,
       appBar: const GenericAppBar(
           iconData: Icons.chat_rounded, title: 'Matrix-Konten'),
       body: RefreshIndicator(
-        onRefresh: () async => locator<PupilManager>().fetchAllPupils(),
+        onRefresh: () async =>
+            locator<MatrixPolicyManager>().fetchMatrixPolicy(),
         child: Center(
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 800),
@@ -35,8 +34,7 @@ class MatrixUsersListPage extends WatchingWidget {
               slivers: [
                 const SliverGap(5),
                 SliverSearchAppBar(
-                    title: MatrixUsersListSearchBar(
-                        matrixUsers: matrixUsers, filtersOn: filtersOn),
+                    title: MatrixUsersListSearchBar(matrixUsers: matrixUsers),
                     height: 110),
                 matrixUsers.isEmpty
                     ? const SliverToBoxAdapter(
@@ -65,7 +63,7 @@ class MatrixUsersListPage extends WatchingWidget {
           ),
         ),
       ),
-      bottomNavigationBar: matrixUsersListViewBottomNavBar(context, filtersOn),
+      bottomNavigationBar: const MatrixUsersListViewBottomNavbar(),
     );
   }
 }

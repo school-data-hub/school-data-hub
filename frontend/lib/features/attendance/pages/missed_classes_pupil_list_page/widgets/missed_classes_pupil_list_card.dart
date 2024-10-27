@@ -2,15 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/widgets/avatar.dart';
-import 'package:schuldaten_hub/common/widgets/custom_expansion_tile.dart';
-import 'package:schuldaten_hub/common/widgets/custom_list_tiles.dart';
-import 'package:schuldaten_hub/features/attendance/services/attendance_manager.dart';
+import 'package:schuldaten_hub/common/widgets/custom_expansion_tile/custom_expansion_tile.dart';
+import 'package:schuldaten_hub/common/widgets/custom_expansion_tile/custom_expansion_tile_content.dart';
 import 'package:schuldaten_hub/features/attendance/pages/widgets/attendance_stats_pupil.dart';
-import 'package:schuldaten_hub/features/pupil/pages/pupil_profile_page/pupil_profile_page.dart';
-import 'package:schuldaten_hub/features/pupil/pages/pupil_profile_page/widgets/pupil_profile_page_content/widgets/pupil_attendance_content.dart';
+import 'package:schuldaten_hub/features/attendance/services/attendance_manager.dart';
 import 'package:schuldaten_hub/features/main_menu_pages/widgets/landing_bottom_nav_bar.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
-
+import 'package:schuldaten_hub/features/pupil/pages/pupil_profile_page/pupil_profile_page.dart';
+import 'package:schuldaten_hub/features/pupil/pages/pupil_profile_page/widgets/pupil_profile_page_content/widgets/pupil_attendance_content.dart';
 import 'package:watch_it/watch_it.dart';
 
 class AttendanceRankingListCard extends WatchingStatefulWidget {
@@ -61,30 +60,47 @@ class _AttendanceRankingListCardState extends State<AttendanceRankingListCard> {
                       children: [
                         Row(
                           children: [
-                            Flexible(
+                            Expanded(
                               child: SingleChildScrollView(
                                 scrollDirection: Axis.horizontal,
                                 child: InkWell(
                                   onTap: () {
                                     locator<BottomNavManager>()
                                         .setPupilProfileNavPage(3);
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (BuildContext context) =>
-                                            PupilProfilePage(pupil: pupil),
+                                    Navigator.of(context)
+                                        .push(MaterialPageRoute(
+                                      builder: (ctx) => PupilProfilePage(
+                                        pupil: pupil,
                                       ),
-                                    );
+                                    ));
                                   },
-                                  child: Text(
-                                    '${pupil.firstName} ${pupil.lastName}',
-                                    overflow: TextOverflow.ellipsis,
-                                    softWrap: false,
-                                    textAlign: TextAlign.left,
-                                    style: const TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18,
-                                    ),
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        pupil.firstName,
+                                        overflow: TextOverflow.fade,
+                                        softWrap: false,
+                                        textAlign: TextAlign.left,
+                                        style: const TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 18,
+                                        ),
+                                      ),
+                                      const Gap(5),
+                                      Text(
+                                        pupil.lastName,
+                                        overflow: TextOverflow.fade,
+                                        softWrap: false,
+                                        textAlign: TextAlign.left,
+                                        style: const TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.normal,
+                                          fontSize: 18,
+                                        ),
+                                      ),
+                                      const Gap(5),
+                                    ],
                                   ),
                                 ),
                               ),
@@ -153,7 +169,7 @@ class _AttendanceRankingListCardState extends State<AttendanceRankingListCard> {
               ),
             ],
           ),
-          CustomListTiles(
+          CustomExpansionTileContent(
               title: null,
               tileController: _tileController,
               widgetList: pupilAttendanceContentList(pupil, context)),

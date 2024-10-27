@@ -3,11 +3,12 @@ import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/constants/colors.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/widgets/avatar.dart';
-import 'package:schuldaten_hub/common/widgets/custom_expansion_tile.dart';
-import 'package:schuldaten_hub/common/widgets/custom_list_tiles.dart';
+import 'package:schuldaten_hub/common/widgets/custom_expansion_tile/custom_expansion_tile.dart';
+import 'package:schuldaten_hub/common/widgets/custom_expansion_tile/custom_expansion_tile_content.dart';
+
 import 'package:schuldaten_hub/features/main_menu_pages/widgets/landing_bottom_nav_bar.dart';
 import 'package:schuldaten_hub/features/learning_support/services/learning_support_helper_functions.dart';
-import 'package:schuldaten_hub/features/learning_support/widgets/dialogs/individual_development_plan_dialog.dart';
+import 'package:schuldaten_hub/features/learning_support/pages/widgets/dialogs/individual_development_plan_dialog.dart';
 import 'package:schuldaten_hub/features/learning_support/pages/learning_support_list_page/widgets/support_goals_list.dart';
 import 'package:schuldaten_hub/features/learning_support/pages/learning_support_list_page/widgets/support_category_status_batches.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
@@ -66,16 +67,33 @@ class _LearningSupportCardState extends State<LearningSupportCard> {
                                   ),
                                 ));
                               },
-                              child: Text(
-                                '${pupil.firstName} ${pupil.lastName}',
-                                overflow: TextOverflow.fade,
-                                softWrap: false,
-                                textAlign: TextAlign.left,
-                                style: const TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18,
-                                ),
+                              child: Row(
+                                children: [
+                                  Text(
+                                    pupil.firstName,
+                                    overflow: TextOverflow.fade,
+                                    softWrap: false,
+                                    textAlign: TextAlign.left,
+                                    style: const TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18,
+                                    ),
+                                  ),
+                                  const Gap(5),
+                                  Text(
+                                    pupil.lastName,
+                                    overflow: TextOverflow.fade,
+                                    softWrap: false,
+                                    textAlign: TextAlign.left,
+                                    style: const TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.normal,
+                                      fontSize: 18,
+                                    ),
+                                  ),
+                                  const Gap(5),
+                                ],
                               ),
                             ),
                           ),
@@ -127,7 +145,9 @@ class _LearningSupportCardState extends State<LearningSupportCard> {
                     const Text('Ebene'),
                     Center(
                       child: Text(
-                        pupil.individualDevelopmentPlan.toString(),
+                        pupil.individualDevelopmentPlan == 4
+                            ? 'RB'
+                            : pupil.individualDevelopmentPlan.toString(),
                         style: const TextStyle(
                           fontSize: 23,
                           fontWeight: FontWeight.bold,
@@ -155,7 +175,7 @@ class _LearningSupportCardState extends State<LearningSupportCard> {
           ),
           Padding(
             padding: const EdgeInsets.all(5),
-            child: CustomListTiles(
+            child: CustomExpansionTileContent(
                 title: null,
                 tileController: _tileController,
                 widgetList: [

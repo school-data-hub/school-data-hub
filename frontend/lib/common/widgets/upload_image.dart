@@ -9,7 +9,7 @@ import 'package:path_provider/path_provider.dart';
 
 Future<File?> uploadImage(context) async {
   XFile? image = await ImagePicker().pickImage(
-      source: ImageSource.camera,
+      source: Platform.isWindows ? ImageSource.gallery : ImageSource.camera,
       preferredCameraDevice:
           Platform.isWindows ? CameraDevice.front : CameraDevice.rear);
   if (image == null) {

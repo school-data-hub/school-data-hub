@@ -124,7 +124,8 @@ class PupilInfosContent extends StatelessWidget {
                 InkWell(
                   onTap: () {
                     if (pupil.contact != null && pupil.contact!.isNotEmpty) {
-                      launchMatrixUrl(context, pupil.contact!);
+                      MatrixHelperFunctions.launchMatrixUrl(
+                          context, pupil.contact!);
                     }
                   },
                   onLongPress: () async {
