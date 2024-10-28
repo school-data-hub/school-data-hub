@@ -11,7 +11,7 @@ class LearningSupportHelper {
     List<PupilProxy> developmentPlan1Pupils = [];
     if (filteredPupils.isNotEmpty) {
       for (PupilProxy pupil in filteredPupils) {
-        if (pupil.individualDevelopmentPlan == 1) {
+        if (pupil.supportLevel == 1) {
           developmentPlan1Pupils.add(pupil);
         }
       }
@@ -24,7 +24,7 @@ class LearningSupportHelper {
     List<PupilProxy> developmentPlan1Pupils = [];
     if (filteredPupils.isNotEmpty) {
       for (PupilProxy pupil in filteredPupils) {
-        if (pupil.individualDevelopmentPlan == 2) {
+        if (pupil.supportLevel == 2) {
           developmentPlan1Pupils.add(pupil);
         }
       }
@@ -37,7 +37,7 @@ class LearningSupportHelper {
     List<PupilProxy> developmentPlan1Pupils = [];
     if (filteredPupils.isNotEmpty) {
       for (PupilProxy pupil in filteredPupils) {
-        if (pupil.individualDevelopmentPlan == 3) {
+        if (pupil.supportLevel == 3) {
           developmentPlan1Pupils.add(pupil);
         }
       }
@@ -64,8 +64,8 @@ class LearningSupportHelper {
   static List<SupportGoal> getGoalsForCategory(
       PupilProxy pupil, int categoryId) {
     List<SupportGoal> goals = [];
-    if (pupil.pupilGoals != null) {
-      for (SupportGoal goal in pupil.pupilGoals!) {
+    if (pupil.supportGoals != null) {
+      for (SupportGoal goal in pupil.supportGoals!) {
         if (goal.supportCategoryId == categoryId) {
           goals.add(goal);
         }
@@ -77,9 +77,9 @@ class LearningSupportHelper {
 
   //- TODO: Is this necessary?
   static SupportGoal? getGoalForCategory(PupilProxy pupil, int goalCategoryId) {
-    if (pupil.pupilGoals != null) {
-      if (pupil.pupilGoals!.isNotEmpty) {
-        final SupportGoal? goal = pupil.pupilGoals!.lastWhereOrNull(
+    if (pupil.supportGoals != null) {
+      if (pupil.supportGoals!.isNotEmpty) {
+        final SupportGoal? goal = pupil.supportGoals!.lastWhereOrNull(
             (element) => element.supportCategoryId == goalCategoryId);
         return goal;
       }

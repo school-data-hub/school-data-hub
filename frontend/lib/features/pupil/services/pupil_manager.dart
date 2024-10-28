@@ -4,8 +4,8 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
-import 'package:schuldaten_hub/common/services/api/api.dart';
 import 'package:schuldaten_hub/common/constants/enums.dart';
+import 'package:schuldaten_hub/common/services/api/api.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_manager.dart';
 import 'package:schuldaten_hub/common/utils/custom_encrypter.dart';
@@ -13,9 +13,9 @@ import 'package:schuldaten_hub/common/utils/logger.dart';
 import 'package:schuldaten_hub/features/attendance/models/missed_class.dart';
 import 'package:schuldaten_hub/features/pupil/filters/pupils_filter.dart';
 import 'package:schuldaten_hub/features/pupil/filters/pupils_filter_impl.dart';
-import 'package:schuldaten_hub/features/pupil/services/pupil_identity_manager.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_data.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
+import 'package:schuldaten_hub/features/pupil/services/pupil_identity_manager.dart';
 
 class PupilManager extends ChangeNotifier {
   final _pupils = <int, PupilProxy>{};
@@ -196,7 +196,7 @@ class PupilManager extends ChangeNotifier {
     if (proxy != null) {
       proxy.updatePupil(pupilData);
       // No need to call notifyListeners here, because the proxy will notify the listeners itself
-      // notifyListeners();
+      notifyListeners();
     }
   }
 
@@ -252,13 +252,13 @@ class PupilManager extends ChangeNotifier {
     );
 
     // update the pupil in the repository
-
-    pupilProxy.updatePupil(pupilUpdate);
+    updatePupilProxyWithPupilData(pupilUpdate);
+    //  pupilProxy.updatePupil(pupilUpdate);
 
     // Delete the outdated encrypted file.
 
     final cacheManager = locator<DefaultCacheManager>();
-    final cacheKey = pupilProxy.internalId;
+    final cacheKey = pupilProxy.avatarId;
 
     cacheManager.removeFile(cacheKey.toString());
   }

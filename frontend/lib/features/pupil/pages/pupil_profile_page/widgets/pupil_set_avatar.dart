@@ -25,6 +25,9 @@ setAvatar(context, PupilProxy pupil) async {
       //   imageQuality: quality,
       // ),
     );
+    if (image == null) {
+      return;
+    }
   } else {
     image = await ImagePicker().pickImage(
         source: ImageSource.camera,

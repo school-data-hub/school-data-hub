@@ -8,21 +8,21 @@ import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_manager.dart';
 import 'package:schuldaten_hub/common/utils/custom_encrypter.dart';
 
-class DownloadOrCachedAndDecryptImage extends StatelessWidget {
-  final String? imageUrl;
-  final String? tag;
+// class DownloadOrCachedAndDecryptImage extends StatelessWidget {
+//   final String? imageUrl;
+//   final String? tag;
 
-  const DownloadOrCachedAndDecryptImage({this.imageUrl, this.tag, super.key});
+//   const DownloadOrCachedAndDecryptImage({this.imageUrl, this.tag, super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    if (imageUrl == null) {
-      return const Icon(Icons.camera_alt_rounded);
-    }
+//   @override
+//   Widget build(BuildContext context) {
+//     if (imageUrl == null) {
+//       return const Icon(Icons.camera_alt_rounded);
+//     }
 
-    return const Placeholder();
-  }
-}
+//     return const Placeholder();
+//   }
+// }
 
 Future<Widget> downloadOrCachedAndDecryptImage(
     String? imageUrl, String? tag) async {

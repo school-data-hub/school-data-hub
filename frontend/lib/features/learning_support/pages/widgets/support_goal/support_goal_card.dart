@@ -29,7 +29,7 @@ class SupportGoalCard extends StatelessWidget {
                 message: 'Förderziel löschen?');
             if (delete == true) {
               await locator<LearningSupportManager>()
-                  .deleteGoal(pupil.pupilGoals![goalIndex].goalId);
+                  .deleteGoal(pupil.supportGoals![goalIndex].goalId);
               return;
             }
             return;
@@ -51,13 +51,13 @@ class SupportGoalCard extends StatelessWidget {
                           .getRootSupportCategoryColor(
                               locator<LearningSupportManager>()
                                   .getRootSupportCategory(pupil
-                                      .pupilGoals![goalIndex]
+                                      .supportGoals![goalIndex]
                                       .supportCategoryId)),
                       borderRadius: BorderRadius.circular(5.0),
                     ),
                     child: SupportCategoryCardBanner(
                         categoryId:
-                            pupil.pupilGoals![goalIndex].supportCategoryId),
+                            pupil.supportGoals![goalIndex].supportCategoryId),
                   ),
                 ),
                 Padding(
@@ -68,14 +68,14 @@ class SupportGoalCard extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.only(top: 4.0),
                         child: getLastCategoryStatusSymbol(pupil,
-                            pupil.pupilGoals![goalIndex].supportCategoryId),
+                            pupil.supportGoals![goalIndex].supportCategoryId),
                       ),
                       const Gap(10),
                       Flexible(
                         child: Text(
                           locator<LearningSupportManager>()
                               .getSupportCategory(pupil
-                                  .pupilGoals![goalIndex].supportCategoryId)
+                                  .supportGoals![goalIndex].supportCategoryId)
                               .categoryName,
                           style: const TextStyle(
                             fontSize: 14,
@@ -92,7 +92,7 @@ class SupportGoalCard extends StatelessWidget {
                     const Gap(15),
                     Flexible(
                       child: Text(
-                        pupil.pupilGoals![goalIndex].description!,
+                        pupil.supportGoals![goalIndex].description!,
                         style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
@@ -119,7 +119,7 @@ class SupportGoalCard extends StatelessWidget {
                     const Gap(15),
                     Flexible(
                       child: Text(
-                        pupil.pupilGoals![goalIndex].strategies!,
+                        pupil.supportGoals![goalIndex].strategies!,
                         style: const TextStyle(
                           fontSize: 16,
                         ),
@@ -135,14 +135,14 @@ class SupportGoalCard extends StatelessWidget {
                     const Text('Erstellt von:'),
                     const Gap(10),
                     Text(
-                      pupil.pupilGoals![goalIndex].createdBy,
+                      pupil.supportGoals![goalIndex].createdBy,
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                     const Gap(15),
                     const Text('am'),
                     const Gap(10),
                     Text(
-                      pupil.pupilGoals![goalIndex].createdAt.formatForUser(),
+                      pupil.supportGoals![goalIndex].createdAt.formatForUser(),
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ],

@@ -13,9 +13,9 @@ List<PupilProxy> learningSupportFilteredPupils(
   if (filteredPupils.isNotEmpty) {
     List<PupilProxy> categoryFilteredPupils = [];
     for (PupilProxy pupil in filteredPupils) {
-      if (pupil.pupilGoals != null) {
+      if (pupil.supportGoals != null) {
         if ((activeFilters[SupportAreaFilter.motorics] == true &&
-                pupil.pupilGoals!.any((element) =>
+                pupil.supportGoals!.any((element) =>
                     locator<LearningSupportManager>()
                         .getRootSupportCategory(element.supportCategoryId)
                         .categoryId ==
@@ -27,7 +27,7 @@ List<PupilProxy> learningSupportFilteredPupils(
         }
 
         if (activeFilters[SupportAreaFilter.emotions] == true &&
-            pupil.pupilGoals!.any((element) =>
+            pupil.supportGoals!.any((element) =>
                 locator<LearningSupportManager>()
                     .getRootSupportCategory(element.supportCategoryId)
                     .categoryId ==
@@ -38,7 +38,7 @@ List<PupilProxy> learningSupportFilteredPupils(
           continue;
         }
         if (activeFilters[SupportAreaFilter.math] == true &&
-            pupil.pupilGoals!.any((element) =>
+            pupil.supportGoals!.any((element) =>
                 locator<LearningSupportManager>()
                     .getRootSupportCategory(element.supportCategoryId)
                     .categoryId ==
@@ -49,7 +49,7 @@ List<PupilProxy> learningSupportFilteredPupils(
           continue;
         }
         if (activeFilters[SupportAreaFilter.learning] == true &&
-            pupil.pupilGoals!.any((element) =>
+            pupil.supportGoals!.any((element) =>
                 locator<LearningSupportManager>()
                     .getRootSupportCategory(element.supportCategoryId)
                     .categoryId ==
@@ -60,7 +60,7 @@ List<PupilProxy> learningSupportFilteredPupils(
           continue;
         }
         if (activeFilters[SupportAreaFilter.german] == true &&
-            pupil.pupilGoals!.any((element) =>
+            pupil.supportGoals!.any((element) =>
                 locator<LearningSupportManager>()
                     .getRootSupportCategory(element.supportCategoryId)
                     .categoryId ==
@@ -71,7 +71,7 @@ List<PupilProxy> learningSupportFilteredPupils(
           continue;
         }
         if (activeFilters[SupportAreaFilter.language] == true &&
-            pupil.pupilGoals!
+            pupil.supportGoals!
                 .any((element) => element.supportCategoryId == 6)) {
         } else if (activeFilters[SupportAreaFilter.language] == false) {
         } else {

@@ -137,7 +137,7 @@ class _LearningSupportCardState extends State<LearningSupportCard> {
                 },
                 onLongPress: () async {
                   individualDevelopmentPlanDialog(
-                      context, pupil, pupil.individualDevelopmentPlan);
+                      context, pupil, pupil.supportLevel);
                 },
                 child: Column(
                   children: [
@@ -145,9 +145,9 @@ class _LearningSupportCardState extends State<LearningSupportCard> {
                     const Text('Ebene'),
                     Center(
                       child: Text(
-                        pupil.individualDevelopmentPlan == 4
+                        pupil.supportLevel == 4
                             ? 'RB'
-                            : pupil.individualDevelopmentPlan.toString(),
+                            : pupil.supportLevel.toString(),
                         style: const TextStyle(
                           fontSize: 23,
                           fontWeight: FontWeight.bold,

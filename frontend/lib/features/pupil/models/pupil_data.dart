@@ -4,6 +4,7 @@ import 'package:schuldaten_hub/features/attendance/models/missed_class.dart';
 import 'package:schuldaten_hub/features/books/models/pupil_book.dart';
 import 'package:schuldaten_hub/features/competence/models/competence_check.dart';
 import 'package:schuldaten_hub/features/competence/models/competence_goal.dart';
+import 'package:schuldaten_hub/features/competence/models/competence_report.dart';
 import 'package:schuldaten_hub/features/learning_support/models/support_category/support_category_status.dart';
 import 'package:schuldaten_hub/features/learning_support/models/support_goal/support_goal.dart';
 import 'package:schuldaten_hub/features/pupil/models/credit_history_log.dart';
@@ -97,6 +98,9 @@ class PupilData {
   @JsonKey(name: 'support_level_history')
   final List<SupportLevel> supportLevelHistory;
 
+  @JsonKey(name: 'competence_reports')
+  final List<CompetenceReport> competenceReports;
+
   factory PupilData.fromJson(Map<String, dynamic> json) =>
       _$PupilDataFromJson(json);
 
@@ -130,5 +134,6 @@ class PupilData {
     required this.competenceGoals,
     required this.competenceChecks,
     required this.supportLevelHistory,
+    required this.competenceReports,
   });
 }

@@ -5,14 +5,18 @@ from apiflask.fields import String
 from marshmallow import post_dump
 
 from models.schoolday import SchoolSemester
-from schemas.schoolday_event_schemas import SchooldayEventSchema
 from schemas.authorization_schemas import PupilAuthorizationSchema
 from schemas.book_schemas import PupilBookSchema
-from schemas.competence_schemas import CompetenceCheckSchema, CompetenceGoalSchema, CompetenceReportSchema
+from schemas.competence_schemas import (
+    CompetenceCheckSchema,
+    CompetenceGoalSchema,
+    CompetenceReportSchema,
+)
 from schemas.credit_schema import CreditHistoryLogSchema
-from schemas.support_schemas import SupportCategoryStatusSchema, SupportGoalSchema
 from schemas.missed_class_schemas import MissedClassSchema
 from schemas.school_list_schemas import PupilProfileListSchema
+from schemas.schoolday_event_schemas import SchooldayEventSchema
+from schemas.support_schemas import SupportCategoryStatusSchema, SupportGoalSchema
 from schemas.workbook_schemas import PupilWorkbookSchema
 
 
@@ -24,11 +28,12 @@ class SupportLevelInSchema(Schema):
     level = fields.Integer()
 
     class Meta:
-        fields = ('level', 'comment', 'created_by', 'created_at')
+        fields = ("level", "comment", "created_by", "created_at")
 
 
 support_level_in_schema = SupportLevelInSchema()
-support_levels_in_schema = SupportLevelInSchema(many = True)
+support_levels_in_schema = SupportLevelInSchema(many=True)
+
 
 class SupportLevelOutSchema(Schema):
     support_level_id = fields.String()
@@ -36,19 +41,21 @@ class SupportLevelOutSchema(Schema):
     created_by = fields.String()
     created_at = fields.Date()
     level = fields.Integer()
+
     class Meta:
-        fields = ('support_level_id', 'level', 'comment', 'created_by', 'created_at')
+        fields = ("support_level_id", "level", "comment", "created_by", "created_at")
+
 
 support_level_in_schema = SupportLevelInSchema()
-support_levels_in_schema = SupportLevelInSchema(many = True)
+support_levels_in_schema = SupportLevelInSchema(many=True)
 
 
 class PupilSchema(Schema):
-    avatar_id = fields.String(metadata={'nullable': True})
-    internal_id = fields.Integer(metadata={'required': True})
+    avatar_id = fields.String(metadata={"nullable": True})
+    internal_id = fields.Integer(metadata={"required": True})
     name = fields.String(required=True)
-    contact = fields.String(metadata={'nullable': True})
-    parents_contact = fields.String(metadata={'nullable': True})
+    contact = fields.String(metadata={"nullable": True})
+    parents_contact = fields.String(metadata={"nullable": True})
     credit = fields.Integer()
     credit_earned = fields.Integer()
     ogs = fields.Boolean()
@@ -78,25 +85,47 @@ class PupilSchema(Schema):
 
     class Meta:
         fields = (
-
-            'avatar_id', 'internal_id', 'name', 'contact', 'parents_contact','credit', 'credit_earned', 'ogs',
-            'pick_up_time', 'ogs_info', 'latest_support_level', 'five_years', 'communication_pupil', 'communication_tutor1',
-            'communication_tutor2', 'preschool_revision', 'support_level_history', 'pupil_missed_classes', 'pupil_schoolday_events', 'support_goals',
-            'competence_goals', 'support_category_statuses', 'pupil_workbooks', 'pupil_books', 'pupil_lists', 'competence_checks',
-            'competence_reports', 
-
-            # 'authorizations', 
-            'credit_history_logs', 'special_information', 'emergency_care')
+            "avatar_id",
+            "internal_id",
+            "name",
+            "contact",
+            "parents_contact",
+            "credit",
+            "credit_earned",
+            "ogs",
+            "pick_up_time",
+            "ogs_info",
+            "latest_support_level",
+            "five_years",
+            "communication_pupil",
+            "communication_tutor1",
+            "communication_tutor2",
+            "preschool_revision",
+            "support_level_history",
+            "pupil_missed_classes",
+            "pupil_schoolday_events",
+            "support_goals",
+            "competence_goals",
+            "support_category_statuses",
+            "pupil_workbooks",
+            "pupil_books",
+            "pupil_lists",
+            "competence_checks",
+            "competence_reports",
+            # 'authorizations',
+            "credit_history_logs",
+            "special_information",
+            "emergency_care",
+        )
 
     @post_dump(pass_many=False)
     def filter_missed_classes(self, data, **kwargs):
         today = date.today()
         current_semester = (
-                SchoolSemester.query.filter(
-                    SchoolSemester.start_date <= today,
-                    SchoolSemester.end_date >= today
-                ).first() or
-                SchoolSemester.query.order_by(SchoolSemester.start_date.desc()).first()
+            SchoolSemester.query.filter(
+                SchoolSemester.start_date <= today, SchoolSemester.end_date >= today
+            ).first()
+            or SchoolSemester.query.order_by(SchoolSemester.start_date.desc()).first()
         )
 
         if not current_semester:
@@ -113,31 +142,45 @@ class PupilSchema(Schema):
         else:
             previous_semester = None
 
-        if 'pupil_missed_classes' in data:
-            data['pupil_missed_classes'] = [
-                missed_class for missed_class in data['pupil_missed_classes']
+        if "pupil_missed_classes" in data:
+            data["pupil_missed_classes"] = [
+                missed_class
+                for missed_class in data["pupil_missed_classes"]
                 if (
-                        current_semester.start_date <= datetime.strptime(missed_class['missed_day'],
-                                                                         '%Y-%m-%d').date() <= current_semester.end_date or
-                        (
-                                previous_semester and
-                                previous_semester.start_date <= datetime.strptime(missed_class['missed_day'],
-                                                                                  '%Y-%m-%d').date() <= previous_semester.end_date
-                        )
+                    current_semester.start_date
+                    <= datetime.strptime(missed_class["missed_day"], "%Y-%m-%d").date()
+                    <= current_semester.end_date
+                    or (
+                        previous_semester
+                        and previous_semester.start_date
+                        <= datetime.strptime(
+                            missed_class["missed_day"], "%Y-%m-%d"
+                        ).date()
+                        <= previous_semester.end_date
+                    )
                 )
             ]
 
-            data['pupil_schoolday_events'] = [
-                event for event in data['pupil_schoolday_events']
+            data["pupil_schoolday_events"] = [
+                event
+                for event in data["pupil_schoolday_events"]
                 if (
-                        current_semester.start_date <= datetime.strptime(event['schoolday_event_day'],
-                                                                         '%Y-%m-%d').date() <= current_semester.end_date or
-                        (
-                                previous_semester and previous_semester.start_date <= datetime.strptime(
-                            event['schoolday_event_day'], '%Y-%m-%d').date() <= previous_semester.end_date)
+                    current_semester.start_date
+                    <= datetime.strptime(
+                        event["schoolday_event_day"], "%Y-%m-%d"
+                    ).date()
+                    <= current_semester.end_date
+                    or (
+                        previous_semester
+                        and previous_semester.start_date
+                        <= datetime.strptime(
+                            event["schoolday_event_day"], "%Y-%m-%d"
+                        ).date()
+                        <= previous_semester.end_date
+                    )
                 )
             ]
-            
+
             data["competence_checks"] = [
                 check
                 for check in data["competence_checks"]
@@ -171,12 +214,25 @@ class PupilFlatSchema(Schema):
     emergency_care = fields.Boolean(allow_none=True)
 
     class Meta:
-        fields = ('internal_id', 'contact', 'parents_contact', 'credit',
-                  'credit_earned', 'ogs', 'pick_up_time', 'ogs_info',
-                  'individual_development_plan', 'five_years',
-                  'communication_pupil', 'communication_tutor1',
-                  'communication_tutor2', 'preschool_revision',
-                  'avatar_id', 'special_information', 'emergency_care')
+        fields = (
+            "internal_id",
+            "contact",
+            "parents_contact",
+            "credit",
+            "credit_earned",
+            "ogs",
+            "pick_up_time",
+            "ogs_info",
+            "individual_development_plan",
+            "five_years",
+            "communication_pupil",
+            "communication_tutor1",
+            "communication_tutor2",
+            "preschool_revision",
+            "avatar_id",
+            "special_information",
+            "emergency_care",
+        )
 
 
 pupil_flat_schema = PupilFlatSchema()
@@ -188,7 +244,7 @@ class PupilOnlyGoalSchema(Schema):
     support_goals = fields.List(fields.Nested(SupportGoalSchema))
 
     class Meta:
-        fields = ('internal_id', 'support_goals')
+        fields = ("internal_id", "support_goals")
 
 
 pupil_only_goal_schema = PupilOnlyGoalSchema()
@@ -197,6 +253,7 @@ pupils_only_goal_schema = PupilOnlyGoalSchema(many=True)
 
 class PupilIdListSchema(Schema):
     pupils = fields.List(fields.Integer())
+
 
 pupil_id_list_schema = PupilIdListSchema()
 
@@ -211,9 +268,10 @@ class PupilSiblingsPatchSchema(Schema):
 
 pupil_siblings_patch_schema = PupilSiblingsPatchSchema()
 
+
 class ProspectivePupilSchema(Schema):
-    internal_id = fields.Integer(required = True)
-    contact =  fields.String(allow_none=True)
+    internal_id = fields.Integer(required=True)
+    contact = fields.String(allow_none=True)
     parents_contact = fields.String(allow_none=True)
     ogs = fields.Boolean()
     ogs_info = fields.String()
@@ -227,10 +285,26 @@ class ProspectivePupilSchema(Schema):
     special_information = fields.String(allow_none=True)
     emergency_care = fields.Boolean(allow_none=True)
     date_created = fields.Date()
+
     class Meta:
-        fields = ('internal_id', 'contact', 'parents_contact', 'ogs', 'ogs_info', 'individual_development_plan',
-                  'communication_pupil', 'communication_tutor1', 'communication_tutor2', 'preschool_revision',
-                  'avatar_id', 'avatar_url', 'special_information', 'emergency_care', 'date_created')
-    
+        fields = (
+            "internal_id",
+            "contact",
+            "parents_contact",
+            "ogs",
+            "ogs_info",
+            "individual_development_plan",
+            "communication_pupil",
+            "communication_tutor1",
+            "communication_tutor2",
+            "preschool_revision",
+            "avatar_id",
+            "avatar_url",
+            "special_information",
+            "emergency_care",
+            "date_created",
+        )
+
+
 prospective_pupil_schema = ProspectivePupilSchema()
-prospective_pupils_schema = ProspectivePupilSchema(many = True)
+prospective_pupils_schema = ProspectivePupilSchema(many=True)

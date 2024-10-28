@@ -8,11 +8,10 @@ import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_manager.dart';
 import 'package:schuldaten_hub/common/widgets/dialogues/confirmation_dialog.dart';
 import 'package:schuldaten_hub/features/attendance/models/missed_class.dart';
-import 'package:schuldaten_hub/features/attendance/services/attendance_manager.dart';
 import 'package:schuldaten_hub/features/attendance/pages/missed_classes_pupil_list_page/missed_classes_pupil_list_page.dart';
-
 import 'package:schuldaten_hub/features/attendance/pages/widgets/attendance_badges.dart';
 import 'package:schuldaten_hub/features/attendance/pages/widgets/attendance_stats_pupil.dart';
+import 'package:schuldaten_hub/features/attendance/services/attendance_manager.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
 
 class PupilAttendanceContent extends StatelessWidget {
@@ -23,7 +22,7 @@ class PupilAttendanceContent extends StatelessWidget {
   Widget build(BuildContext context) {
     final List<int> missedHoursForActualReport =
         locator<AttendanceManager>().missedHoursforSemesterOrSchoolyear(pupil);
-    List<MissedClass> missedClasses = List.from(pupil.pupilMissedClasses!);
+    List<MissedClass> missedClasses = List.from(pupil.missedClasses!);
     // sort by missedDay
     missedClasses.sort((b, a) => a.missedDay.compareTo(b.missedDay));
     return Card(
@@ -213,7 +212,7 @@ class PupilAttendanceContent extends StatelessWidget {
 }
 
 List<Widget> pupilAttendanceContentList(PupilProxy pupil, context) {
-  List<MissedClass> missedClasses = List.from(pupil.pupilMissedClasses!);
+  List<MissedClass> missedClasses = List.from(pupil.missedClasses!);
   // sort by missedDay
   missedClasses.sort((b, a) => a.missedDay.compareTo(b.missedDay));
   return [

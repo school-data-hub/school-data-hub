@@ -60,7 +60,7 @@ dependencies:
   html: ^0.15.4
   http: ^1.2.2
   flutterware: ^0.5.1
-  zxing_lib: ^1.1.2
+  # zxing_lib: ^1.1.2
   buffer_image: ^0.3.12
   qr_code_vision: ^0.1.2
 

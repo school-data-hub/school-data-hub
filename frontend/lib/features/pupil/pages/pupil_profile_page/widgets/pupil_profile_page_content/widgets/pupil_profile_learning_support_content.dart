@@ -44,7 +44,7 @@ List<Widget> pupilLearningSupportContentList(
       ],
     ),
     const Gap(10),
-    pupil.individualDevelopmentPlans.isNotEmpty
+    pupil.supportLevelHistory.isNotEmpty
         ? IndividualDevelopmentPlanExpansionTile(pupil: pupil)
         : Row(
             children: [
@@ -52,13 +52,13 @@ List<Widget> pupilLearningSupportContentList(
               const Gap(10),
               InkWell(
                 onTap: () => individualDevelopmentPlanDialog(
-                    context, pupil, pupil.individualDevelopmentPlan),
+                    context, pupil, pupil.supportLevel),
                 child: Text(
-                  pupil.individualDevelopmentPlan == 0
+                  pupil.supportLevel == 0
                       ? 'kein Eintrag'
-                      : pupil.individualDevelopmentPlan == 1
+                      : pupil.supportLevel == 1
                           ? 'Förderebene 1'
-                          : pupil.individualDevelopmentPlan == 2
+                          : pupil.supportLevel == 2
                               ? 'Förderebene 2'
                               : 'Förderebene 3',
                   style: const TextStyle(
@@ -148,7 +148,7 @@ class _IndividualDevelopmentPlanExpansionTileState
   @override
   Widget build(BuildContext context) {
     final PupilProxy pupil = widget.pupil;
-    final List<SupportLevel> plans = widget.pupil.individualDevelopmentPlans;
+    final List<SupportLevel> plans = widget.pupil.supportLevelHistory;
     return ListTileTheme(
       contentPadding: const EdgeInsets.all(0),
       dense: true,
@@ -166,15 +166,15 @@ class _IndividualDevelopmentPlanExpansionTileState
                 const Gap(10),
                 InkWell(
                   onTap: () => individualDevelopmentPlanDialog(
-                      context, pupil, pupil.individualDevelopmentPlan),
+                      context, pupil, pupil.supportLevel),
                   child: Text(
-                    pupil.individualDevelopmentPlan == 0
+                    pupil.supportLevel == 0
                         ? 'kein Eintrag'
-                        : pupil.individualDevelopmentPlan == 1
+                        : pupil.supportLevel == 1
                             ? 'Förderebene 1'
-                            : pupil.individualDevelopmentPlan == 2
+                            : pupil.supportLevel == 2
                                 ? 'Förderebene 2'
-                                : pupil.individualDevelopmentPlan == 3
+                                : pupil.supportLevel == 3
                                     ? 'Förderebene 3'
                                     : 'Regenbogenförderung',
                     style: const TextStyle(
@@ -190,7 +190,7 @@ class _IndividualDevelopmentPlanExpansionTileState
               ListView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
-                  itemCount: widget.pupil.individualDevelopmentPlans.length,
+                  itemCount: widget.pupil.supportLevelHistory.length,
                   itemBuilder: (context, index) {
                     return Padding(
                       padding: const EdgeInsets.symmetric(vertical: 4.0),
@@ -207,8 +207,7 @@ class _IndividualDevelopmentPlanExpansionTileState
                         child: Row(
                           children: [
                             Text(
-                              widget.pupil.individualDevelopmentPlans[index]
-                                  .createdAt
+                              widget.pupil.supportLevelHistory[index].createdAt
                                   .formatForUser(),
                               style: const TextStyle(
                                   color: Colors.black,
@@ -222,8 +221,7 @@ class _IndividualDevelopmentPlanExpansionTileState
                                     fontWeight: FontWeight.bold,
                                     fontSize: 18)),
                             Text(
-                              widget
-                                  .pupil.individualDevelopmentPlans[index].level
+                              widget.pupil.supportLevelHistory[index].level
                                   .toString(),
                               style: const TextStyle(
                                   color: backgroundColor,
@@ -231,14 +229,11 @@ class _IndividualDevelopmentPlanExpansionTileState
                                   fontSize: 18),
                             ),
                             const Gap(10),
-                            Text(
-                                pupil.individualDevelopmentPlans[index].comment,
+                            Text(pupil.supportLevelHistory[index].comment,
                                 style: const TextStyle(
                                     color: Colors.black, fontSize: 16)),
                             const Spacer(),
-                            Text(
-                                pupil.individualDevelopmentPlans[index]
-                                    .createdBy,
+                            Text(pupil.supportLevelHistory[index].createdBy,
                                 style: const TextStyle(
                                     color: Colors.black,
                                     fontWeight: FontWeight.bold,

@@ -56,8 +56,8 @@ class AttendanceManager {
   void addAllPupilMissedClasses() {
     final List<MissedClass> allMissedClasses = [];
     for (PupilProxy pupil in pupilManager.allPupils) {
-      if (pupil.pupilMissedClasses != null) {
-        allMissedClasses.addAll(pupil.pupilMissedClasses!);
+      if (pupil.missedClasses != null) {
+        allMissedClasses.addAll(pupil.missedClasses!);
       }
     }
     _missedClasses.value = allMissedClasses;
@@ -94,10 +94,10 @@ class AttendanceManager {
     // in the last semester for the school year (for grades 1 and 2)
 
     // if no missed classes, we return 0, 0
-    if (pupil.pupilMissedClasses == null) {
+    if (pupil.missedClasses == null) {
       return [0, 0];
     }
-    final List<MissedClass> missedClasses = pupil.pupilMissedClasses!;
+    final List<MissedClass> missedClasses = pupil.missedClasses!;
     final List<SchoolSemester> schoolSemesters =
         locator<SchooldayManager>().schoolSemesters.value;
     final DateTime now = DateTime.now();
@@ -249,7 +249,7 @@ class AttendanceManager {
     // is if we uncheck 'return' - let's check that
 
     if (newValue == false &&
-        pupil.pupilMissedClasses![missedClass!].missedType ==
+        pupil.missedClasses![missedClass!].missedType ==
             MissedType.notSet.value) {
       final PupilData responsePupil =
           await apiAttendanceService.deleteMissedClass(

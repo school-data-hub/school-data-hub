@@ -4,9 +4,7 @@ import 'package:schuldaten_hub/common/constants/colors.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/session_manager.dart';
 import 'package:schuldaten_hub/common/widgets/avatar.dart';
-import 'package:schuldaten_hub/features/pupil/services/pupil_manager.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
-import 'package:schuldaten_hub/features/pupil/pages/pupil_profile_page/widgets/pupil_set_avatar.dart';
 import 'package:watch_it/watch_it.dart';
 
 class PupilProfileHeadWidget extends WatchingWidget {
@@ -21,34 +19,7 @@ class PupilProfileHeadWidget extends WatchingWidget {
       children: [
         Stack(
           children: [
-            GestureDetector(
-              onLongPressStart: (details) {
-                final offset = details.globalPosition;
-                final position = RelativeRect.fromLTRB(
-                    offset.dx, offset.dy, offset.dx, offset.dy);
-                showMenu(
-                  context: context,
-                  position: position,
-                  items: [
-                    PopupMenuItem(
-                      child: pupil.avatarId == null
-                          ? const Text('Foto hochladen')
-                          : const Text('Foto ersetzen'),
-                      onTap: () => setAvatar(context, pupil),
-                    ),
-                    if (pupil.avatarId != null)
-                      PopupMenuItem(
-                        child: const Text('Foto löschen'),
-                        onTap: () async {
-                          await locator<PupilManager>().deleteAvatarImage(
-                              pupil.internalId, pupil.internalId.toString());
-                        },
-                      ),
-                  ],
-                );
-              },
-              child: AvatarWithBadges(pupil: pupil, size: 100),
-            ),
+            AvatarWithBadges(pupil: pupil, size: 100),
           ],
         ),
         Padding(
@@ -87,7 +58,7 @@ class PupilProfileHeadWidget extends WatchingWidget {
               Row(
                 children: [
                   Text(
-                    'FE  ${pupil.individualDevelopmentPlan}',
+                    'FE  ${pupil.supportLevel}',
                     textAlign: TextAlign.left,
                     style: const TextStyle(
                         color: Colors.black,

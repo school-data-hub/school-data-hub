@@ -16,7 +16,7 @@ List<PupilProxy> attendanceFilters(List<PupilProxy> pupils) {
   for (final PupilProxy pupil in pupils) {
     //find out if the pupil has a missed class on this day
     // if so, define it for the coming filters
-    final MissedClass? missedClass = pupil.pupilMissedClasses!.firstWhereOrNull(
+    final MissedClass? missedClass = pupil.missedClasses!.firstWhereOrNull(
         (missedClass) => missedClass.missedDay.isSameDate(thisDate));
     // if missed class is null, hop to the next pupil
     if (missedClass == null) {

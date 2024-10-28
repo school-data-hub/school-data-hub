@@ -74,6 +74,9 @@ PupilData _$PupilDataFromJson(Map<String, dynamic> json) => PupilData(
       supportLevelHistory: (json['support_level_history'] as List<dynamic>)
           .map((e) => SupportLevel.fromJson(e as Map<String, dynamic>))
           .toList(),
+      competenceReports: (json['competence_reports'] as List<dynamic>)
+          .map((e) => CompetenceReport.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
 
 Map<String, dynamic> _$PupilDataToJson(PupilData instance) => <String, dynamic>{
@@ -104,4 +107,5 @@ Map<String, dynamic> _$PupilDataToJson(PupilData instance) => <String, dynamic>{
       'credit_history_logs': instance.creditHistoryLogs,
       'competence_goals': instance.competenceGoals,
       'support_level_history': instance.supportLevelHistory,
+      'competence_reports': instance.competenceReports,
     };

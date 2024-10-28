@@ -21,12 +21,12 @@ class SupportGoalsList extends StatelessWidget {
           ],
         ),
         const Gap(10),
-        pupil.pupilGoals!.isNotEmpty
+        pupil.supportGoals!.isNotEmpty
             ? ListView.builder(
                 padding: const EdgeInsets.all(0),
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
-                itemCount: pupil.pupilGoals!.length,
+                itemCount: pupil.supportGoals!.length,
                 itemBuilder: (context, int index) {
                   return SupportGoalCard(pupil: pupil, goalIndex: index);
                 })

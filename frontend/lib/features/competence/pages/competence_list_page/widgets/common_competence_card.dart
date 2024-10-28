@@ -6,6 +6,7 @@ import 'package:schuldaten_hub/common/widgets/custom_expansion_tile/custom_expan
 import 'package:schuldaten_hub/common/widgets/custom_expansion_tile/custom_expansion_tile_switch.dart';
 import 'package:schuldaten_hub/features/competence/models/competence.dart';
 import 'package:schuldaten_hub/features/competence/pages/competence_list_page/widgets/competence_filtered_pupils.dart';
+import 'package:schuldaten_hub/features/competence/services/competence_helper.dart';
 
 class CommonCompetenceCard extends HookWidget {
   final Color competenceBackgroundColor;
@@ -22,6 +23,8 @@ class CommonCompetenceCard extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    final competenceFilteredPupils =
+        CompetenceHelper.getFilteredPupilsByCompetence(competence: competence);
     final childrenController = useCustomExpansionTileController();
     final pupilListController = useCustomExpansionTileController();
     return Padding(
@@ -87,7 +90,17 @@ class CommonCompetenceCard extends HookWidget {
                   left: 5.0, right: 5.0, bottom: 2.5, top: 2.5),
               child: CustomExpansionTileContent(
                   tileController: pupilListController,
-                  widgetList: competenceFilteredPupils(competence: competence)),
+                  widgetList: [
+                    ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: competenceFilteredPupils.length,
+                      itemBuilder: (context, index) {
+                        final pupil = competenceFilteredPupils[index];
+                        return PupilCompetenceCheckCard(pupil: pupil);
+                      },
+                    ),
+                  ]),
             ),
           ],
         ),

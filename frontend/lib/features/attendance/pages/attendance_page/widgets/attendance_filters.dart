@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/constants/enums.dart';
 import 'package:schuldaten_hub/common/constants/styles.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
@@ -29,6 +30,7 @@ class AttendanceFilters extends WatchingWidget {
             )
           ],
         ),
+        const Gap(5),
         Wrap(
           spacing: 5,
           crossAxisAlignment: WrapCrossAlignment.center,

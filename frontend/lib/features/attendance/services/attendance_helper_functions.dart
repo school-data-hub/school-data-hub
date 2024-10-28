@@ -32,7 +32,7 @@ class AttendanceValues {
 //- lookup functions
 class AttendanceHelper {
   static int? findMissedClassIndex(PupilProxy pupil, DateTime date) {
-    final int? foundMissedClassIndex = pupil.pupilMissedClasses
+    final int? foundMissedClassIndex = pupil.missedClasses
         ?.indexWhere((datematch) => (datematch.missedDay.isSameDate(date)));
     if (foundMissedClassIndex == null) {
       return null;
@@ -48,8 +48,8 @@ class AttendanceHelper {
     int missedGlobalSum = 0;
     final List<PupilProxy> allPupils = locator<PupilManager>().allPupils;
     for (PupilProxy pupil in allPupils) {
-      if (pupil.pupilMissedClasses!.isNotEmpty) {
-        missedGlobalSum += pupil.pupilMissedClasses!
+      if (pupil.missedClasses!.isNotEmpty) {
+        missedGlobalSum += pupil.missedClasses!
             .where((element) =>
                 element.missedType == 'missed' ||
                 element.missedType == 'home' ||
@@ -64,8 +64,8 @@ class AttendanceHelper {
     int unexcusedGlobalSum = 0;
     final List<PupilProxy> allPupils = locator<PupilManager>().allPupils;
     for (PupilProxy pupil in allPupils) {
-      if (pupil.pupilMissedClasses!.isNotEmpty) {
-        unexcusedGlobalSum += pupil.pupilMissedClasses!
+      if (pupil.missedClasses!.isNotEmpty) {
+        unexcusedGlobalSum += pupil.missedClasses!
             .where((element) =>
                 element.missedType == 'missed' && element.excused == true)
             .length;
@@ -78,8 +78,8 @@ class AttendanceHelper {
     int lateGlobalSum = 0;
     final List<PupilProxy> allPupils = locator<PupilManager>().allPupils;
     for (PupilProxy pupil in allPupils) {
-      if (pupil.pupilMissedClasses!.isNotEmpty) {
-        lateGlobalSum += pupil.pupilMissedClasses!
+      if (pupil.missedClasses!.isNotEmpty) {
+        lateGlobalSum += pupil.missedClasses!
             .where((element) => element.missedType == 'late')
             .length;
       }
@@ -91,8 +91,8 @@ class AttendanceHelper {
     int contactedGlobalSum = 0;
     final List<PupilProxy> allPupils = locator<PupilManager>().allPupils;
     for (PupilProxy pupil in allPupils) {
-      if (pupil.pupilMissedClasses!.isNotEmpty) {
-        contactedGlobalSum += pupil.pupilMissedClasses!
+      if (pupil.missedClasses!.isNotEmpty) {
+        contactedGlobalSum += pupil.missedClasses!
             .where((element) => element.contacted != '0')
             .length;
       }
@@ -104,8 +104,8 @@ class AttendanceHelper {
     int pickedUpGlobalSum = 0;
     final List<PupilProxy> allPupils = locator<PupilManager>().allPupils;
     for (PupilProxy pupil in allPupils) {
-      if (pupil.pupilMissedClasses!.isNotEmpty) {
-        pickedUpGlobalSum += pupil.pupilMissedClasses!
+      if (pupil.missedClasses!.isNotEmpty) {
+        pickedUpGlobalSum += pupil.missedClasses!
             .where((element) => element.backHome == true)
             .length;
       }
@@ -120,7 +120,7 @@ class AttendanceHelper {
     List<PupilProxy> missedPupils = [];
     if (filteredPupils.isNotEmpty) {
       for (PupilProxy pupil in filteredPupils) {
-        if (pupil.pupilMissedClasses!.any((missedClass) =>
+        if (pupil.missedClasses!.any((missedClass) =>
             missedClass.missedDay == thisDate &&
             (missedClass.missedType == 'missed' ||
                 missedClass.missedType == 'home' ||
@@ -138,7 +138,7 @@ class AttendanceHelper {
     List<PupilProxy> unexcusedPupils = [];
 
     for (PupilProxy pupil in filteredPupils) {
-      if (pupil.pupilMissedClasses!.any((missedClass) =>
+      if (pupil.missedClasses!.any((missedClass) =>
           missedClass.missedDay == thisDate && missedClass.excused == true)) {
         unexcusedPupils.add(pupil);
       }
@@ -193,8 +193,8 @@ class AttendanceHelper {
   static int missedclassSum(PupilProxy pupil) {
     // count the number of missed classes - avoid null when missedClasses is empty
     int missedclassCount = 0;
-    if (pupil.pupilMissedClasses != null) {
-      missedclassCount = pupil.pupilMissedClasses!
+    if (pupil.missedClasses != null) {
+      missedclassCount = pupil.missedClasses!
           .where((element) =>
               element.missedType == 'missed' && element.excused == false)
           .length;
@@ -205,8 +205,8 @@ class AttendanceHelper {
   static int missedclassUnexcusedSum(PupilProxy pupil) {
     // count the number of unexcused missed classes
     int missedclassCount = 0;
-    if (pupil.pupilMissedClasses != null) {
-      missedclassCount = pupil.pupilMissedClasses!
+    if (pupil.missedClasses != null) {
+      missedclassCount = pupil.missedClasses!
           .where((element) =>
               element.missedType == 'missed' && element.excused == true)
           .length;
@@ -216,8 +216,8 @@ class AttendanceHelper {
 
   static int lateSum(PupilProxy pupil) {
     int lateCount = 0;
-    if (pupil.pupilMissedClasses != null) {
-      lateCount = pupil.pupilMissedClasses!
+    if (pupil.missedClasses != null) {
+      lateCount = pupil.missedClasses!
           .where((element) => element.missedType == 'late')
           .length;
     }
@@ -226,8 +226,8 @@ class AttendanceHelper {
 
   static int lateUnexcusedSum(PupilProxy pupil) {
     int missedClassUnexcusedCount = 0;
-    if (pupil.pupilMissedClasses != null) {
-      missedClassUnexcusedCount = pupil.pupilMissedClasses!
+    if (pupil.missedClasses != null) {
+      missedClassUnexcusedCount = pupil.missedClasses!
           .where((element) =>
               element.missedType == 'late' && element.excused == true)
           .length;
@@ -236,7 +236,7 @@ class AttendanceHelper {
   }
 
   static int contactedSum(PupilProxy pupil) {
-    int contactedCount = pupil.pupilMissedClasses!
+    int contactedCount = pupil.missedClasses!
         .where((element) => element.contacted != '0')
         .length;
 
@@ -244,7 +244,7 @@ class AttendanceHelper {
   }
 
   static int pickedUpSum(PupilProxy pupil) {
-    int pickedUpCount = pupil.pupilMissedClasses!
+    int pickedUpCount = pupil.missedClasses!
         .where((element) => element.backHome == true)
         .length;
 
@@ -254,8 +254,8 @@ class AttendanceHelper {
 //- check condition functions
 
   static bool pupilIsMissedToday(PupilProxy pupil) {
-    if (pupil.pupilMissedClasses!.isEmpty) return false;
-    if (pupil.pupilMissedClasses!.any((element) =>
+    if (pupil.missedClasses!.isEmpty) return false;
+    if (pupil.missedClasses!.any((element) =>
         element.missedDay.isSameDate(DateTime.now()) &&
         element.missedType != 'late')) {
       return true;
@@ -288,25 +288,23 @@ class AttendanceHelper {
         commentValue: null,
       );
     } else {
-      final dropdownvalue = pupil.pupilMissedClasses![missedClass].missedType;
+      final dropdownvalue = pupil.missedClasses![missedClass].missedType;
       missedType =
           MissedType.values.firstWhere((e) => e.value == dropdownvalue);
     }
 
-    final contactedValue = pupil.pupilMissedClasses![missedClass].contacted;
+    final contactedValue = pupil.missedClasses![missedClass].contacted;
     contactedType = ContactedType.values
             .firstWhereOrNull((e) => e.value == contactedValue) ??
         ContactedType.notSet;
 
-    String createdOrModifiedBy =
-        pupil.pupilMissedClasses![missedClass].modifiedBy ??
-            pupil.pupilMissedClasses![missedClass].createdBy;
+    String createdOrModifiedBy = pupil.missedClasses![missedClass].modifiedBy ??
+        pupil.missedClasses![missedClass].createdBy;
 
-    final bool excused = pupil.pupilMissedClasses![missedClass].excused!;
-    final bool returned = pupil.pupilMissedClasses![missedClass].backHome!;
-    final String? returnedTime =
-        pupil.pupilMissedClasses![missedClass].backHomeAt;
-    final String? comment = pupil.pupilMissedClasses![missedClass].comment;
+    final bool excused = pupil.missedClasses![missedClass].excused!;
+    final bool returned = pupil.missedClasses![missedClass].backHome!;
+    final String? returnedTime = pupil.missedClasses![missedClass].backHomeAt;
+    final String? comment = pupil.missedClasses![missedClass].comment;
 
     return AttendanceValues(
       missedTypeValue: missedType,

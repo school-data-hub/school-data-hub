@@ -123,7 +123,7 @@ class PupilProxy with ChangeNotifier {
     _missedClasses = Map.fromIterable(pupilData.pupilMissedClasses,
         key: (e) => e.missedDay, value: (e) => e);
 
-    pupilIsDirty = false;
+    pupilIsDirty = true;
     notifyListeners();
   }
 
@@ -215,9 +215,8 @@ class PupilProxy with ChangeNotifier {
   int get credit => _pupilData.credit;
   int get creditEarned => _pupilData.creditEarned;
   DateTime? get fiveYears => _pupilData.fiveYears;
-  int get individualDevelopmentPlan => _pupilData.latestSupportLevel;
-  List<SupportLevel> get individualDevelopmentPlans =>
-      _pupilData.supportLevelHistory;
+  int get supportLevel => _pupilData.latestSupportLevel;
+  List<SupportLevel> get supportLevelHistory => _pupilData.supportLevelHistory;
   int get internalId => _pupilData.internalId;
   bool get ogs => _pupilData.ogs;
   String? get ogsInfo => _pupilData.ogsInfo;
@@ -230,9 +229,9 @@ class PupilProxy with ChangeNotifier {
       _pupilData.supportCategoryStatuses;
   List<SchooldayEvent>? get schooldayEvents => _pupilData.schooldayEvents;
   List<PupilBook>? get pupilBooks => _pupilData.pupilBooks;
-  List<SupportGoal>? get pupilGoals => _pupilData.supportGoals;
+  List<SupportGoal>? get supportGoals => _pupilData.supportGoals;
 
-  List<MissedClass>? get pupilMissedClasses => _missedClasses.values.toList();
+  List<MissedClass>? get missedClasses => _missedClasses.values.toList();
   Map<DateTime, MissedClass> _missedClasses = {};
 
   List<PupilWorkbook>? get pupilWorkbooks => _pupilData.pupilWorkbooks;

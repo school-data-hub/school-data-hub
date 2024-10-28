@@ -51,7 +51,7 @@ class LearningSupportManager {
     List<SupportGoal> goals = [];
     final List<PupilProxy> pupils = locator<PupilManager>().allPupils;
     for (PupilProxy pupil in pupils) {
-      for (SupportGoal goal in pupil.pupilGoals!) {
+      for (SupportGoal goal in pupil.supportGoals!) {
         if (goal.supportCategoryId == categoryId) {
           goals.add(goal);
         }
