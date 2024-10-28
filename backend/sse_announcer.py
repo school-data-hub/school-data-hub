@@ -11,6 +11,7 @@ class MessageAnnouncer:
         self.listeners = []
 
     def listen(self):
+        print("Listener created", file=sys.stderr)
         self.listeners.append(queue.Queue(maxsize=5))
         return self.listeners[-1]
 
