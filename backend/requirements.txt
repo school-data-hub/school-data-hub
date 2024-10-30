@@ -1,11 +1,11 @@
 
-APIFlask==2.1.1
-Flask_SQLAlchemy==3.0.2
-marshmallow==3.20.1
-PyJWT==2.8.0
+APIFlask==2.2.1
+Flask_SQLAlchemy==3.1.1
+marshmallow==3.23.0
+PyJWT==2.9.0
 python-dotenv==1.0.1
 SQLAlchemy==2.0.29
 SQLAlchemy_Utils==0.41.2
-Werkzeug==3.0.3
-flask_caching==2.2.0
+Werkzeug==3.0.6
+flask_caching==2.3.0
 flask_migrate==4.0.7
