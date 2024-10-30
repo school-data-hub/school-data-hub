@@ -19,6 +19,7 @@ import 'package:schuldaten_hub/common/widgets/dialogues/confirmation_dialog.dart
 import 'package:schuldaten_hub/common/widgets/dialogues/short_textfield_dialog.dart';
 import 'package:schuldaten_hub/common/widgets/qr_widgets.dart';
 import 'package:schuldaten_hub/features/books/pdf/book_ids.dart';
+import 'package:schuldaten_hub/features/competence/pdf/competence_report_pdf.dart';
 import 'package:schuldaten_hub/features/main_menu_pages/login_page/controller/login_controller.dart';
 import 'package:schuldaten_hub/features/main_menu_pages/widgets/dialogues/change_env_dialog.dart';
 import 'package:schuldaten_hub/features/matrix/pages/pupil_matrix_contacts.dart';
@@ -307,6 +308,13 @@ class SettingsPage extends WatchingWidget {
                           leading: const Icon(Icons.qr_code_rounded),
                           onPressed: (context) {
                             generateBookIdsPdf();
+                          }),
+                      SettingsTile.navigation(
+                          title: const Text('Zeugnis generieren'),
+                          leading: const Icon(Icons.qr_code_rounded),
+                          onPressed: (context) {
+                            generateCompetenceReportPdf(
+                                reportLevel: ReportLevel.E1);
                           }),
                       SettingsTile.navigation(
                         leading: const Icon(Icons.attach_money_rounded),
