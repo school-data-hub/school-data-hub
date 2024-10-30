@@ -2,13 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/constants/colors.dart';
+import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/utils/custom_expasion_tile_hook.dart';
 import 'package:schuldaten_hub/common/widgets/avatar.dart';
 import 'package:schuldaten_hub/common/widgets/custom_expansion_tile/custom_expansion_tile_content.dart';
 import 'package:schuldaten_hub/common/widgets/custom_expansion_tile/custom_expansion_tile_switch.dart';
 import 'package:schuldaten_hub/features/competence/models/competence.dart';
 import 'package:schuldaten_hub/features/competence/services/competence_helper.dart';
+import 'package:schuldaten_hub/features/main_menu_pages/widgets/landing_bottom_nav_bar.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
+import 'package:schuldaten_hub/features/pupil/pages/pupil_profile_page/pupil_profile_page.dart';
 
 List<Widget> competenceFilteredPupils({required Competence competence}) {
   List<Widget> finalPupils = [];
@@ -56,13 +59,13 @@ class PupilCompetenceCheckCard extends HookWidget {
                             scrollDirection: Axis.horizontal,
                             child: InkWell(
                               onTap: () {
-                                // locator<BottomNavManager>()
-                                //     .setPupilProfileNavPage(2);
-                                // Navigator.of(context).push(MaterialPageRoute(
-                                //   builder: (ctx) => PupilProfilePage(
-                                //     pupil: pupil,
-                                //   ),
-                                // ));
+                                locator<BottomNavManager>()
+                                    .setPupilProfileNavPage(9);
+                                Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (ctx) => PupilProfilePage(
+                                    pupil: pupil,
+                                  ),
+                                ));
                               },
                               child: Row(
                                 children: [

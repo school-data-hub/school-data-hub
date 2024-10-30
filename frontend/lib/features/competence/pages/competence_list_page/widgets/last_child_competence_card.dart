@@ -77,7 +77,7 @@ class LastChildCompetenceCard extends HookWidget {
                 ? Padding(
                     padding: const EdgeInsets.only(top: 4.0, bottom: 8),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Flexible(
                           child: Text(
