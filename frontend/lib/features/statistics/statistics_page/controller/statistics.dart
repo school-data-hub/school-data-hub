@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:schuldaten_hub/features/schooldays/models/schoolday.dart';
-import 'package:schuldaten_hub/features/schooldays/services/schoolday_manager.dart';
+import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/utils/extensions.dart';
 import 'package:schuldaten_hub/features/attendance/models/missed_class.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
-import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/features/pupil/services/pupil_helper_functions.dart';
 import 'package:schuldaten_hub/features/pupil/services/pupil_manager.dart';
+import 'package:schuldaten_hub/features/schooldays/models/schoolday.dart';
+import 'package:schuldaten_hub/features/schooldays/services/schoolday_manager.dart';
 import 'package:schuldaten_hub/features/statistics/statistics_page/statistics_view.dart';
 import 'package:watch_it/watch_it.dart';
 
@@ -171,7 +171,7 @@ class StatisticsController extends State<Statistics> {
   List<PupilProxy> developmentPlan1InAGivenGroup(List<PupilProxy> group) {
     List<PupilProxy> groupPupils = [];
     for (PupilProxy pupil in group) {
-      if (pupil.individualDevelopmentPlan == 1) {
+      if (pupil.supportLevel == 1) {
         groupPupils.add(pupil);
       }
     }
@@ -181,7 +181,7 @@ class StatisticsController extends State<Statistics> {
   List<PupilProxy> developmentPlan2InAGivenGroup(List<PupilProxy> group) {
     List<PupilProxy> groupPupils = [];
     for (PupilProxy pupil in group) {
-      if (pupil.individualDevelopmentPlan == 2) {
+      if (pupil.supportLevel == 2) {
         groupPupils.add(pupil);
       }
     }
@@ -191,7 +191,7 @@ class StatisticsController extends State<Statistics> {
   List<PupilProxy> developmentPlan3InAGivenGroup(List<PupilProxy> group) {
     List<PupilProxy> groupPupils = [];
     for (PupilProxy pupil in group) {
-      if (pupil.individualDevelopmentPlan == 3) {
+      if (pupil.supportLevel == 3) {
         groupPupils.add(pupil);
       }
     }
@@ -241,8 +241,8 @@ class StatisticsController extends State<Statistics> {
   List<MissedClass> totalMissedClasses(List<PupilProxy> pupils) {
     List<MissedClass> missedClasses = [];
     for (PupilProxy pupil in pupils) {
-      if (pupil.pupilMissedClasses != null) {
-        for (MissedClass missedClass in pupil.pupilMissedClasses!) {
+      if (pupil.missedClasses != null) {
+        for (MissedClass missedClass in pupil.missedClasses!) {
           missedClasses.add(missedClass);
         }
       }
@@ -253,8 +253,8 @@ class StatisticsController extends State<Statistics> {
   List<MissedClass> totalUnexcusedMissedClasses(List<PupilProxy> pupils) {
     List<MissedClass> missedClasses = [];
     for (PupilProxy pupil in pupils) {
-      if (pupil.pupilMissedClasses != null) {
-        for (MissedClass missedClass in pupil.pupilMissedClasses!) {
+      if (pupil.missedClasses != null) {
+        for (MissedClass missedClass in pupil.missedClasses!) {
           if (missedClass.excused == true) {
             missedClasses.add(missedClass);
           }
@@ -268,8 +268,8 @@ class StatisticsController extends State<Statistics> {
   List<MissedClass> totalContactedMissedClasses(List<PupilProxy> pupils) {
     List<MissedClass> missedClasses = [];
     for (PupilProxy pupil in pupils) {
-      if (pupil.pupilMissedClasses != null) {
-        for (MissedClass missedClass in pupil.pupilMissedClasses!) {
+      if (pupil.missedClasses != null) {
+        for (MissedClass missedClass in pupil.missedClasses!) {
           if (missedClass.contacted != '0') {
             missedClasses.add(missedClass);
           }
@@ -282,8 +282,8 @@ class StatisticsController extends State<Statistics> {
   double averageMissedClassesperPupil(List<PupilProxy> pupils) {
     double totalMissedClasses = 0;
     for (PupilProxy pupil in pupils) {
-      if (pupil.pupilMissedClasses != null) {
-        totalMissedClasses += pupil.pupilMissedClasses!.length;
+      if (pupil.missedClasses != null) {
+        totalMissedClasses += pupil.missedClasses!.length;
       }
     }
     return totalMissedClasses / pupils.length;
@@ -292,8 +292,8 @@ class StatisticsController extends State<Statistics> {
   double averageUnexcusedMissedClassesperPupil(List<PupilProxy> pupils) {
     double totalMissedClasses = 0;
     for (PupilProxy pupil in pupils) {
-      if (pupil.pupilMissedClasses != null) {
-        for (MissedClass missedClass in pupil.pupilMissedClasses!) {
+      if (pupil.missedClasses != null) {
+        for (MissedClass missedClass in pupil.missedClasses!) {
           if (missedClass.excused == true) {
             totalMissedClasses++;
           }

@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
-import 'package:schuldaten_hub/common/services/api/api.dart';
 import 'package:schuldaten_hub/common/constants/enums.dart';
+import 'package:schuldaten_hub/common/services/api/api.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_manager.dart';
 import 'package:schuldaten_hub/common/services/session_manager.dart';
@@ -114,8 +114,7 @@ class WorkbookManager {
         NotificationType.success, 'Arbeitsheft erfolgreich gelöscht');
 
     //- TODO: delete all pupilWorkbooks with this isbn in memory
-    //- instead of fetching all pupils again
-    locator<PupilManager>().fetchAllPupils();
+
     return;
   }
 

@@ -8,9 +8,9 @@ import 'package:schuldaten_hub/common/widgets/search_text_field.dart';
 import 'package:schuldaten_hub/features/pupil/filters/pupils_filter.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
 import 'package:schuldaten_hub/features/school_lists/models/school_list.dart';
-import 'package:schuldaten_hub/features/school_lists/services/school_list_helper_functions.dart';
 import 'package:schuldaten_hub/features/school_lists/pages/school_list_pupils_page/widgets/school_list_pupils_filter_bottom_sheet.dart';
 import 'package:schuldaten_hub/features/school_lists/pages/school_list_pupils_page/widgets/school_list_stats_row.dart';
+import 'package:schuldaten_hub/features/school_lists/services/school_list_helper_functions.dart';
 import 'package:watch_it/watch_it.dart';
 
 class SchoolListPupilsPageSearchBar extends WatchingWidget {
@@ -22,8 +22,6 @@ class SchoolListPupilsPageSearchBar extends WatchingWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool filtersOn = watchValue((PupilsFilter x) => x.filtersOn);
-
     return Container(
       decoration: BoxDecoration(
         color: canvasColor,

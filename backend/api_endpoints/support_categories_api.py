@@ -1,21 +1,27 @@
 from apiflask import APIBlueprint, abort
 from flask import jsonify
-from app import db
+
 from auth_middleware import token_required
+from models.shared import db
 from models.support_category import SupportCategory
 from schemas.support_schemas import *
 
-support_category_api = APIBlueprint('goal_categories_api', __name__, url_prefix='/api/support_categories')
+support_category_api = APIBlueprint(
+    "goal_categories_api", __name__, url_prefix="/api/support_categories"
+)
 
-#- GET SUPPORT CATEGORIES 
+# - GET SUPPORT CATEGORIES
 #########################
 
-@support_category_api.route('/all', methods=['GET'])
-@support_category_api.doc(security='ApiKeyAuth', tags=['Support Categories'], summary='Get support categories')
+
+@support_category_api.route("/all", methods=["GET"])
+@support_category_api.doc(
+    security="ApiKeyAuth", tags=["Support Categories"], summary="Get support categories"
+)
 @token_required
 def get_categories(current_user):
     if not current_user:
-        abort(404, message='Bitte erneut einloggen!')
+        abort(404, message="Bitte erneut einloggen!")
     root = {
         "category_id": 0,
         "category_name": "development_goal_categories",
@@ -38,22 +44,27 @@ def get_categories(current_user):
 
     return jsonify(root)
 
-#- GET CATEGORIES FLAT
+
+# - GET CATEGORIES FLAT
 ######################
 
-@support_category_api.route('/all/flat', methods=['GET'])
-@support_category_api.output(support_categories_flat_schema)
-@support_category_api.doc(security='ApiKeyAuth', tags=['Support Categories'], summary='Get support categories in flat JSON')
 
+@support_category_api.route("/all/flat", methods=["GET"])
+@support_category_api.output(support_categories_flat_schema)
+@support_category_api.doc(
+    security="ApiKeyAuth",
+    tags=["Support Categories"],
+    summary="Get support categories in flat JSON",
+)
 @token_required
 def get_flat_categories(current_user):
     if not current_user:
-        abort(404, message='Bitte erneut einloggen!')
+        abort(404, message="Bitte erneut einloggen!")
     all_categories = SupportCategory.query.all()
     if all_categories == None:
-        return jsonify({'error': 'No categories found!'})
+        return jsonify({"error": "No categories found!"})
     # result = support_categories_flat_schema.dump(all_categories)
-    return all_categories    
+    return all_categories
 
 
 #! TODO: Add rest of categories API

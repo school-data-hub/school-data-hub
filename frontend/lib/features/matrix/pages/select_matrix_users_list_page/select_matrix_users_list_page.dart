@@ -6,11 +6,9 @@ import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/features/matrix/models/matrix_user.dart';
 import 'package:schuldaten_hub/features/matrix/pages/select_matrix_users_list_page/controller/select_matrix_users_list_controller.dart';
 import 'package:schuldaten_hub/features/matrix/pages/select_matrix_users_list_page/widgets/select_matrix_user_list_card.dart';
-import 'package:schuldaten_hub/features/matrix/pages/select_matrix_users_list_page/widgets/select_matrix_users_filter_bottom_sheet.dart';
 import 'package:schuldaten_hub/features/matrix/pages/select_matrix_users_list_page/widgets/select_matrix_users_list_searchbar.dart';
 import 'package:schuldaten_hub/features/matrix/pages/select_matrix_users_list_page/widgets/select_matrix_users_list_view_bottom_navbar.dart';
 
-import 'package:schuldaten_hub/features/pupil/filters/pupil_filter_manager.dart';
 import 'package:schuldaten_hub/features/pupil/services/pupil_manager.dart';
 import 'package:watch_it/watch_it.dart';
 

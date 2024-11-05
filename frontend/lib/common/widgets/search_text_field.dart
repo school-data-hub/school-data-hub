@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:schuldaten_hub/common/constants/enums.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
-
 import 'package:schuldaten_hub/features/pupil/filters/pupils_filter.dart';
 import 'package:watch_it/watch_it.dart';
 

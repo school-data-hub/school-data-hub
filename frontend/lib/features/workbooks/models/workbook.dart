@@ -14,12 +14,12 @@ class Workbook {
       required this.imageUrl});
 
   final int isbn;
-  final String name;
+  String name;
   final String? subject;
   final String? level;
   final int amount;
   @JsonKey(name: 'image_url')
-  final String? imageUrl;
+  String? imageUrl;
 
   factory Workbook.fromJson(Map<String, dynamic> json) =>
       _$WorkbookFromJson(json);

@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:schuldaten_hub/common/services/api/api.dart';
 import 'package:schuldaten_hub/common/constants/colors.dart';
+import 'package:schuldaten_hub/common/services/api/api.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/widgets/download_or_cached_and_decrypt_image.dart';
 import 'package:schuldaten_hub/features/attendance/services/attendance_helper_functions.dart';
-import 'package:schuldaten_hub/features/pupil/services/pupil_manager.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
-import 'package:schuldaten_hub/features/pupil/services/pupil_helper_functions.dart';
 import 'package:schuldaten_hub/features/pupil/pages/pupil_profile_page/widgets/pupil_set_avatar.dart';
+import 'package:schuldaten_hub/features/pupil/services/pupil_helper_functions.dart';
+import 'package:schuldaten_hub/features/pupil/services/pupil_manager.dart';
 import 'package:schuldaten_hub/features/schoolday_events/services/schoolday_event_helper_functions.dart';
 import 'package:watch_it/watch_it.dart';
 import 'package:widget_zoom/widget_zoom.dart';
@@ -40,7 +40,7 @@ class AvatarImage extends StatelessWidget {
                 zoomWidget: FutureBuilder<Widget>(
                   future: downloadOrCachedAndDecryptImage(
                     PupilDataApiService.getPupilAvatar(internalId),
-                    avatarId.toString(),
+                    avatarId,
                   ),
                   builder: (context, snapshot) {
                     Widget child;
@@ -64,41 +64,13 @@ class AvatarImage extends StatelessWidget {
                   },
                 ),
               )
-            : GestureDetector(
-                onLongPressStart: (details) {
-                  final offset = details.globalPosition;
-                  final position = RelativeRect.fromLTRB(
-                      offset.dx, offset.dy, offset.dx, offset.dy);
-                  showMenu(
-                    context: context,
-                    position: position,
-                    items: [
-                      PopupMenuItem(
-                        child: avatarId == null
-                            ? const Text('Foto hochladen')
-                            : const Text('Foto ersetzen'),
-                        onTap: () => setAvatar(context,
-                            locator<PupilManager>().findPupilById(internalId)!),
-                      ),
-                      if (avatarId != null)
-                        PopupMenuItem(
-                          child: const Text('Foto löschen'),
-                          onTap: () async {
-                            await locator<PupilManager>().deleteAvatarImage(
-                                internalId, internalId.toString());
-                          },
-                        ),
-                    ],
-                  );
-                },
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(size / 2),
-                  child: Image.asset(
-                    'assets/dummy-profile-pic.png',
-                    width: 100,
-                    height: 100,
-                    fit: BoxFit.cover,
-                  ),
+            : ClipRRect(
+                borderRadius: BorderRadius.circular(size / 2),
+                child: Image.asset(
+                  'assets/dummy-profile-pic.png',
+                  width: 100,
+                  height: 100,
+                  fit: BoxFit.cover,
                 ),
               ),
       ),
@@ -117,16 +89,43 @@ class AvatarWithBadges extends WatchingWidget {
       padding: const EdgeInsets.all(5.0),
       child: Stack(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(4.0),
-            child: Provider<AvatarData>.value(
-                updateShouldNotify: (oldValue, newValue) =>
-                    oldValue.avatarId != newValue.avatarId,
-                value: AvatarData(
-                    avatarId: pupil.avatarId,
-                    internalId: pupil.internalId,
-                    size: size),
-                child: const AvatarImage()),
+          GestureDetector(
+            onLongPressStart: (details) {
+              final offset = details.globalPosition;
+              final position = RelativeRect.fromLTRB(
+                  offset.dx, offset.dy, offset.dx, offset.dy);
+              showMenu(
+                context: context,
+                position: position,
+                items: [
+                  PopupMenuItem(
+                    child: pupil.avatarId == null
+                        ? const Text('Foto hochladen')
+                        : const Text('Foto ersetzen'),
+                    onTap: () => setAvatar(context, pupil),
+                  ),
+                  if (pupil.avatarId != null)
+                    PopupMenuItem(
+                      child: const Text('Foto löschen'),
+                      onTap: () async {
+                        await locator<PupilManager>().deleteAvatarImage(
+                            pupil.internalId, pupil.internalId.toString());
+                      },
+                    ),
+                ],
+              );
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(4.0),
+              child: Provider<AvatarData>.value(
+                  updateShouldNotify: (oldValue, newValue) =>
+                      oldValue.avatarId != newValue.avatarId,
+                  value: AvatarData(
+                      avatarId: pupil.avatarId,
+                      internalId: pupil.internalId,
+                      size: size),
+                  child: const AvatarImage()),
+            ),
           ),
           Positioned(
             bottom: 0,

@@ -2,36 +2,38 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
-import 'package:gap/gap.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_settings_ui/flutter_settings_ui.dart';
+import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/constants/colors.dart';
 import 'package:schuldaten_hub/common/constants/enums.dart';
 import 'package:schuldaten_hub/common/constants/styles.dart';
 import 'package:schuldaten_hub/common/models/session.dart';
 import 'package:schuldaten_hub/common/services/env_manager.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
+import 'package:schuldaten_hub/common/services/notification_manager.dart';
 import 'package:schuldaten_hub/common/services/session_helper_functions.dart';
 import 'package:schuldaten_hub/common/services/session_manager.dart';
-import 'package:schuldaten_hub/common/services/notification_manager.dart';
-import 'package:schuldaten_hub/features/matrix/pages/pupil_matrix_contacts.dart';
-import 'package:schuldaten_hub/features/users/pages/user_change_password_page/user_change_password_page.dart';
-import 'package:schuldaten_hub/features/users/services/user_manager.dart';
 import 'package:schuldaten_hub/common/utils/secure_storage.dart';
 import 'package:schuldaten_hub/common/widgets/dialogues/confirmation_dialog.dart';
 import 'package:schuldaten_hub/common/widgets/dialogues/short_textfield_dialog.dart';
 import 'package:schuldaten_hub/common/widgets/qr_widgets.dart';
-import 'package:schuldaten_hub/features/schooldays/pages/schooldays_calendar_page.dart';
+import 'package:schuldaten_hub/features/books/pdf/book_ids.dart';
+import 'package:schuldaten_hub/features/competence/pdf/competence_report_pdf.dart';
 import 'package:schuldaten_hub/features/main_menu_pages/login_page/controller/login_controller.dart';
 import 'package:schuldaten_hub/features/main_menu_pages/widgets/dialogues/change_env_dialog.dart';
+import 'package:schuldaten_hub/features/matrix/pages/pupil_matrix_contacts.dart';
 import 'package:schuldaten_hub/features/matrix/pages/set_matrix_environment_values_page.dart';
 import 'package:schuldaten_hub/features/matrix/services/matrix_policy_manager.dart';
+import 'package:schuldaten_hub/features/pupil/pages/birthdays_page.dart';
+import 'package:schuldaten_hub/features/pupil/pages/select_pupils_list_page/select_pupils_list_page.dart';
 import 'package:schuldaten_hub/features/pupil/services/pupil_identity_manager.dart';
 import 'package:schuldaten_hub/features/pupil/services/pupil_manager.dart';
-import 'package:schuldaten_hub/features/pupil/pages/select_pupils_list_page/select_pupils_list_page.dart';
-import 'package:schuldaten_hub/features/pupil/pages/birthdays_page.dart';
+import 'package:schuldaten_hub/features/schooldays/pages/schooldays_calendar_page.dart';
 import 'package:schuldaten_hub/features/statistics/statistics_page/controller/statistics.dart';
-import 'package:flutter_settings_ui/flutter_settings_ui.dart';
+import 'package:schuldaten_hub/features/users/pages/user_change_password_page/user_change_password_page.dart';
 import 'package:schuldaten_hub/features/users/pages/users_list_page/users_list_page.dart';
+import 'package:schuldaten_hub/features/users/services/user_manager.dart';
 import 'package:watch_it/watch_it.dart';
 
 class SettingsPage extends WatchingWidget {
@@ -122,7 +124,7 @@ class SettingsPage extends WatchingWidget {
                     leading: const Icon(Icons.punch_clock_rounded),
                     title: const Text('Token gültig noch:'),
                     value: Text(
-                      tokenLifetimeLeft(session.jwt!).toString(),
+                      SessionHelper.tokenLifetimeLeft(session.jwt!).toString(),
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
                       ),
@@ -265,7 +267,7 @@ class SettingsPage extends WatchingWidget {
                               title: 'Achtung!',
                               message: 'Ausloggen und alle Daten löschen?');
                           if (confirm == true && context.mounted) {
-                            logoutAndDeleteAllData(context);
+                            SessionHelper.logoutAndDeleteAllData(context);
                           }
                           return;
                         },
@@ -300,6 +302,19 @@ class SettingsPage extends WatchingWidget {
                             Navigator.of(context).push(MaterialPageRoute(
                               builder: (ctx) => const UsersListPage(),
                             ));
+                          }),
+                      SettingsTile.navigation(
+                          title: const Text('Buch IDs generieren'),
+                          leading: const Icon(Icons.qr_code_rounded),
+                          onPressed: (context) {
+                            generateBookIdsPdf();
+                          }),
+                      SettingsTile.navigation(
+                          title: const Text('Zeugnis generieren'),
+                          leading: const Icon(Icons.qr_code_rounded),
+                          onPressed: (context) {
+                            generateCompetenceReportPdf(
+                                reportLevel: ReportLevel.E1);
                           }),
                       SettingsTile.navigation(
                         leading: const Icon(Icons.attach_money_rounded),

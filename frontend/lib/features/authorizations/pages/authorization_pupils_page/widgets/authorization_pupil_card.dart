@@ -3,9 +3,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
-import 'package:schuldaten_hub/common/services/api/api.dart';
 import 'package:schuldaten_hub/common/constants/colors.dart';
 import 'package:schuldaten_hub/common/constants/enums.dart';
+import 'package:schuldaten_hub/common/services/api/api.dart';
 import 'package:schuldaten_hub/common/services/env_manager.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_manager.dart';
@@ -18,9 +18,9 @@ import 'package:schuldaten_hub/features/authorizations/models/authorization.dart
 import 'package:schuldaten_hub/features/authorizations/models/pupil_authorization.dart';
 import 'package:schuldaten_hub/features/authorizations/services/authorization_manager.dart';
 import 'package:schuldaten_hub/features/main_menu_pages/widgets/landing_bottom_nav_bar.dart';
-import 'package:schuldaten_hub/features/pupil/services/pupil_manager.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
 import 'package:schuldaten_hub/features/pupil/pages/pupil_profile_page/pupil_profile_page.dart';
+import 'package:schuldaten_hub/features/pupil/services/pupil_manager.dart';
 import 'package:watch_it/watch_it.dart';
 
 class AuthorizationPupilCard extends StatelessWidget with WatchItMixin {

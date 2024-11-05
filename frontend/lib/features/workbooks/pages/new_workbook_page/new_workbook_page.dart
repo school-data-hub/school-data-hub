@@ -14,6 +14,7 @@ class NewWorkbookPage extends StatefulWidget {
   final int? wbIsbn;
   final String? wbSubject;
   final String? wbLevel;
+  final String? wbAmount;
   final bool isEdit;
   const NewWorkbookPage(
       {required this.isEdit,
@@ -21,6 +22,7 @@ class NewWorkbookPage extends StatefulWidget {
       this.wbIsbn,
       this.wbSubject,
       this.wbLevel,
+      this.wbAmount,
       super.key});
 
   @override
@@ -36,8 +38,39 @@ class NewWorkbookPageState extends State<NewWorkbookPage> {
   final TextEditingController amountTextFieldController =
       TextEditingController();
 
-  Set<int> pupilIds = {};
+  bool validateRequestDataPayload() {
+    if (amountTextFieldController.text.isEmpty) {
+      locator<NotificationManager>().showSnackBar(
+          NotificationType.error, 'Bitte geben Sie den Bestand ein!');
+      return false;
+    }
+    if (int.parse(amountTextFieldController.text) < 0) {
+      locator<NotificationManager>().showSnackBar(
+          NotificationType.error, 'Der Bestand kann nicht negativ sein!');
+      return false;
+    }
+    if (nameTextFieldController.text.isEmpty) {
+      locator<NotificationManager>().showSnackBar(
+          NotificationType.error, 'Bitte geben Sie den Namen ein!');
+      return false;
+    }
+    if (isbnTextFieldController.text.isEmpty) {
+      locator<NotificationManager>().showSnackBar(
+          NotificationType.error, 'Bitte geben Sie die ISBN ein!');
+      return false;
+    }
+    return true;
+  }
+
   void postNewWorkbook() async {
+    if (locator<WorkbookManager>().workbooks.value.any((element) =>
+        element.isbn ==
+        int.parse(isbnTextFieldController.text.replaceAll('-', '')))) {
+      locator<NotificationManager>().showSnackBar(
+          NotificationType.error, 'Dieses Arbeitsheft gibt es schon!');
+
+      return;
+    }
     String workbookName = nameTextFieldController.text;
     int workbookIsbn =
         int.parse(isbnTextFieldController.text.replaceAll('-', ''));
@@ -58,6 +91,7 @@ class NewWorkbookPageState extends State<NewWorkbookPage> {
 
     await locator<WorkbookManager>().updateWorkbookProperty(
         workbookName, workbookIsbn, workbookSubject, workbookLevel);
+    return;
   }
 
   void _listenToIsbn() {
@@ -94,6 +128,7 @@ class NewWorkbookPageState extends State<NewWorkbookPage> {
     }
     subjectTextFieldController.text = widget.wbSubject ?? '';
     level.text = widget.wbLevel ?? '';
+    amountTextFieldController.text = widget.wbAmount ?? '';
 
     isbnTextFieldController.addListener(_listenToIsbn);
     return Scaffold(
@@ -258,25 +293,23 @@ class NewWorkbookPageState extends State<NewWorkbookPage> {
                     style: successButtonStyle,
                     onPressed: () {
                       if (widget.isEdit) {
-                        patchWorkbook();
-                        Navigator.pop(context);
-                        return;
-                      }
-                      {
-                        if (locator<WorkbookManager>().workbooks.value.any(
-                            (element) =>
-                                element.isbn ==
-                                int.parse(isbnTextFieldController.text
-                                    .replaceAll('-', '')))) {
-                          locator<NotificationManager>().showSnackBar(
-                              NotificationType.error,
-                              'Dieses Arbeitsheft gibt es schon!');
-
+                        final validate = validateRequestDataPayload();
+                        if (!validate) {
+                          return;
+                        } else {
+                          patchWorkbook();
+                          Navigator.pop(context);
                           return;
                         }
-                        postNewWorkbook();
-                        Navigator.pop(context);
-                        return;
+                      } else {
+                        final validate = validateRequestDataPayload();
+                        if (!validate) {
+                          return;
+                        } else {
+                          postNewWorkbook();
+                          Navigator.pop(context);
+                          return;
+                        }
                       }
                     },
                     child: const Text(

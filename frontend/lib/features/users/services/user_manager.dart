@@ -60,7 +60,12 @@ class UserManager {
   Future<void> changePassword(String oldPassword, String newPassword) async {
     final User? user = await userApiService.changePassword(
         oldPassword: oldPassword, newPassword: newPassword);
-
+    if (user == null) {
+      notificationManager.showSnackBar(
+          NotificationType.error, 'Passwort konnte nicht geändert werden!');
+      return;
+    }
+    updateUser(user);
     notificationManager.showSnackBar(
         NotificationType.success, 'Passwort erfolgreich geändert!');
     return;

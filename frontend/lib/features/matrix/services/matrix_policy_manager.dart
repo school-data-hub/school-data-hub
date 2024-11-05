@@ -1,18 +1,19 @@
 import 'dart:convert';
-import 'package:flutter/foundation.dart';
-//import 'package:schuldaten_hub/features/matrix/filters/matrix_policy_filter_manager.dart';
 
-import 'package:schuldaten_hub/features/matrix/models/matrix_credentials.dart';
-import 'package:schuldaten_hub/features/matrix/services/matrix_api_service.dart';
+import 'package:flutter/foundation.dart';
 import 'package:schuldaten_hub/common/constants/enums.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_manager.dart';
 import 'package:schuldaten_hub/common/services/session_manager.dart';
 import 'package:schuldaten_hub/common/utils/logger.dart';
 import 'package:schuldaten_hub/common/utils/secure_storage.dart';
+//import 'package:schuldaten_hub/features/matrix/filters/matrix_policy_filter_manager.dart';
+
+import 'package:schuldaten_hub/features/matrix/models/matrix_credentials.dart';
 import 'package:schuldaten_hub/features/matrix/models/matrix_room.dart';
 import 'package:schuldaten_hub/features/matrix/models/matrix_user.dart';
 import 'package:schuldaten_hub/features/matrix/models/policy.dart';
+import 'package:schuldaten_hub/features/matrix/services/matrix_api_service.dart';
 import 'package:schuldaten_hub/features/matrix/services/matrix_policy_helper_functions.dart';
 import 'package:schuldaten_hub/features/matrix/services/pdf_printer/matrix_credentials_printer.dart';
 

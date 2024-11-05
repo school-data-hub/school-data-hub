@@ -4,8 +4,8 @@ import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/constants/colors.dart';
 import 'package:schuldaten_hub/common/constants/styles.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
-import 'package:schuldaten_hub/common/widgets/custom_expansion_tile.dart';
-import 'package:schuldaten_hub/common/widgets/custom_list_tiles.dart';
+import 'package:schuldaten_hub/common/widgets/custom_expansion_tile/custom_expansion_tile.dart';
+import 'package:schuldaten_hub/common/widgets/custom_expansion_tile/custom_expansion_tile_content.dart';
 import 'package:schuldaten_hub/common/widgets/dialogues/short_textfield_dialog.dart';
 import 'package:schuldaten_hub/features/matrix/models/matrix_user.dart';
 import 'package:schuldaten_hub/features/matrix/pages/matrix_users_list_page/widgets/pupil_rooms_list.dart';
@@ -173,7 +173,7 @@ class _MatrixUsersListCardState extends State<MatrixUsersListCard> {
               const Gap(20),
             ],
           ),
-          CustomListTiles(
+          CustomExpansionTileContent(
               title: null,
               tileController: _tileController,
               widgetList: [

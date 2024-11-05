@@ -2,34 +2,35 @@ import 'dart:developer';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
-import 'package:schuldaten_hub/common/services/api/services/api_client_service.dart';
 import 'package:schuldaten_hub/common/constants/enums.dart';
+import 'package:schuldaten_hub/common/services/api/services/api_client_service.dart';
+import 'package:schuldaten_hub/common/services/api/services/connection_manager.dart';
 import 'package:schuldaten_hub/common/services/env_manager.dart';
-import 'package:schuldaten_hub/common/services/search_textfield_manager.dart';
 import 'package:schuldaten_hub/common/services/notification_manager.dart';
-import 'package:schuldaten_hub/features/matrix/services/matrix_api_service.dart';
-import 'package:schuldaten_hub/features/users/services/user_manager.dart';
+import 'package:schuldaten_hub/common/services/search_textfield_manager.dart';
+import 'package:schuldaten_hub/common/services/sse.dart';
 import 'package:schuldaten_hub/common/utils/logger.dart';
 import 'package:schuldaten_hub/common/utils/secure_storage.dart';
-import 'package:schuldaten_hub/features/pupil/filters/pupils_filter.dart';
-import 'package:schuldaten_hub/features/pupil/filters/pupils_filter_impl.dart';
-import 'package:schuldaten_hub/features/schoolday_events/filters/schoolday_event_filter_manager.dart';
-import 'package:schuldaten_hub/features/schoolday_events/services/schoolday_event_manager.dart';
+import 'package:schuldaten_hub/features/attendance/services/attendance_manager.dart';
 import 'package:schuldaten_hub/features/authorizations/services/authorization_manager.dart';
-import 'package:schuldaten_hub/features/matrix/filters/matrix_policy_filter_manager.dart';
 import 'package:schuldaten_hub/features/competence/filters/competence_filter_manager.dart';
 import 'package:schuldaten_hub/features/competence/services/competence_manager.dart';
-import 'package:schuldaten_hub/common/services/api/services/connection_manager.dart';
-import 'package:schuldaten_hub/features/matrix/services/matrix_policy_manager.dart';
 import 'package:schuldaten_hub/features/learning_support/services/learning_support_manager.dart';
+import 'package:schuldaten_hub/features/main_menu_pages/widgets/landing_bottom_nav_bar.dart';
+import 'package:schuldaten_hub/features/matrix/filters/matrix_policy_filter_manager.dart';
+import 'package:schuldaten_hub/features/matrix/services/matrix_api_service.dart';
+import 'package:schuldaten_hub/features/matrix/services/matrix_policy_manager.dart';
 import 'package:schuldaten_hub/features/pupil/filters/pupil_filter_manager.dart';
-import 'package:schuldaten_hub/features/pupil/services/pupil_manager.dart';
-
+import 'package:schuldaten_hub/features/pupil/filters/pupils_filter.dart';
+import 'package:schuldaten_hub/features/pupil/filters/pupils_filter_impl.dart';
 import 'package:schuldaten_hub/features/pupil/services/pupil_identity_manager.dart';
+import 'package:schuldaten_hub/features/pupil/services/pupil_manager.dart';
 import 'package:schuldaten_hub/features/school_lists/filters/school_list_filter_manager.dart';
 import 'package:schuldaten_hub/features/school_lists/services/school_list_manager.dart';
+import 'package:schuldaten_hub/features/schoolday_events/filters/schoolday_event_filter_manager.dart';
+import 'package:schuldaten_hub/features/schoolday_events/services/schoolday_event_manager.dart';
 import 'package:schuldaten_hub/features/schooldays/services/schoolday_manager.dart';
-import 'package:schuldaten_hub/features/main_menu_pages/widgets/landing_bottom_nav_bar.dart';
+import 'package:schuldaten_hub/features/users/services/user_manager.dart';
 import 'package:schuldaten_hub/features/workbooks/services/workbook_manager.dart';
 import 'package:watch_it/watch_it.dart';
 
@@ -90,6 +91,10 @@ Future registerDependentManagers() async {
 
   locator.registerLazySingleton<SearchManager>(() => SearchManager());
 
+  locator.registerSingletonWithDependencies<EventFluxService>(
+    () => EventFluxService(),
+    dependsOn: [SessionManager],
+  );
   locator.registerLazySingletonAsync<UserManager>(() async {
     log('Registering UserManager');
     await locator.isReady<SessionManager>();
@@ -116,7 +121,7 @@ Future registerDependentManagers() async {
     await pupilManager.init();
     log('PupilManager initialized');
     return pupilManager;
-  }); //, dependsOn: [SessionManager, PupilIdentityManager]
+  });
 
   locator.registerLazySingletonAsync<WorkbookManager>(() async {
     log('Registering WorkbookManager');
@@ -126,10 +131,7 @@ Future registerDependentManagers() async {
     await workbookManager.init();
     log('WorkbookManager initialized');
     return workbookManager;
-  }); /*, dependsOn: [
-    PupilManager,
-    SessionManager,
-  ]*/
+  }
 
   locator.registerLazySingletonAsync<BookManager>(() async {
     log('Registering BookManager');
@@ -226,6 +228,7 @@ Future registerDependentManagers() async {
   if (await secureStorageContainsKey('matrix')) {
     await registerMatrixPolicyManager();
   }
+
   locator<EnvManager>().setDependentManagersRegistered(true);
 }
 

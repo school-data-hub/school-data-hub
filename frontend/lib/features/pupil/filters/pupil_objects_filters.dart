@@ -1,25 +1,25 @@
 import 'package:collection/collection.dart';
 import 'package:schuldaten_hub/common/constants/enums.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
-import 'package:schuldaten_hub/features/schooldays/services/schoolday_manager.dart';
 import 'package:schuldaten_hub/common/utils/extensions.dart';
 import 'package:schuldaten_hub/features/pupil/filters/pupil_filter_manager.dart';
 import 'package:schuldaten_hub/features/pupil/filters/pupils_filter.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
+import 'package:schuldaten_hub/features/schooldays/services/schoolday_manager.dart';
 
 bool attendanceFilters(PupilProxy pupil) {
   final thisDate = locator<SchooldayManager>().thisDate.value;
-  final activeFilters = locator<PupilFilterManager>().filterState.value;
+  final activeFilters = locator<PupilFilterManager>().pupilFilterState.value;
 
   // Filter pupils present
   if ((activeFilters[PupilFilter.present]! &&
-          pupil.pupilMissedClasses!.any((missedClass) =>
+          pupil.missedClasses!.any((missedClass) =>
               missedClass.missedDay.isSameDate(thisDate) &&
                   missedClass.missedType == 'late' ||
-              (pupil.pupilMissedClasses!.firstWhereOrNull((missedClass) =>
+              (pupil.missedClasses!.firstWhereOrNull((missedClass) =>
                       missedClass.missedDay.isSameDate(thisDate))) ==
                   null) ||
-      pupil.pupilMissedClasses!.isEmpty)) {
+      pupil.missedClasses!.isEmpty)) {
   } else if (activeFilters[PupilFilter.present] == false) {
   } else {
     return false;
@@ -27,7 +27,7 @@ bool attendanceFilters(PupilProxy pupil) {
 
   // Filter pupils not present
   if (activeFilters[PupilFilter.notPresent]! &&
-      pupil.pupilMissedClasses!.any((missedClass) =>
+      pupil.missedClasses!.any((missedClass) =>
           missedClass.missedDay.isSameDate(thisDate) &&
           (missedClass.missedType == 'missed' ||
               missedClass.missedType == 'home' ||
@@ -40,7 +40,7 @@ bool attendanceFilters(PupilProxy pupil) {
 
   // Filter unexcused pupils
   if (activeFilters[PupilFilter.unexcused]! &&
-      pupil.pupilMissedClasses!.any((missedClass) =>
+      pupil.missedClasses!.any((missedClass) =>
           missedClass.missedDay.isSameDate(thisDate) &&
           missedClass.excused == true &&
           missedClass.missedType == 'missed')) {

@@ -1,19 +1,19 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
-import 'package:schuldaten_hub/common/services/api/api.dart';
 import 'package:schuldaten_hub/common/constants/enums.dart';
-import 'package:schuldaten_hub/features/schooldays/models/schoolday.dart';
+import 'package:schuldaten_hub/common/services/api/api.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_manager.dart';
-import 'package:schuldaten_hub/features/schooldays/services/schoolday_manager.dart';
 import 'package:schuldaten_hub/common/services/session_manager.dart';
-import 'package:schuldaten_hub/common/utils/logger.dart';
 import 'package:schuldaten_hub/common/utils/extensions.dart';
+import 'package:schuldaten_hub/common/utils/logger.dart';
 import 'package:schuldaten_hub/features/attendance/models/missed_class.dart';
 import 'package:schuldaten_hub/features/attendance/services/attendance_helper_functions.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_data.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
 import 'package:schuldaten_hub/features/pupil/services/pupil_manager.dart';
+import 'package:schuldaten_hub/features/schooldays/models/schoolday.dart';
+import 'package:schuldaten_hub/features/schooldays/services/schoolday_manager.dart';
 
 enum MissedType {
   isLate('late'),
@@ -56,8 +56,8 @@ class AttendanceManager {
   void addAllPupilMissedClasses() {
     final List<MissedClass> allMissedClasses = [];
     for (PupilProxy pupil in pupilManager.allPupils) {
-      if (pupil.pupilMissedClasses != null) {
-        allMissedClasses.addAll(pupil.pupilMissedClasses!);
+      if (pupil.missedClasses != null) {
+        allMissedClasses.addAll(pupil.missedClasses!);
       }
     }
     _missedClasses.value = allMissedClasses;
@@ -94,10 +94,10 @@ class AttendanceManager {
     // in the last semester for the school year (for grades 1 and 2)
 
     // if no missed classes, we return 0, 0
-    if (pupil.pupilMissedClasses == null) {
+    if (pupil.missedClasses == null) {
       return [0, 0];
     }
-    final List<MissedClass> missedClasses = pupil.pupilMissedClasses!;
+    final List<MissedClass> missedClasses = pupil.missedClasses!;
     final List<SchoolSemester> schoolSemesters =
         locator<SchooldayManager>().schoolSemesters.value;
     final DateTime now = DateTime.now();
@@ -249,7 +249,7 @@ class AttendanceManager {
     // is if we uncheck 'return' - let's check that
 
     if (newValue == false &&
-        pupil.pupilMissedClasses![missedClass!].missedType ==
+        pupil.missedClasses![missedClass!].missedType ==
             MissedType.notSet.value) {
       final PupilData responsePupil =
           await apiAttendanceService.deleteMissedClass(

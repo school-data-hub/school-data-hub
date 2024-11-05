@@ -1,22 +1,22 @@
 import 'package:collection/collection.dart';
 import 'package:schuldaten_hub/common/constants/enums.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
-import 'package:schuldaten_hub/features/schooldays/services/schoolday_manager.dart';
 import 'package:schuldaten_hub/common/utils/extensions.dart';
 import 'package:schuldaten_hub/features/attendance/models/missed_class.dart';
+import 'package:schuldaten_hub/features/pupil/filters/pupil_filter_manager.dart';
 import 'package:schuldaten_hub/features/pupil/filters/pupils_filter.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
-import 'package:schuldaten_hub/features/pupil/filters/pupil_filter_manager.dart';
+import 'package:schuldaten_hub/features/schooldays/services/schoolday_manager.dart';
 
 List<PupilProxy> attendanceFilters(List<PupilProxy> pupils) {
   final thisDate = locator<SchooldayManager>().thisDate.value;
-  final activeFilters = locator<PupilFilterManager>().filterState.value;
+  final activeFilters = locator<PupilFilterManager>().pupilFilterState.value;
   List<PupilProxy> filteredPupils = [];
 
   for (final PupilProxy pupil in pupils) {
     //find out if the pupil has a missed class on this day
     // if so, define it for the coming filters
-    final MissedClass? missedClass = pupil.pupilMissedClasses!.firstWhereOrNull(
+    final MissedClass? missedClass = pupil.missedClasses!.firstWhereOrNull(
         (missedClass) => missedClass.missedDay.isSameDate(thisDate));
     // if missed class is null, hop to the next pupil
     if (missedClass == null) {

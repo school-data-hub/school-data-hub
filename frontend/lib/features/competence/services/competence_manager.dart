@@ -1,17 +1,16 @@
 import 'dart:async';
+import 'dart:io';
 
-import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:schuldaten_hub/common/services/api/api.dart';
-import 'package:schuldaten_hub/common/constants/colors.dart';
 import 'package:schuldaten_hub/common/constants/enums.dart';
-import 'package:schuldaten_hub/common/services/notification_manager.dart';
-import 'package:schuldaten_hub/features/competence/models/competence.dart';
-import 'package:schuldaten_hub/features/competence/filters/competence_filter_manager.dart';
+import 'package:schuldaten_hub/common/services/api/api.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
-import 'package:schuldaten_hub/features/competence/models/competence_check.dart';
-import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
+import 'package:schuldaten_hub/common/services/notification_manager.dart';
+import 'package:schuldaten_hub/features/competence/filters/competence_filter_manager.dart';
+import 'package:schuldaten_hub/features/competence/models/competence.dart';
+import 'package:schuldaten_hub/features/competence/services/competence_check_api.service.dart';
+import 'package:schuldaten_hub/features/pupil/models/pupil_data.dart';
+import 'package:schuldaten_hub/features/pupil/services/pupil_manager.dart';
 
 class CompetenceManager {
   ValueListenable<List<Competence>> get competences => _competences;
@@ -28,7 +27,9 @@ class CompetenceManager {
   }
 
   final notificationManager = locator<NotificationManager>();
-  final apiCompetenceService = CompetenceApiService();
+
+  final competenceApiService = CompetenceApiService();
+  final competenceCheckApiService = CompetenceCheckApiService();
 
   void clearData() {
     _competences.value = [];
@@ -36,7 +37,7 @@ class CompetenceManager {
 
   Future<void> firstFetchCompetences() async {
     final List<Competence> competences =
-        await apiCompetenceService.fetchCompetences();
+        await competenceApiService.fetchCompetences();
 
     _competences.value = competences;
 
@@ -48,7 +49,7 @@ class CompetenceManager {
 
   Future<void> fetchCompetences() async {
     final List<Competence> competences =
-        await apiCompetenceService.fetchCompetences();
+        await competenceApiService.fetchCompetences();
 
     _competences.value = competences;
     locator<CompetenceFilterManager>().refreshFilteredCompetences(competences);
@@ -59,6 +60,27 @@ class CompetenceManager {
     return;
   }
 
+  Future<void> deleteCompetence(int competenceId) async {
+    final bool success =
+        await competenceApiService.deleteCompetence(competenceId);
+
+    if (success) {
+      final List<Competence> competences = List.from(_competences.value);
+      competences
+          .removeWhere((element) => element.competenceId == competenceId);
+
+      _competences.value = competences;
+      locator<CompetenceFilterManager>()
+          .refreshFilteredCompetences(_competences.value);
+
+      notificationManager.showSnackBar(
+          NotificationType.success, 'Kompetenz gelöscht');
+    } else {
+      notificationManager.showSnackBar(
+          NotificationType.error, 'Fehler beim Löschen der Kompetenz');
+    }
+  }
+
   Future<void> postNewCompetence({
     int? parentCompetence,
     required String competenceName,
@@ -66,7 +88,7 @@ class CompetenceManager {
     required indicators,
   }) async {
     final Competence newCompetence =
-        await apiCompetenceService.postNewCompetence(
+        await competenceApiService.postNewCompetence(
       parentCompetence: parentCompetence,
       competenceName: competenceName,
       competenceLevel: competenceLevel,
@@ -83,14 +105,14 @@ class CompetenceManager {
     return;
   }
 
-  Future<void> updateCompetenceProperty(
-    int competenceId,
-    String competenceName,
-    String? competenceLevel,
-    String? indicators,
-  ) async {
+  Future<void> updateCompetenceProperty({
+    required int competenceId,
+    required String competenceName,
+    required String? competenceLevel,
+    required String? indicators,
+  }) async {
     final Competence updatedCompetence =
-        await apiCompetenceService.updateCompetenceProperty(
+        await competenceApiService.updateCompetenceProperty(
             competenceId, competenceName, competenceLevel, indicators);
 
     final List<Competence> competences = List.from(_competences.value);
@@ -104,6 +126,89 @@ class CompetenceManager {
 
     notificationManager.showSnackBar(
         NotificationType.success, 'Kompetenz aktualisiert');
+
+    return;
+  }
+
+  Future<void> postCompetenceCheck({
+    required int pupilId,
+    required int competenceId,
+    required int competenceStatus,
+    required String competenceComment,
+    required bool isReport,
+    required String? reportId,
+  }) async {
+    final PupilData updatedPupilData =
+        await competenceCheckApiService.postCompetenceCheck(
+      pupilId: pupilId,
+      competenceId: competenceId,
+      competenceStatus: competenceStatus,
+      comment: competenceComment,
+      isReport: isReport,
+      reportId: reportId,
+    );
+    locator<PupilManager>().updatePupilProxyWithPupilData(updatedPupilData);
+    notificationManager.showSnackBar(
+        NotificationType.success, 'Kompetenzcheck erstellt');
+
+    return;
+  }
+
+  Future<void> updateCompetenceCheck({
+    required String competenceCheckId,
+    int? competenceStatus,
+    String? competenceComment,
+    DateTime? createdAt,
+    String? createdBy,
+    bool? isReport,
+  }) async {
+    final PupilData updatedPupilData =
+        await competenceCheckApiService.patchCompetenceCheck(
+      competenceCheckId: competenceCheckId,
+      competenceStatus: competenceStatus,
+      createdAt: createdAt,
+      createdBy: createdBy,
+      comment: competenceComment,
+    );
+    locator<PupilManager>().updatePupilProxyWithPupilData(updatedPupilData);
+    notificationManager.showSnackBar(
+        NotificationType.success, 'Kompetenzcheck aktualisiert');
+
+    return;
+  }
+
+  Future<void> deleteCompetenceCheck(String competenceCheckId) async {
+    final PupilData pupilData = await competenceCheckApiService
+        .deleteCompetenceCheck(competenceCheckId);
+    notificationManager.showSnackBar(
+        NotificationType.success, 'Kompetenzcheck gelöscht');
+    locator<PupilManager>().updatePupilProxyWithPupilData(pupilData);
+    return;
+  }
+
+  Future<void> postCompetenceCheckFile({
+    required String competenceCheckId,
+    required File file,
+  }) async {
+    final PupilData updatedPupilData =
+        await competenceCheckApiService.postCompetenceCheckFile(
+      competenceCheckId: competenceCheckId,
+      file: file,
+    );
+    locator<PupilManager>().updatePupilProxyWithPupilData(updatedPupilData);
+    notificationManager.showSnackBar(
+        NotificationType.success, 'Datei zum Kompetenzcheck hinzugefügt');
+
+    return;
+  }
+
+  Future<void> deleteCompetenceCheckFile(
+      {required String competenceCheckId, required String fileId}) async {
+    final PupilData updatedPupilData =
+        await competenceCheckApiService.deleteCompetenceCheckFile(fileId);
+    locator<PupilManager>().updatePupilProxyWithPupilData(updatedPupilData);
+    notificationManager.showSnackBar(
+        NotificationType.success, 'Datei vom Kompetenzcheck gelöscht');
 
     return;
   }
@@ -126,62 +231,8 @@ class CompetenceManager {
     }
   }
 
-  Color getCompetenceColor(int categoryId) {
-    final Competence rootCategory = getRootCompetence(categoryId);
-    return getRootCompetenceColor(rootCategory);
-  }
-
-  Color getRootCompetenceColor(Competence competence) {
-    if (competence.competenceName == 'Sachunterricht') {
-      return scienceColor;
-    } else if (competence.competenceName == 'Englisch') {
-      return englishColor;
-    } else if (competence.competenceName == 'Mathematik') {
-      return mathColor;
-    } else if (competence.competenceName == 'Musik') {
-      return musicColor;
-    } else if (competence.competenceName == 'Deutsch') {
-      return germanColor;
-    } else if (competence.competenceName == 'Kunst') {
-      return artColor;
-    } else if (competence.competenceName == 'Religion') {
-      return religionColor;
-    } else if (competence.competenceName == 'Sport') {
-      return sportColor;
-    } else if (competence.competenceName == 'Arbeitsverhalten') {
-      return workBehaviourColor;
-    } else if (competence.competenceName == 'Sozialverhalten') {
-      return socialColor;
-    }
-    return const Color.fromARGB(255, 157, 36, 36);
-  }
-
-  Widget getLastCompetenceCheckSymbol(PupilProxy pupil, int competenceId) {
-    if (pupil.competenceChecks!.isNotEmpty) {
-      final CompetenceCheck? competenceCheck = pupil.competenceChecks!
-          .lastWhereOrNull((element) => element.competenceId == competenceId);
-
-      if (competenceCheck != null) {
-        switch (competenceCheck.competenceStatus) {
-          case 0:
-            return SizedBox(
-                width: 50, child: Image.asset('assets/growth_1-4.png'));
-          case 1:
-            return SizedBox(
-                width: 50, child: Image.asset('assets/growth_2-4.png'));
-          case 2:
-            return SizedBox(
-                width: 50, child: Image.asset('assets/growth_3-4.png'));
-          // case 'orange':
-          //   return Colors.orange;
-          case 3:
-            return SizedBox(
-                width: 50, child: Image.asset('assets/growth_4-4.png'));
-        }
-      }
-      return SizedBox(width: 50, child: Image.asset('assets/growth_1-4.png'));
-    }
-
-    return SizedBox(width: 40, child: Image.asset('assets/growth_1-4.png'));
+  bool isCompetenceWithChildren(Competence competence) {
+    return _competences.value
+        .any((element) => element.parentCompetence == competence.competenceId);
   }
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
-import 'package:schuldaten_hub/features/learning_support/widgets/support_category_widgets/support_goal_card.dart';
+import 'package:schuldaten_hub/features/learning_support/pages/widgets/support_goal/support_goal_card.dart';
 
 class SupportGoalsList extends StatelessWidget {
   final PupilProxy pupil;
@@ -21,12 +21,12 @@ class SupportGoalsList extends StatelessWidget {
           ],
         ),
         const Gap(10),
-        pupil.pupilGoals!.isNotEmpty
+        pupil.supportGoals!.isNotEmpty
             ? ListView.builder(
                 padding: const EdgeInsets.all(0),
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
-                itemCount: pupil.pupilGoals!.length,
+                itemCount: pupil.supportGoals!.length,
                 itemBuilder: (context, int index) {
                   return SupportGoalCard(pupil: pupil, goalIndex: index);
                 })

@@ -28,6 +28,7 @@ enum SchoolGrade {
     'S3': SchoolGrade.S3,
     'S4': SchoolGrade.S4,
   };
+
   final String value;
   const SchoolGrade(this.value);
 }
@@ -101,6 +102,7 @@ class PupilProxy with ChangeNotifier {
     GroupFilter(GroupId.C2),
     GroupFilter(GroupId.C3),
   ];
+
   static List<SchoolGradeFilter> schoolGradeFilters = [
     SchoolGradeFilter(SchoolGrade.E1),
     SchoolGradeFilter(SchoolGrade.E2),
@@ -121,7 +123,7 @@ class PupilProxy with ChangeNotifier {
     _missedClasses = Map.fromIterable(pupilData.pupilMissedClasses,
         key: (e) => e.missedDay, value: (e) => e);
 
-    pupilIsDirty = false;
+    pupilIsDirty = true;
     notifyListeners();
   }
 
@@ -212,10 +214,9 @@ class PupilProxy with ChangeNotifier {
   String? get parentsContact => _pupilData.parentsContact;
   int get credit => _pupilData.credit;
   int get creditEarned => _pupilData.creditEarned;
-  String? get fiveYears => _pupilData.fiveYears;
-  int get individualDevelopmentPlan => _pupilData.individualDevelopmentPlan;
-  List<IndividualDevelopmentPlan> get individualDevelopmentPlans =>
-      _pupilData.individualDevelopmentPlans;
+  DateTime? get fiveYears => _pupilData.fiveYears;
+  int get supportLevel => _pupilData.latestSupportLevel;
+  List<SupportLevel> get supportLevelHistory => _pupilData.supportLevelHistory;
   int get internalId => _pupilData.internalId;
   bool get ogs => _pupilData.ogs;
   String? get ogsInfo => _pupilData.ogsInfo;
@@ -228,9 +229,9 @@ class PupilProxy with ChangeNotifier {
       _pupilData.supportCategoryStatuses;
   List<SchooldayEvent>? get schooldayEvents => _pupilData.schooldayEvents;
   List<PupilBook>? get pupilBooks => _pupilData.pupilBooks;
-  List<SupportGoal>? get pupilGoals => _pupilData.supportGoals;
+  List<SupportGoal>? get supportGoals => _pupilData.supportGoals;
 
-  List<MissedClass>? get pupilMissedClasses => _missedClasses.values.toList();
+  List<MissedClass>? get missedClasses => _missedClasses.values.toList();
   Map<DateTime, MissedClass> _missedClasses = {};
 
   List<PupilWorkbook>? get pupilWorkbooks => _pupilData.pupilWorkbooks;

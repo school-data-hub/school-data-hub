@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:schuldaten_hub/common/constants/enums.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/features/matrix/filters/matrix_policy_filter_manager.dart';
-
 import 'package:watch_it/watch_it.dart';
 
 class MatrixSearchTextField extends WatchingStatefulWidget {

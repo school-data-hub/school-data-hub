@@ -1,10 +1,9 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:schuldaten_hub/common/constants/enums.dart';
 import 'package:schuldaten_hub/common/services/api/api.dart';
 import 'package:schuldaten_hub/common/services/api/services/api_client_service.dart';
-
-import 'package:schuldaten_hub/common/constants/enums.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_manager.dart';
 import 'package:schuldaten_hub/features/competence/models/competence.dart';
@@ -117,45 +116,25 @@ class CompetenceApiService {
 
   //- all endpoints below are not implemented
 
-  String deleteCompetence(int id) {
+  String _deleteCompetence(int id) {
     return '/competences/$id/delete';
   }
-  //- COMPETENCE CHECKS ------------------------------------------------
 
-  //- GET
+  Future<bool> deleteCompetence(int id) async {
+    notificationManager.apiRunningValue(true);
 
-  String _getCompetenceCheckFileUrl(String fileId) {
-    return '/competence_checks/$fileId';
-  }
+    final Response response = await _client.delete(_deleteCompetence(id));
 
-  //- POST
+    notificationManager.apiRunningValue(false);
 
-  String postCompetenceCheck(int pupilId) {
-    return '/competence_checks/$pupilId/new';
-  }
+    if (response.statusCode != 200) {
+      notificationManager.showSnackBar(
+          NotificationType.error, 'Failed to delete a competence');
 
-  String postCompetenceCheckFile(String competenceCheckId) {
-    return '/competence_checks/$competenceCheckId/file';
-  }
+      throw ApiException('Failed to delete a competence', response.statusCode);
+    }
 
-  //- PATCH
-
-  String patchCompetenceCheck(String competenceCheckId) {
-    return '/competence_checks/$competenceCheckId';
-  }
-
-  // String patchCompetenceCheckWithFile(String competenceCheckId) {
-  //   return '/competence/check/$competenceCheckId';
-  // }
-
-  //- DELETE
-
-  String deleteCompetenceCheck(String competenceCheckId) {
-    return '/competence_checks/$competenceCheckId';
-  }
-
-  String deleteCompetenceCheckFile(String fileId) {
-    return '/competence_checks/$fileId';
+    return true;
   }
 
   //- COMPETENCE GOALS -------------------------------------------------
