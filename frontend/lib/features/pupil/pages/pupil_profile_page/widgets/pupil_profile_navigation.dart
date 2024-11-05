@@ -350,6 +350,28 @@ class _PupilProfileNavigationState extends State<PupilProfileNavigation> {
                             : Colors.white,
                       ),
                     ),
+                  ),
+                  Expanded(
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          elevation: 0,
+                          shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.zero),
+                          backgroundColor: navigationBackgroundColor(10)),
+                      onPressed: () {
+                        if (pupilProfileNavState == 10) return;
+                        locator<BottomNavManager>().setPupilProfileNavPage(10);
+                      },
+                      child: Icon(
+                        Icons.library_books,
+                        color: locator<BottomNavManager>()
+                                    .pupilProfileNavState
+                                    .value ==
+                                10
+                            ? accentColor
+                            : Colors.white,
+                      ),
+                    ),
                   )
                 ],
               ),

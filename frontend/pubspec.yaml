@@ -51,6 +51,7 @@ dependencies:
   provider: ^6.1.2
   url_launcher: ^6.3.0
   pasteboard: ^0.2.0
+  printing: ^5.10.1
 
 dev_dependencies:
   flutter_test: 

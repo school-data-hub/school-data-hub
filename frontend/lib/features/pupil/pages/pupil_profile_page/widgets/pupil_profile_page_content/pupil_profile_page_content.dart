@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/features/pupil/pages/pupil_profile_page/widgets/pupil_profile_page_content/widgets/pupil_attendance_content.dart';
 import 'package:schuldaten_hub/features/pupil/pages/pupil_profile_page/widgets/pupil_profile_page_content/widgets/pupil_authorizations_content.dart';
+import 'package:schuldaten_hub/features/pupil/pages/pupil_profile_page/widgets/pupil_profile_page_content/widgets/pupil_books_content.dart';
 import 'package:schuldaten_hub/features/pupil/pages/pupil_profile_page/widgets/pupil_profile_page_content/widgets/pupil_credit_content.dart';
 import 'package:schuldaten_hub/features/main_menu_pages/widgets/landing_bottom_nav_bar.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
@@ -35,7 +36,9 @@ class PupilProfilePageContent extends WatchingWidget {
           if (navState == 6) PupilSchoolListsContent(pupil: pupil),
           if (navState == 7) PupilAuthorizationsContent(pupil: pupil),
           if (navState == 8) PupilLearningSupportContent(pupil: pupil),
-          if (navState == 9) PupilLearningContentCard(pupil: pupil),
+          if (navState == 9) PupilLearningContent(pupil: pupil),
+          if (navState == 10) PupilBooksContentCard(pupil: pupil),
+
           const Gap(20),
         ],
       ),

@@ -9,6 +9,9 @@ import 'package:schuldaten_hub/features/workbooks/pages/workbook_list_page/contr
 
 import 'package:watch_it/watch_it.dart';
 
+import '../books/pages/book_list_page/controller/book_controller.dart';
+
+
 class LearnListPage extends WatchingWidget {
   const LearnListPage({super.key});
 
@@ -138,21 +141,28 @@ class LearnListPage extends WatchingWidget {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15.0),
                   ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(
-                        Icons.book,
-                        size: 50,
-                        color: gridViewColor,
-                      ),
-                      const Gap(10),
-                      Text(
-                        locale.books,
-                        style: const TextStyle(
-                            color: Colors.white, fontWeight: FontWeight.bold),
-                      ),
-                    ],
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                        builder: (ctx) => const BookList(),
+                      ));
+                    },
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(
+                          Icons.book,
+                          size: 50,
+                          color: gridViewColor,
+                        ),
+                        const Gap(10),
+                        Text(
+                          locale.books,
+                          style: const TextStyle(
+                              color: Colors.white, fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),

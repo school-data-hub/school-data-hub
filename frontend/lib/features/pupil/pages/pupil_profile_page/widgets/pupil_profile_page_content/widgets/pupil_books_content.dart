@@ -2,30 +2,30 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/constants/colors.dart';
 import 'package:schuldaten_hub/common/constants/paddings.dart';
-import 'package:schuldaten_hub/features/competence/pages/learning_pupil_list_page/widgets/pupil_learning_content_list.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
 
 import '../../../../../../../common/services/base_state.dart';
 import '../../../../../../../common/services/locator.dart';
-import '../../../../../../workbooks/services/workbook_manager.dart';
+import '../../../../../../books/pages/book_list_page/widgets/pupil_book_list.dart';
+import '../../../../../../books/services/book_manager.dart';
 import '../../../../../filters/pupils_filter.dart';
 
-class PupilLearningContent extends StatefulWidget {
+class PupilBooksContentCard extends StatefulWidget {
   final PupilProxy pupil;
 
-  const PupilLearningContent({required this.pupil, super.key});
+  const PupilBooksContentCard({required this.pupil, super.key});
 
   @override
-  State<PupilLearningContent> createState() =>
-      _PupilLearningContentState();
+  State<PupilBooksContentCard> createState() =>
+      _PupilBooksContentCardState();
 }
 
-class _PupilLearningContentState
-    extends BaseState<PupilLearningContent> {
+class _PupilBooksContentCardState
+    extends BaseState<PupilBooksContentCard> {
   @override
   Future<void> onInitialize() async {
     await locator.isReady<PupilsFilter>();
-    await locator.isReady<WorkbookManager>();
+    await locator.isReady<BookManager>();
   }
 
   @override
@@ -50,7 +50,7 @@ class _PupilLearningContentState
               size: 24,
             ),
             Gap(5),
-            Text('Lernen',
+            Text('Lesen',
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
@@ -58,7 +58,7 @@ class _PupilLearningContentState
                 ))
           ]),
           const Gap(15),
-          PupilLearningContent(pupil: widget.pupil)
+          PupilBookContent(pupil: widget.pupil)
         ]),
       ),
     );

@@ -42,10 +42,11 @@ class BookSchema(Schema):
     location = fields.String()
     reading_level = fields.String()
     image_url = fields.String()
+    qr_code_url = fields.String()
     reading_pupils = fields.List(fields.Nested(PupilBookListSchema))
     class Meta:
         fields = ('book_id', 'isbn', 'title', 'author', 'location', 
-                  'reading_level', 'image_url','reading_pupils')
+                  'reading_level', 'image_url','qr_code_url', 'reading_pupils')
 
 book_schema = BookSchema()
 books_schema = BookSchema(many=True)
@@ -53,14 +54,15 @@ books_schema = BookSchema(many=True)
 class BookFlatSchema(Schema):
     book_id = fields.String()
     isbn = fields.Integer()
-    title = fields.String()
-    author = fields.String()
+    title = fields.String(required=False)
+    author = fields.String(required=False)
     location = fields.String()
     reading_level = fields.String()
-    image_url = fields.String()
+    image_url = fields.String(required=False)
+    qr_code_url = fields.String(required=False)
     class Meta:
         fields = ('book_id', 'isbn', 'title', 'author', 'location', 
-                  'reading_level', 'image_url')
+                  'reading_level', 'image_url', 'qr_code_url')
 
 book_flat_schema = BookFlatSchema()
 books_flat_schema = BookFlatSchema(many=True)

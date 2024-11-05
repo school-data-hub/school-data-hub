@@ -8,13 +8,14 @@ class Book(db.Model):
     author = db.Column(db.String(20))
     location = db.Column(db.String(20))
     reading_level = db.Column(db.String(10))
-    image_url = db.Column(db.String(50), unique=True, nullable = True)
+    image_url = db.Column(db.String(50), unique=False, nullable = True)
+    qr_code_url = db.Column(db.String(50), unique=False, nullable = True)
 
     #- RELATIONSHIP TO PUPIL BOOKS ONE-TO-MANY
     reading_pupils = db.relationship('PupilBook', back_populates='book',
                                      cascade='all, delete-orphan')
 
-    def __init__(self, book_id, isbn, title, author, location, reading_level, image_url):
+    def __init__(self, book_id, isbn, title, author, location, reading_level, image_url, qr_code_url):
         self.book_id = book_id
         self.isbn = isbn
         self.title = title
@@ -22,7 +23,8 @@ class Book(db.Model):
         self.location = location
         self.reading_level = reading_level
         self.image_url = image_url
- 
+        self.qr_code_url = qr_code_url
+
 ## many to many & association proxy: https://youtu.be/IlkVu_LWGys
 
 class PupilBook(db.Model):

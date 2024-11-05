@@ -34,6 +34,7 @@ import 'package:schuldaten_hub/features/workbooks/services/workbook_manager.dart
 import 'package:watch_it/watch_it.dart';
 
 import 'package:schuldaten_hub/features/attendance/services/attendance_manager.dart';
+import '../../features/books/services/book_manager.dart';
 import 'session_manager.dart';
 
 final locator = GetIt.instance;
@@ -129,6 +130,16 @@ Future registerDependentManagers() async {
     PupilManager,
     SessionManager,
   ]*/
+
+  locator.registerLazySingletonAsync<BookManager>(() async {
+    log('Registering BookManager');
+    await locator.isReady<SessionManager>();
+    await locator.isReady<PupilManager>();
+    final bookManager = BookManager();
+    await bookManager.init();
+    log('BookManager initialized');
+    return bookManager;
+  });
 
   locator.registerLazySingletonAsync<CompetenceManager>(() async {
     log('Registering CompetenceManager');
@@ -252,6 +263,7 @@ Future unregisterDependentManagers() async {
   locator.unregister<UserManager>();
   locator.unregister<SchooldayManager>();
   locator.unregister<WorkbookManager>();
+  locator.unregister<BookManager>();
   locator.unregister<LearningSupportManager>();
 
   locator.unregister<PupilFilterManager>();

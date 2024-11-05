@@ -14,6 +14,7 @@ import 'package:schuldaten_hub/features/competence/pages/patch_competence_page/p
 
 import 'package:watch_it/watch_it.dart';
 
+import '../../../../common/constants/colors.dart';
 import '../../../../common/services/base_state.dart';
 import '../../../../common/widgets/generic_app_bar.dart';
 
@@ -25,6 +26,8 @@ class CompetenceListPage extends WatchingStatefulWidget {
 }
 
 class _CompetenceListPageState extends BaseState<CompetenceListPage> {
+  get competence => null;
+
   @override
   Future<void> onInitialize() async {
     await locator.isReady<CompetenceFilterManager>();

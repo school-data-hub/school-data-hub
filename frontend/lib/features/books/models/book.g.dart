@@ -7,13 +7,14 @@ part of 'book.dart';
 // **************************************************************************
 
 Book _$BookFromJson(Map<String, dynamic> json) => Book(
-      author: json['author'] as String,
+      author: json['author'] as String?,
       bookId: json['book_id'] as String,
-      imageUrl: json['image_url'] as String,
+      imageUrl: json['image_url'] as String?,
       isbn: (json['isbn'] as num).toInt(),
       location: json['location'] as String,
       readingLevel: json['reading_level'] as String,
-      title: json['title'] as String,
+      title: json['title'] as String?,
+      qrCodeUrl: json['qr_code_url'] as String?,
     );
 
 Map<String, dynamic> _$BookToJson(Book instance) => <String, dynamic>{
@@ -24,4 +25,5 @@ Map<String, dynamic> _$BookToJson(Book instance) => <String, dynamic>{
       'location': instance.location,
       'reading_level': instance.readingLevel,
       'title': instance.title,
+      'qr_code_url': instance.qrCodeUrl,
     };
