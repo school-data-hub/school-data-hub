@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/constants/styles.dart';
 import 'package:schuldaten_hub/features/books/models/pupil_book.dart';
-import 'package:schuldaten_hub/features/books/widgets/pupil_book_card.dart';
 import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
+
+import '../../../../../books/pages/book_list_page/widgets/pupil_book_card.dart';
 
 class PupilLearningContentBooks extends StatelessWidget {
   final PupilProxy pupil;

@@ -45,7 +45,6 @@ class _CompetenceListPageState extends BaseState<CompetenceListPage> {
         builder: (ctx) => PostOrPatchCompetencePage(
           parentCompetence: competenceId,
           competence: competence,
-          competence: competence,
         ),
       ));
     }

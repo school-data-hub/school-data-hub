@@ -291,7 +291,6 @@ def get_given_pupils(current_user, json_data):
 @pupil_api.doc(security="ApiKeyAuth", tags=["Pupil"], summary="Fetch given pupil")
 @token_required
 def get_pupil(current_user, internal_id):
-
     this_pupil = get_pupil_by_id(internal_id)
     if this_pupil == None:
         return jsonify({"message": "This pupil does not exist!"}), 400
@@ -462,7 +461,6 @@ def update_support_level(current_user, internal_id, json_data):
 @pupil_api.output(pupil_schema)
 @token_required
 def delete_support_level(current_user, internal_id, support_level_id):
-
     support_level = (
         db.session.query(SupportLevel)
         .filter(SupportLevel.support_level_id == support_level_id)

@@ -32,7 +32,7 @@ def login():
         isAdmin = True
     else:
         isAdmin = False
-    if check_password_hash(user.password, auth.password):
+    if user:
         token = jwt.encode(
             {"public_id": user.public_id, "exp": datetime.now() + timedelta(hours=120)},
             current_app.config["SECRET_KEY"],

@@ -99,17 +99,17 @@ def internal_server_error(error):
 
 
 # @token_required #- TODO: implement token_required
-@app.route("/api/listen", methods=["GET"])
-def listen():
-
-    def stream():
-        messages = announcer.listen()  # returns a queue.Queue
-        print("stream method called", file=sys.stderr)
-        while True:
-            msg = messages.get()  # blocks until a new message arrives
-            yield msg
-
-    return flask.Response(stream(), mimetype="text/event-stream")
+#@app.route("/api/listen", methods=["GET"])
+#def listen():
+#
+#    def stream():
+#        messages = announcer.listen()  # returns a queue.Queue
+#        print("stream method called", file=sys.stderr)
+#        while True:
+#            msg = messages.get()  # blocks until a new message arrives
+#            yield msg
+#
+#    return flask.Response(stream(), mimetype="text/event-stream")
 
 
 # - RUN SERVER

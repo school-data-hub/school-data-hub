@@ -12,7 +12,6 @@ from models.book import Book
 from schemas.book_schemas import *
 from apiflask import APIBlueprint, abort, FileSchema
 from flask import current_app, jsonify, request, send_file
-from app import db
 
 from apiflask import APIBlueprint, abort
 from flask import current_app, jsonify, request

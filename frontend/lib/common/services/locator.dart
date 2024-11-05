@@ -95,6 +95,7 @@ Future registerDependentManagers() async {
     () => EventFluxService(),
     dependsOn: [SessionManager],
   );
+
   locator.registerLazySingletonAsync<UserManager>(() async {
     log('Registering UserManager');
     await locator.isReady<SessionManager>();
@@ -131,7 +132,7 @@ Future registerDependentManagers() async {
     await workbookManager.init();
     log('WorkbookManager initialized');
     return workbookManager;
-  }
+  });
 
   locator.registerLazySingletonAsync<BookManager>(() async {
     log('Registering BookManager');

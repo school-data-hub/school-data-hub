@@ -65,15 +65,15 @@ class _PupilLearningContentState
               const Text('3 Jahre Eingangsphase?'),
               const Gap(5),
               Text(
-                pupil.fiveYears != null
-                    ? pupil.fiveYears!.formatForUser()
+                widget.pupil.fiveYears != null
+                    ? widget.pupil.fiveYears!.formatForUser()
                     : 'nein',
               ),
             ],
           ),
           const Gap(10),
           PupilLearningContentExpansionTileNavBar(
-            pupil: pupil,
+            pupil: widget.pupil,
           ),
         ]),
       ),

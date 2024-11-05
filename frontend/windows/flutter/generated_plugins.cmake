@@ -9,7 +9,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
   flutter_secure_storage_windows
   pasteboard
   printing
-  screen_retriever
+  screen_retriever_windows
   url_launcher_windows
   window_manager
 )
