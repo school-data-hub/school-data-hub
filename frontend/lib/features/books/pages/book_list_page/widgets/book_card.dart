@@ -1,10 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
-import 'package:schuldaten_hub/common/services/api/api.dart';
 import 'package:schuldaten_hub/common/services/env_manager.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/session_manager.dart';
@@ -12,75 +10,17 @@ import 'package:schuldaten_hub/common/utils/extensions.dart';
 import 'package:schuldaten_hub/common/widgets/dialogues/confirmation_dialog.dart';
 import 'package:schuldaten_hub/common/widgets/dialogues/information_dialog.dart';
 import 'package:schuldaten_hub/common/widgets/upload_image.dart';
+import '../../../../../common/widgets/qr_widgets.dart';
 import '../../../models/book.dart';
 import '../../../services/book_api_service.dart';
 import '../../../services/book_manager.dart';
 import '../../new_book_page/new_book_page.dart';
-import 'package:printing/printing.dart';
 import 'book_image.dart';
 
 class BookCard extends StatelessWidget {
   const BookCard({required this.book, super.key});
 
   final Book book;
-
-  void _printQrCode(Uint8List qrCodeData) async {
-    await Printing.layoutPdf(onLayout: (format) async => qrCodeData);
-  }
-
-  void _showQrCode(BuildContext context, String bookId) async {
-    final bookManager = BookManager();
-    final qrCodeData = await bookManager.fetchQrCode(bookId);
-
-    if (qrCodeData != null) {
-      showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            content: Image.memory(
-              qrCodeData,
-              errorBuilder:
-                  (BuildContext context, Object error, StackTrace? stackTrace) {
-                return const Text('QR Code konnte nicht geladen werden');
-              },
-            ),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: const Text('Schließen'),
-              ),
-              TextButton(
-                onPressed: () {
-                  _printQrCode(
-                      qrCodeData);
-                },
-                child: const Text('Drucken'),
-              ),
-            ],
-          );
-        },
-      );
-    } else {
-      showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            content: const Text('Fehler beim Laden des QR-Codes.'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: const Text('OK'),
-              ),
-            ],
-          );
-        },
-      );
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -159,7 +99,7 @@ class BookCard extends StatelessWidget {
                       const Gap(10),
                       ElevatedButton.icon(
                         onPressed: () {
-                          _showQrCode(context, book.bookId);
+                          showQrCode(book.bookId, context);
                         },
                         icon: const Icon(Icons.qr_code),
                         label: const Text('QR-Code'),

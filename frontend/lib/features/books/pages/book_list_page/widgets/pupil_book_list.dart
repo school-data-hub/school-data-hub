@@ -34,15 +34,14 @@ class PupilBookContent extends StatelessWidget {
           onPressed: () async {
             final scanResult = await scanner(context, 'QR code scannen');
             if (scanResult != null) {
-              final scannedId = int.parse(scanResult);
               if (!locator<BookManager>()
                   .books
                   .value
-                  .any((element) => element.bookId == scannedId)) {
+                  .any((element) => element.bookId == scanResult)) {
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (ctx) => NewBookPage(
                           isEdit: false,
-                          wbIsbn: scannedId,
+                          wbId: scanResult,
                         )));
                 locator<NotificationManager>().showInformationDialog(
                     'Das Buch wurde noch nicht erfasst. Bitte hinzufügen!');

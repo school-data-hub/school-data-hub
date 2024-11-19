@@ -17,8 +17,6 @@ class Book {
   final String readingLevel;
   final String? title;
 
-  @JsonKey(name: "qr_code_url")
-  final String? qrCodeUrl;
 
   factory Book.fromJson(Map<String, dynamic> json) => _$BookFromJson(json);
 
@@ -31,5 +29,5 @@ class Book {
       required this.isbn,
       required this.location,
       required this.readingLevel,
-      this.title, this.qrCodeUrl});
+      this.title});
 }

@@ -81,18 +81,6 @@ def get_book_image(current_user, isbn):
         abort(404, message="Keine Datei vorhanden!")
     return send_file(str(book.image_url), mimetype='image/jpeg')
 
-@book_api.get('/<book_id>/qrcode')
-@book_api.output(FileSchema, content_type='image/png')
-@book_api.doc(security='ApiKeyAuth', tags=['Books'], summary='Get book QR code')
-@token_required
-def get_book_qr_code(current_user, book_id):
-    book = db.session.query(Book).filter(Book.book_id == book_id).first()
-    if book is None:
-        return jsonify({'message': 'Das Buch existiert nicht!'}), 404
-    if not book.qr_code_url or len(str(book.qr_code_url)) < 5:
-        abort(404, message="Keine QR-Code-Datei vorhanden!")
-    return send_file(str(book.qr_code_url), mimetype='image/png')
-
 
 #- POST BOOK
 
@@ -132,20 +120,11 @@ def create_book(current_user, json_data):
     except Exception as e:
         return jsonify({"error": f"Error fetching book details: {str(e)}"}), 500
 
-    qr_data = f'Book ID: {book_id}, ISBN: {isbn}, Title: {title}'
-    qr_img = qrcode.make(qr_data)
-    qr_filename = f"{secure_filename(book_id)}.png"
-    qr_file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], 'qr_codes', qr_filename)
-    os.makedirs(os.path.dirname(qr_file_path), exist_ok=True)
-
-    # Save QR code image
-    qr_img.save(qr_file_path)
 
     location = json_data['location']
     reading_level = json_data['reading_level']
     image_url = file_url
-    qr_code_url = os.path.join(current_app.config['UPLOAD_FOLDER'], 'qr_codes', qr_filename)
-    new_book = Book(book_id, isbn, title, author, location, reading_level, image_url, qr_code_url)
+    new_book = Book(book_id, isbn, title, author, location, reading_level, image_url)
     db.session.add(new_book)
     # - Log entry
     create_log_entry(current_user, request, request.json)

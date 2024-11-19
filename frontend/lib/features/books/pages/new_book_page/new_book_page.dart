@@ -60,6 +60,14 @@ class NewBookPageState extends State<NewBookPage> {
         .updateBookProperty(bookId, bookIsbn, bookLocation, bookLevel);
   }
 
+  void _listenToQr() {
+    final String text = isbnTextFieldController.text;
+    isbnTextFieldController.value = isbnTextFieldController.value.copyWith(
+      text: text,
+      selection: TextSelection.collapsed(offset: text.length),
+    );
+  }
+
   void _listenToIsbn() {
     final String text = isbnTextFieldController.text;
     final String formattedText = _formatISBN(text);
@@ -90,11 +98,15 @@ class NewBookPageState extends State<NewBookPage> {
     if (isbnTextFieldController.text == '') {
       isbnTextFieldController.text = widget.wbIsbn?.toString() ?? '';
     }
-    idTextFieldController.text = widget.wbId ?? '';
+    if (idTextFieldController.text == '') {
+      idTextFieldController.text = widget.wbId?.toString() ?? '';
+    }
     locationTextFieldController.text = widget.wbLocation ?? '';
     level.text = widget.wbLevel ?? '';
 
     isbnTextFieldController.addListener(_listenToIsbn);
+    idTextFieldController.addListener(_listenToQr);
+
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -206,6 +218,37 @@ class NewBookPageState extends State<NewBookPage> {
                     ElevatedButton(
                       style: actionButtonStyle,
                       onPressed: () async {
+                        final String? scannedQr =
+                            await scanner(context, 'Qr code scannen');
+                        logger.i('Scanned Qr: $scannedQr');
+                        if (scannedQr == null) {
+                          return;
+                        }
+                        if (locator<BookManager>()
+                            .books
+                            .value
+                            .any((element) => element.bookId == scannedQr)) {
+                          locator<NotificationManager>().showSnackBar(
+                              NotificationType.error,
+                              'Dieses Buch gibt es schon!');
+
+                          return;
+                        }
+                        setState(() {
+                          idTextFieldController.text = scannedQr;
+                        });
+                      },
+                      child: const Text(
+                        'QR-CODE SCANNEN',
+                        style: buttonTextStyle,
+                      ),
+                    ),
+                    const Gap(15)
+                  ],
+                  if (!widget.isEdit) ...<Widget>[
+                    ElevatedButton(
+                      style: actionButtonStyle,
+                      onPressed: () async {
                         final String? scannedIsbn =
                             await scanner(context, 'Isbn code scannen');
                         logger.i('Scanned ISBN: $scannedIsbn');
@@ -241,9 +284,7 @@ class NewBookPageState extends State<NewBookPage> {
                       }
                       {
                         if (locator<BookManager>().books.value.any((element) =>
-                            element.bookId ==
-                            idTextFieldController.text
-                                )) {
+                            element.bookId == idTextFieldController.text)) {
                           locator<NotificationManager>().showSnackBar(
                               NotificationType.error,
                               'Dieses Buch gibt es schon!');
@@ -284,6 +325,7 @@ class NewBookPageState extends State<NewBookPage> {
   void dispose() {
     isbnTextFieldController.removeListener(_listenToIsbn);
     isbnTextFieldController.dispose();
+    idTextFieldController.removeListener(_listenToQr);
     idTextFieldController.dispose();
     locationTextFieldController.dispose();
     level.dispose();

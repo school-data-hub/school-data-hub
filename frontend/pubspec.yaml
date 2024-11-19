@@ -18,7 +18,7 @@ dependencies:
   dio: ^5.7.0
   encrypt: ^5.0.3
   eventflux: ^2.2.1
-  extended_image: ^8.3.1
+  extended_image: ^9.0.7
   file_picker: ^8.1.2
   flutter:
     sdk: flutter
@@ -26,7 +26,7 @@ dependencies:
   flutter_launcher_icons: ^0.14.1
   flutter_localizations: 
     sdk: flutter
-  flutter_secure_storage: ^8.1.0 # not using 9.2.2 because of https://github.com/mogol/flutter_secure_storage/issues/634
+  flutter_secure_storage: ^9.2.2 # not using 9.2.2 because of https://github.com/mogol/flutter_secure_storage/issues/634
   flutter_settings_ui: ^3.0.1
   gap: ^3.0.1
   icon_decoration: ^2.0.2
@@ -52,7 +52,7 @@ dependencies:
   provider: ^6.1.2
   url_launcher: ^6.3.1
   pasteboard: ^0.3.0
-  flex_color_scheme: ^7.3.1
+  flex_color_scheme: ^8.0.0
   flutter_riverpod: ^2.5.3
   hooks_riverpod: ^2.5.4
   riverpod_annotation: ^2.5.3
