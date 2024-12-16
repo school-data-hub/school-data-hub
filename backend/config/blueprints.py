@@ -5,6 +5,7 @@ from api_endpoints.competence_goals_api import competence_goal_api
 from api_endpoints.competence_reports_api import competence_report_api
 from api_endpoints.competences_api import competence_api
 from api_endpoints.import_from_file_api import import_file_api
+from api_endpoints.log_api import log_api
 from api_endpoints.missed_classes_api import missed_class_api
 from api_endpoints.pupil_authorizations_api import pupil_authorization_api
 from api_endpoints.pupil_books_api import pupil_book_api
@@ -49,3 +50,4 @@ def register_blueprints(app):
     )
     app.register_blueprint(school_semester_api, url_prefix="/api/school_semesters")
     app.register_blueprint(support_goals_api, url_prefix="/api/support_goals")
+    app.register_blueprint(log_api, url_prefix="/api")

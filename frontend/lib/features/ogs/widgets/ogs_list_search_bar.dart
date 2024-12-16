@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:schuldaten_hub/common/constants/colors.dart';
-import 'package:schuldaten_hub/common/constants/enums.dart';
+import 'package:schuldaten_hub/common/domain/models/enums.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
+import 'package:schuldaten_hub/common/theme/colors.dart';
 import 'package:schuldaten_hub/common/widgets/filter_button.dart';
 import 'package:schuldaten_hub/common/widgets/search_text_field.dart';
 import 'package:schuldaten_hub/features/ogs/widgets/ogs_filter_bottom_sheet.dart';
-import 'package:schuldaten_hub/features/pupil/filters/pupils_filter.dart';
-import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
+import 'package:schuldaten_hub/features/pupil/domain/filters/pupils_filter.dart';
+import 'package:schuldaten_hub/features/pupil/domain/models/pupil_proxy.dart';
 
 class OgsListSearchBar extends StatelessWidget {
   final List<PupilProxy> pupils;
@@ -19,7 +19,7 @@ class OgsListSearchBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: canvasColor,
+        color: AppColors.canvasColor,
         borderRadius: BorderRadius.circular(5.0),
       ),
       child: Column(
@@ -32,7 +32,7 @@ class OgsListSearchBar extends StatelessWidget {
               children: [
                 const Icon(
                   Icons.people_alt_rounded,
-                  color: backgroundColor,
+                  color: AppColors.backgroundColor,
                 ),
                 const Gap(5),
                 Text(

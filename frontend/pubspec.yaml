@@ -1,7 +1,7 @@
 name: schuldaten_hub
 description: A new Flutter project.
 publish_to: 'none'
-version: 0.4.42
+version: 0.4.5+1
 
 environment:
   sdk: '>=3.2.0 <4.0.0'
@@ -63,6 +63,7 @@ dependencies:
   # zxing_lib: ^1.1.2
   buffer_image: ^0.3.12
   qr_code_vision: ^0.1.2
+  isbn: ^1.0.4
 
 dev_dependencies:
   flutter_test: 

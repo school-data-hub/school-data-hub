@@ -2,82 +2,111 @@ import 'dart:developer';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
-import 'package:schuldaten_hub/common/constants/enums.dart';
-import 'package:schuldaten_hub/common/services/api/services/api_client_service.dart';
-import 'package:schuldaten_hub/common/services/api/services/connection_manager.dart';
-import 'package:schuldaten_hub/common/services/env_manager.dart';
-import 'package:schuldaten_hub/common/services/notification_manager.dart';
-import 'package:schuldaten_hub/common/services/search_textfield_manager.dart';
-import 'package:schuldaten_hub/common/services/sse.dart';
+import 'package:schuldaten_hub/common/domain/env_manager.dart';
+import 'package:schuldaten_hub/common/domain/filters/filters_state_manager.dart';
+import 'package:schuldaten_hub/common/domain/models/enums.dart';
+import 'package:schuldaten_hub/common/services/api/api_client.dart';
+import 'package:schuldaten_hub/common/services/connection_manager.dart';
+import 'package:schuldaten_hub/common/services/notification_service.dart';
 import 'package:schuldaten_hub/common/utils/logger.dart';
 import 'package:schuldaten_hub/common/utils/secure_storage.dart';
-import 'package:schuldaten_hub/features/attendance/services/attendance_manager.dart';
-import 'package:schuldaten_hub/features/authorizations/services/authorization_manager.dart';
-import 'package:schuldaten_hub/features/competence/filters/competence_filter_manager.dart';
-import 'package:schuldaten_hub/features/competence/services/competence_manager.dart';
-import 'package:schuldaten_hub/features/learning_support/services/learning_support_manager.dart';
-import 'package:schuldaten_hub/features/main_menu_pages/widgets/landing_bottom_nav_bar.dart';
-import 'package:schuldaten_hub/features/matrix/filters/matrix_policy_filter_manager.dart';
-import 'package:schuldaten_hub/features/matrix/services/matrix_api_service.dart';
-import 'package:schuldaten_hub/features/matrix/services/matrix_policy_manager.dart';
-import 'package:schuldaten_hub/features/pupil/filters/pupil_filter_manager.dart';
-import 'package:schuldaten_hub/features/pupil/filters/pupils_filter.dart';
-import 'package:schuldaten_hub/features/pupil/filters/pupils_filter_impl.dart';
-import 'package:schuldaten_hub/features/pupil/services/pupil_identity_manager.dart';
-import 'package:schuldaten_hub/features/pupil/services/pupil_manager.dart';
-import 'package:schuldaten_hub/features/school_lists/filters/school_list_filter_manager.dart';
-import 'package:schuldaten_hub/features/school_lists/services/school_list_manager.dart';
-import 'package:schuldaten_hub/features/schoolday_events/filters/schoolday_event_filter_manager.dart';
-import 'package:schuldaten_hub/features/schoolday_events/services/schoolday_event_manager.dart';
-import 'package:schuldaten_hub/features/schooldays/services/schoolday_manager.dart';
-import 'package:schuldaten_hub/features/users/services/user_manager.dart';
-import 'package:schuldaten_hub/features/workbooks/services/workbook_manager.dart';
+import 'package:schuldaten_hub/features/attendance/domain/attendance_manager.dart';
+import 'package:schuldaten_hub/features/attendance/domain/filters/attendance_pupil_filter.dart';
+import 'package:schuldaten_hub/features/authorizations/domain/authorization_manager.dart';
+import 'package:schuldaten_hub/features/authorizations/domain/filters/pupil_authorization_filters.dart';
+import 'package:schuldaten_hub/features/books/domain/book_manager.dart';
+import 'package:schuldaten_hub/features/competence/domain/competence_manager.dart';
+import 'package:schuldaten_hub/features/competence/domain/filters/competence_filter_manager.dart';
+import 'package:schuldaten_hub/features/learning_support/domain/filters/learning_support_filter_manager.dart';
+import 'package:schuldaten_hub/features/learning_support/domain/learning_support_manager.dart';
+import 'package:schuldaten_hub/features/main_menu/widgets/landing_bottom_nav_bar.dart';
+import 'package:schuldaten_hub/features/matrix/data/matrix_repository.dart';
+import 'package:schuldaten_hub/features/matrix/domain/filters/matrix_policy_filter_manager.dart';
+import 'package:schuldaten_hub/features/matrix/domain/matrix_policy_manager.dart';
+import 'package:schuldaten_hub/features/pupil/domain/filters/pupil_filter_manager.dart';
+import 'package:schuldaten_hub/features/pupil/domain/filters/pupils_filter.dart';
+import 'package:schuldaten_hub/features/pupil/domain/filters/pupils_filter_impl.dart';
+import 'package:schuldaten_hub/features/pupil/domain/pupil_identity_manager.dart';
+import 'package:schuldaten_hub/features/pupil/domain/pupil_manager.dart';
+import 'package:schuldaten_hub/features/school_lists/domain/filters/school_list_filter_manager.dart';
+import 'package:schuldaten_hub/features/school_lists/domain/school_list_manager.dart';
+import 'package:schuldaten_hub/features/schoolday_events/domain/filters/schoolday_event_filter_manager.dart';
+import 'package:schuldaten_hub/features/schoolday_events/domain/schoolday_event_manager.dart';
+import 'package:schuldaten_hub/features/schooldays/domain/schoolday_manager.dart';
+import 'package:schuldaten_hub/features/users/domain/user_manager.dart';
+import 'package:schuldaten_hub/features/workbooks/domain/workbook_manager.dart';
 import 'package:watch_it/watch_it.dart';
 
-import 'session_manager.dart';
+import '../domain/session_manager.dart';
 
 final locator = GetIt.instance;
 
 void registerBaseManagers() {
   logger.i('Registering base managers');
+
   locator.registerSingletonAsync<ConnectionManager>(() async {
     log('Registering ConnectionManager');
+
     final connectionManager = ConnectionManager();
+
     await connectionManager.checkConnectivity();
+
     log('ConnectionManager registered');
+
     return connectionManager;
   });
+
   locator.registerSingletonAsync<EnvManager>(() async {
     log('Registering EnvManager');
+
     final envManager = EnvManager();
+
     await envManager.init();
+
     log('EnvManager registered');
+
     return envManager;
   }, dependsOn: [ConnectionManager]);
 
-  locator.registerSingleton<ApiClientService>(ApiClientService(Dio(), ''));
+  locator.registerSingleton<ApiClient>(ApiClient(Dio(), baseUrl: ''));
 
   locator.registerSingletonAsync<SessionManager>(() async {
     log('Registering SessionManager');
+
     final sessionManager = SessionManager();
+
     await sessionManager.init();
+
     log('SessionManager initialized');
+
     return sessionManager;
   }, dependsOn: [EnvManager]);
 
   locator.registerSingletonAsync<PupilIdentityManager>(() async {
     log('Registering PupilIdentityManager');
+
     final pupilIdentityManager = PupilIdentityManager();
+
     await pupilIdentityManager.init();
+
     log('PupilIdentityManager initialized');
+
     return pupilIdentityManager;
   }, dependsOn: [SessionManager]);
 
   locator.registerSingleton<DefaultCacheManager>(DefaultCacheManager());
 
-  locator.registerSingleton<NotificationManager>(NotificationManager());
+  locator.registerSingleton<NotificationService>(NotificationService());
 
   locator.registerSingleton<BottomNavManager>(BottomNavManager());
+
+  locator.registerSingleton<FiltersStateManager>(
+      FiltersStateManagerImplementation());
+
+  // locator.registerSingletonWithDependencies<EventFluxService>(
+  //   () => EventFluxService(),
+  //   dependsOn: [SessionManager],
+  // );
 }
 
 Future registerDependentManagers() async {
@@ -87,12 +116,6 @@ Future registerDependentManagers() async {
   }
   logger.i('Registering dependent managers');
 
-  locator.registerSingleton<SearchManager>(SearchManager());
-
-  locator.registerSingletonWithDependencies<EventFluxService>(
-    () => EventFluxService(),
-    dependsOn: [SessionManager],
-  );
   locator.registerSingletonAsync<UserManager>(() async {
     log('Registering UserManager');
     final userManager = UserManager();
@@ -128,6 +151,17 @@ Future registerDependentManagers() async {
     SessionManager,
   ]);
 
+  locator.registerSingletonAsync<BookManager>(() async {
+    log('Registering BookManager');
+    final bookManager = BookManager();
+    await bookManager.init();
+    log('BookManager initialized');
+    return bookManager;
+  }, dependsOn: [
+    PupilManager,
+    SessionManager,
+  ]);
+
   locator.registerSingletonAsync<CompetenceManager>(() async {
     log('Registering CompetenceManager');
     final competenceManager = CompetenceManager();
@@ -157,6 +191,9 @@ Future registerDependentManagers() async {
     return authorizationManager;
   }, dependsOn: [SessionManager]);
 
+  locator.registerSingletonWithDependencies<AuthorizationFilterManager>(
+      () => AuthorizationFilterManager(),
+      dependsOn: [AuthorizationManager]);
   locator.registerSingletonWithDependencies<PupilFilterManager>(
       () => PupilFilterManager(),
       dependsOn: [PupilManager]);
@@ -165,6 +202,10 @@ Future registerDependentManagers() async {
     log('SchooldayEventFilterManager initialized');
     return SchooldayEventFilterManager();
   }, dependsOn: [PupilManager, PupilFilterManager]);
+
+  locator.registerSingletonWithDependencies<LearningSupportFilterManager>(
+      () => LearningSupportFilterManager(),
+      dependsOn: [PupilManager, PupilFilterManager]);
 
   locator.registerSingletonWithDependencies<PupilsFilter>(
       () => PupilsFilterImplementation(
@@ -192,6 +233,10 @@ Future registerDependentManagers() async {
       () => AttendanceManager(),
       dependsOn: [SchooldayManager, PupilsFilter]);
 
+  locator.registerSingletonWithDependencies<AttendancePupilFilterManager>(
+      () => AttendancePupilFilterManager(),
+      dependsOn: [AttendanceManager]);
+
   locator.registerSingletonWithDependencies<SchooldayEventManager>(
       () => SchooldayEventManager(),
       dependsOn: [SchooldayManager, PupilsFilter]);
@@ -213,7 +258,7 @@ Future<bool> registerMatrixPolicyManager() async {
     final policyManager = MatrixPolicyManager();
     await policyManager.init();
     log('MatrixPolicyManager initialized');
-    locator<NotificationManager>().showSnackBar(
+    locator<NotificationService>().showSnackBar(
         NotificationType.success, 'Matrix-Räumeverwaltung initialisiert');
     return policyManager;
   }, dependsOn: [SessionManager, PupilManager]);
@@ -230,6 +275,7 @@ Future unregisterDependentManagers() async {
   locator.unregister<UserManager>();
   locator.unregister<SchooldayManager>();
   locator.unregister<WorkbookManager>();
+  locator.unregister<BookManager>();
   locator.unregister<LearningSupportManager>();
 
   locator.unregister<PupilFilterManager>();
@@ -239,15 +285,16 @@ Future unregisterDependentManagers() async {
   locator.unregister<SchoolListFilterManager>();
   locator.unregister<AuthorizationManager>();
   locator.unregister<AttendanceManager>();
+  locator.unregister<AttendancePupilFilterManager>();
+  locator.unregister<LearningSupportFilterManager>();
   locator.unregister<SchooldayEventManager>();
   locator.unregister<SchooldayEventFilterManager>();
+  locator.unregister<AuthorizationFilterManager>();
   locator.unregister<PupilManager>();
-  locator.unregister<SearchManager>();
   if (locator.isRegistered<MatrixPolicyManager>()) {
     locator.unregister<MatrixPolicyManager>();
     locator.unregister<MatrixPolicyFilterManager>();
-    locator.unregister<MatrixPolicyManager>();
-    locator.unregister<MatrixApiService>();
+    locator.unregister<MatrixRepository>();
 
     locator<SessionManager>().changeMatrixPolicyManagerRegistrationStatus(true);
   }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:schuldaten_hub/common/constants/enums.dart';
+import 'package:schuldaten_hub/common/domain/models/enums.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 

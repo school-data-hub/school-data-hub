@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:schuldaten_hub/common/constants/colors.dart';
-import 'package:schuldaten_hub/features/attendance/pages/widgets/attendance_badges.dart';
-import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
+import 'package:schuldaten_hub/common/theme/colors.dart';
+import 'package:schuldaten_hub/features/attendance/presentation/widgets/attendance_badges.dart';
+import 'package:schuldaten_hub/features/pupil/domain/models/pupil_proxy.dart';
 import 'package:schuldaten_hub/features/statistics/statistics_page/controller/statistics.dart';
 
 Widget statisticsGroupCard(
@@ -190,7 +190,8 @@ Widget statisticsGroupCard(
               //     fontSize: 18,
               //   ),
               // ),
-              const Icon(Icons.translate_rounded, color: backgroundColor),
+              const Icon(Icons.translate_rounded,
+                  color: AppColors.backgroundColor),
 
               const Gap(5),
               Text(

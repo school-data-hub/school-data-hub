@@ -1,6 +1,7 @@
 import os
 import uuid
 from datetime import datetime
+from typing import List, Optional
 
 from apiflask import APIBlueprint, FileSchema, abort
 from flask import current_app, json, jsonify, request, send_file
@@ -10,6 +11,7 @@ from helpers.error_message_helpers import pupil_not_found
 from helpers.log_entries import create_log_entry
 from models.log_entry import LogEntry
 from models.shared import db
+from models.user import User
 from schemas.log_entry_schemas import ApiFileSchema
 
 pupil_api = APIBlueprint("pupils_api", __name__, url_prefix="/api/pupils")
@@ -109,8 +111,8 @@ def add_pupil(current_user, json_data):
 @pupil_api.output(pupil_schema)
 @pupil_api.doc(security="ApiKeyAuth", tags=["Pupil"], summary="Patch a Pupil")
 @token_required
-def update_pupil(current_user, internal_id, json_data):
-    pupil = get_pupil_by_id(internal_id)
+def update_pupil(current_user: User, internal_id, json_data):
+    pupil: Optional[Pupil] = get_pupil_by_id(internal_id)
     if pupil == None:
         return jsonify({"message": "This pupil does not exist!"}), 404
     data = json_data  # request.get_json()
@@ -150,9 +152,7 @@ def update_pupil(current_user, internal_id, json_data):
                 pupil.ogs_info = data[key]
             case "five_years":
                 pupil.five_years = date_string_to_date(data[key])
-            case "special_needs":
-                pupil.special_needs = data[key]
-            # - individual_development_plan is handled in a separate endpoint
+            # - support_level is handled in a separate endpoint
             case "communication_pupil":
                 pupil.communication_pupil = data[key]
             case "communication_tutor1":
@@ -184,14 +184,16 @@ def update_pupil(current_user, internal_id, json_data):
     security="ApiKeyAuth", tags=["Pupil"], summary="patch siblings with common value"
 )
 @token_required
-def update_siblings(current_user, json_data):
+def update_siblings(current_user: User, json_data):
     internal_id_list = json_data["pupils"]
 
-    sibling_pupils = []
+    sibling_pupils: List[Pupil] = []
+
     for item in internal_id_list:
-        this_pupil = get_pupil_by_id(item)
+        this_pupil: Optional[Pupil] = get_pupil_by_id(item)
         if this_pupil != None:
             sibling_pupils.append(this_pupil)
+
     if sibling_pupils == []:
         return jsonify({"error": "None of the given pupils found!"}), 400
     data = json_data  # request.get_json()
@@ -414,7 +416,9 @@ def delete_avatar(current_user, internal_id):
 
 
 # - UPDATE SUPPORT LEVEL
-####################################
+########################
+
+
 @pupil_api.route("/<internal_id>/support_level", methods=["PATCH"])
 @pupil_api.input(support_level_in_schema)
 @pupil_api.output(pupil_schema)
@@ -424,7 +428,7 @@ def delete_avatar(current_user, internal_id):
     summary="Update support level of a given pupil",
 )
 @token_required
-def update_support_level(current_user, internal_id, json_data):
+def update_support_level(current_user: User, internal_id, json_data):
     pupil = get_pupil_by_id(internal_id)
     if pupil == None:
         return jsonify({"message": "This pupil does not exist!"}), 404
@@ -452,7 +456,9 @@ def update_support_level(current_user, internal_id, json_data):
 
 
 # - DELETE SUPPORT LEVEL
-####################################
+########################
+
+
 @pupil_api.route("/<internal_id>/support_level/<support_level_id>", methods=["DELETE"])
 @pupil_api.doc(
     security="ApiKeyAuth",

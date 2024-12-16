@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:schuldaten_hub/features/pupil/pages/widgets/common_pupil_filters.dart';
+import 'package:schuldaten_hub/features/pupil/presentation/widgets/common_pupil_filters.dart';
 
 class GenericFilterBottomSheet extends StatelessWidget {
   final List<Widget> children;

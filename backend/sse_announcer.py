@@ -30,7 +30,7 @@ class MessageAnnouncer:
                 app.logger.error(e, exc_info=True)
 
 
-def format_sse(data: str, event=None) -> str:
+def format_sse(data: str, event: str) -> str:
     """Formats a string and an event name in order to follow the event stream convention.
 
     >>> format_sse(data=json.dumps({'abc': 123}), event='Jackson 5')

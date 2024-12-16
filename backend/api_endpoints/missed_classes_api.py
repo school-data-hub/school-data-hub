@@ -5,6 +5,7 @@ from flask import jsonify, request
 
 from auth_middleware import token_required
 from helpers.db_helpers import (
+    date_string_to_date,
     get_missed_class_by_pupil_and_schoolday,
     get_pupil_by_id,
     get_schoolday_by_day,
@@ -28,7 +29,7 @@ missed_class_api = APIBlueprint(
     missed_class_in_schema,
     example={
         "contacted": None,
-        "excused": False,
+        "unexcused": False,
         "minutes_late": None,
         "missed_day": "2023-11-20",
         "missed_pupil_id": 1234,
@@ -66,7 +67,7 @@ def add_missed_class(current_user, json_data):
         abort(403, "This missed class exists already - please update instead!")
 
     missed_type = data["missed_type"]
-    excused = data["excused"]
+    unexcused = data["unexcused"]
     contacted = data["contacted"]
     returned = data["returned"]
     returned_at = data["returned_at"]
@@ -79,7 +80,7 @@ def add_missed_class(current_user, json_data):
         this_missed_pupil_id,
         this_missed_day_id,
         missed_type,
-        excused,
+        unexcused,
         contacted,
         returned,
         written_excuse,
@@ -104,7 +105,7 @@ def add_missed_class(current_user, json_data):
     example=[
         {
             "contacted": None,
-            "excused": False,
+            "unexcused": False,
             "minutes_late": None,
             "missed_day": "2023-11-20",
             "missed_pupil_id": 1234,
@@ -116,7 +117,7 @@ def add_missed_class(current_user, json_data):
         },
         {
             "contacted": None,
-            "excused": False,
+            "unexcused": False,
             "minutes_late": None,
             "missed_day": "2023-11-21",
             "missed_pupil_id": 1234,
@@ -161,8 +162,8 @@ def add_missed_class_list(current_user, json_data):
                 match key:
                     case "missed_type":
                         missed_class.missed_type = entry[key]
-                    case "excused":
-                        missed_class.excused = entry[key]
+                    case "unexcused":
+                        missed_class.unexcused = entry[key]
                     case "contacted":
                         missed_class.contacted = entry[key]
                     case "returned":
@@ -181,7 +182,7 @@ def add_missed_class_list(current_user, json_data):
             commited_missed_classes.append(missed_class)
         else:
             missed_type = entry["missed_type"]
-            excused = entry["excused"]
+            unexcused = entry["unexcused"]
             contacted = entry["contacted"]
             returned = False
             returned_at = None
@@ -192,9 +193,9 @@ def add_missed_class_list(current_user, json_data):
             comment = None
             new_missed_class = MissedClass(
                 missed_pupil_id,
-                missed_schoolday,
+                missed_schoolday.schoolday,
                 missed_type,
-                excused,
+                unexcused,
                 contacted,
                 returned,
                 written_excuse,
@@ -304,8 +305,8 @@ def update_missed_class(current_user, pupil_id, date, json_data):
             case "missed_type":
                 missed_class.missed_type = data[key]
                 print("sent value: " + data[key])
-            case "excused":
-                missed_class.excused = data[key]
+            case "unexcused":
+                missed_class.unexcused = data[key]
                 print("sent value: " + str(data[key]))
             case "contacted":
                 missed_class.contacted = data[key]

@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:schuldaten_hub/common/constants/colors.dart';
-import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
+import 'package:schuldaten_hub/common/theme/colors.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
-
-import 'package:schuldaten_hub/features/pupil/services/pupil_manager.dart';
+import 'package:schuldaten_hub/features/pupil/domain/models/pupil_proxy.dart';
+import 'package:schuldaten_hub/features/pupil/domain/pupil_manager.dart';
 
 // based on https://mobikul.com/creating-stateful-dialog-form-in-flutter/
 
@@ -91,7 +90,7 @@ Future<void> pickUpTimeDialog(
                   child: const Text(
                     'ABBRECHEN',
                     style: TextStyle(
-                        color: accentColor,
+                        color: AppColors.accentColor,
                         fontSize: 18,
                         fontWeight: FontWeight.bold),
                   ),
@@ -106,7 +105,7 @@ Future<void> pickUpTimeDialog(
                   child: const Text(
                     'OK',
                     style: TextStyle(
-                        color: accentColor,
+                        color: AppColors.accentColor,
                         fontSize: 18,
                         fontWeight: FontWeight.bold),
                   ),

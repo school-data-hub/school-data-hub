@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:schuldaten_hub/common/constants/colors.dart';
+import 'package:schuldaten_hub/common/theme/colors.dart';
 
 class BottomNavBarLayout extends StatelessWidget {
   final Widget bottomNavBar;
@@ -10,7 +10,7 @@ class BottomNavBarLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Theme(
-      data: ThemeData(canvasColor: backgroundColor),
+      data: ThemeData(canvasColor: AppColors.backgroundColor),
       child: Padding(
         padding: Platform.isWindows
             ? const EdgeInsets.only(left: 5, right: 5, bottom: 20)
@@ -39,7 +39,7 @@ class BottomNavBarProfileLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Theme(
-      data: ThemeData(canvasColor: backgroundColor),
+      data: ThemeData(canvasColor: AppColors.backgroundColor),
       child: Padding(
         padding: Platform.isWindows
             ? const EdgeInsets.only(left: 5, right: 5, bottom: 20)
@@ -70,7 +70,7 @@ class BottomNavBarMobile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Theme(
-      data: ThemeData(canvasColor: backgroundColor),
+      data: ThemeData(canvasColor: AppColors.backgroundColor),
       child: bottomNavBar,
     );
   }

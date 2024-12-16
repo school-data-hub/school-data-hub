@@ -2,13 +2,13 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
-import 'package:schuldaten_hub/common/constants/enums.dart';
+import 'package:schuldaten_hub/common/domain/models/enums.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
-import 'package:schuldaten_hub/common/services/notification_manager.dart';
+import 'package:schuldaten_hub/common/services/notification_service.dart';
 
 Future<String?> scanner(BuildContext context, String overlayText) async {
   if (Platform.isWindows) {
-    locator<NotificationManager>().showSnackBar(NotificationType.error,
+    locator<NotificationService>().showSnackBar(NotificationType.error,
         'Scannen mit Windows ist zur Zeit nicht möglich.');
 
     return null;

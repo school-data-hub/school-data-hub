@@ -51,7 +51,7 @@ def allowed_file(filename):
 #     return sse_process
 
 # - Test SSE when app starts
-msg = format_sse(data="pong")
+msg = format_sse(data="pong", event="test")
 announcer.announce(msg=msg)
 # sse_process = start_sse_server()
 # announcer = SSEManager(address=("127.0.0.1", 2437), authkey=b"sse")

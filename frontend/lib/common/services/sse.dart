@@ -1,8 +1,10 @@
 import 'package:eventflux/eventflux.dart';
-import 'package:schuldaten_hub/common/services/env_manager.dart';
+import 'package:schuldaten_hub/common/domain/env_manager.dart';
+import 'package:schuldaten_hub/common/domain/session_manager.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
-import 'package:schuldaten_hub/common/services/session_manager.dart';
 import 'package:schuldaten_hub/common/utils/logger.dart';
+
+//- This is an experiment with server-sent events (SSE) using the EventFlux package.
 
 class EventFluxService {
   static final EventFluxService _instance = EventFluxService._internal();

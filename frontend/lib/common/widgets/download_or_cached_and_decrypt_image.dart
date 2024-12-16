@@ -2,61 +2,37 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
-import 'package:schuldaten_hub/common/constants/enums.dart';
-import 'package:schuldaten_hub/common/services/api/services/api_client_service.dart';
+import 'package:schuldaten_hub/common/domain/models/enums.dart';
+import 'package:schuldaten_hub/common/services/api/api_client.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
-import 'package:schuldaten_hub/common/services/notification_manager.dart';
+import 'package:schuldaten_hub/common/services/notification_service.dart';
 import 'package:schuldaten_hub/common/utils/custom_encrypter.dart';
 
-// class DownloadOrCachedAndDecryptImage extends StatelessWidget {
-//   final String? imageUrl;
-//   final String? tag;
-
-//   const DownloadOrCachedAndDecryptImage({this.imageUrl, this.tag, super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     if (imageUrl == null) {
-//       return const Icon(Icons.camera_alt_rounded);
-//     }
-
-//     return const Placeholder();
-//   }
-// }
-
-Future<Widget> downloadOrCachedAndDecryptImage(
-    String? imageUrl, String? tag) async {
-  if (imageUrl == null) {
-    return const Icon(Icons.camera_alt_rounded);
-  }
-
+Future<Image> cachedOrDownloadAndDecryptImage(
+    {required String imageUrl, required String cacheKey}) async {
   final cacheManager = locator<DefaultCacheManager>();
-  final cacheKey = tag!;
+  final key = cacheKey;
 
-  final fileInfo = await cacheManager.getFileFromCache(cacheKey);
+  final fileInfo = await cacheManager.getFileFromCache(key);
 
   if (fileInfo != null && await fileInfo.file.exists()) {
     // File is already cached, decrypt it before using
-    final encryptedBytes = await fileInfo.file.readAsBytes();
-    //- This is because isolate performance is horrible in debug mode
-    final decryptedBytes = (kReleaseMode || kProfileMode)
-        ? await compute(customEncrypter.decryptTheseBytes, encryptedBytes)
-        : customEncrypter.decryptTheseBytes(encryptedBytes);
-    return Image.memory(decryptedBytes);
+    final decryptedImage =
+        await customEncrypter.decryptEncryptedImage(fileInfo.file);
+    return decryptedImage;
   }
 
-  final ApiClientService client = locator<ApiClientService>();
+  final ApiClient client = locator<ApiClient>();
   final Response response = await client.get(imageUrl,
       options: Options(responseType: ResponseType.bytes));
 
   if (response.statusCode != 200) {
-    locator<NotificationManager>()
+    locator<NotificationService>()
         .showSnackBar(NotificationType.error, 'Fehler beim Laden des Bildes');
-    return const Icon(Icons.error_outline);
   }
   final encryptedBytes = Uint8List.fromList(response.data!);
   // Cache the encrypted bytes
-  await cacheManager.putFile(cacheKey, encryptedBytes);
+  await cacheManager.putFile(key, encryptedBytes);
   // Decrypt the bytes before returning
   //- This is because isolate performance is horrible in debug mode
   final decryptedBytes = (kReleaseMode || kProfileMode)

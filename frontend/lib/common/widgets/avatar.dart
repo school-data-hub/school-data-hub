@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:schuldaten_hub/common/constants/colors.dart';
 import 'package:schuldaten_hub/common/services/api/api.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
+import 'package:schuldaten_hub/common/theme/colors.dart';
 import 'package:schuldaten_hub/common/widgets/download_or_cached_and_decrypt_image.dart';
-import 'package:schuldaten_hub/features/attendance/services/attendance_helper_functions.dart';
-import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
-import 'package:schuldaten_hub/features/pupil/pages/pupil_profile_page/widgets/pupil_set_avatar.dart';
-import 'package:schuldaten_hub/features/pupil/services/pupil_helper_functions.dart';
-import 'package:schuldaten_hub/features/pupil/services/pupil_manager.dart';
-import 'package:schuldaten_hub/features/schoolday_events/services/schoolday_event_helper_functions.dart';
+import 'package:schuldaten_hub/features/attendance/domain/attendance_helper_functions.dart';
+import 'package:schuldaten_hub/features/pupil/domain/models/pupil_proxy.dart';
+import 'package:schuldaten_hub/features/pupil/domain/pupil_helper_functions.dart';
+import 'package:schuldaten_hub/features/pupil/domain/pupil_manager.dart';
+import 'package:schuldaten_hub/features/pupil/presentation/pupil_profile_page/widgets/pupil_set_avatar.dart';
+import 'package:schuldaten_hub/features/schoolday_events/domain/schoolday_event_helper_functions.dart';
 import 'package:watch_it/watch_it.dart';
 import 'package:widget_zoom/widget_zoom.dart';
 
@@ -38,9 +38,9 @@ class AvatarImage extends StatelessWidget {
             ? WidgetZoom(
                 heroAnimationTag: internalId,
                 zoomWidget: FutureBuilder<Widget>(
-                  future: downloadOrCachedAndDecryptImage(
-                    PupilDataApiService.getPupilAvatar(internalId),
-                    avatarId,
+                  future: cachedOrDownloadAndDecryptImage(
+                    imageUrl: PupilDataApiService.getPupilAvatar(internalId),
+                    cacheKey: avatarId,
                   ),
                   builder: (context, snapshot) {
                     Widget child;
@@ -48,7 +48,7 @@ class AvatarImage extends StatelessWidget {
                       // Display a loading indicator while the future is not complete
                       child = const CircularProgressIndicator(
                         strokeWidth: 8,
-                        color: backgroundColor,
+                        color: AppColors.backgroundColor,
                       );
                     } else if (snapshot.hasError) {
                       // Display an error message if the future encounters an error
@@ -135,8 +135,8 @@ class AvatarWithBadges extends WatchingWidget {
               height: 30.0,
               decoration: BoxDecoration(
                 color: AttendanceHelper.pupilIsMissedToday(pupil)
-                    ? warningButtonColor
-                    : groupColor,
+                    ? AppColors.warningButtonColor
+                    : AppColors.groupColor,
                 shape: BoxShape.circle,
               ),
               child: Center(
@@ -160,7 +160,7 @@ class AvatarWithBadges extends WatchingWidget {
               decoration: BoxDecoration(
                 color: SchoolDayEventHelper.pupilIsAdmonishedToday(pupil)
                     ? Colors.red
-                    : schoolyearColor,
+                    : AppColors.schoolyearColor,
                 shape: BoxShape.circle,
               ),
               child: Center(
@@ -183,7 +183,7 @@ class AvatarWithBadges extends WatchingWidget {
                 width: 30.0,
                 height: 30.0,
                 decoration: const BoxDecoration(
-                  color: ogsColor,
+                  color: AppColors.ogsColor,
                   shape: BoxShape.circle,
                 ),
                 child: const Center(

@@ -2,10 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
-import 'package:schuldaten_hub/common/constants/styles.dart';
+import 'package:schuldaten_hub/common/theme/styles.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/widgets/generic_app_bar.dart';
-import 'package:schuldaten_hub/features/pupil/services/pupil_identity_manager.dart';
+import 'package:schuldaten_hub/features/pupil/domain/pupil_identity_manager.dart';
 
 class BarcodeStreamScanner extends StatefulWidget {
   const BarcodeStreamScanner({super.key});
@@ -32,7 +32,7 @@ class _BarcodeStreamScannerState extends State<BarcodeStreamScanner> {
         if (barcodes == null || barcodes.isEmpty) {
           return const Center(
             child: Text(
-              'Gerät während des Scanvorgangs still halten!',
+              'Gerät während des Scanvorgangs leicht  nach vorne und hinten bewegen, damit die Codes besser erkannt werden.',
               style: TextStyle(color: Colors.white, fontSize: 20),
             ),
           );
@@ -79,13 +79,13 @@ class _BarcodeStreamScannerState extends State<BarcodeStreamScanner> {
                   child: Padding(
                     padding: const EdgeInsets.only(bottom: 10.0),
                     child: ElevatedButton(
-                      style: cancelButtonStyle,
+                      style: AppStyles.cancelButtonStyle,
                       onPressed: () {
                         Navigator.pop(context);
                       },
                       child: const Text(
                         "ABBRECHEN",
-                        style: buttonTextStyle,
+                        style: AppStyles.buttonTextStyle,
                       ),
                     ),
                   ),
@@ -95,7 +95,7 @@ class _BarcodeStreamScannerState extends State<BarcodeStreamScanner> {
                   child: Padding(
                     padding: const EdgeInsets.only(bottom: 10.0),
                     child: ElevatedButton(
-                      style: successButtonStyle,
+                      style: AppStyles.successButtonStyle,
                       onPressed: () {
                         unawaited(locator<PupilIdentityManager>()
                             .decryptCodesAndAddIdentities(_scannedQrCodes));
@@ -105,7 +105,7 @@ class _BarcodeStreamScannerState extends State<BarcodeStreamScanner> {
                       },
                       child: const Text(
                         "SCAN BEENDEN",
-                        style: buttonTextStyle,
+                        style: AppStyles.buttonTextStyle,
                       ),
                     ),
                   ),

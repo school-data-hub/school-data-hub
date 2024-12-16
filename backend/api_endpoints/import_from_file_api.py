@@ -114,7 +114,7 @@ def upload_pupils_txt(current_user, files_data):
                 credit=pupil.credit,
                 credit_earned=pupil.credit_earned,
                 ogs=pupil.ogs,
-                individual_development_plan=pupil.individual_development_plan,
+                latest_support_level=pupil.latest_support_level,
                 five_years=pupil.five_years,
                 communication_pupil=pupil.communication_pupil,
                 communication_tutor1=pupil.communication_tutor1,

@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:schuldaten_hub/common/constants/colors.dart';
+import 'package:schuldaten_hub/common/theme/colors.dart';
+import 'package:schuldaten_hub/common/theme/styles.dart';
 
 Future<String?> longTextFieldDialog(
-    String title, String? textinField, BuildContext parentContext) async {
+    {required String title,
+    required String? textinField,
+    required String labelText,
+    required BuildContext parentContext}) async {
   return await showDialog(
       context: parentContext,
       builder: (context) {
@@ -16,11 +20,7 @@ Future<String?> longTextFieldDialog(
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(color: backgroundColor),
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
+                SizedBox(
                   width: 400,
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -30,7 +30,8 @@ Future<String?> longTextFieldDialog(
                       style: const TextStyle(fontSize: 17),
                       keyboardType: TextInputType.multiline,
                       controller: textEditingController,
-                      decoration: null,
+                      decoration:
+                          AppStyles.textFieldDecoration(labelText: labelText),
                     ),
                   ),
                 ),
@@ -52,7 +53,7 @@ Future<String?> longTextFieldDialog(
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 17.0,
-                    color: dangerButtonColor,
+                    color: AppColors.dangerButtonColor,
                   ),
                 ),
               ),
@@ -69,7 +70,7 @@ Future<String?> longTextFieldDialog(
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 17.0,
-                          color: warningButtonColor,
+                          color: AppColors.warningButtonColor,
                         ),
                       ),
                     )
@@ -90,7 +91,7 @@ Future<String?> longTextFieldDialog(
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 17.0,
-                    color: successButtonColor,
+                    color: AppColors.successButtonColor,
                   ),
                 ),
               ),

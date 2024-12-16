@@ -1,4 +1,5 @@
 import uuid
+from typing import List, Optional
 
 from apiflask import APIBlueprint, abort
 from flask import jsonify, request
@@ -13,6 +14,7 @@ from helpers.log_entries import create_log_entry
 from models.authorization import Authorization, PupilAuthorization
 from models.pupil import Pupil
 from models.shared import db
+from models.user import User
 from schemas.authorization_schemas import *
 from schemas.pupil_schemas import *
 
@@ -32,7 +34,7 @@ authorization_api = APIBlueprint(
     summary="Post an authorization including ALL pupils in the database",
 )
 @token_required
-def add_authorization_all(current_user, json_data):
+def add_authorization_all(current_user: User, json_data):
     authorization_id = str(uuid.uuid4().hex)
     authorization_name = json_data["authorization_name"]
     authorization_description = json_data["authorization_description"]

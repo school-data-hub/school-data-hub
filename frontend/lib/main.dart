@@ -3,22 +3,21 @@ import 'dart:io';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:schuldaten_hub/common/constants/app_theme.dart';
-import 'package:schuldaten_hub/common/services/api/services/connection_manager.dart';
-import 'package:schuldaten_hub/common/constants/colors.dart';
+import 'package:schuldaten_hub/common/domain/env_manager.dart';
+import 'package:schuldaten_hub/common/domain/session_manager.dart';
 import 'package:schuldaten_hub/common/routes/app_routes.dart';
-import 'package:schuldaten_hub/common/services/env_manager.dart';
-import 'package:schuldaten_hub/common/services/session_manager.dart';
-import 'package:schuldaten_hub/features/main_menu_pages/widgets/landing_bottom_nav_bar.dart';
-import 'package:schuldaten_hub/features/main_menu_pages/loading_page.dart';
-import 'package:schuldaten_hub/features/main_menu_pages/login_page/controller/login_controller.dart';
-import 'package:schuldaten_hub/features/main_menu_pages/no_connection_page.dart';
+import 'package:schuldaten_hub/common/services/connection_manager.dart';
+import 'package:schuldaten_hub/common/theme/colors.dart';
+import 'package:schuldaten_hub/features/main_menu/loading_page.dart';
+import 'package:schuldaten_hub/features/main_menu/login_page/login_controller.dart';
+import 'package:schuldaten_hub/features/main_menu/no_connection_page.dart';
+import 'package:schuldaten_hub/features/main_menu/widgets/landing_bottom_nav_bar.dart';
 import 'package:watch_it/watch_it.dart';
 import 'package:window_manager/window_manager.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'common/services/locator.dart';
 
@@ -42,7 +41,7 @@ void main() async {
   // set status bar color
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle().copyWith(
-      statusBarColor: backgroundColor,
+      statusBarColor: AppColors.backgroundColor,
       statusBarBrightness: Brightness.light,
     ),
   );
@@ -98,7 +97,7 @@ class MyApp extends WatchingWidget {
         ],
         debugShowCheckedModeBanner: false,
         title: 'Schuldaten Hub',
-        theme: lightTheme,
+        // theme: lightTheme,
         // darkTheme: darkTheme,
         routes: AppRoutes.routes,
         home: !isConnected

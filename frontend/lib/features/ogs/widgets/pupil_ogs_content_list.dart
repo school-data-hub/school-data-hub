@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:schuldaten_hub/common/constants/colors.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
+import 'package:schuldaten_hub/common/theme/colors.dart';
 import 'package:schuldaten_hub/common/widgets/dialogues/confirmation_dialog.dart';
 import 'package:schuldaten_hub/common/widgets/dialogues/long_textfield_dialog.dart';
 import 'package:schuldaten_hub/features/ogs/widgets/dialogs/ogs_pickup_time_dialog.dart';
-import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
-import 'package:schuldaten_hub/features/pupil/services/pupil_helper_functions.dart';
-import 'package:schuldaten_hub/features/pupil/services/pupil_manager.dart';
+import 'package:schuldaten_hub/features/pupil/domain/models/pupil_proxy.dart';
+import 'package:schuldaten_hub/features/pupil/domain/pupil_helper_functions.dart';
+import 'package:schuldaten_hub/features/pupil/domain/pupil_manager.dart';
 
 List<Widget> pupilOgsContentList(PupilProxy pupil, BuildContext context) {
   return [
@@ -19,9 +19,10 @@ List<Widget> pupilOgsContentList(PupilProxy pupil, BuildContext context) {
           onTap: () => pickUpTimeDialog(context, pupil, pupil.pickUpTime),
           child: Text(pickupTimePredicate(pupil.pickUpTime),
               style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: backgroundColor)),
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: AppColors.backgroundColor,
+              )),
         ),
         const Gap(5),
         const Text('Uhr', style: TextStyle(fontSize: 18.0)),
@@ -38,7 +39,10 @@ List<Widget> pupilOgsContentList(PupilProxy pupil, BuildContext context) {
     InkWell(
       onTap: () async {
         final String? ogsInfo = await longTextFieldDialog(
-            'OGS Informationen', pupil.ogsInfo, context);
+            title: 'OGS Informationen',
+            labelText: 'OGS Informationen',
+            textinField: pupil.ogsInfo,
+            parentContext: context);
         if (ogsInfo == null) return;
         await locator<PupilManager>()
             .patchPupil(pupil.internalId, 'ogs_info', ogsInfo);
@@ -60,9 +64,10 @@ List<Widget> pupilOgsContentList(PupilProxy pupil, BuildContext context) {
                 ? Text(pupil.ogsInfo!,
                     softWrap: true,
                     style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: backgroundColor))
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.backgroundColor,
+                    ))
                 : const Text(
                     'keine Informationen',
                     style:

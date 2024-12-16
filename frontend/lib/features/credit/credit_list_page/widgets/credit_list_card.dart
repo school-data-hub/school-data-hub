@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:schuldaten_hub/common/constants/colors.dart';
+import 'package:schuldaten_hub/common/theme/colors.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/widgets/avatar.dart';
 import 'package:schuldaten_hub/common/widgets/custom_expansion_tile/custom_expansion_tile.dart';
 import 'package:schuldaten_hub/common/widgets/custom_expansion_tile/custom_expansion_tile_content.dart';
-import 'package:schuldaten_hub/features/main_menu_pages/widgets/landing_bottom_nav_bar.dart';
-import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
-import 'package:schuldaten_hub/features/pupil/pages/pupil_profile_page/pupil_profile_page.dart';
-import 'package:schuldaten_hub/features/pupil/pages/pupil_profile_page/widgets/pupil_profile_page_content/widgets/pupil_credit_content.dart';
-
+import 'package:schuldaten_hub/features/main_menu/widgets/landing_bottom_nav_bar.dart';
+import 'package:schuldaten_hub/features/pupil/domain/models/pupil_proxy.dart';
+import 'package:schuldaten_hub/features/pupil/presentation/pupil_profile_page/pupil_profile_page.dart';
+import 'package:schuldaten_hub/features/pupil/presentation/pupil_profile_page/widgets/pupil_profile_page_content/widgets/pupil_profile_credit_content.dart';
 import 'package:watch_it/watch_it.dart';
 
 class CreditListCard extends WatchingStatefulWidget {
@@ -144,7 +143,7 @@ class _CreditListCardState extends State<CreditListCard> {
                         style: const TextStyle(
                           fontSize: 23,
                           fontWeight: FontWeight.bold,
-                          color: backgroundColor,
+                          color: AppColors.backgroundColor,
                         ),
                       ),
                     ),

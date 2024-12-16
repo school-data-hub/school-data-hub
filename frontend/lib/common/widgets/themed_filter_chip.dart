@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:schuldaten_hub/common/constants/colors.dart';
-import 'package:schuldaten_hub/common/constants/styles.dart';
+import 'package:schuldaten_hub/common/theme/colors.dart';
+import 'package:schuldaten_hub/common/theme/paddings.dart';
+import 'package:schuldaten_hub/common/theme/styles.dart';
 
 class ThemedFilterChip extends StatelessWidget {
   final String label;
@@ -16,28 +17,31 @@ class ThemedFilterChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FilterChip(
-      autofocus: true,
-      elevation: 0,
-      pressElevation: 0,
-      padding: filterChipPadding,
-      labelPadding: filterChipLabelPadding,
-      shape: filterChipShape,
-      avatar: const CircleAvatar(
-        backgroundColor: Colors.transparent,
-        child: SizedBox(
-          width: 10,
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 5),
+      child: FilterChip(
+        autofocus: true,
+        elevation: 0,
+        pressElevation: 0,
+        padding: AppPaddings.filterChipPadding,
+        labelPadding: AppPaddings.filterChipLabelPadding,
+        shape: AppStyles.filterChipShape,
+        avatar: const CircleAvatar(
+          backgroundColor: Colors.transparent,
+          child: SizedBox(
+            width: 10,
+          ),
         ),
+        selectedColor: AppColors.filterChipSelectedColor,
+        checkmarkColor: AppColors.filterChipSelectedCheckColor,
+        backgroundColor: AppColors.filterChipUnselectedColor,
+        label: Text(
+          label,
+          style: AppStyles.filterItemsTextStyle,
+        ),
+        selected: selected,
+        onSelected: onSelected,
       ),
-      selectedColor: filterChipSelectedColor,
-      checkmarkColor: filterChipSelectedCheckColor,
-      backgroundColor: filterChipUnselectedColor,
-      label: Text(
-        label,
-        style: filterItemsTextStyle,
-      ),
-      selected: selected,
-      onSelected: onSelected,
     );
   }
 }

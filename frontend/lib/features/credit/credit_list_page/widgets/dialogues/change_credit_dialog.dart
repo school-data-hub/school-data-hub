@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:schuldaten_hub/common/constants/styles.dart';
-import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
+import 'package:schuldaten_hub/common/theme/styles.dart';
+import 'package:schuldaten_hub/features/pupil/domain/models/pupil_proxy.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
-import 'package:schuldaten_hub/features/pupil/services/pupil_manager.dart';
-import 'package:schuldaten_hub/common/services/session_manager.dart';
+import 'package:schuldaten_hub/features/pupil/domain/pupil_manager.dart';
+import 'package:schuldaten_hub/common/domain/session_manager.dart';
 
 Future<void> changeCreditDialog(BuildContext context, PupilProxy pupil) async {
   int credit = 0;
@@ -45,7 +45,7 @@ Future<void> changeCreditDialog(BuildContext context, PupilProxy pupil) async {
                     child: Padding(
                       padding: const EdgeInsets.only(bottom: 10.0),
                       child: ElevatedButton(
-                        style: cancelButtonStyle,
+                        style: AppStyles.cancelButtonStyle,
                         onPressed: () {
                           setState(() {
                             credit--;
@@ -53,7 +53,7 @@ Future<void> changeCreditDialog(BuildContext context, PupilProxy pupil) async {
                         },
                         child: const Text(
                           "-1",
-                          style: buttonTextStyle,
+                          style: AppStyles.buttonTextStyle,
                         ),
                       ),
                     ),
@@ -63,7 +63,7 @@ Future<void> changeCreditDialog(BuildContext context, PupilProxy pupil) async {
                     child: Padding(
                       padding: const EdgeInsets.only(bottom: 10.0),
                       child: ElevatedButton(
-                        style: successButtonStyle,
+                        style: AppStyles.successButtonStyle,
                         onPressed: () {
                           setState(() {
                             credit++;
@@ -71,7 +71,7 @@ Future<void> changeCreditDialog(BuildContext context, PupilProxy pupil) async {
                         },
                         child: const Text(
                           "+1",
-                          style: buttonTextStyle,
+                          style: AppStyles.buttonTextStyle,
                         ),
                       ),
                     ),
@@ -85,7 +85,7 @@ Future<void> changeCreditDialog(BuildContext context, PupilProxy pupil) async {
                     child: Padding(
                       padding: const EdgeInsets.only(bottom: 10.0),
                       child: ElevatedButton(
-                        style: cancelButtonStyle,
+                        style: AppStyles.cancelButtonStyle,
                         onPressed: () {
                           setState(() {
                             credit = credit - 10;
@@ -93,7 +93,7 @@ Future<void> changeCreditDialog(BuildContext context, PupilProxy pupil) async {
                         },
                         child: const Text(
                           "-10",
-                          style: buttonTextStyle,
+                          style: AppStyles.buttonTextStyle,
                         ),
                       ),
                     ),
@@ -103,7 +103,7 @@ Future<void> changeCreditDialog(BuildContext context, PupilProxy pupil) async {
                     child: Padding(
                       padding: const EdgeInsets.only(bottom: 10.0),
                       child: ElevatedButton(
-                        style: successButtonStyle,
+                        style: AppStyles.successButtonStyle,
                         onPressed: () {
                           setState(() {
                             credit = credit + 10;
@@ -111,7 +111,7 @@ Future<void> changeCreditDialog(BuildContext context, PupilProxy pupil) async {
                         },
                         child: const Text(
                           "+10",
-                          style: buttonTextStyle,
+                          style: AppStyles.buttonTextStyle,
                         ),
                       ),
                     ),
@@ -121,18 +121,18 @@ Future<void> changeCreditDialog(BuildContext context, PupilProxy pupil) async {
               Padding(
                 padding: const EdgeInsets.only(bottom: 10.0),
                 child: ElevatedButton(
-                  style: actionButtonStyle,
+                  style: AppStyles.actionButtonStyle,
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
                   child: const Text(
                     "ABBRECHEN",
-                    style: buttonTextStyle,
+                    style: AppStyles.buttonTextStyle,
                   ),
                 ),
               ),
               ElevatedButton(
-                style: successButtonStyle,
+                style: AppStyles.successButtonStyle,
                 onPressed: () {
                   if (credit != 0) {
                     locator<PupilManager>()
@@ -145,7 +145,7 @@ Future<void> changeCreditDialog(BuildContext context, PupilProxy pupil) async {
                 },
                 child: const Text(
                   "SENDEN",
-                  style: buttonTextStyle,
+                  style: AppStyles.buttonTextStyle,
                 ),
               ),
             ],

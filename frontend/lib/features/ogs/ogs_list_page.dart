@@ -1,25 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-
-import 'package:schuldaten_hub/common/constants/colors.dart';
+import 'package:schuldaten_hub/common/domain/filters/filters_state_manager.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
+import 'package:schuldaten_hub/common/theme/colors.dart';
 import 'package:schuldaten_hub/common/widgets/generic_app_bar.dart';
 import 'package:schuldaten_hub/common/widgets/generic_sliver_list.dart';
 import 'package:schuldaten_hub/common/widgets/sliver_search_app_bar.dart';
 import 'package:schuldaten_hub/features/ogs/widgets/ogs_list_card.dart';
 import 'package:schuldaten_hub/features/ogs/widgets/ogs_list_search_bar.dart';
 import 'package:schuldaten_hub/features/ogs/widgets/ogs_view_bottom_navbar.dart';
-import 'package:schuldaten_hub/features/pupil/filters/pupils_filter.dart';
-import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
-import 'package:schuldaten_hub/features/pupil/filters/pupil_filter_manager.dart';
-import 'package:schuldaten_hub/features/pupil/services/pupil_manager.dart';
+import 'package:schuldaten_hub/features/pupil/domain/filters/pupils_filter.dart';
+import 'package:schuldaten_hub/features/pupil/domain/models/pupil_proxy.dart';
+import 'package:schuldaten_hub/features/pupil/domain/pupil_manager.dart';
 import 'package:watch_it/watch_it.dart';
 
 List<PupilProxy> ogsFilter(List<PupilProxy> pupils) {
   List<PupilProxy> filteredPupils = [];
   for (PupilProxy pupil in pupils) {
     if (!pupil.ogs == true) {
-      locator<PupilsFilter>().setFiltersOnValue(true);
+      locator<FiltersStateManager>()
+          .setFilterState(filterState: FilterState.pupil, value: true);
+
       continue;
     }
     filteredPupils.add(pupil);
@@ -32,14 +33,14 @@ class OgsListPage extends WatchingWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool filtersOn = watchValue((PupilFilterManager x) => x.filtersOn);
+    bool filtersOn = watchValue((FiltersStateManager x) => x.filtersActive);
 
     List<PupilProxy> pupils = watchValue((PupilsFilter x) => x.filteredPupils);
 
     List<PupilProxy> ogsPupils = ogsFilter(pupils);
 
     return Scaffold(
-      backgroundColor: canvasColor,
+      backgroundColor: AppColors.canvasColor,
       appBar: const GenericAppBar(
           iconData: Icons.restaurant_menu_rounded, title: 'OGS Infos'),
       body: RefreshIndicator(

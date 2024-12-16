@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:schuldaten_hub/common/constants/colors.dart';
-import 'package:schuldaten_hub/common/constants/enums.dart';
-import 'package:schuldaten_hub/common/constants/styles.dart';
+import 'package:schuldaten_hub/common/domain/models/enums.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
-import 'package:schuldaten_hub/features/pupil/pages/widgets/common_pupil_filters.dart';
-import 'package:schuldaten_hub/features/pupil/filters/pupils_filter.dart';
+import 'package:schuldaten_hub/common/theme/styles.dart';
+import 'package:schuldaten_hub/common/widgets/themed_filter_chip.dart';
+import 'package:schuldaten_hub/features/pupil/domain/filters/pupils_filter.dart';
+import 'package:schuldaten_hub/features/pupil/presentation/widgets/common_pupil_filters.dart';
 import 'package:watch_it/watch_it.dart';
 
 class CreditFilterBottomSheet extends WatchingWidget {
@@ -32,7 +32,7 @@ class CreditFilterBottomSheet extends WatchingWidget {
                         children: [
                           Text(
                             'Sortieren',
-                            style: subtitle,
+                            style: AppStyles.subtitle,
                           )
                         ],
                       ),
@@ -41,20 +41,8 @@ class CreditFilterBottomSheet extends WatchingWidget {
                         spacing: 5,
                         crossAxisAlignment: WrapCrossAlignment.center,
                         children: [
-                          FilterChip(
-                            padding: filterChipPadding,
-                            labelPadding: filterChipLabelPadding,
-                            shape: filterChipShape,
-                            selectedColor: filterChipSelectedColor,
-                            avatar: const SizedBox(
-                              width: 10,
-                            ),
-                            checkmarkColor: filterChipSelectedCheckColor,
-                            backgroundColor: filterChipUnselectedColor,
-                            label: const Text(
-                              'A-Z',
-                              style: filterItemsTextStyle,
-                            ),
+                          ThemedFilterChip(
+                            label: 'A-Z',
                             selected: sortModeValue == PupilSortMode.sortByName
                                 ? true
                                 : false,
@@ -69,20 +57,8 @@ class CreditFilterBottomSheet extends WatchingWidget {
                                   .setSortMode(PupilSortMode.sortByName);
                             },
                           ),
-                          FilterChip(
-                            padding: filterChipPadding,
-                            labelPadding: filterChipLabelPadding,
-                            shape: filterChipShape,
-                            selectedColor: filterChipSelectedColor,
-                            avatar: const SizedBox(
-                              width: 10,
-                            ),
-                            checkmarkColor: filterChipSelectedCheckColor,
-                            backgroundColor: filterChipUnselectedColor,
-                            label: const Text(
-                              'nach Guthaben',
-                              style: filterItemsTextStyle,
-                            ),
+                          ThemedFilterChip(
+                            label: 'nach Guthaben',
                             selected:
                                 sortModeValue == PupilSortMode.sortByCredit
                                     ? true
@@ -99,20 +75,8 @@ class CreditFilterBottomSheet extends WatchingWidget {
                               );
                             },
                           ),
-                          FilterChip(
-                            padding: filterChipPadding,
-                            labelPadding: filterChipLabelPadding,
-                            shape: filterChipShape,
-                            selectedColor: filterChipSelectedColor,
-                            avatar: const SizedBox(
-                              width: 10,
-                            ),
-                            checkmarkColor: filterChipSelectedCheckColor,
-                            backgroundColor: filterChipUnselectedColor,
-                            label: const Text(
-                              'nach Verdienst',
-                              style: filterItemsTextStyle,
-                            ),
+                          ThemedFilterChip(
+                            label: 'nach Verdienst',
                             selected: sortModeValue ==
                                     PupilSortMode.sortByCreditEarned
                                 ? true

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:schuldaten_hub/common/constants/colors.dart';
+import 'package:schuldaten_hub/common/theme/colors.dart';
 
 Widget infinityAsyncButton(Future function) {
   return Padding(
@@ -10,7 +10,7 @@ Widget infinityAsyncButton(Future function) {
       width: double.infinity,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-            backgroundColor: appStyleButtonColor,
+            backgroundColor: AppColors.appStyleButtonColor,
             minimumSize: const Size.fromHeight(50)),
         onPressed: () async {
           await function;

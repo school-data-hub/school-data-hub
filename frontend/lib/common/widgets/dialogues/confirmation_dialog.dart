@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:schuldaten_hub/common/constants/colors.dart';
+import 'package:schuldaten_hub/common/theme/colors.dart';
 
 Future<bool?> confirmationDialog(
     {required BuildContext context,
@@ -25,7 +25,7 @@ Future<bool?> confirmationDialog(
           TextButton(
             child: const Text(
               'Okay',
-              style: TextStyle(color: backgroundColor),
+              style: TextStyle(color: AppColors.backgroundColor),
             ),
             onPressed: () {
               Navigator.of(context)

@@ -3,8 +3,9 @@ import 'dart:io';
 
 import 'package:encrypt/encrypt.dart' as enc;
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:schuldaten_hub/common/services/env_manager.dart';
+import 'package:schuldaten_hub/common/domain/env_manager.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 
 final customEncrypter = CustomEncrypter();
@@ -16,13 +17,13 @@ class CustomEncrypter {
 
   final iv = enc.IV.fromUtf8(locator<EnvManager>().env.value.iv!);
 
-  String encrypt(String nonEncryptedString) {
+  String encryptString(String nonEncryptedString) {
     final encryptedString =
         encrypter.encrypt(nonEncryptedString, iv: iv).base64;
     return encryptedString;
   }
 
-  String decrypt(String encryptedString) {
+  String decryptString(String encryptedString) {
     final thisEncryptedString = enc.Encrypted.fromBase64(encryptedString);
     final decryptedString = encrypter.decrypt(thisEncryptedString, iv: iv);
     return decryptedString;
@@ -39,28 +40,15 @@ class CustomEncrypter {
     return tempFile;
   }
 
-  Future<File> decryptFile(File file, int pupilId) async {
+  Future<Image> decryptEncryptedImage(File file) async {
     // Read the encrypted file as bytes
     final encryptedBytes = await file.readAsBytes();
 
     // Decrypt the bytes
-    final decrypted =
-        encrypter.decryptBytes(enc.Encrypted(encryptedBytes), iv: iv);
-
-    // Get the temporary directory
-    final tempDir = await getTemporaryDirectory();
-
-    // Create a temporary file for the decrypted content
-    final uri = Uri.parse(file.path);
-    final extension = uri.pathSegments.last.split('.').last;
-
-    final tempFile =
-        File('${tempDir.path}/${pupilId}_decrypted_file.$extension');
-    // debug.warning(tempFile.path);
-    // Write the decrypted bytes to the temporary file
-    await tempFile.writeAsBytes(decrypted);
-
-    return tempFile;
+    final decryptedBytes = (kReleaseMode || kProfileMode)
+        ? await compute(customEncrypter.decryptTheseBytes, encryptedBytes)
+        : customEncrypter.decryptTheseBytes(encryptedBytes);
+    return Image.memory(decryptedBytes);
   }
 
   Uint8List decryptTheseBytes(Uint8List encryptedBytes) {
@@ -69,6 +57,10 @@ class CustomEncrypter {
 
     final Uint8List decryptedBytes = Uint8List.fromList(decrypted);
     return decryptedBytes;
+  }
+
+  Uint8List encryptTheseBytes(Uint8List bytes) {
+    return encrypter.encryptBytes(bytes, iv: iv).bytes;
   }
 
   static void generateNewEncryptionKeys() async {

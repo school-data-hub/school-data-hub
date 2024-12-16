@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:schuldaten_hub/common/constants/colors.dart';
+import 'package:schuldaten_hub/common/theme/colors.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
-import 'package:schuldaten_hub/features/schooldays/services/schoolday_manager.dart';
+import 'package:schuldaten_hub/features/schooldays/domain/schoolday_manager.dart';
 
 Future<DateTime?> selectSchooldayDate(
     BuildContext context, DateTime thisDate) async {
@@ -25,13 +25,13 @@ Future<DateTime?> selectSchooldayDate(
       return Theme(
           data: Theme.of(context).copyWith(
             colorScheme: const ColorScheme.light(
-              primary: backgroundColor,
+              primary: AppColors.backgroundColor,
               onPrimary: Color.fromARGB(255, 241, 241, 241),
               onSurface: Colors.deepPurple,
             ),
             textButtonTheme: TextButtonThemeData(
               style: TextButton.styleFrom(
-                foregroundColor: accentColor, // button text color
+                foregroundColor: AppColors.accentColor, // button text color
               ),
             ),
           ),

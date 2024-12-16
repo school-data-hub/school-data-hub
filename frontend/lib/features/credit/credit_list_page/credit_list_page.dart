@@ -1,20 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-
-import 'package:schuldaten_hub/common/constants/colors.dart';
+import 'package:schuldaten_hub/common/domain/session_manager.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
-import 'package:schuldaten_hub/common/services/session_manager.dart';
+import 'package:schuldaten_hub/common/theme/colors.dart';
 import 'package:schuldaten_hub/common/widgets/generic_app_bar.dart';
 import 'package:schuldaten_hub/common/widgets/generic_sliver_list.dart';
 import 'package:schuldaten_hub/common/widgets/sliver_search_app_bar.dart';
-import 'package:schuldaten_hub/features/pupil/filters/pupils_filter.dart';
-
-import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
-import 'package:schuldaten_hub/features/pupil/services/pupil_manager.dart';
 import 'package:schuldaten_hub/features/credit/credit_list_page/widgets/credit_list_card.dart';
-import 'package:schuldaten_hub/features/credit/credit_list_page/widgets/credit_list_searchbar.dart';
 import 'package:schuldaten_hub/features/credit/credit_list_page/widgets/credit_list_page_bottom_navbar.dart';
-
+import 'package:schuldaten_hub/features/credit/credit_list_page/widgets/credit_list_searchbar.dart';
+import 'package:schuldaten_hub/features/pupil/domain/filters/pupils_filter.dart';
+import 'package:schuldaten_hub/features/pupil/domain/pupil_manager.dart';
+import 'package:schuldaten_hub/features/pupil/domain/models/pupil_proxy.dart';
 import 'package:watch_it/watch_it.dart';
 
 class CreditListPage extends WatchingWidget {
@@ -22,14 +19,11 @@ class CreditListPage extends WatchingWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool filtersOn = watchValue((PupilsFilter x) => x.filtersOn);
     List<PupilProxy> pupils = watchValue((PupilsFilter x) => x.filteredPupils);
     int userCredit = watchValue((SessionManager x) => x.credentials).credit!;
-    // final List<PupilProxy> nonFilteredPupils =
-    //     watch(di<PupilManager>()).allPupils;
 
     return Scaffold(
-      backgroundColor: canvasColor,
+      backgroundColor: AppColors.canvasColor,
       appBar: GenericAppBar(
           iconData: Icons.credit_card, title: 'Guthaben: $userCredit'),
       body: RefreshIndicator(
@@ -42,8 +36,7 @@ class CreditListPage extends WatchingWidget {
                 const SliverGap(5),
                 SliverSearchAppBar(
                   height: 110,
-                  title:
-                      CreditListSearchBar(pupils: pupils, filtersOn: filtersOn),
+                  title: CreditListSearchBar(pupils: pupils),
                 ),
                 GenericSliverListWithEmptyListCheck(
                     items: pupils,
@@ -53,7 +46,7 @@ class CreditListPage extends WatchingWidget {
           ),
         ),
       ),
-      bottomNavigationBar: creditListViewBottomNavBar(context, filtersOn),
+      bottomNavigationBar: const CreditListPageBottomNavBar(),
     );
   }
 }

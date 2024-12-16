@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:schuldaten_hub/common/constants/colors.dart';
-import 'package:schuldaten_hub/common/constants/styles.dart';
+import 'package:schuldaten_hub/common/theme/colors.dart';
+import 'package:schuldaten_hub/common/theme/styles.dart';
 
 class GenericAppBar extends StatelessWidget implements PreferredSizeWidget {
   final IconData iconData;
@@ -17,7 +17,7 @@ class GenericAppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       automaticallyImplyLeading: false,
       centerTitle: true,
-      backgroundColor: backgroundColor,
+      backgroundColor: AppColors.backgroundColor,
       title: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Row(
@@ -31,7 +31,7 @@ class GenericAppBar extends StatelessWidget implements PreferredSizeWidget {
             const SizedBox(width: 10),
             Text(
               title,
-              style: appBarTextStyle,
+              style: AppStyles.appBarTextStyle,
             ),
           ],
         ),

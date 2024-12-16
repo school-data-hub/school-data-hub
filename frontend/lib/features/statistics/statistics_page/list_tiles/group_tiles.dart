@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
+import 'package:schuldaten_hub/features/pupil/domain/models/pupil_proxy.dart';
 import 'package:schuldaten_hub/features/statistics/statistics_page/controller/statistics.dart';
 import 'package:schuldaten_hub/features/statistics/statistics_page/list_tiles/group_card.dart';
 

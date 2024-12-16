@@ -1,26 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:schuldaten_hub/common/constants/colors.dart';
-import 'package:schuldaten_hub/common/constants/enums.dart';
+import 'package:schuldaten_hub/common/domain/models/enums.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
+import 'package:schuldaten_hub/common/theme/colors.dart';
 import 'package:schuldaten_hub/common/widgets/filter_button.dart';
 import 'package:schuldaten_hub/common/widgets/search_text_field.dart';
-import 'package:schuldaten_hub/features/credit/services/credit_helper_functions.dart';
-import 'package:schuldaten_hub/features/pupil/filters/pupils_filter.dart';
-import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
+import 'package:schuldaten_hub/features/credit/credit_helper_functions.dart';
 import 'package:schuldaten_hub/features/credit/credit_list_page/widgets/credit_filter_bottom_sheet.dart';
+import 'package:schuldaten_hub/features/pupil/domain/filters/pupils_filter.dart';
+import 'package:schuldaten_hub/features/pupil/domain/models/pupil_proxy.dart';
+import 'package:watch_it/watch_it.dart';
 
-class CreditListSearchBar extends StatelessWidget {
+class CreditListSearchBar extends WatchingWidget {
   final List<PupilProxy> pupils;
-  final bool filtersOn;
-  const CreditListSearchBar(
-      {required this.pupils, required this.filtersOn, super.key});
+
+  const CreditListSearchBar({required this.pupils, super.key});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: canvasColor,
+        color: AppColors.canvasColor,
         borderRadius: BorderRadius.circular(5.0),
       ),
       child: Column(
@@ -36,7 +36,7 @@ class CreditListSearchBar extends StatelessWidget {
                   children: [
                     const Icon(
                       Icons.people_alt_rounded,
-                      color: backgroundColor,
+                      color: AppColors.backgroundColor,
                     ),
                     const Gap(10),
                     Text(
@@ -52,7 +52,7 @@ class CreditListSearchBar extends StatelessWidget {
                       'BIP:',
                       style: TextStyle(
                           fontSize: 13,
-                          color: backgroundColor,
+                          color: AppColors.backgroundColor,
                           fontWeight: FontWeight.bold),
                     ),
                     const Gap(10),
@@ -69,7 +69,7 @@ class CreditListSearchBar extends StatelessWidget {
                       'in Umlauf: ',
                       style: TextStyle(
                           fontSize: 13,
-                          color: backgroundColor,
+                          color: AppColors.backgroundColor,
                           fontWeight: FontWeight.bold),
                     ),
                     const Gap(10),

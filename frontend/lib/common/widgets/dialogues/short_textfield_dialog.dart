@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:schuldaten_hub/common/constants/colors.dart';
-import 'package:schuldaten_hub/common/constants/styles.dart';
+import 'package:schuldaten_hub/common/theme/colors.dart';
+import 'package:schuldaten_hub/common/theme/styles.dart';
 
 shortTextfieldDialog(
     {required BuildContext context,
     required String title,
     required String labelText,
+    String? textinField,
     required String hintText,
-    required bool obscureText}) {
+    bool? obscureText}) {
   TextEditingController textEditingController = TextEditingController();
-
+  textEditingController.text = textinField ?? '';
   return showDialog<String?>(
     context: context,
     builder: (BuildContext context) {
@@ -24,16 +25,18 @@ shortTextfieldDialog(
             style: const TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
             //maxLength: 16,
 
-            obscureText: obscureText,
+            obscureText: obscureText ?? false,
             decoration: InputDecoration(
               //border: InputBorder.none,
               border: const OutlineInputBorder(
-                borderSide: BorderSide(color: backgroundColor, width: 2),
+                borderSide:
+                    BorderSide(color: AppColors.backgroundColor, width: 2),
               ),
               focusedBorder: const OutlineInputBorder(
-                borderSide: BorderSide(color: backgroundColor, width: 2),
+                borderSide:
+                    BorderSide(color: AppColors.backgroundColor, width: 2),
               ),
-              labelStyle: const TextStyle(color: backgroundColor),
+              labelStyle: const TextStyle(color: AppColors.backgroundColor),
               labelText: labelText,
               hintText: hintText,
             ),
@@ -43,10 +46,10 @@ shortTextfieldDialog(
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: ElevatedButton(
-              style: cancelButtonStyle,
+              style: AppStyles.cancelButtonStyle,
               child: const Text(
                 'ABBRECHEN',
-                style: buttonTextStyle,
+                style: AppStyles.buttonTextStyle,
               ),
               onPressed: () {
                 Navigator.of(context).pop();
@@ -57,10 +60,10 @@ shortTextfieldDialog(
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: ElevatedButton(
-              style: successButtonStyle,
+              style: AppStyles.successButtonStyle,
               child: const Text(
                 'OKAY',
-                style: buttonTextStyle,
+                style: AppStyles.buttonTextStyle,
               ),
               onPressed: () {
                 Navigator.of(context).pop(textEditingController.text);

@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:schuldaten_hub/common/constants/colors.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
+import 'package:schuldaten_hub/common/theme/colors.dart';
 import 'package:schuldaten_hub/common/widgets/avatar.dart';
 import 'package:schuldaten_hub/common/widgets/dialogues/confirmation_dialog.dart';
 import 'package:schuldaten_hub/common/widgets/dialogues/long_textfield_dialog.dart';
-import 'package:schuldaten_hub/features/main_menu_pages/widgets/landing_bottom_nav_bar.dart';
+import 'package:schuldaten_hub/features/main_menu/widgets/landing_bottom_nav_bar.dart';
 import 'package:schuldaten_hub/features/ogs/widgets/dialogs/ogs_pickup_time_dialog.dart';
-import 'package:schuldaten_hub/features/pupil/services/pupil_helper_functions.dart';
-import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
-import 'package:schuldaten_hub/features/pupil/services/pupil_manager.dart';
-import 'package:schuldaten_hub/features/pupil/pages/pupil_profile_page/pupil_profile_page.dart';
-
+import 'package:schuldaten_hub/features/pupil/domain/models/pupil_proxy.dart';
+import 'package:schuldaten_hub/features/pupil/domain/pupil_helper_functions.dart';
+import 'package:schuldaten_hub/features/pupil/domain/pupil_manager.dart';
+import 'package:schuldaten_hub/features/pupil/presentation/pupil_profile_page/pupil_profile_page.dart';
 import 'package:watch_it/watch_it.dart';
 
 class OgsCard extends WatchingWidget {
@@ -121,9 +120,10 @@ class OgsCard extends WatchingWidget {
                               child: Text(
                                 pickUpValue(pupil.pickUpTime),
                                 style: const TextStyle(
-                                    fontSize: 23,
-                                    fontWeight: FontWeight.bold,
-                                    color: backgroundColor),
+                                  fontSize: 23,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppColors.backgroundColor,
+                                ),
                               ),
                             ),
                           ),
@@ -140,7 +140,10 @@ class OgsCard extends WatchingWidget {
                       child: InkWell(
                         onTap: () async {
                           final String? ogsInfo = await longTextFieldDialog(
-                              'OGS Informationen', pupil.ogsInfo, context);
+                              title: 'OGS Informationen',
+                              labelText: 'OGS Informationen',
+                              textinField: pupil.ogsInfo ?? '',
+                              parentContext: context);
                           if (ogsInfo == null) return;
                           await locator<PupilManager>().patchPupil(
                               pupil.internalId, 'ogs_info', ogsInfo);
@@ -166,7 +169,7 @@ class OgsCard extends WatchingWidget {
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
-                            color: backgroundColor,
+                            color: AppColors.backgroundColor,
                           ),
                         ),
                       ),

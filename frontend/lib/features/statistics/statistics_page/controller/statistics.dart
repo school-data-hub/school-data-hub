@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/utils/extensions.dart';
-import 'package:schuldaten_hub/features/attendance/models/missed_class.dart';
-import 'package:schuldaten_hub/features/pupil/models/pupil_proxy.dart';
-import 'package:schuldaten_hub/features/pupil/services/pupil_helper_functions.dart';
-import 'package:schuldaten_hub/features/pupil/services/pupil_manager.dart';
-import 'package:schuldaten_hub/features/schooldays/models/schoolday.dart';
-import 'package:schuldaten_hub/features/schooldays/services/schoolday_manager.dart';
-import 'package:schuldaten_hub/features/statistics/statistics_page/statistics_view.dart';
+import 'package:schuldaten_hub/features/attendance/domain/models/missed_class.dart';
+import 'package:schuldaten_hub/features/pupil/domain/pupil_helper_functions.dart';
+import 'package:schuldaten_hub/features/pupil/domain/pupil_manager.dart';
+import 'package:schuldaten_hub/features/pupil/domain/models/pupil_proxy.dart';
+import 'package:schuldaten_hub/features/schooldays/domain/schoolday_manager.dart';
+import 'package:schuldaten_hub/features/schooldays/domain/models/schoolday.dart';
+import 'package:schuldaten_hub/features/statistics/statistics_page/statistics_page.dart';
 import 'package:watch_it/watch_it.dart';
 
 class Statistics extends WatchingStatefulWidget {
@@ -255,7 +255,7 @@ class StatisticsController extends State<Statistics> {
     for (PupilProxy pupil in pupils) {
       if (pupil.missedClasses != null) {
         for (MissedClass missedClass in pupil.missedClasses!) {
-          if (missedClass.excused == true) {
+          if (missedClass.unexcused == true) {
             missedClasses.add(missedClass);
           }
         }
@@ -294,7 +294,7 @@ class StatisticsController extends State<Statistics> {
     for (PupilProxy pupil in pupils) {
       if (pupil.missedClasses != null) {
         for (MissedClass missedClass in pupil.missedClasses!) {
-          if (missedClass.excused == true) {
+          if (missedClass.unexcused == true) {
             totalMissedClasses++;
           }
         }
@@ -324,6 +324,6 @@ class StatisticsController extends State<Statistics> {
 
   @override
   Widget build(BuildContext context) {
-    return StatisticsView(this);
+    return StatisticsPage(this);
   }
 }

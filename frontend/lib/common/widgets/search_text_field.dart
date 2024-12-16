@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:schuldaten_hub/common/constants/enums.dart';
+import 'package:schuldaten_hub/common/domain/filters/filters_state_manager.dart';
+import 'package:schuldaten_hub/common/domain/models/enums.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
-import 'package:schuldaten_hub/features/pupil/filters/pupils_filter.dart';
+import 'package:schuldaten_hub/features/pupil/domain/filters/pupils_filter.dart';
 import 'package:watch_it/watch_it.dart';
 
 class SearchTextField extends WatchingStatefulWidget {
@@ -27,7 +28,7 @@ class _SearchTextFieldState extends State<SearchTextField> {
   @override
   Widget build(BuildContext context) {
     // final textFilter = watch(locator<PupilsFilter>().textFilter);
-    final filtersOn = watchValue((PupilsFilter x) => x.filtersOn);
+    final filtersOn = watchValue((FiltersStateManager x) => x.filtersActive);
 
     if (locator<PupilsFilter>().textFilter.text == '') {
       textEditingController.clear();

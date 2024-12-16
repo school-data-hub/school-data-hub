@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:schuldaten_hub/common/constants/styles.dart';
-import 'package:schuldaten_hub/features/pupil/pages/widgets/common_pupil_filters.dart';
+import 'package:schuldaten_hub/common/theme/styles.dart';
+import 'package:schuldaten_hub/features/pupil/presentation/widgets/common_pupil_filters.dart';
 import 'package:watch_it/watch_it.dart';
 
 class OgsFilterBottomSheet extends WatchingWidget {
@@ -18,7 +18,7 @@ class OgsFilterBottomSheet extends WatchingWidget {
             children: [
               Text(
                 'OGS-Filter',
-                style: subtitle,
+                style: AppStyles.subtitle,
               )
             ],
           ),

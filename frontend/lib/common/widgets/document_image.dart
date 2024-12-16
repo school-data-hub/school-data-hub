@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:schuldaten_hub/common/constants/colors.dart';
+import 'package:schuldaten_hub/common/theme/colors.dart';
 import 'package:schuldaten_hub/common/widgets/download_or_cached_and_decrypt_image.dart';
 import 'package:widget_zoom/widget_zoom.dart';
 
 class DocumentImageData {
-  final String? documentUrl;
+  final String documentUrl;
   final String documentTag;
   final double size;
 
@@ -30,8 +30,9 @@ class DocumentImage extends StatelessWidget {
       child: Center(
         child: WidgetZoom(
           heroAnimationTag: documentTag,
-          zoomWidget: FutureBuilder<Widget>(
-            future: downloadOrCachedAndDecryptImage(documentUrl, documentTag),
+          zoomWidget: FutureBuilder<Image>(
+            future: cachedOrDownloadAndDecryptImage(
+                imageUrl: documentUrl, cacheKey: documentTag),
             builder: (context, snapshot) {
               Widget child;
               if (snapshot.connectionState == ConnectionState.waiting) {
@@ -41,12 +42,13 @@ class DocumentImage extends StatelessWidget {
                   width: 25,
                   child: CircularProgressIndicator(
                     strokeWidth: 5,
-                    color: backgroundColor,
+                    color: AppColors.backgroundColor,
                   ),
                 );
               } else if (snapshot.hasError) {
                 // Display an error message if the future encounters an error
-                child = Text('Error: ${snapshot.error}');
+                child = Text('Error: ${snapshot.error}',
+                    style: const TextStyle(color: Colors.orange));
               } else {
                 // Display the result when the future is complete
                 child = ClipRRect(
