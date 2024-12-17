@@ -5,7 +5,7 @@ import 'package:schuldaten_hub/common/domain/env_manager.dart';
 import 'package:schuldaten_hub/common/domain/models/enums.dart';
 import 'package:schuldaten_hub/common/domain/models/session.dart';
 import 'package:schuldaten_hub/common/domain/session_manager.dart';
-import 'package:schuldaten_hub/common/services/api/api.dart';
+import 'package:schuldaten_hub/common/services/api/api_settings.dart';
 import 'package:schuldaten_hub/common/services/api/api_client.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_service.dart';
@@ -48,10 +48,10 @@ class UserRepository {
       {required String username, required String password}) async {
     String auth = 'Basic ${base64Encode(utf8.encode('$username:$password'))}';
 
-    notificationService.apiRunningValue(true);
+    notificationService.apiRunning(true);
     final Response response = await _client.get(EndpointsUser.login,
         options: Options(headers: <String, String>{'Authorization': auth}));
-    notificationService.apiRunningValue(false);
+    notificationService.apiRunning(false);
 
     if (response.statusCode != 200) {
       if (response.statusCode == 401) {
@@ -79,13 +79,13 @@ class UserRepository {
       "new_password": newPassword,
     });
 
-    notificationService.apiRunningValue(true);
+    notificationService.apiRunning(true);
     final Response response = await _client.patch(
       EndpointsUser._changePassword(
           locator<SessionManager>().credentials.value.publicId!),
       data: data,
     );
-    notificationService.apiRunningValue(false);
+    notificationService.apiRunning(false);
 
     if (response.statusCode != 200) {
       notificationService.showSnackBar(
@@ -125,9 +125,9 @@ class UserRepository {
 
   //- get all users
   Future<List<User>> getAllUsers() async {
-    notificationService.apiRunningValue(true);
+    notificationService.apiRunning(true);
     final Response response = await _client.get(EndpointsUser.getAllUsers);
-    notificationService.apiRunningValue(false);
+    notificationService.apiRunning(false);
 
     if (response.statusCode != 200) {
       notificationService.showSnackBar(
@@ -143,9 +143,9 @@ class UserRepository {
 
   //- get self user
   Future<User> getSelfUser() async {
-    notificationService.apiRunningValue(true);
+    notificationService.apiRunning(true);
     final Response response = await _client.get(EndpointsUser.getSelfUser);
-    notificationService.apiRunningValue(false);
+    notificationService.apiRunning(false);
 
     if (response.statusCode != 200) {
       notificationService.showSnackBar(
@@ -197,10 +197,10 @@ class UserRepository {
       if (tutoring != null) "tutoring": tutoring,
     });
 
-    notificationService.apiRunningValue(true);
+    notificationService.apiRunning(true);
     final Response response =
         await _client.post(EndpointsUser.createUser, data: data);
-    notificationService.apiRunningValue(false);
+    notificationService.apiRunning(false);
 
     if (response.statusCode != 200) {
       notificationService.showSnackBar(

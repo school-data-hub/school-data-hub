@@ -3,14 +3,14 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:schuldaten_hub/common/domain/models/enums.dart';
-import 'package:schuldaten_hub/common/services/api/api.dart';
+import 'package:schuldaten_hub/common/services/api/api_settings.dart';
 import 'package:schuldaten_hub/common/services/api/api_client.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_service.dart';
 import 'package:schuldaten_hub/common/utils/extensions.dart';
 import 'package:schuldaten_hub/features/schooldays/domain/models/schoolday.dart';
 
-class SchooldayApiRepository {
+class SchooldayRepository {
   final ApiClient _client = locator<ApiClient>();
 
   final notificationService = locator<NotificationService>();
@@ -21,7 +21,7 @@ class SchooldayApiRepository {
 
   static const _getSchooldays = '/schooldays/all/flat';
   Future<List<Schoolday>> getSchooldaysFromServer() async {
-    notificationService.apiRunningValue(true);
+    notificationService.apiRunning(true);
 
     final Response response = await _client.get(_getSchooldays);
 
@@ -29,7 +29,7 @@ class SchooldayApiRepository {
       notificationService.showSnackBar(
           NotificationType.error, 'Die Schultage konnten nicht geladen werden');
 
-      notificationService.apiRunningValue(false);
+      notificationService.apiRunning(false);
 
       throw ApiException('Failed to fetch schooldays', response.statusCode);
     }
@@ -37,7 +37,7 @@ class SchooldayApiRepository {
     final List<Schoolday> schooldays = List<Schoolday>.from(
         (response.data as List).map((e) => Schoolday.fromJson(e)));
 
-    notificationService.apiRunningValue(false);
+    notificationService.apiRunning(false);
 
     return schooldays;
   }
@@ -51,7 +51,7 @@ class SchooldayApiRepository {
   static const _postMultipleSchooldays = '/schooldays/new/list';
 
   Future<Schoolday> postSchoolday(DateTime date) async {
-    notificationService.apiRunningValue(true);
+    notificationService.apiRunning(true);
 
     final data = jsonEncode({'schoolday': date.formatForJson()});
 
@@ -61,25 +61,25 @@ class SchooldayApiRepository {
       notificationService.showSnackBar(
           NotificationType.error, 'Fehler beim Erstellen des Schultages');
 
-      notificationService.apiRunningValue(false);
+      notificationService.apiRunning(false);
 
       throw ApiException('Failed to post schoolday', response.statusCode);
     }
 
-    notificationService.apiRunningValue(false);
+    notificationService.apiRunning(false);
 
     return Schoolday.fromJson(response.data);
   }
 
   Future<List<Schoolday>> postMultipleSchooldays(
       {required List<DateTime> dates}) async {
-    notificationService.apiRunningValue(true);
+    notificationService.apiRunning(true);
     final schooldays = dates.map((e) => e.formatForJson()).toList();
     final data = jsonEncode({'schooldays': schooldays});
 
     final Response response =
         await _client.post(_postMultipleSchooldays, data: data);
-    notificationService.apiRunningValue(false);
+    notificationService.apiRunning(false);
     if (response.statusCode != 200) {
       notificationService.showSnackBar(
           NotificationType.error, 'Fehler beim Erstellen der Schultage');
@@ -98,7 +98,7 @@ class SchooldayApiRepository {
   }
 
   Future<bool> deleteSchoolday(Schoolday schoolday) async {
-    notificationService.apiRunningValue(true);
+    notificationService.apiRunning(true);
 
     final Response response =
         await _client.delete(_deleteSchoolday(schoolday.schoolday));
@@ -107,12 +107,12 @@ class SchooldayApiRepository {
       notificationService.showSnackBar(
           NotificationType.error, 'Fehler beim Löschen des Schultages');
 
-      notificationService.apiRunningValue(false);
+      notificationService.apiRunning(false);
 
       throw ApiException('Failed to delete schoolday', response.statusCode);
     }
 
-    notificationService.apiRunningValue(false);
+    notificationService.apiRunning(false);
 
     return true;
   }
@@ -124,7 +124,7 @@ class SchooldayApiRepository {
   static const _getSchoolSemester = '/school_semesters/all';
 
   Future<List<SchoolSemester>> getSchoolSemesters() async {
-    notificationService.apiRunningValue(true);
+    notificationService.apiRunning(true);
 
     final Response response = await _client.get(_getSchoolSemester);
 
@@ -132,7 +132,7 @@ class SchooldayApiRepository {
       notificationService.showSnackBar(NotificationType.error,
           'Die Schulsemester konnten nicht geladen werden');
 
-      notificationService.apiRunningValue(false);
+      notificationService.apiRunning(false);
 
       throw ApiException(
           'Failed to fetch school semesters', response.statusCode);
@@ -141,7 +141,7 @@ class SchooldayApiRepository {
     final List<SchoolSemester> schoolSemesters = List<SchoolSemester>.from(
         (response.data as List).map((e) => SchoolSemester.fromJson(e)));
 
-    notificationService.apiRunningValue(false);
+    notificationService.apiRunning(false);
 
     return schoolSemesters;
   }
@@ -152,7 +152,7 @@ class SchooldayApiRepository {
       {required DateTime startDate,
       required DateTime endDate,
       required bool isFirst}) async {
-    notificationService.apiRunningValue(true);
+    notificationService.apiRunning(true);
 
     final data = jsonEncode({
       'start_date': startDate.formatForJson(),
@@ -167,12 +167,12 @@ class SchooldayApiRepository {
       notificationService.showSnackBar(
           NotificationType.error, 'Fehler beim Erstellen des Schulsemesters');
 
-      notificationService.apiRunningValue(false);
+      notificationService.apiRunning(false);
 
       throw ApiException('Failed to post school semester', response.statusCode);
     }
 
-    notificationService.apiRunningValue(false);
+    notificationService.apiRunning(false);
 
     return SchoolSemester.fromJson(response.data);
   }

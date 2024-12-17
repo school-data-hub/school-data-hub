@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:schuldaten_hub/common/domain/models/enums.dart';
-import 'package:schuldaten_hub/common/services/api/api.dart';
+import 'package:schuldaten_hub/common/services/api/api_settings.dart';
 import 'package:schuldaten_hub/common/services/api/api_client.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_service.dart';
@@ -16,17 +16,17 @@ class PupilWorkbookRepository {
   }
 
   Future<PupilData> postNewPupilWorkbook(int pupilId, int isbn) async {
-    notificationService.apiRunningValue(true);
+    notificationService.apiRunning(true);
 
     final Response response =
         await _client.post(_newPupilWorkbookUrl(pupilId, isbn));
 
-    notificationService.apiRunningValue(false);
+    notificationService.apiRunning(false);
 
     if (response.statusCode != 200) {
       notificationService.showSnackBar(
           NotificationType.error, 'Fehler beim Erstellen des Arbeitshefts');
-      notificationService.apiRunningValue(false);
+      notificationService.apiRunning(false);
       throw ApiException(
           'Failed to create a pupil workbook', response.statusCode);
     }
@@ -41,11 +41,11 @@ class PupilWorkbookRepository {
   }
 
   Future<PupilData> deletePupilWorkbook(int pupilId, int isbn) async {
-    notificationService.apiRunningValue(true);
+    notificationService.apiRunning(true);
     final Response response =
         await _client.delete(_deletePupilWorkbookUrl(pupilId, isbn));
 
-    notificationService.apiRunningValue(false);
+    notificationService.apiRunning(false);
 
     if (response.statusCode != 200) {
       notificationService.showSnackBar(

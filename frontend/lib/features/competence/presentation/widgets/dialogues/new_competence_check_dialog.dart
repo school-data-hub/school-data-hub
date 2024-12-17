@@ -20,7 +20,7 @@ Future newCompetenceCheckDialog(
   return await showDialog(
       context: parentContext,
       builder: (context) {
-        int competenceCheckStatusValue = 1;
+        int competenceCheckStatusValue = 0;
         return StatefulBuilder(builder: (statefulContext, setState) {
           return AlertDialog(
             content: Form(

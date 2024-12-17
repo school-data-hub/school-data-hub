@@ -2,15 +2,15 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:schuldaten_hub/common/domain/models/enums.dart';
-import 'package:schuldaten_hub/common/services/api/api.dart';
+import 'package:schuldaten_hub/common/services/api/api_settings.dart';
 import 'package:schuldaten_hub/common/services/api/api_client.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_service.dart';
 import 'package:schuldaten_hub/common/utils/extensions.dart';
 import 'package:schuldaten_hub/features/attendance/domain/attendance_manager.dart';
 import 'package:schuldaten_hub/features/attendance/domain/models/missed_class.dart';
-import 'package:schuldaten_hub/features/pupil/domain/pupil_manager.dart';
 import 'package:schuldaten_hub/features/pupil/domain/models/pupil_data.dart';
+import 'package:schuldaten_hub/features/pupil/domain/pupil_manager.dart';
 
 class AttendanceRepository {
   final ApiClient _client = locator<ApiClient>();
@@ -71,7 +71,7 @@ class AttendanceRepository {
     String? returnedAt,
     ContactedType? contactedType,
   }) async {
-    notificationService.apiRunningValue(true);
+    notificationService.apiRunning(true);
     final data = jsonEncode({
       "missed_pupil_id": pupilId,
       "missed_day": date.formatForJson(),
@@ -84,7 +84,7 @@ class AttendanceRepository {
       "written_excuse": writtenExcuse ?? false,
     });
     final Response response = await _client.post(_postMissedClass, data: data);
-    notificationService.apiRunningValue(false);
+    notificationService.apiRunning(false);
 
     if (response.statusCode != 200) {
       notificationService.showSnackBar(
@@ -108,12 +108,12 @@ class AttendanceRepository {
       missedClasses.map((missedClass) => missedClass.toJson()).toList(),
     );
 
-    notificationService.apiRunningValue(true);
+    notificationService.apiRunning(true);
 
     final Response response =
         await _client.post(_postMissedClassList, data: data);
 
-    notificationService.apiRunningValue(false);
+    notificationService.apiRunning(false);
 
     if (response.statusCode != 200) {
       notificationService.showSnackBar(
@@ -147,7 +147,7 @@ class AttendanceRepository {
     ContactedType? contactedType,
     String? comment,
   }) async {
-    notificationService.apiRunningValue(true);
+    notificationService.apiRunning(true);
 
     final data = jsonEncode({
       "missed_pupil_id": pupilId,
@@ -165,7 +165,7 @@ class AttendanceRepository {
     final Response response =
         await _client.patch(_patchMissedClass(pupilId, date), data: data);
 
-    notificationService.apiRunningValue(false);
+    notificationService.apiRunning(false);
 
     if (response.statusCode != 200) {
       notificationService.showSnackBar(
@@ -187,11 +187,11 @@ class AttendanceRepository {
   }
 
   Future<PupilData> deleteMissedClass(int pupilId, DateTime date) async {
-    notificationService.apiRunningValue(true);
+    notificationService.apiRunning(true);
 
     final response = await _client.delete(_deleteMissedClassUrl(pupilId, date));
 
-    notificationService.apiRunningValue(false);
+    notificationService.apiRunning(false);
 
     if (response.statusCode != 200) {
       notificationService.showSnackBar(

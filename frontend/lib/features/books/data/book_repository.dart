@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:schuldaten_hub/common/domain/models/enums.dart';
-import 'package:schuldaten_hub/common/services/api/api.dart';
+import 'package:schuldaten_hub/common/services/api/api_settings.dart';
 import 'package:schuldaten_hub/common/services/api/api_client.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_service.dart';
@@ -21,11 +21,11 @@ class BookRepository {
   static const _getBooksUrl = '/books/all/flat';
 
   Future<List<Book>> getBooks() async {
-    notificationService.apiRunningValue(true);
+    notificationService.apiRunning(true);
 
     final Response response = await _client.get(_getBooksUrl);
 
-    notificationService.apiRunningValue(false);
+    notificationService.apiRunning(false);
 
     if (response.statusCode != 200) {
       notificationService.showSnackBar(
@@ -65,10 +65,10 @@ class BookRepository {
       "title": title
     });
 
-    notificationService.apiRunningValue(true);
+    notificationService.apiRunning(true);
     final Response response = await _client.post(_postBookUrl, data: data);
     logger.d('${response.statusCode} ${response.data}');
-    notificationService.apiRunningValue(false);
+    notificationService.apiRunning(false);
 
     if (response.statusCode != 200) {
       notificationService.showSnackBar(
@@ -88,27 +88,32 @@ class BookRepository {
     return '/books/$bookId';
   }
 
-  Future<Book> updateBookProperty(
-      {required Book book,
-      String? author,
-      String? description,
-      String? location,
-      String? readingLevel,
-      String? title}) async {
+  Future<Book> updateBookProperty({
+    required String bookId,
+    String? author,
+    String? description,
+    String? location,
+    String? readingLevel,
+    String? imageId,
+    String? title,
+  }) async {
     final data = jsonEncode({
-      "author": author ?? book.author,
-      "book_id": book.bookId,
-      "description": description ?? book.description,
-      "location": location ?? book.location,
-      "level": readingLevel ?? book.readingLevel,
-      "image_id": book.imageId,
-      "title": title ?? book.title
+      if (author != null) "author": author,
+      if (description != null) "description": description,
+      if (location != null) "location": location,
+      "reading_level": readingLevel,
+      if (imageId != null) "image_id": imageId,
+      if (imageId != null) "title": title
     });
 
-    notificationService.apiRunningValue(true);
-    final Response response =
-        await _client.patch(_patchBookImage((book.bookId)), data: data);
-    notificationService.apiRunningValue(false);
+    notificationService.apiRunning(true);
+
+    final Response response = await _client.patch(
+      _patchBookImage((bookId)),
+      data: data,
+    );
+
+    notificationService.apiRunning(false);
 
     if (response.statusCode != 200) {
       notificationService.showSnackBar(
@@ -188,12 +193,12 @@ class BookRepository {
       ),
     });
 
-    notificationService.apiRunningValue(true);
+    notificationService.apiRunning(true);
     final Response response = await _client.patch(
       _patchBookWithImageUrl(bookId),
       data: formData,
     );
-    notificationService.apiRunningValue(false);
+    notificationService.apiRunning(false);
 
     // Handle errors.
     if (response.statusCode != 200) {
@@ -219,10 +224,10 @@ class BookRepository {
   }
 
   Future<File> getBookImage(String bookId) async {
-    notificationService.apiRunningValue(true);
+    notificationService.apiRunning(true);
     final Response response = await _client.get(_getBookImage(bookId),
         options: Options(responseType: ResponseType.bytes));
-    notificationService.apiRunningValue(false);
+    notificationService.apiRunning(false);
 
     if (response.statusCode != 200) {
       notificationService.showSnackBar(
@@ -247,9 +252,9 @@ class BookRepository {
   }
 
   Future<Book> deleteBookFile(String bookId) async {
-    notificationService.apiRunningValue(true);
+    notificationService.apiRunning(true);
     final Response response = await _client.delete(_getBookImage(bookId));
-    notificationService.apiRunningValue(false);
+    notificationService.apiRunning(false);
 
     if (response.statusCode != 200) {
       notificationService.showSnackBar(
@@ -265,11 +270,11 @@ class BookRepository {
   }
 
   Future<bool> deleteBook(String bookId) async {
-    notificationService.apiRunningValue(true);
+    notificationService.apiRunning(true);
 
     final Response response =
         await _client.delete(BookRepository().deleteBookUrl(bookId));
-    notificationService.apiRunningValue(false);
+    notificationService.apiRunning(false);
 
     if (response.statusCode != 200) {
       notificationService.showSnackBar(

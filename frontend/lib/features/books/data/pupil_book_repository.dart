@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:schuldaten_hub/common/domain/models/enums.dart';
-import 'package:schuldaten_hub/common/services/api/api.dart';
+import 'package:schuldaten_hub/common/services/api/api_settings.dart';
 import 'package:schuldaten_hub/common/services/api/api_client.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_service.dart';
@@ -20,17 +20,17 @@ class PupilBookRepository {
 
   Future<PupilData> postNewPupilWorkbook(
       {required int pupilId, required String bookId}) async {
-    notificationService.apiRunningValue(true);
+    notificationService.apiRunning(true);
 
     final Response response =
         await _client.post(_newPupilBookUrl(pupilId: pupilId, bookId: bookId));
 
-    notificationService.apiRunningValue(false);
+    notificationService.apiRunning(false);
 
     if (response.statusCode != 200) {
       notificationService.showSnackBar(
           NotificationType.error, 'Fehler beim Erstellen des Leihvorgangs');
-      notificationService.apiRunningValue(false);
+      notificationService.apiRunning(false);
       throw ApiException('Failed to create a pupil book', response.statusCode);
     }
     final PupilData pupil = PupilData.fromJson(response.data);
@@ -44,13 +44,13 @@ class PupilBookRepository {
   }
 
   Future<PupilData> deletePupilBook(String lendingId) async {
-    notificationService.apiRunningValue(true);
+    notificationService.apiRunning(true);
 
     final Response response = await _client.delete(
       _deletePupilBook(lendingId),
     );
 
-    notificationService.apiRunningValue(false);
+    notificationService.apiRunning(false);
 
     if (response.statusCode != 200) {
       notificationService.showSnackBar(
@@ -77,7 +77,7 @@ class PupilBookRepository {
     String? receivedBy,
     required String lendingId,
   }) async {
-    notificationService.apiRunningValue(true);
+    notificationService.apiRunning(true);
 
     final data = jsonEncode({
       if (lentAt != null) 'lent_at': lentAt,
@@ -93,7 +93,7 @@ class PupilBookRepository {
       data: data,
     );
 
-    notificationService.apiRunningValue(false);
+    notificationService.apiRunning(false);
 
     if (response.statusCode != 200) {
       notificationService.showSnackBar(

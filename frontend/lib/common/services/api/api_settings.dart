@@ -5,7 +5,7 @@ export '../../../features/learning_support/data/learning_support_repository.dart
 export '../../../features/pupil/data/pupil_data_repository.dart';
 export '../../../features/school_lists/data/school_list_repository.dart';
 export '../../../features/schoolday_events/data/schoolday_event_repository.dart';
-export '../../../features/schooldays/data/repository.dart';
+export '../../../features/schooldays/data/schoolday_repository.dart';
 export '../../../features/users/data/user_repository.dart';
 export '../../../features/workbooks/data/pupil_workbook_repository.dart';
 export '../../../features/workbooks/data/workbook_repository.dart';

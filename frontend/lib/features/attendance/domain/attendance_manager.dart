@@ -2,18 +2,18 @@ import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:schuldaten_hub/common/domain/models/enums.dart';
 import 'package:schuldaten_hub/common/domain/session_manager.dart';
-import 'package:schuldaten_hub/common/services/api/api.dart';
+import 'package:schuldaten_hub/common/services/api/api_settings.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_service.dart';
 import 'package:schuldaten_hub/common/utils/extensions.dart';
 import 'package:schuldaten_hub/common/utils/logger.dart';
 import 'package:schuldaten_hub/features/attendance/domain/attendance_helper_functions.dart';
 import 'package:schuldaten_hub/features/attendance/domain/models/missed_class.dart';
-import 'package:schuldaten_hub/features/pupil/domain/pupil_manager.dart';
 import 'package:schuldaten_hub/features/pupil/domain/models/pupil_data.dart';
 import 'package:schuldaten_hub/features/pupil/domain/models/pupil_proxy.dart';
-import 'package:schuldaten_hub/features/schooldays/domain/schoolday_manager.dart';
+import 'package:schuldaten_hub/features/pupil/domain/pupil_manager.dart';
 import 'package:schuldaten_hub/features/schooldays/domain/models/schoolday.dart';
+import 'package:schuldaten_hub/features/schooldays/domain/schoolday_manager.dart';
 
 enum MissedType {
   isLate('late'),
@@ -217,7 +217,6 @@ class AttendanceManager {
 
   Future<void> changeReturnedValue(
       int pupilId, bool newValue, DateTime date, String? time) async {
-    locator<NotificationService>().apiRunningValue(true);
     final PupilProxy pupil = pupilManager.findPupilById(pupilId)!;
     final int? missedClass = AttendanceHelper.findMissedClassIndex(pupil, date);
 
@@ -399,7 +398,7 @@ class AttendanceManager {
 
       await deleteMissedClass(pupilId, date);
 
-      locator<NotificationService>().apiRunningValue(false);
+      locator<NotificationService>().apiRunning(false);
 
       return;
     }

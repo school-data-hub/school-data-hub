@@ -1,8 +1,8 @@
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:isbn/isbn.dart';
-import 'package:schuldaten_hub/common/domain/env_manager.dart';
 import 'package:schuldaten_hub/common/domain/models/enums.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_service.dart';
@@ -48,6 +48,7 @@ class NewBook extends StatefulWidget {
   final String? bookDescription;
   final String? bookImageId;
   final String? bookReadingLevel;
+  final String? location;
   final bool? bookAvailable;
   final String? imageId;
   final bool isEdit;
@@ -60,6 +61,7 @@ class NewBook extends StatefulWidget {
       this.bookDescription,
       this.bookImageId,
       this.bookReadingLevel,
+      this.location,
       this.bookAvailable,
       this.imageId,
       super.key});
@@ -114,7 +116,32 @@ class NewBookViewModel extends State<NewBook> {
   Image? bookImage;
   Uint8List? bookImageBytes;
 
+  Future<void> getExistingBookImage() async {
+    final File result = await BookRepository().getBookImage(widget.bookId!);
+    setState(() {
+      bookImage = Image.file(result);
+    });
+  }
+
   String readingLevel = ReadingLevel.notSet.value;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.isEdit) {
+      isbnTextFieldController.text = widget.bookIsbn?.toString() ?? '';
+      bookIdTextFieldController.text = widget.bookId ?? '';
+      bookTitleTextFieldController.text = widget.bookTitle ?? '';
+      authorTextFieldController.text = widget.bookAuthor ?? '';
+      locationTextFieldController.text = widget.location ?? '';
+      readingLevel = widget.bookReadingLevel ?? ReadingLevel.notSet.value;
+      if (widget.bookImageId != null) {
+        getExistingBookImage();
+      }
+      bookDescriptionTextFieldController.text = widget.bookDescription ?? '';
+    }
+    isbnTextFieldController.addListener(_listenToIsbn);
+  }
 
   void onChangedReadingLevelDropDown(ReadingLevel? value) {
     if (value != null) {
@@ -163,7 +190,8 @@ class NewBookViewModel extends State<NewBook> {
         bookImage = Image.memory(isbnData.image!);
         bookImageBytes = isbnData.image;
         bookTitleTextFieldController.text = isbnData.title;
-        authorTextFieldController.text = isbnData.author;
+        authorTextFieldController.text =
+            isbnData.author == '?' ? 'unbekannt' : isbnData.author;
         bookDescriptionTextFieldController.text = isbnData.description;
       });
     }
@@ -202,11 +230,13 @@ class NewBookViewModel extends State<NewBook> {
     if (widget.isEdit) {
       // Update the book
       locator<BookManager>().updateBookProperty(
-        bookId: widget.bookImageId!,
+        bookId: widget.bookId!,
         title: bookTitleTextFieldController.text,
         description: bookDescriptionTextFieldController.text,
         location: locationTextFieldController.text,
         readingLevel: readingLevel,
+        author: authorTextFieldController.text,
+        imageId: widget.bookImageId,
       );
     } else {
       // Create a new book
@@ -238,25 +268,6 @@ class NewBookViewModel extends State<NewBook> {
       return false;
     }
     return true;
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    if (widget.isEdit) {
-      isbnTextFieldController.text = widget.bookIsbn?.toString() ?? '';
-      bookIdTextFieldController.text = widget.bookId ?? '';
-      bookTitleTextFieldController.text = widget.bookTitle ?? '';
-      authorTextFieldController.text = widget.bookAuthor ?? '';
-      locationTextFieldController.text = widget.bookAuthor ?? '';
-      readingLevel = widget.bookReadingLevel ?? ReadingLevel.notSet.value;
-      bookDescriptionTextFieldController.text = widget.bookDescription ?? '';
-      if (widget.bookImageId != null) {
-        bookImage = Image.network(
-            '${locator<EnvManager>().env.value.serverUrl}${BookRepository.getBookImageUrl(widget.bookId!)}');
-      }
-    }
-    isbnTextFieldController.addListener(_listenToIsbn);
   }
 
   @override

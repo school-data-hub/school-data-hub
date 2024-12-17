@@ -8,14 +8,14 @@ import 'package:schuldaten_hub/common/theme/styles.dart';
 import 'package:schuldaten_hub/common/widgets/search_text_field.dart';
 import 'package:schuldaten_hub/features/books/domain/book_manager.dart';
 import 'package:schuldaten_hub/features/books/domain/models/book.dart';
-import 'package:schuldaten_hub/features/books/presentation/book_list_page/controller/book_list_controller.dart';
+import 'package:schuldaten_hub/features/books/presentation/book_list_page/view_model/book_list_view_model.dart';
 import 'package:schuldaten_hub/features/books/presentation/book_list_page/widgets/book_card.dart';
 import 'package:schuldaten_hub/features/books/presentation/book_list_page/widgets/book_list_bottom_navbar.dart';
 import 'package:schuldaten_hub/features/workbooks/domain/workbook_manager.dart';
 import 'package:watch_it/watch_it.dart';
 
 class BookListPage extends WatchingWidget {
-  final BookListController controller;
+  final BookListViewModel controller;
   const BookListPage(this.controller, {super.key});
 
   @override
@@ -54,7 +54,7 @@ class BookListPage extends WatchingWidget {
                 child: Padding(
                   padding: EdgeInsets.all(30.0),
                   child: Text(
-                    'Es wurden noch keine Arbeitshefte angelegt!',
+                    'Es wurden noch keine Bücher angelegt angelegt!',
                     textAlign: TextAlign.center,
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                   ),

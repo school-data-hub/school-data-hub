@@ -1,11 +1,11 @@
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
-import 'package:schuldaten_hub/common/services/api/api.dart';
-import 'package:schuldaten_hub/common/services/api/dio_utils/dio_interceptor.dart';
 import 'package:schuldaten_hub/common/domain/env_manager.dart';
-import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/domain/session_manager.dart';
+import 'package:schuldaten_hub/common/services/api/api_settings.dart';
+import 'package:schuldaten_hub/common/services/api/dio_utils/dio_interceptor.dart';
+import 'package:schuldaten_hub/common/services/locator.dart';
 
 class ApiClient {
   // dio instance
@@ -29,7 +29,7 @@ class ApiClient {
     //   responseHeader: true,
     //   responseBody: true,
     // ));
-    log('ApiClientService initialized');
+    log('ApiClient initialized');
   }
 
   setCustomDioClientOptions(

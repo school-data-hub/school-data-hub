@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:schuldaten_hub/common/domain/models/enums.dart';
-import 'package:schuldaten_hub/common/services/api/api.dart';
+import 'package:schuldaten_hub/common/services/api/api_settings.dart';
 import 'package:schuldaten_hub/common/services/api/api_client.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_service.dart';
@@ -21,7 +21,7 @@ class PupilDataApiService {
 
   Future<List<PupilData>> updateBackendPupilsDatabase(
       {required File file}) async {
-    notificationService.apiRunningValue(true);
+    notificationService.apiRunning(true);
 
     String fileName = file.path.split('/').last;
     FormData formData = FormData.fromMap({
@@ -40,7 +40,7 @@ class PupilDataApiService {
       notificationService.showSnackBar(NotificationType.error,
           'Die Liste konnte nicht aktualisiert werden: ${response.statusCode}');
 
-      notificationService.apiRunningValue(false);
+      notificationService.apiRunning(false);
 
       throw ApiException('Failed to export pupils to txt', response.statusCode);
     }
@@ -48,7 +48,7 @@ class PupilDataApiService {
     final List<PupilData> pupils =
         (response.data as List).map((e) => PupilData.fromJson(e)).toList();
 
-    notificationService.apiRunningValue(false);
+    notificationService.apiRunning(false);
 
     return pupils;
   }
@@ -68,7 +68,7 @@ class PupilDataApiService {
   Future<List<PupilData>> fetchListOfPupils({
     required List<int> internalPupilIds,
   }) async {
-    notificationService.apiRunningValue(true);
+    notificationService.apiRunning(true);
 
     final pupilIdsListToJson = jsonEncode({"pupils": internalPupilIds});
 
@@ -79,7 +79,7 @@ class PupilDataApiService {
       notificationService.showSnackBar(NotificationType.error,
           'Die Schüler konnten nicht geladen werden: ${response.statusCode}');
 
-      notificationService.apiRunningValue(false);
+      notificationService.apiRunning(false);
 
       throw ApiException('Failed to fetch pupils', response.statusCode);
     }
@@ -87,7 +87,7 @@ class PupilDataApiService {
     final List<PupilData> responsePupils =
         (response.data as List).map((e) => PupilData.fromJson(e)).toList();
 
-    notificationService.apiRunningValue(false);
+    notificationService.apiRunning(false);
 
     return responsePupils;
   }
@@ -114,7 +114,7 @@ class PupilDataApiService {
     required String property,
     required dynamic value,
   }) async {
-    notificationService.apiRunningValue(true);
+    notificationService.apiRunning(true);
 
     final Map<String, dynamic> data = {property: value};
     final response =
@@ -124,7 +124,7 @@ class PupilDataApiService {
       notificationService.showSnackBar(NotificationType.error,
           'Die Schüler konnten nicht aktualisiert werden: ${response.statusCode}');
 
-      notificationService.apiRunningValue(false);
+      notificationService.apiRunning(false);
 
       throw ApiException(
           'Failed to update pupil property', response.statusCode);
@@ -132,7 +132,7 @@ class PupilDataApiService {
 
     final PupilData responsePupil = PupilData.fromJson(response.data);
 
-    notificationService.apiRunningValue(false);
+    notificationService.apiRunning(false);
 
     return responsePupil;
   }
@@ -145,7 +145,7 @@ class PupilDataApiService {
     required String property,
     required dynamic value,
   }) async {
-    notificationService.apiRunningValue(true);
+    notificationService.apiRunning(true);
 
     final data = jsonEncode({
       'pupils': siblingsPupilIds,
@@ -158,14 +158,14 @@ class PupilDataApiService {
       notificationService.showSnackBar(NotificationType.error,
           'Die Geschwister konnten nicht aktualisiert werden: ${response.statusCode}');
 
-      notificationService.apiRunningValue(false);
+      notificationService.apiRunning(false);
 
       throw ApiException('Failed to patch siblings', response.statusCode);
     }
     final List<PupilData> responsePupils =
         (response.data as List).map((e) => PupilData.fromJson(e)).toList();
 
-    notificationService.apiRunningValue(false);
+    notificationService.apiRunning(false);
 
     return responsePupils;
   }
@@ -180,7 +180,7 @@ class PupilDataApiService {
     required int id,
     required FormData formData,
   }) async {
-    notificationService.apiRunningValue(true);
+    notificationService.apiRunning(true);
 
     final Response response =
         await _client.patch(_updatePupilhWithAvatarUrl(id), data: formData);
@@ -189,12 +189,12 @@ class PupilDataApiService {
       notificationService.showSnackBar(NotificationType.error,
           'Das Profilbild konnte nicht aktualisiert werden: ${response.statusCode}');
 
-      notificationService.apiRunningValue(false);
+      notificationService.apiRunning(false);
 
       throw ApiException('Failed to upload pupil avatar', response.statusCode);
     }
 
-    notificationService.apiRunningValue(false);
+    notificationService.apiRunning(false);
 
     return PupilData.fromJson(response.data);
   }
@@ -206,7 +206,7 @@ class PupilDataApiService {
   }
 
   Future<void> deletePupilAvatar({required int internalId}) async {
-    notificationService.apiRunningValue(true);
+    notificationService.apiRunning(true);
 
     final Response response =
         await _client.delete(_deletePupilAvatarUrl(internalId));
@@ -215,7 +215,7 @@ class PupilDataApiService {
       notificationService.showSnackBar(NotificationType.error,
           'Das Profilbild konnte nicht gelöscht werden: ${response.statusCode}');
 
-      notificationService.apiRunningValue(false);
+      notificationService.apiRunning(false);
 
       throw ApiException(
           'Something went wrong deleting the avatar', response.statusCode);
@@ -237,7 +237,7 @@ class PupilDataApiService {
     required String createdBy,
     required String comment,
   }) async {
-    notificationService.apiRunningValue(true);
+    notificationService.apiRunning(true);
 
     final data = jsonEncode({
       'level': newSupportLevel,
@@ -253,7 +253,7 @@ class PupilDataApiService {
       notificationService.showSnackBar(NotificationType.error,
           'Die Förderstufe konnte nicht aktualisiert werden: ${response.statusCode}');
 
-      notificationService.apiRunningValue(false);
+      notificationService.apiRunning(false);
 
       throw ApiException(
           'Failed to patch individual development plan', response.statusCode);
@@ -261,7 +261,7 @@ class PupilDataApiService {
 
     final PupilData responsePupil = PupilData.fromJson(response.data);
 
-    notificationService.apiRunningValue(false);
+    notificationService.apiRunning(false);
 
     return responsePupil;
   }
@@ -274,7 +274,7 @@ class PupilDataApiService {
     required int internalId,
     required String supportLevelId,
   }) async {
-    notificationService.apiRunningValue(true);
+    notificationService.apiRunning(true);
 
     final response = await _client
         .delete(_deleteSupportLevelHistoryItem(internalId, supportLevelId));
@@ -283,7 +283,7 @@ class PupilDataApiService {
       notificationService.showSnackBar(NotificationType.error,
           'Die Förderstufe konnte nicht gelöscht werden: ${response.statusCode}');
 
-      notificationService.apiRunningValue(false);
+      notificationService.apiRunning(false);
 
       throw ApiException(
           'Failed to delete individual development plan', response.statusCode);
@@ -291,7 +291,7 @@ class PupilDataApiService {
 
     final PupilData responsePupil = PupilData.fromJson(response.data);
 
-    notificationService.apiRunningValue(false);
+    notificationService.apiRunning(false);
 
     return responsePupil;
   }

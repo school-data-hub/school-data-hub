@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:schuldaten_hub/common/domain/models/enums.dart';
-import 'package:schuldaten_hub/common/services/api/api.dart';
+import 'package:schuldaten_hub/common/services/api/api_settings.dart';
 import 'package:schuldaten_hub/common/services/api/api_client.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_service.dart';
@@ -22,7 +22,7 @@ class AuthorizationRepository {
   static const String _getAuthorizationsUrl = '/authorizations/all';
 
   Future<List<Authorization>> fetchAuthorizations() async {
-    notificationService.apiRunningValue(true);
+    notificationService.apiRunning(true);
 
     final Response response = await _client.get(_getAuthorizationsUrl);
 
@@ -30,7 +30,7 @@ class AuthorizationRepository {
       notificationService.showSnackBar(NotificationType.error,
           'Einwilligungen konnten nicht geladen werden: ${response.statusCode}');
 
-      notificationService.apiRunningValue(false);
+      notificationService.apiRunning(false);
 
       throw ApiException('Failed to get authorizations', response.statusCode);
     }
@@ -38,7 +38,7 @@ class AuthorizationRepository {
     final authorizations =
         (response.data as List).map((e) => Authorization.fromJson(e)).toList();
 
-    notificationService.apiRunningValue(false);
+    notificationService.apiRunning(false);
 
     return authorizations;
   }
@@ -50,7 +50,7 @@ class AuthorizationRepository {
 
   Future<Authorization> postAuthorizationWithPupils(
       String name, String description, List<int> pupilIds) async {
-    notificationService.apiRunningValue(true);
+    notificationService.apiRunning(true);
 
     final data = jsonEncode({
       "authorization_description": description,
@@ -60,12 +60,12 @@ class AuthorizationRepository {
 
     final Response response =
         await _client.post(_postAuthorizationWithPupilsFromListUrl, data: data);
-    notificationService.apiRunningValue(false);
+    notificationService.apiRunning(false);
     if (response.statusCode != 200) {
       notificationService.showSnackBar(NotificationType.error,
           'Einwilligungen konnten nicht erstellt werden');
 
-      notificationService.apiRunningValue(false);
+      notificationService.apiRunning(false);
 
       throw ApiException('Failed to post authorization', response.statusCode);
     }
@@ -85,14 +85,14 @@ class AuthorizationRepository {
 
   Future<Authorization> postPupilAuthorization(
       int pupilId, String authId) async {
-    notificationService.apiRunningValue(true);
+    notificationService.apiRunning(true);
 
     final data = jsonEncode({"comment": null, "file_id": null, "status": null});
 
     final response = await _client
         .post(_postPupilAuthorizationUrl(pupilId, authId), data: data);
 
-    notificationService.apiRunningValue(false);
+    notificationService.apiRunning(false);
 
     if (response.statusCode != 200) {
       notificationService.showSnackBar(
@@ -113,18 +113,18 @@ class AuthorizationRepository {
 
   Future<Authorization> postPupilAuthorizations(
       List<int> pupilIds, String authId) async {
-    notificationService.apiRunningValue(true);
+    notificationService.apiRunning(true);
 
     final data = jsonEncode({"pupils": pupilIds});
 
     final response =
         await _client.post(_postPupilAuthorizationsUrl(authId), data: data);
-    notificationService.apiRunningValue(false);
+    notificationService.apiRunning(false);
     if (response.statusCode != 200) {
       notificationService.showSnackBar(NotificationType.error,
           'Es konnten keine Einwilligungen erstellt werden');
 
-      notificationService.apiRunningValue(false);
+      notificationService.apiRunning(false);
 
       throw ApiException(
           'Failed to post pupil authorizations', response.statusCode);
@@ -142,17 +142,17 @@ class AuthorizationRepository {
 
   Future<Authorization> deletePupilAuthorization(
       int pupilId, String authId) async {
-    notificationService.apiRunningValue(true);
+    notificationService.apiRunning(true);
 
     final response =
         await _client.delete(_deletePupilAuthorizationUrl(pupilId, authId));
-    notificationService.apiRunningValue(false);
+    notificationService.apiRunning(false);
 
     if (response.statusCode != 200) {
       notificationService.showSnackBar(NotificationType.error,
           'Die Einwilligung konnte nicht gelöscht werden');
 
-      notificationService.apiRunningValue(false);
+      notificationService.apiRunning(false);
 
       throw ApiException(
           'Failed to delete pupil authorization', response.statusCode);
@@ -171,7 +171,7 @@ class AuthorizationRepository {
 
   Future<Authorization> updatePupilAuthorizationProperty(
       int pupilId, String listId, bool? value, String? comment) async {
-    notificationService.apiRunningValue(true);
+    notificationService.apiRunning(true);
 
     String data = '';
     if (value == null) {
@@ -185,13 +185,13 @@ class AuthorizationRepository {
     final response = await _client
         .patch(_patchPupilAuthorizationUrl(pupilId, listId), data: data);
 
-    notificationService.apiRunningValue(false);
+    notificationService.apiRunning(false);
 
     if (response.statusCode != 200) {
       notificationService.showSnackBar(
           NotificationType.error, 'Einwilligung konnte nicht geändert werden');
 
-      notificationService.apiRunningValue(false);
+      notificationService.apiRunning(false);
 
       throw ApiException(
           'Failed to patch pupil authorization', response.statusCode);
@@ -213,7 +213,7 @@ class AuthorizationRepository {
     int pupilId,
     String authId,
   ) async {
-    notificationService.apiRunningValue(true);
+    notificationService.apiRunning(true);
 
     final encryptedFile = await customEncrypter.encryptFile(file);
     String fileName = encryptedFile.path.split('/').last;
@@ -227,12 +227,12 @@ class AuthorizationRepository {
         },
       ),
     );
-    notificationService.apiRunningValue(false);
+    notificationService.apiRunning(false);
     if (response.statusCode != 200) {
       notificationService.showSnackBar(
           NotificationType.error, 'Error: ${response.data}');
 
-      notificationService.apiRunningValue(false);
+      notificationService.apiRunning(false);
 
       throw ApiException(
           'Failed to post pupil authorization file', response.statusCode);
@@ -249,16 +249,16 @@ class AuthorizationRepository {
 
   Future<Authorization> deleteAuthorizationFile(
       int pupilId, String authId, String cacheKey) async {
-    notificationService.apiRunningValue(true);
+    notificationService.apiRunning(true);
 
     final Response response =
         await _client.delete(_deletePupilAuthorizationFileUrl(pupilId, authId));
-    notificationService.apiRunningValue(false);
+    notificationService.apiRunning(false);
     if (response.statusCode != 200) {
       notificationService.showSnackBar(
           NotificationType.error, 'Error: ${response.data}');
 
-      notificationService.apiRunningValue(false);
+      notificationService.apiRunning(false);
 
       throw ApiException(
           'Failed to delete pupil authorization file', response.statusCode);

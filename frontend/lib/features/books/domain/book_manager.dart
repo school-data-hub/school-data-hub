@@ -87,17 +87,21 @@ class BookManager {
     required String? description,
     required String? location,
     required String? readingLevel,
+    required String? author,
+    required String? imageId,
   }) async {
-    final Book bookToBeUpdated = _books.value.firstWhere(
-      (item) => item.bookId == bookId,
-    );
+    // final Book bookToBeUpdated = _books.value.firstWhere(
+    //   (item) => item.bookId == bookId,
+    // );
 
     final Book updatedbook = await bookRepository.updateBookProperty(
-      book: bookToBeUpdated,
+      bookId: bookId,
       title: title,
       description: description,
       location: location,
       readingLevel: readingLevel,
+      author: author,
+      imageId: imageId,
     );
 
     List<Book> books = List.from(_books.value);

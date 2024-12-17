@@ -5,7 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:schuldaten_hub/common/domain/models/enums.dart';
 import 'package:schuldaten_hub/common/domain/session_manager.dart';
-import 'package:schuldaten_hub/common/services/api/api.dart';
+import 'package:schuldaten_hub/common/services/api/api_settings.dart';
 import 'package:schuldaten_hub/common/services/api/api_client.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_service.dart';
@@ -27,7 +27,7 @@ class SchooldayEventRepository {
 
   Future<PupilData> postSchooldayEvent(
       int pupilId, DateTime date, String type, String reason) async {
-    locator<NotificationService>().apiRunningValue(true);
+    locator<NotificationService>().apiRunning(true);
 
     final data = jsonEncode({
       "schoolday_event_day": date.formatForJson(),
@@ -47,7 +47,7 @@ class SchooldayEventRepository {
       notificationService.showSnackBar(
           NotificationType.warning, 'Fehler beim Posten des Ereignisses!');
 
-      notificationService.apiRunningValue(false);
+      notificationService.apiRunning(false);
 
       throw ApiException(
           'Failed to post an schooldayEvent', response.statusCode);
@@ -55,7 +55,7 @@ class SchooldayEventRepository {
 
     final PupilData responsePupil = PupilData.fromJson(response.data);
 
-    locator<NotificationService>().apiRunningValue(false);
+    locator<NotificationService>().apiRunning(false);
     return responsePupil;
   }
 
@@ -89,7 +89,7 @@ class SchooldayEventRepository {
       String? processedBy,
       DateTime? processedAt,
       DateTime? day}) async {
-    notificationService.apiRunningValue(true);
+    notificationService.apiRunning(true);
 
     // if the schooldayEvent is patched as processed,
     // processing user and processed date are automatically added
@@ -126,7 +126,7 @@ class SchooldayEventRepository {
       notificationService.showSnackBar(
           NotificationType.warning, 'Fehler beim Patchen des Ereignisses!');
 
-      notificationService.apiRunningValue(false);
+      notificationService.apiRunning(false);
 
       throw ApiException(
           'Failed to patch an schooldayEvent', response.statusCode);
@@ -134,7 +134,7 @@ class SchooldayEventRepository {
 
     final PupilData responsePupil = PupilData.fromJson(response.data);
 
-    locator<NotificationService>().apiRunningValue(false);
+    locator<NotificationService>().apiRunning(false);
 
     return responsePupil;
   }
@@ -155,7 +155,7 @@ class SchooldayEventRepository {
 
   Future<PupilData> patchSchooldayEventWithFile(
       File imageFile, String schooldayEventId, bool isProcessed) async {
-    locator<NotificationService>().apiRunningValue(true);
+    locator<NotificationService>().apiRunning(true);
 
     String endpoint;
 
@@ -186,7 +186,7 @@ class SchooldayEventRepository {
       locator<NotificationService>().showSnackBar(
           NotificationType.warning, 'Fehler beim Hochladen des Bildes!');
 
-      locator<NotificationService>().apiRunningValue(false);
+      locator<NotificationService>().apiRunning(false);
 
       throw ApiException(
           'Failed to upload schooldayEvent file', response.statusCode);
@@ -194,7 +194,7 @@ class SchooldayEventRepository {
 
     final PupilData responsePupil = PupilData.fromJson(response.data);
 
-    locator<NotificationService>().apiRunningValue(false);
+    locator<NotificationService>().apiRunning(false);
 
     return responsePupil;
   }
@@ -206,11 +206,11 @@ class SchooldayEventRepository {
   }
 
   Future<PupilData> deleteSchooldayEvent(String schooldayEventId) async {
-    locator<NotificationService>().apiRunningValue(true);
+    locator<NotificationService>().apiRunning(true);
 
     Response response =
         await _client.delete(_deleteSchooldayEventUrl(schooldayEventId));
-    locator<NotificationService>().apiRunningValue(false);
+    locator<NotificationService>().apiRunning(false);
     if (response.statusCode != 200) {
       locator<NotificationService>().showSnackBar(
           NotificationType.warning, 'Fehler beim Löschen des Ereignisses!');
@@ -235,7 +235,7 @@ class SchooldayEventRepository {
 
   Future<PupilData> deleteSchooldayEventFile(
       String schooldayEventId, String cacheKey, bool isProcessed) async {
-    locator<NotificationService>().apiRunningValue(true);
+    locator<NotificationService>().apiRunning(true);
 
     // choose endpoint depending on isProcessed
     String endpoint;
@@ -251,7 +251,7 @@ class SchooldayEventRepository {
       locator<NotificationService>().showSnackBar(
           NotificationType.warning, 'Fehler beim Löschen der Datei!');
 
-      locator<NotificationService>().apiRunningValue(false);
+      locator<NotificationService>().apiRunning(false);
 
       throw ApiException(
           'Failed to delete schooldayEvent', response.statusCode);
@@ -263,7 +263,7 @@ class SchooldayEventRepository {
     final cacheManager = locator<DefaultCacheManager>();
     await cacheManager.removeFile(cacheKey);
 
-    notificationService.apiRunningValue(false);
+    notificationService.apiRunning(false);
 
     return responsePupil;
   }

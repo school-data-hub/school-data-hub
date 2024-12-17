@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:schuldaten_hub/common/domain/models/enums.dart';
-import 'package:schuldaten_hub/common/services/api/api.dart';
+import 'package:schuldaten_hub/common/services/api/api_settings.dart';
 import 'package:schuldaten_hub/common/services/api/api_client.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_service.dart';
@@ -20,9 +20,9 @@ class WorkbookRepository {
   static const _getWorkbooksUrl = '/workbooks/all/flat';
 
   Future<List<Workbook>> getWorkbooks() async {
-    notificationService.apiRunningValue(true);
+    notificationService.apiRunning(true);
     final Response response = await _client.get(_getWorkbooksUrl);
-    notificationService.apiRunningValue(false);
+    notificationService.apiRunning(false);
 
     if (response.statusCode != 200) {
       notificationService.showSnackBar(
@@ -57,10 +57,10 @@ class WorkbookRepository {
       "amount": amount
     });
 
-    notificationService.apiRunningValue(true);
+    notificationService.apiRunning(true);
     final Response response = await _client.post(_postWorkbookUrl, data: data);
     logger.d('${response.statusCode} ${response.data}');
-    notificationService.apiRunningValue(false);
+    notificationService.apiRunning(false);
 
     if (response.statusCode != 200) {
       notificationService.showSnackBar(
@@ -92,10 +92,10 @@ class WorkbookRepository {
       "image_url": workbook.imageUrl
     });
 
-    notificationService.apiRunningValue(true);
+    notificationService.apiRunning(true);
     final Response response =
         await _client.patch(_patchWorkbookUrl((workbook.isbn)), data: data);
-    notificationService.apiRunningValue(false);
+    notificationService.apiRunning(false);
 
     if (response.statusCode != 200) {
       notificationService.showSnackBar(
@@ -126,14 +126,14 @@ class WorkbookRepository {
       ),
     });
 
-    notificationService.apiRunningValue(true);
+    notificationService.apiRunning(true);
 
     final Response response = await _client.patch(
       _patchWorkbookWithImageUrl(isbn),
       data: formData,
     );
 
-    notificationService.apiRunningValue(false);
+    notificationService.apiRunning(false);
 
     // Handle errors.
     if (response.statusCode != 200) {
@@ -164,10 +164,10 @@ class WorkbookRepository {
   }
 
   Future<Workbook> deleteWorkbookFile(int isbn) async {
-    notificationService.apiRunningValue(true);
+    notificationService.apiRunning(true);
 
     final Response response = await _client.delete(_deleteWorkbookImage(isbn));
-    notificationService.apiRunningValue(false);
+    notificationService.apiRunning(false);
 
     if (response.statusCode != 200) {
       notificationService.showSnackBar(
@@ -183,11 +183,11 @@ class WorkbookRepository {
   }
 
   Future<List<Workbook>> deleteWorkbook(int isbn) async {
-    notificationService.apiRunningValue(true);
+    notificationService.apiRunning(true);
 
     final Response response =
         await _client.delete(WorkbookRepository().deleteWorkbookUrl(isbn));
-    notificationService.apiRunningValue(false);
+    notificationService.apiRunning(false);
 
     if (response.statusCode != 200) {
       notificationService.showSnackBar(

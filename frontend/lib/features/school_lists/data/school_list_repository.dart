@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:schuldaten_hub/common/domain/models/enums.dart';
 import 'package:schuldaten_hub/common/domain/session_manager.dart';
-import 'package:schuldaten_hub/common/services/api/api.dart';
+import 'package:schuldaten_hub/common/services/api/api_settings.dart';
 import 'package:schuldaten_hub/common/services/api/api_client.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_service.dart';
@@ -18,7 +18,7 @@ class SchoolListApiRepository {
   static const _getSchoolListsUrl = '/school_lists/all';
 
   Future<List<SchoolList>> fetchSchoolLists() async {
-    notificationService.apiRunningValue(true);
+    notificationService.apiRunning(true);
 
     final response = await _client.get(_getSchoolListsUrl);
 
@@ -26,7 +26,7 @@ class SchoolListApiRepository {
       notificationService.showSnackBar(
           NotificationType.error, 'Fehler beim Laden der Schullisten');
 
-      notificationService.apiRunningValue(false);
+      notificationService.apiRunning(false);
 
       throw ApiException('Failed to fetch school lists', response.statusCode);
     }
@@ -34,7 +34,7 @@ class SchoolListApiRepository {
     final List<SchoolList> schoolLists =
         (response.data as List).map((e) => SchoolList.fromJson(e)).toList();
 
-    notificationService.apiRunningValue(false);
+    notificationService.apiRunning(false);
 
     return schoolLists;
   }
@@ -48,7 +48,7 @@ class SchoolListApiRepository {
       required String description,
       required List<int> pupilIds,
       required String visibility}) async {
-    notificationService.apiRunningValue(true);
+    notificationService.apiRunning(true);
 
     final String data = jsonEncode({
       "list_name": name,
@@ -60,7 +60,7 @@ class SchoolListApiRepository {
     final response =
         await _client.post(_postSchoolListWithGroupUrl, data: data);
 
-    notificationService.apiRunningValue(false);
+    notificationService.apiRunning(false);
 
     if (response.statusCode != 200) {
       notificationService.showSnackBar(
@@ -88,7 +88,7 @@ class SchoolListApiRepository {
       String? description,
       String? visibility}) async {
     assert(name != null || description != null || visibility != null);
-    notificationService.apiRunningValue(true);
+    notificationService.apiRunning(true);
     Map<String, String> jsonMap = {};
 
     if (name != null) {
@@ -106,7 +106,7 @@ class SchoolListApiRepository {
     final Response response = await _client
         .patch(_patchSchoolListUrl(schoolListToUpdate.listId), data: data);
 
-    notificationService.apiRunningValue(false);
+    notificationService.apiRunning(false);
 
     if (response.statusCode != 200) {
       notificationService.showSnackBar(
@@ -123,11 +123,11 @@ class SchoolListApiRepository {
   }
 
   Future<List<SchoolList>> deleteSchoolList(String listId) async {
-    notificationService.apiRunningValue(true);
+    notificationService.apiRunning(true);
 
     final Response response =
         await _client.delete(_deleteSchoolListUrl(listId));
-    notificationService.apiRunningValue(false);
+    notificationService.apiRunning(false);
 
     if (response.statusCode != 200) {
       notificationService.showSnackBar(
@@ -153,12 +153,12 @@ class SchoolListApiRepository {
       {required String listId, required List<int> pupilIds}) async {
     final data = jsonEncode({"pupils": pupilIds});
 
-    notificationService.apiRunningValue(true);
+    notificationService.apiRunning(true);
 
     final response =
         await _client.post(_addPupilsToSchoolList(listId), data: data);
 
-    notificationService.apiRunningValue(false);
+    notificationService.apiRunning(false);
 
     if (response.statusCode != 200) {
       notificationService.showSnackBar(
@@ -198,11 +198,11 @@ class SchoolListApiRepository {
             locator<SessionManager>().credentials.value.username
       });
     }
-    notificationService.apiRunningValue(true);
+    notificationService.apiRunning(true);
     final response =
         await _client.patch(_patchPupilSchoolList(pupilId, listId), data: data);
 
-    notificationService.apiRunningValue(false);
+    notificationService.apiRunning(false);
 
     if (response.statusCode != 200) {
       notificationService.showSnackBar(
@@ -227,12 +227,12 @@ class SchoolListApiRepository {
   }) async {
     final data = jsonEncode({"pupils": pupilIds});
 
-    notificationService.apiRunningValue(true);
+    notificationService.apiRunning(true);
 
     final response =
         await _client.post(_deletePupilsFromSchoolList(listId), data: data);
 
-    notificationService.apiRunningValue(false);
+    notificationService.apiRunning(false);
 
     if (response.statusCode != 200) {
       notificationService.showSnackBar(

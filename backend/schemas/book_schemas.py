@@ -111,6 +111,30 @@ new_book_schema = NewBookSchema()
 new_book_schemas = NewBookSchema(many=True)
 
 
+class BookPatchSchema(Schema):
+
+    title = fields.String()
+    author = fields.String()
+    description = fields.String()
+    image_id = fields.String()
+    location = fields.String()
+    reading_level = fields.String()
+
+    class Meta:
+        fields = (
+            "title",
+            "author",
+            "description",
+            "image_id",
+            "location",
+            "reading_level",
+        )
+
+
+book_patch_schema = BookPatchSchema()
+book_patches_schema = BookPatchSchema(many=True)
+
+
 class BookSchema(Schema):
     book_id = fields.String()
     isbn = fields.Integer()

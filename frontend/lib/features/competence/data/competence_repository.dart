@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:schuldaten_hub/common/domain/models/enums.dart';
-import 'package:schuldaten_hub/common/services/api/api.dart';
+import 'package:schuldaten_hub/common/services/api/api_settings.dart';
 import 'package:schuldaten_hub/common/services/api/api_client.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_service.dart';
@@ -18,7 +18,7 @@ class CompetenceRepository {
   static const String _fetchCompetencesUrl = '/competences/all/flat';
 
   Future<List<Competence>> fetchCompetences() async {
-    notificationService.apiRunningValue(true);
+    notificationService.apiRunning(true);
 
     final response = await _client.get(_fetchCompetencesUrl);
 
@@ -26,7 +26,7 @@ class CompetenceRepository {
       notificationService.showSnackBar(
           NotificationType.error, 'Failed to fetch competences');
 
-      notificationService.apiRunningValue(false);
+      notificationService.apiRunning(false);
 
       throw ApiException('Failed to fetch competences', response.statusCode);
     }
@@ -34,7 +34,7 @@ class CompetenceRepository {
     final List<Competence> competences =
         (response.data as List).map((e) => Competence.fromJson(e)).toList();
 
-    notificationService.apiRunningValue(false);
+    notificationService.apiRunning(false);
 
     return competences;
   }
@@ -48,7 +48,7 @@ class CompetenceRepository {
       required String competenceName,
       String? competenceLevel,
       String? indicators}) async {
-    notificationService.apiRunningValue(true);
+    notificationService.apiRunning(true);
 
     final data = jsonEncode({
       "parent_competence": parentCompetence,
@@ -64,14 +64,14 @@ class CompetenceRepository {
       notificationService.showSnackBar(
           NotificationType.error, 'Failed to post a competence');
 
-      notificationService.apiRunningValue(false);
+      notificationService.apiRunning(false);
 
       throw ApiException('Failed to post a competence', response.statusCode);
     }
 
     final Competence newCompetence = Competence.fromJson(response.data);
 
-    notificationService.apiRunningValue(false);
+    notificationService.apiRunning(false);
 
     return newCompetence;
   }
@@ -87,7 +87,7 @@ class CompetenceRepository {
       String competenceName,
       String? competenceLevel,
       String? indicators) async {
-    notificationService.apiRunningValue(true);
+    notificationService.apiRunning(true);
 
     final data = jsonEncode({
       "competence_name": competenceName,
@@ -102,14 +102,14 @@ class CompetenceRepository {
       notificationService.showSnackBar(
           NotificationType.error, 'Failed to patch a competence');
 
-      notificationService.apiRunningValue(false);
+      notificationService.apiRunning(false);
 
       throw ApiException('Failed to patch a competence', response.statusCode);
     }
 
     final patchedCompetence = Competence.fromJson(response.data);
 
-    notificationService.apiRunningValue(false);
+    notificationService.apiRunning(false);
 
     return patchedCompetence;
   }
@@ -121,11 +121,11 @@ class CompetenceRepository {
   }
 
   Future<bool> deleteCompetence(int id) async {
-    notificationService.apiRunningValue(true);
+    notificationService.apiRunning(true);
 
     final Response response = await _client.delete(_deleteCompetence(id));
 
-    notificationService.apiRunningValue(false);
+    notificationService.apiRunning(false);
 
     if (response.statusCode != 200) {
       notificationService.showSnackBar(

@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:schuldaten_hub/common/domain/models/enums.dart';
-import 'package:schuldaten_hub/common/services/api/api.dart';
+import 'package:schuldaten_hub/common/services/api/api_settings.dart';
 import 'package:schuldaten_hub/common/services/api/api_client.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_service.dart';
@@ -25,10 +25,10 @@ class CompetenceCheckRepository {
   }
 
   Future<void> getCompetenceCheckFile(String fileId) async {
-    notificationService.apiRunningValue(true);
+    notificationService.apiRunning(true);
     final Response response =
         await _client.get(getCompetenceCheckFileUrl(fileId));
-    notificationService.apiRunningValue(false);
+    notificationService.apiRunning(false);
     if (response.statusCode != 200) {
       notificationService.showSnackBar(
           NotificationType.error, 'Failed to get competence check file');
@@ -60,10 +60,10 @@ class CompetenceCheckRepository {
       "report_id": reportId,
       "comment": comment
     });
-    notificationService.apiRunningValue(true);
+    notificationService.apiRunning(true);
     final Response response =
         await _client.post(_postCompetenceCheck(pupilId), data: data);
-    notificationService.apiRunningValue(false);
+    notificationService.apiRunning(false);
     if (response.statusCode != 200) {
       notificationService.showSnackBar(
           NotificationType.error, 'Failed to post a competence check');
@@ -96,12 +96,12 @@ class CompetenceCheckRepository {
       ),
     });
 
-    notificationService.apiRunningValue(true);
+    notificationService.apiRunning(true);
 
     final Response response = await _client
         .post(_postCompetenceCheckFile(competenceCheckId), data: data);
 
-    notificationService.apiRunningValue(false);
+    notificationService.apiRunning(false);
 
     if (response.statusCode != 200) {
       notificationService.showSnackBar(
@@ -137,10 +137,10 @@ class CompetenceCheckRepository {
       if (createdBy != null) "created_by": createdBy,
       if (isReport != null) "is_report": isReport
     });
-    notificationService.apiRunningValue(true);
+    notificationService.apiRunning(true);
     final Response response = await _client
         .patch(_patchCompetenceCheck(competenceCheckId), data: data);
-    notificationService.apiRunningValue(false);
+    notificationService.apiRunning(false);
     if (response.statusCode != 200) {
       notificationService.showSnackBar(
           NotificationType.error, 'Failed to patch a competence check');
@@ -164,10 +164,10 @@ class CompetenceCheckRepository {
   }
 
   Future<PupilData> deleteCompetenceCheck(String competenceCheckId) async {
-    notificationService.apiRunningValue(true);
+    notificationService.apiRunning(true);
     final Response response =
         await _client.delete(_deleteCompetenceCheck(competenceCheckId));
-    notificationService.apiRunningValue(false);
+    notificationService.apiRunning(false);
     if (response.statusCode != 200) {
       notificationService.showSnackBar(
           NotificationType.error, 'Failed to delete a competence check');
@@ -186,10 +186,10 @@ class CompetenceCheckRepository {
   }
 
   Future<PupilData> deleteCompetenceCheckFile(String fileId) async {
-    notificationService.apiRunningValue(true);
+    notificationService.apiRunning(true);
     final Response response =
         await _client.delete(_deleteCompetenceCheckFile(fileId));
-    notificationService.apiRunningValue(false);
+    notificationService.apiRunning(false);
     if (response.statusCode != 200) {
       notificationService.showSnackBar(
           NotificationType.error, 'Failed to delete a competence check file');

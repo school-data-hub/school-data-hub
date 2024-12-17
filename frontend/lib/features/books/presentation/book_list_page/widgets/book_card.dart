@@ -48,13 +48,6 @@ class BookCard extends HookWidget {
           color: Colors.white,
           surfaceTintColor: Colors.white,
           child: InkWell(
-            // onTap: () {
-            //   Navigator.of(context).push(MaterialPageRoute(
-            //     builder: (ctx) => SchoolListPupils(
-            //       workbook,
-            //     ),
-            //   ));
-            // },
             onLongPress: () async {
               if (!locator<SessionManager>().isAdmin.value) {
                 informationDialog(context, 'Keine Berechtigung',
@@ -65,7 +58,7 @@ class BookCard extends HookWidget {
                   context: context,
                   title: 'Buch löschen',
                   message:
-                      'Buch "${book.title}" wirklich löschen? ACHTUNG: Alle Ausleihen dieses Buches werden werden ebenfalls gelöscht!');
+                      'Buch "${book.title}" wirklich löschen? ACHTUNG: Alle Ausleihen dieses Buchs werden werden ebenfalls gelöscht!');
               if (result == true) {
                 await locator<BookManager>().deleteBook(book.bookId);
               }
@@ -91,6 +84,7 @@ class BookCard extends HookWidget {
                                   bookTitle: book.title,
                                   bookDescription: book.description,
                                   bookImageId: book.imageId,
+                                  location: book.location,
                                 ),
                               ));
                             }

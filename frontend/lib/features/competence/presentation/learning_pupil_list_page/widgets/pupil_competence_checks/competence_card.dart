@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gap/gap.dart';
-import 'package:schuldaten_hub/common/theme/colors.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
+import 'package:schuldaten_hub/common/theme/colors.dart';
 import 'package:schuldaten_hub/common/widgets/custom_expansion_tile/custom_expansion_tile_content.dart';
 import 'package:schuldaten_hub/common/widgets/custom_expansion_tile/custom_expansion_tile_switch.dart';
 import 'package:schuldaten_hub/common/widgets/custom_expansion_tile/custom_expasion_tile_hook.dart';
+import 'package:schuldaten_hub/features/competence/domain/competence_helper.dart';
+import 'package:schuldaten_hub/features/competence/domain/competence_manager.dart';
 import 'package:schuldaten_hub/features/competence/domain/models/competence.dart';
 import 'package:schuldaten_hub/features/competence/presentation/widgets/competence_check_symbols.dart';
 import 'package:schuldaten_hub/features/competence/presentation/widgets/dialogues/new_competence_check_dialog.dart';
-import 'package:schuldaten_hub/features/competence/domain/competence_manager.dart';
 import 'package:schuldaten_hub/features/pupil/domain/models/pupil_proxy.dart';
 
 class CompetenceCard extends HookWidget {
@@ -32,7 +33,6 @@ class CompetenceCard extends HookWidget {
     required this.competenceChecks,
     required this.checksAverageValue,
   });
-
   @override
   Widget build(BuildContext context) {
     final controller = useCustomExpansionTileController();
@@ -43,7 +43,9 @@ class CompetenceCard extends HookWidget {
           : EdgeInsets.symmetric(
               vertical: competence.parentCompetence == null ? 3 : 0),
       child: Card(
-        color: AppColors.backgroundColor,
+        color: isReport
+            ? Colors.white
+            : CompetenceHelper.getCompetenceColor(competence.competenceId),
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
@@ -69,9 +71,9 @@ class CompetenceCard extends HookWidget {
                           maxLines: 4,
                           softWrap: true,
                           textAlign: TextAlign.start,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            //fontWeight: FontWeight.bold,
+                          style: TextStyle(
+                            color: isReport ? Colors.black : Colors.white,
+                            fontWeight: FontWeight.bold,
                             fontSize: 15,
                           ),
                         )
@@ -93,9 +95,11 @@ class CompetenceCard extends HookWidget {
                   if (competenceChecks.isNotEmpty) ...[
                     CustomExpansionTileSwitch(
                         customExpansionTileController: checksController,
-                        expansionSwitchWidget: const Icon(
+                        expansionSwitchWidget: Icon(
                           Icons.remove_red_eye,
-                          color: Colors.white,
+                          color: isReport
+                              ? AppColors.backgroundColor
+                              : Colors.white,
                         )),
                     const Gap(10)
                   ],
@@ -117,7 +121,10 @@ class CompetenceCard extends HookWidget {
                             isReport: false,
                             parentContext: context);
                       },
-                      child: const Icon(Icons.add, color: Colors.white)),
+                      child: Icon(Icons.add,
+                          color: isReport
+                              ? AppColors.backgroundColor
+                              : Colors.white)),
                   const Gap(5),
                 ]),
               ]),
@@ -131,32 +138,39 @@ class CompetenceCard extends HookWidget {
                     Container(
                       width: 23.0,
                       height: 23.0,
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
+                      decoration: BoxDecoration(
+                        color: CompetenceHelper.getCompetenceColor(
+                            competence.competenceId),
                         shape: BoxShape.circle,
+                        border: Border.all(
+                          color: Colors.white, // Set the border color to white
+                          width: 2.0, // Set the border width
+                        ),
                       ),
                       child: Center(
                         child: Text(
                           competenceChecks.length.toString(),
                           textAlign: TextAlign.center,
-                          style: TextStyle(
-                              color: AppColors.backgroundColor,
-                              fontSize: 15,
+                          style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 14,
                               fontWeight: FontWeight.bold),
                         ),
                       ),
                     ),
                     const Gap(20),
-                    const Text(
+                    Text(
                       'Ø',
-                      style: TextStyle(color: Colors.white, fontSize: 18),
+                      style: TextStyle(
+                          color: isReport ? Colors.black : Colors.white,
+                          fontSize: 18),
                     ),
-                    const Gap(10),
+                    const Gap(5),
                     if (checksAverageValue != null)
                       Text(
                         checksAverageValue!.toStringAsFixed(1),
-                        style: const TextStyle(
-                            color: Colors.white,
+                        style: TextStyle(
+                            color: isReport ? Colors.black : Colors.white,
                             fontWeight: FontWeight.bold,
                             fontSize: 17),
                       ),

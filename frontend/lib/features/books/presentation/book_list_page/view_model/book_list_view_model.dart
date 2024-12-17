@@ -9,10 +9,10 @@ class BookList extends StatefulWidget {
   });
 
   @override
-  BookListController createState() => BookListController();
+  BookListViewModel createState() => BookListViewModel();
 }
 
-class BookListController extends State<BookList> {
+class BookListViewModel extends State<BookList> {
   @override
   void initState() {
     locator<WorkbookManager>().getWorkbooks();

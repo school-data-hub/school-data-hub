@@ -9,6 +9,7 @@ from helpers.db_helpers import get_book_by_id, get_workbook_by_isbn
 from helpers.log_entries import create_log_entry
 from models.book import Book
 from models.shared import db
+from models.user import User
 from schemas.book_schemas import *
 from schemas.log_entry_schemas import ApiFileSchema
 
@@ -100,7 +101,7 @@ def create_book(current_user, json_data):
 
 
 @book_api.route("/<book_id>", methods=["PATCH"])
-@book_api.input(new_book_schema)
+@book_api.input(book_patch_schema)
 @book_api.output(book_flat_schema)
 @book_api.doc(security="ApiKeyAuth", tags=["Books"], summary="Patch an existing book")
 @token_required
@@ -127,7 +128,9 @@ def patch_book(current_user, book_id, json_data):
                 book.available = data["available"]
 
     # - LOG ENTRY
+
     create_log_entry(current_user, request, data)
+
     db.session.commit()
 
     return book
@@ -209,18 +212,18 @@ def upload_book_file(current_user, book_id, files_data):
     return book
 
 
-# - GET WORKBOOK IMAGE
+# - GET BOOK IMAGE
 #####################
 
 
 @book_api.get("/<book_id>/file")
 @book_api.output(ApiFileSchema, content_type="image/jpeg")
-@book_api.doc(security="ApiKeyAuth", tags=["Workbooks"], summary="Get workbook image")
+@book_api.doc(security="ApiKeyAuth", tags=["Books"], summary="Get book image")
 @token_required
-def get_workbook_image(current_user, book_id):
+def get_book_image(current_user: User, book_id):
     book = get_book_by_id(book_id=book_id)
     if book is None:
-        return jsonify({"message": "Das Arbeitsheft existiert nicht!"}), 404
+        return jsonify({"message": "Das Buch existiert nicht!"}), 404
     if len(str(book.image_url)) < 5:
         abort(404, message="Keine Datei vorhanden!")
     return send_file(str(book.image_url), mimetype="image/jpg")

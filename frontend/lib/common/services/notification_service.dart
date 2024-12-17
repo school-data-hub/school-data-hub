@@ -31,7 +31,7 @@ class NotificationService {
     _snackBar.value = NotificationData(NotificationType.infoDialog, message);
   }
 
-  void apiRunningValue(bool value) {
+  void apiRunning(bool value) {
     _apiRunning.value = value;
   }
 
