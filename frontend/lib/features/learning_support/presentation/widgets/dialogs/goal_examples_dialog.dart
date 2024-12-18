@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/theme/colors.dart';
 import 'package:schuldaten_hub/features/learning_support/domain/models/support_goal/support_goal.dart';
 
-void goalExamplesDialog(context, title, List<SupportGoal> goals) => showDialog(
+Future<Map<String, String?>?> goalExamplesDialog(
+        context, title, List<SupportGoal> goals) =>
+    showDialog<Map<String, String?>>(
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Beispiele'),
+        backgroundColor: AppColors.canvasColor,
         content: SizedBox(
           width: double.maxFinite,
           height: 400, // Adjust height according to your requirement
@@ -16,14 +20,14 @@ void goalExamplesDialog(context, title, List<SupportGoal> goals) => showDialog(
                 return Card(
                   color: AppColors.cardInCardColor,
                   child: Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.all(15.0),
                     child: Column(
                       children: [
                         const Row(
                           children: [
                             Text('Ziel:',
                                 style: TextStyle(
-                                  fontSize: 12,
+                                  fontSize: 14,
                                   fontWeight: FontWeight.bold,
                                 )),
                           ],
@@ -33,11 +37,12 @@ void goalExamplesDialog(context, title, List<SupportGoal> goals) => showDialog(
                             Expanded(child: Text(goals[index].description!)),
                           ],
                         ),
+                        const Gap(10),
                         const Row(
                           children: [
                             Text('Strategien:',
                                 style: TextStyle(
-                                  fontSize: 12,
+                                  fontSize: 14,
                                   fontWeight: FontWeight.bold,
                                 )),
                           ],
@@ -45,6 +50,19 @@ void goalExamplesDialog(context, title, List<SupportGoal> goals) => showDialog(
                         Row(
                           children: [
                             Expanded(child: Text(goals[index].strategies!)),
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            TextButton(
+                                onPressed: () {
+                                  return Navigator.pop(context, {
+                                    'goal': goals[index].description,
+                                    'strategies': goals[index].strategies,
+                                  });
+                                },
+                                child: const Text('übernehmen')),
                           ],
                         ),
                       ],

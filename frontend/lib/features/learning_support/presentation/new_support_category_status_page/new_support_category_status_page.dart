@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/theme/colors.dart';
 import 'package:schuldaten_hub/common/theme/styles.dart';
-import 'package:schuldaten_hub/common/services/locator.dart';
+import 'package:schuldaten_hub/features/learning_support/domain/learning_support_manager.dart';
 import 'package:schuldaten_hub/features/learning_support/presentation/new_support_category_status_page/controller/new_support_category_status_controller.dart';
 import 'package:schuldaten_hub/features/learning_support/presentation/select_support_category_page/controller/select_support_category_controller.dart';
 import 'package:schuldaten_hub/features/learning_support/presentation/widgets/dialogs/goal_examples_dialog.dart';
 import 'package:schuldaten_hub/features/learning_support/presentation/widgets/support_category_parents_names.dart';
 import 'package:schuldaten_hub/features/learning_support/presentation/widgets/support_category_widgets/support_category_status_dropdown.dart';
-import 'package:schuldaten_hub/features/learning_support/domain/learning_support_manager.dart';
 import 'package:schuldaten_hub/features/pupil/domain/pupil_manager.dart';
 
 class NewSupportCategoryStatusPage extends StatelessWidget {
@@ -230,13 +230,19 @@ class NewSupportCategoryStatusPage extends StatelessWidget {
                               .isNotEmpty) ...<Widget>[
                             ElevatedButton(
                               style: AppStyles.actionButtonStyle,
-                              onPressed: () {
-                                goalExamplesDialog(
-                                    context,
-                                    'Beispiele',
-                                    locator<LearningSupportManager>()
-                                        .getGoalsForSupportCategory(
-                                            controller.goalCategoryId!));
+                              onPressed: () async {
+                                final Map<String, String?>? result =
+                                    await goalExamplesDialog(
+                                        context,
+                                        'Beispiele',
+                                        locator<LearningSupportManager>()
+                                            .getGoalsForSupportCategory(
+                                                controller.goalCategoryId!));
+                                if (result != null) {
+                                  controller.setTextFieldControllerValues(
+                                      description: result['goal']!,
+                                      strategies: result['strategies']!);
+                                }
                               },
                               child: const Text(
                                 'BEISPIELE',
@@ -249,36 +255,45 @@ class NewSupportCategoryStatusPage extends StatelessWidget {
                   ),
                 ),
                 const Gap(15),
-                ElevatedButton(
-                  style: AppStyles.successButtonStyle,
-                  onPressed: () {
-                    if (controller.widget.appBarTitle == 'Neues Förderziel') {
-                      controller.postCategoryGoal();
-                    } else {
-                      locator<LearningSupportManager>()
-                          .postSupportCategoryStatus(
-                              locator<PupilManager>()
-                                  .findPupilById(controller.widget.pupilId)!,
-                              controller.goalCategoryId!,
-                              controller.categoryStatusValue,
-                              controller.strategiesTextField2Controller.text);
-                    }
-                    Navigator.pop(context);
-                  },
-                  child: const Text(
-                    'SENDEN',
-                    style: AppStyles.buttonTextStyle,
-                  ),
-                ),
-                const Gap(15),
-                ElevatedButton(
-                  style: AppStyles.cancelButtonStyle,
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: const Text(
-                    'ABBRECHEN',
-                    style: AppStyles.buttonTextStyle,
+                ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 800),
+                  child: Column(
+                    children: [
+                      ElevatedButton(
+                        style: AppStyles.successButtonStyle,
+                        onPressed: () {
+                          if (controller.widget.appBarTitle ==
+                              'Neues Förderziel') {
+                            controller.postCategoryGoal();
+                          } else {
+                            locator<LearningSupportManager>()
+                                .postSupportCategoryStatus(
+                                    locator<PupilManager>().findPupilById(
+                                        controller.widget.pupilId)!,
+                                    controller.goalCategoryId!,
+                                    controller.categoryStatusValue,
+                                    controller
+                                        .strategiesTextField2Controller.text);
+                          }
+                          Navigator.pop(context);
+                        },
+                        child: const Text(
+                          'SENDEN',
+                          style: AppStyles.buttonTextStyle,
+                        ),
+                      ),
+                      const Gap(15),
+                      ElevatedButton(
+                        style: AppStyles.cancelButtonStyle,
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: const Text(
+                          'ABBRECHEN',
+                          style: AppStyles.buttonTextStyle,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
