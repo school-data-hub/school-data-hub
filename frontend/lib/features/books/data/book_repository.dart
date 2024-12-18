@@ -4,8 +4,8 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:schuldaten_hub/common/domain/models/enums.dart';
-import 'package:schuldaten_hub/common/services/api/api_settings.dart';
 import 'package:schuldaten_hub/common/services/api/api_client.dart';
+import 'package:schuldaten_hub/common/services/api/api_settings.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_service.dart';
 import 'package:schuldaten_hub/common/utils/custom_encrypter.dart';
@@ -101,7 +101,7 @@ class BookRepository {
       if (author != null) "author": author,
       if (description != null) "description": description,
       if (location != null) "location": location,
-      "reading_level": readingLevel,
+      if (readingLevel != null) "reading_level": readingLevel,
       if (imageId != null) "image_id": imageId,
       if (imageId != null) "title": title
     });

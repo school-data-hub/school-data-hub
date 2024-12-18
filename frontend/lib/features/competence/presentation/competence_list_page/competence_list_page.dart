@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/widgets/generic_app_bar.dart';
+import 'package:schuldaten_hub/features/competence/domain/competence_manager.dart';
 import 'package:schuldaten_hub/features/competence/domain/filters/competence_filter_manager.dart';
 import 'package:schuldaten_hub/features/competence/domain/models/competence.dart';
 import 'package:schuldaten_hub/features/competence/presentation/competence_list_page/widgets/competence_list_view_bottom_navbar.dart';
 import 'package:schuldaten_hub/features/competence/presentation/competence_list_page/widgets/competence_tree.dart';
 import 'package:schuldaten_hub/features/competence/presentation/post_or_patch_competence_page/post_or_patch_competence_page.dart';
-import 'package:schuldaten_hub/features/competence/domain/competence_manager.dart';
 import 'package:watch_it/watch_it.dart';
 
 class CompetenceListPage extends WatchingWidget {

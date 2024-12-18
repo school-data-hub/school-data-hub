@@ -88,12 +88,7 @@ class BookManager {
     required String? location,
     required String? readingLevel,
     required String? author,
-    required String? imageId,
   }) async {
-    // final Book bookToBeUpdated = _books.value.firstWhere(
-    //   (item) => item.bookId == bookId,
-    // );
-
     final Book updatedbook = await bookRepository.updateBookProperty(
       bookId: bookId,
       title: title,
@@ -101,7 +96,6 @@ class BookManager {
       location: location,
       readingLevel: readingLevel,
       author: author,
-      imageId: imageId,
     );
 
     List<Book> books = List.from(_books.value);

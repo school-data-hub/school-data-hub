@@ -144,9 +144,9 @@ class NewBookViewModel extends State<NewBook> {
   }
 
   void onChangedReadingLevelDropDown(ReadingLevel? value) {
-    if (value != null) {
-      readingLevel = value.value;
-    }
+    setState(() {
+      readingLevel = value!.value;
+    });
   }
 
   void _listenToIsbn() async {
@@ -236,7 +236,6 @@ class NewBookViewModel extends State<NewBook> {
         location: locationTextFieldController.text,
         readingLevel: readingLevel,
         author: authorTextFieldController.text,
-        imageId: widget.bookImageId,
       );
     } else {
       // Create a new book

@@ -2,15 +2,15 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/theme/colors.dart';
 import 'package:schuldaten_hub/common/theme/styles.dart';
-import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/utils/extensions.dart';
 import 'package:schuldaten_hub/common/widgets/date_picker.dart';
 import 'package:schuldaten_hub/common/widgets/dialogues/information_dialog.dart';
 import 'package:schuldaten_hub/features/schoolday_events/domain/models/schoolday_event_enums.dart';
-import 'package:schuldaten_hub/features/schoolday_events/presentation/new_schoolday_event_page/widgets/schoolday_event_filter_chip.dart';
 import 'package:schuldaten_hub/features/schoolday_events/domain/schoolday_event_manager.dart';
+import 'package:schuldaten_hub/features/schoolday_events/presentation/new_schoolday_event_page/widgets/schoolday_event_filter_chip.dart';
 import 'package:schuldaten_hub/features/schooldays/domain/schoolday_manager.dart';
 
 class NewSchooldayEventPage extends StatefulWidget {
@@ -187,7 +187,7 @@ class NewSchooldayEventPageState extends State<NewSchooldayEventPage> {
                         }
                       },
                       icon: const Icon(Icons.calendar_today_rounded,
-                          color: AppColors.backgroundColor),
+                          color: AppColors.interactiveColor),
                     ),
                     InkWell(
                       onTap: () async {
@@ -201,7 +201,9 @@ class NewSchooldayEventPageState extends State<NewSchooldayEventPage> {
                       },
                       child: Text(
                         thisDate.formatForUser(),
-                        style: AppStyles.title,
+                        style: AppStyles.title.copyWith(
+                          color: AppColors.interactiveColor,
+                        ),
                       ),
                     ),
                   ],

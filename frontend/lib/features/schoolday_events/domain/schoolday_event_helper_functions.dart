@@ -142,7 +142,8 @@ class SchoolDayEventHelper {
     for (PupilProxy pupil in pupils) {
       if (pupil.schooldayEvents != null) {
         for (SchooldayEvent schooldayEvent in pupil.schooldayEvents!) {
-          if (schooldayEvent.schooldayEventType == 'rkogs') {
+          if (schooldayEvent.schooldayEventType ==
+              SchooldayEventType.afternoonCareAdmonition.value) {
             schooldayEvents++;
           }
         }
@@ -150,6 +151,8 @@ class SchoolDayEventHelper {
     }
     return schooldayEvents;
   }
+
+//- TODO: this should use  SchooldavEventType enum
 
   static String getSchooldayEventTypeText(String value) {
     switch (value) {
@@ -167,6 +170,8 @@ class SchoolDayEventHelper {
         return '';
     }
   }
+
+  //- TODO: this should use  SchooldavEventReason enum
 
   static String getSchooldayEventReasonText(String value) {
     bool firstItem = true;

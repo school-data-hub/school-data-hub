@@ -59,7 +59,9 @@ class SchooldayEventFilterManager {
 
       for (SchooldayEvent schooldayEvent in pupil.schooldayEvents!) {
         bool isMatched = true;
+
         bool complementaryFilter = false;
+
         //- we keep the last seven days
         //- because this is a hard filter we use continue
 
@@ -129,23 +131,46 @@ class SchooldayEventFilterManager {
           }
         }
 
+        //- The behavior of this first filter group should be
+        //- excluding for the next filter group
+        //- let's tidy up the list
+
+        if (!isMatched) {
+          filterIsActive = true;
+          continue;
+        }
+
         //- these filters are also complementary
         //- we reset the complementary value to process them
 
         complementaryFilter = false;
 
-        if (activeFilters[SchooldayEventFilter.violenceAgainstPupils]! &&
-            !schooldayEvent.schooldayEventReason
-                .contains(SchooldayEventReason.violenceAgainstPupils.value)) {
-          isMatched = false;
-        } else {
-          complementaryFilter = true;
+        if (activeFilters[SchooldayEventFilter.violenceAgainstPupils]!) {
+          if (schooldayEvent.schooldayEventReason
+              .contains(SchooldayEventReason.violenceAgainstPupils.value)) {
+            isMatched = true;
+            complementaryFilter = true;
+          } else if (!complementaryFilter) {
+            isMatched = false;
+          }
         }
 
-        if (!complementaryFilter) {
-          if (activeFilters[SchooldayEventFilter.insultOthers]! &&
-              !schooldayEvent.schooldayEventReason
-                  .contains(SchooldayEventReason.insultOthers.value)) {
+        if (activeFilters[SchooldayEventFilter.insultOthers]!) {
+          if (schooldayEvent.schooldayEventReason
+              .contains(SchooldayEventReason.insultOthers.value)) {
+            isMatched = true;
+            complementaryFilter = true;
+          } else if (!complementaryFilter) {
+            isMatched = false;
+          }
+        }
+
+        if (activeFilters[SchooldayEventFilter.disturbLesson]!) {
+          if (schooldayEvent.schooldayEventReason
+              .contains(SchooldayEventReason.disturbLesson.value)) {
+            isMatched = true;
+            complementaryFilter = true;
+          } else if (!complementaryFilter) {
             isMatched = false;
           }
         }
@@ -168,16 +193,6 @@ class SchooldayEventFilterManager {
       return filteredSchooldayEvents;
     }
     return [];
-  }
-
-  bool filterByInsultOthers(SchooldayEvent schooldayEvent) {
-    return schooldayEvent.schooldayEventReason
-        .contains(SchooldayEventReason.insultOthers.value);
-  }
-
-  bool filterByViolenceAgainstPupils(SchooldayEvent schooldayEvent) {
-    return schooldayEvent.schooldayEventReason
-        .contains(SchooldayEventReason.violenceAgainstPupils.value);
   }
 
   bool filterBySevenDays(SchooldayEvent schooldayEvent) {

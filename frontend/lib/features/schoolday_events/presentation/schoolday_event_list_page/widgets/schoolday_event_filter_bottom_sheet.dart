@@ -28,14 +28,16 @@ class SchooldayEventFilterBottomSheet extends WatchingWidget {
         SchooldayEventFilter.afternoonCareAdmonition]!;
     bool valueRedCardSentHome =
         activeSchooldayEventFilters[SchooldayEventFilter.admonitionAndBanned]!;
-    bool valueViolenceAgainstPersons = activeSchooldayEventFilters[
-        SchooldayEventFilter.violenceAgainstPupils]!;
-    bool valueInsultOthers =
-        activeSchooldayEventFilters[SchooldayEventFilter.insultOthers]!;
     bool valueParentsMeeting =
         activeSchooldayEventFilters[SchooldayEventFilter.parentsMeeting]!;
     bool valueOtherEvents =
         activeSchooldayEventFilters[SchooldayEventFilter.otherEvent]!;
+    bool valueViolenceAgainstPersons = activeSchooldayEventFilters[
+        SchooldayEventFilter.violenceAgainstPupils]!;
+    bool valueInsultOthers =
+        activeSchooldayEventFilters[SchooldayEventFilter.insultOthers]!;
+    bool valueDisturbLesson =
+        activeSchooldayEventFilters[SchooldayEventFilter.disturbLesson]!;
 
     final schooldayEventFilterLocator = locator<SchooldayEventFilterManager>();
     return Padding(
@@ -180,6 +182,19 @@ class SchooldayEventFilterBottomSheet extends WatchingWidget {
                                 schooldayEventFilters: [
                                   (
                                     filter: SchooldayEventFilter.insultOthers,
+                                    value: val
+                                  )
+                                ]);
+                          },
+                        ),
+                        ThemedFilterChip(
+                          label: '🛑🎓️',
+                          selected: valueDisturbLesson,
+                          onSelected: (val) {
+                            schooldayEventFilterLocator.setFilter(
+                                schooldayEventFilters: [
+                                  (
+                                    filter: SchooldayEventFilter.disturbLesson,
                                     value: val
                                   )
                                 ]);

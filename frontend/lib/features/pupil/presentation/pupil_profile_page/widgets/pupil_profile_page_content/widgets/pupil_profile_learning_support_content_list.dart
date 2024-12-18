@@ -6,7 +6,7 @@ import 'package:schuldaten_hub/common/theme/colors.dart';
 import 'package:schuldaten_hub/common/theme/styles.dart';
 import 'package:schuldaten_hub/common/utils/extensions.dart';
 import 'package:schuldaten_hub/features/learning_support/presentation/learning_support_list_page/widgets/support_goals_list.dart';
-import 'package:schuldaten_hub/features/learning_support/presentation/new_support_category_goal_page/controller/new_support_category_goal_controller.dart';
+import 'package:schuldaten_hub/features/learning_support/presentation/new_support_category_status_page/controller/new_support_category_status_controller.dart';
 import 'package:schuldaten_hub/features/learning_support/presentation/widgets/dialogs/support_level_dialog.dart';
 import 'package:schuldaten_hub/features/learning_support/presentation/widgets/dialogs/preschool_revision_dialog.dart';
 import 'package:schuldaten_hub/features/learning_support/presentation/widgets/support_catagory_status/support_category_statuses_list.dart';
@@ -100,7 +100,7 @@ List<Widget> pupilLearningSupportContentList(
         style: AppStyles.actionButtonStyle,
         onPressed: () {
           Navigator.of(context).push(MaterialPageRoute(
-              builder: (ctx) => NewSupportCategoryGoal(
+              builder: (ctx) => NewSupportCategoryStatus(
                     appBarTitle: 'Neuer Förderbereich',
                     pupilId: pupil.internalId,
                     goalCategoryId: 0,

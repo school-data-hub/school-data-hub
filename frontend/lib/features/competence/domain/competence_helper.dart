@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:schuldaten_hub/common/theme/colors.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
+import 'package:schuldaten_hub/common/theme/colors.dart';
+import 'package:schuldaten_hub/features/competence/domain/competence_manager.dart';
 import 'package:schuldaten_hub/features/competence/domain/models/competence.dart';
 import 'package:schuldaten_hub/features/competence/domain/models/competence_check.dart';
-import 'package:schuldaten_hub/features/competence/domain/competence_manager.dart';
 import 'package:schuldaten_hub/features/pupil/domain/filters/pupil_filter_manager.dart';
 import 'package:schuldaten_hub/features/pupil/domain/models/pupil_proxy.dart';
 import 'package:schuldaten_hub/features/pupil/domain/pupil_manager.dart';
@@ -23,9 +23,9 @@ class CompetenceHelper {
     return null;
   }
 
-  static Color getCompetenceColor(int categoryId) {
+  static Color getCompetenceColor(int competenceId) {
     final Competence rootCategory =
-        locator<CompetenceManager>().getRootCompetence(categoryId);
+        locator<CompetenceManager>().getRootCompetence(competenceId);
     return getRootCompetenceColor(rootCategory);
   }
 

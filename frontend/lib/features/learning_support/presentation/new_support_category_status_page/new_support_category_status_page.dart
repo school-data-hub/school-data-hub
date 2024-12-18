@@ -3,7 +3,7 @@ import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/theme/colors.dart';
 import 'package:schuldaten_hub/common/theme/styles.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
-import 'package:schuldaten_hub/features/learning_support/presentation/new_support_category_goal_page/controller/new_support_category_goal_controller.dart';
+import 'package:schuldaten_hub/features/learning_support/presentation/new_support_category_status_page/controller/new_support_category_status_controller.dart';
 import 'package:schuldaten_hub/features/learning_support/presentation/select_support_category_page/controller/select_support_category_controller.dart';
 import 'package:schuldaten_hub/features/learning_support/presentation/widgets/dialogs/goal_examples_dialog.dart';
 import 'package:schuldaten_hub/features/learning_support/presentation/widgets/support_category_parents_names.dart';

@@ -1,56 +1,49 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:schuldaten_hub/common/domain/session_manager.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
-import 'package:schuldaten_hub/common/widgets/dialogues/confirmation_dialog.dart';
-import 'package:schuldaten_hub/features/learning_support/domain/learning_support_manager.dart';
-import 'package:schuldaten_hub/features/learning_support/domain/models/support_category/support_category.dart';
-import 'package:schuldaten_hub/features/learning_support/domain/models/support_category/support_category_status.dart';
-import 'package:schuldaten_hub/features/learning_support/presentation/select_support_category_page/controller/select_support_category_controller.dart';
-import 'package:schuldaten_hub/features/pupil/domain/models/pupil_proxy.dart';
+import 'package:schuldaten_hub/features/competence/domain/competence_helper.dart';
+import 'package:schuldaten_hub/features/competence/domain/competence_manager.dart';
+import 'package:schuldaten_hub/features/competence/domain/models/competence.dart';
+import 'package:schuldaten_hub/features/competence/presentation/select_competece_page/controller/select_common_competemce_controller.dart';
 
-List<Widget> pupilSupportCategoryTree({
-  required BuildContext context,
-  required PupilProxy pupil,
-  int? parentCategoryId,
+List<Widget> selectCommonCompetenceTree({
+  //required BuildContext context,
+  int? parentCompetenceId,
   required double indentation,
   Color? backGroundColor,
-  required SelectCategoryPageController controller,
+  required SelectCompetenceController controller,
   required String elementType,
 }) {
-  List<Widget> supportCategoryWidgets = [];
-  final supportCategoryLocator = locator<LearningSupportManager>();
-  List<SupportCategory> supportCategories =
-      supportCategoryLocator.goalCategories.value;
-  Color categoryBackgroundColor;
+  List<Widget> competenceWidgets = [];
+  final competenceLocator = locator<CompetenceManager>();
+  List<Competence> competences = competenceLocator.competences.value;
+  Color competenceBackgroundColor;
 
-  for (SupportCategory supportCategory in supportCategories) {
+  for (Competence competence in competences) {
     if (backGroundColor == null) {
-      categoryBackgroundColor = locator<LearningSupportManager>()
-          .getRootSupportCategoryColor(supportCategory);
+      competenceBackgroundColor =
+          CompetenceHelper.getCompetenceColor(competence.competenceId);
     } else {
-      categoryBackgroundColor = backGroundColor;
+      competenceBackgroundColor = backGroundColor;
     }
 
-    if (supportCategory.parentCategory == parentCategoryId) {
-      final children = pupilSupportCategoryTree(
-          context: context,
-          pupil: pupil,
-          parentCategoryId: supportCategory.categoryId,
+    if (competence.parentCompetence == parentCompetenceId) {
+      final children = selectCommonCompetenceTree(
+          //  context: context,
+          parentCompetenceId: competence.competenceId,
           indentation: indentation + 15,
-          backGroundColor: categoryBackgroundColor,
+          backGroundColor: competenceBackgroundColor,
           controller: controller,
           elementType: elementType);
 
-      supportCategoryWidgets.add(
+      competenceWidgets.add(
         Padding(
           padding: EdgeInsets.only(top: 10, left: indentation),
           child: children.isNotEmpty
               ? Wrap(
                   children: [
                     Card(
-                      color: categoryBackgroundColor,
+                      color: competenceBackgroundColor,
                       elevation: 0,
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10)),
@@ -62,7 +55,7 @@ List<Widget> pupilSupportCategoryTree({
                         collapsedIconColor: Colors.white,
                         textColor: Colors.white,
                         maintainState: false,
-                        backgroundColor: categoryBackgroundColor,
+                        backgroundColor: competenceBackgroundColor,
                         title: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Column(
@@ -73,7 +66,7 @@ List<Widget> pupilSupportCategoryTree({
                                   Flexible(
                                     fit: FlexFit.loose,
                                     child: Text(
-                                      supportCategory.categoryName,
+                                      competence.competenceName,
                                       maxLines: 3,
                                       style: const TextStyle(
                                           fontSize: 16,
@@ -85,7 +78,7 @@ List<Widget> pupilSupportCategoryTree({
                             ],
                           ),
                         ),
-                        collapsedBackgroundColor: categoryBackgroundColor,
+                        collapsedBackgroundColor: competenceBackgroundColor,
                         children: children,
                       ),
                     ),
@@ -105,10 +98,10 @@ List<Widget> pupilSupportCategoryTree({
                                 //         null
                                 //     ?
                                 Radio(
-                              value: supportCategory.categoryId,
+                              value: competence.competenceId,
                               groupValue: controller.selectedCategoryId,
                               onChanged: (value) {
-                                controller.selectCategory(value!);
+                                controller.selectCcompetence(value!);
                               },
                             ),
                             // : const Row(children: [
@@ -123,38 +116,38 @@ List<Widget> pupilSupportCategoryTree({
                           Flexible(
                             child: InkWell(
                               onTap: () => controller
-                                  .selectCategory(supportCategory.categoryId),
-                              onLongPress: locator<SessionManager>()
-                                      .isAdmin
-                                      .value
-                                  ? () async {
-                                      if (pupil
-                                          .supportCategoryStatuses!.isEmpty) {
-                                        return;
-                                      }
-                                      final bool? delete =
-                                          await confirmationDialog(
-                                              context: context,
-                                              title: 'Kategoriestatus löschen',
-                                              message:
-                                                  'Kategoriestatus löschen?');
-                                      if (delete == true) {
-                                        final SupportCategoryStatus?
-                                            supportCategoryStatus = pupil
-                                                .supportCategoryStatuses!
-                                                .lastWhereOrNull((element) =>
-                                                    element.supportCategoryId ==
-                                                    supportCategory.categoryId);
-                                        await locator<LearningSupportManager>()
-                                            .deleteSupportCategoryStatus(
-                                                supportCategoryStatus!
-                                                    .statusId);
-                                      }
-                                      return;
-                                    }
-                                  : () {},
+                                  .selectCcompetence(competence.competenceId),
+                              // onLongPress: locator<SessionManager>()
+                              //         .isAdmin
+                              //         .value
+                              //     ? () async {
+                              //         if (pupil
+                              //             .supportCategoryStatuses!.isEmpty) {
+                              //           return;
+                              //         }
+                              //         final bool? delete =
+                              //             await confirmationDialog(
+                              //                 context: context,
+                              //                 title: 'Kategoriestatus löschen',
+                              //                 message:
+                              //                     'Kategoriestatus löschen?');
+                              //         if (delete == true) {
+                              //           final SupportCategoryStatus?
+                              //               supportCategoryStatus = pupil
+                              //                   .supportCategoryStatuses!
+                              //                   .lastWhereOrNull((element) =>
+                              //                       element.supportCategoryId ==
+                              //                       supportCategory.categoryId);
+                              //           await locator<LearningSupportManager>()
+                              //               .deleteSupportCategoryStatus(
+                              //                   supportCategoryStatus!
+                              //                       .statusId);
+                              //         }
+                              //         return;
+                              //       }
+                              //     : () {},
                               child: Text(
-                                supportCategory.categoryName,
+                                competence.competenceName,
                                 maxLines: 4,
                                 textAlign: TextAlign.start,
                                 style: const TextStyle(
@@ -174,5 +167,5 @@ List<Widget> pupilSupportCategoryTree({
     }
   }
 
-  return supportCategoryWidgets;
+  return competenceWidgets;
 }

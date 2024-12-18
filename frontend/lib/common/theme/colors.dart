@@ -10,6 +10,7 @@ class AppColors {
   static const gridViewColor = Color.fromRGBO(252, 160, 39, 1);
   static const pupilProfileCardColor = Color.fromARGB(255, 237, 237, 251);
   static const cardInCardColor = Color.fromARGB(255, 248, 248, 255);
+  static const notProcessedColor = Color.fromARGB(255, 249, 202, 131);
   static const mainMenuCardsColor = Color.fromARGB(255, 220, 220, 255);
 //button colors
 

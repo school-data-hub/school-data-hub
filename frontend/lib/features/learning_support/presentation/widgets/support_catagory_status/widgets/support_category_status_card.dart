@@ -3,7 +3,7 @@ import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/theme/styles.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/features/learning_support/domain/models/support_category/support_category_status.dart';
-import 'package:schuldaten_hub/features/learning_support/presentation/new_support_category_goal_page/controller/new_support_category_goal_controller.dart';
+import 'package:schuldaten_hub/features/learning_support/presentation/new_support_category_status_page/controller/new_support_category_status_controller.dart';
 import 'package:schuldaten_hub/features/learning_support/presentation/widgets/support_catagory_status/widgets/support_category_status_entry/support_category_status_entry.dart';
 import 'package:schuldaten_hub/features/learning_support/presentation/widgets/support_category_parents_names.dart';
 import 'package:schuldaten_hub/features/learning_support/domain/learning_support_helper_functions.dart';
@@ -50,7 +50,7 @@ class SupportCategoryStatusCard extends StatelessWidget {
                 child: InkWell(
                   onLongPress: () {
                     Navigator.of(context).push(MaterialPageRoute(
-                        builder: (ctx) => NewSupportCategoryGoal(
+                        builder: (ctx) => NewSupportCategoryStatus(
                               appBarTitle: 'Neuer Status',
                               pupilId: pupil.internalId,
                               goalCategoryId: supportCategoryId,
@@ -123,7 +123,7 @@ class SupportCategoryStatusCard extends StatelessWidget {
             style: AppStyles.actionButtonStyle,
             onPressed: () async {
               await Navigator.of(context).push(MaterialPageRoute(
-                  builder: (ctx) => NewSupportCategoryGoal(
+                  builder: (ctx) => NewSupportCategoryStatus(
                         appBarTitle: 'Neues Förderziel',
                         pupilId: pupil.internalId,
                         goalCategoryId: supportCategoryId,

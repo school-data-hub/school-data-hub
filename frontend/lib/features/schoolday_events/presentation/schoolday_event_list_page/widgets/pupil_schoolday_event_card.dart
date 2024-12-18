@@ -16,12 +16,12 @@ import 'package:schuldaten_hub/common/widgets/dialogues/confirmation_dialog.dart
 import 'package:schuldaten_hub/common/widgets/dialogues/short_textfield_dialog.dart';
 import 'package:schuldaten_hub/common/widgets/document_image.dart';
 import 'package:schuldaten_hub/common/widgets/upload_image.dart';
+import 'package:schuldaten_hub/features/schoolday_events/data/schoolday_event_repository.dart';
 import 'package:schuldaten_hub/features/schoolday_events/domain/models/schoolday_event.dart';
 import 'package:schuldaten_hub/features/schoolday_events/domain/schoolday_event_manager.dart';
 import 'package:schuldaten_hub/features/schoolday_events/presentation/schoolday_event_list_page/widgets/dialogues/schoolday_event_type_dialog.dart';
 import 'package:schuldaten_hub/features/schoolday_events/presentation/schoolday_event_list_page/widgets/schoolday_event_reason_chips.dart';
 import 'package:schuldaten_hub/features/schoolday_events/presentation/schoolday_event_list_page/widgets/schoolday_event_type_icon.dart';
-import 'package:schuldaten_hub/features/schoolday_events/data/schoolday_event_repository.dart';
 import 'package:schuldaten_hub/features/schooldays/domain/schoolday_manager.dart';
 import 'package:watch_it/watch_it.dart';
 
@@ -33,7 +33,9 @@ class PupilSchooldayEventCard extends WatchingWidget {
   Widget build(BuildContext context) {
     final isAuthorized = SessionHelper.isAuthorized(schooldayEvent.createdBy);
     return Card(
-      color: AppColors.cardInCardColor,
+      color: !schooldayEvent.processed
+          ? AppColors.notProcessedColor
+          : AppColors.cardInCardColor,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
       ),

@@ -40,7 +40,10 @@ class NewBookPage extends StatelessWidget {
                   Row(
                     children: [
                       if (viewModel.bookImage != null) ...<Widget>[
-                        viewModel.bookImage!,
+                        ClipRRect(
+                            borderRadius: BorderRadius.circular(
+                                10.0), // Adjust the radius as needed
+                            child: viewModel.bookImage!),
                         const Gap(20),
                       ],
                       Flexible(
@@ -69,14 +72,14 @@ class NewBookPage extends StatelessWidget {
                                   labelText: 'Bücherei-ID'),
                             ),
                             const Gap(20),
-                            DropdownButtonFormField(
+                            DropdownButtonFormField<ReadingLevel>(
                                 decoration: AppStyles.textFieldDecoration(
                                     labelText: 'Lesestufe'),
                                 items: viewModel.readingLevelDropdownItems,
                                 value: ReadingLevel.fromString(
                                     viewModel.readingLevel),
-                                onChanged: (value) =>
-                                    viewModel.onChangedReadingLevelDropDown),
+                                onChanged: (value) => viewModel
+                                    .onChangedReadingLevelDropDown(value)),
                             const Gap(20),
                             TextField(
                               style: const TextStyle(

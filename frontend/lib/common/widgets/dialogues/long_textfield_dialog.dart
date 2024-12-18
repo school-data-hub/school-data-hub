@@ -27,6 +27,7 @@ Future<String?> longTextFieldDialog(
                     child: TextField(
                       maxLines: 4,
                       textAlign: TextAlign.start,
+                      textAlignVertical: TextAlignVertical.top,
                       style: const TextStyle(fontSize: 17),
                       keyboardType: TextInputType.multiline,
                       controller: textEditingController,

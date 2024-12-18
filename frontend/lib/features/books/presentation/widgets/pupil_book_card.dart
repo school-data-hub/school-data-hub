@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:schuldaten_hub/common/domain/env_manager.dart';
 import 'package:schuldaten_hub/common/domain/session_manager.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
+import 'package:schuldaten_hub/common/theme/colors.dart';
 import 'package:schuldaten_hub/common/theme/styles.dart';
 import 'package:schuldaten_hub/common/utils/extensions.dart';
 import 'package:schuldaten_hub/common/widgets/dialogues/confirmation_dialog.dart';
@@ -44,13 +45,13 @@ class PupilBookCard extends StatelessWidget {
                   locator<SessionManager>().credentials.value.username ||
               !locator<SessionManager>().credentials.value.isAdmin!) {
             informationDialog(context, 'Keine Berechtigung',
-                'Arbeitshefte können nur von der eintragenden Person bearbeitet werden!');
+                'Ausleihen können nur von der eintragenden Person bearbeitet werden!');
             return;
           }
           final bool? result = await confirmationDialog(
               context: context,
-              title: 'Arbeitsheft löschen',
-              message: 'Arbeitsheft "${book.title}" wirklich löschen?');
+              title: 'Ausleihe löschen',
+              message: 'Ausleihe von "${book.title}" wirklich löschen?');
           if (result == true) {
             // locator<BookManager>()
             //     .deletePupilBook(pupilId, book.bookId);
@@ -206,9 +207,12 @@ class PupilBookCard extends StatelessWidget {
                                   state: status);
                             },
                             child: Text(
-                              pupilBook.state ?? 'Keine Einträge',
+                              (pupilBook.state == null || pupilBook.state == '')
+                                  ? 'Kein Eintrag'
+                                  : pupilBook.state!,
                               style: const TextStyle(
                                 fontSize: 16,
+                                color: AppColors.interactiveColor,
                               ),
                             ),
                           ),
@@ -234,7 +238,7 @@ class PupilBookCard extends StatelessWidget {
                               lendingId: pupilBook.lendingId,
                             );
                           },
-                          style: AppStyles.actionButtonStyle,
+                          style: AppStyles.successButtonStyle,
                           child: const Text(
                             'BUCH ZURÜCKGEBEN',
                             style: AppStyles.buttonTextStyle,

@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 
 import 'package:schuldaten_hub/features/learning_support/domain/learning_support_manager.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
-import 'package:schuldaten_hub/features/learning_support/presentation/new_support_category_goal_page/new_support_category_goal_page.dart';
+import 'package:schuldaten_hub/features/learning_support/presentation/new_support_category_status_page/new_support_category_status_page.dart';
 
-class NewSupportCategoryGoal extends StatefulWidget {
+class NewSupportCategoryStatus extends StatefulWidget {
   final String appBarTitle;
   final int pupilId;
   final int goalCategoryId;
   final String elementType;
 
-  const NewSupportCategoryGoal(
+  const NewSupportCategoryStatus(
       {super.key,
       required this.appBarTitle,
       required this.pupilId,
@@ -22,7 +22,8 @@ class NewSupportCategoryGoal extends StatefulWidget {
       NewSupportCategoryStatusController();
 }
 
-class NewSupportCategoryStatusController extends State<NewSupportCategoryGoal> {
+class NewSupportCategoryStatusController
+    extends State<NewSupportCategoryStatus> {
   @override
   void initState() {
     super.initState();
