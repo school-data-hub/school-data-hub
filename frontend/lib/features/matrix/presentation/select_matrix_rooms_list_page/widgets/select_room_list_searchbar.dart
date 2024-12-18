@@ -3,9 +3,9 @@ import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/domain/models/enums.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/theme/colors.dart';
-import 'package:schuldaten_hub/common/widgets/search_text_field.dart';
 import 'package:schuldaten_hub/features/matrix/domain/filters/matrix_policy_filter_manager.dart';
 import 'package:schuldaten_hub/features/matrix/domain/models/matrix_room.dart';
+import 'package:schuldaten_hub/features/matrix/presentation/widgets/matrix_search_text_field.dart';
 import 'package:schuldaten_hub/features/matrix/presentation/select_matrix_rooms_list_page/controller/select_matrix_rooms_list_controller.dart';
 import 'package:schuldaten_hub/features/matrix/presentation/select_matrix_rooms_list_page/widgets/select_matrix_rooms_filter_bottom_sheet.dart';
 import 'package:watch_it/watch_it.dart';
@@ -72,7 +72,7 @@ class SelectRoomListSearchBar extends WatchingWidget {
             child: Row(
               children: [
                 Expanded(
-                    child: SearchTextField(
+                    child: MatrixSearchTextField(
                         searchType: SearchType.room,
                         hintText: 'Raum suchen',
                         refreshFunction: locator<MatrixPolicyFilterManager>()

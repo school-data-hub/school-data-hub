@@ -6,7 +6,7 @@ import 'package:schuldaten_hub/common/theme/colors.dart';
 import 'package:schuldaten_hub/features/credit/credit_list_page/widgets/credit_filter_bottom_sheet.dart';
 import 'package:schuldaten_hub/features/matrix/domain/filters/matrix_policy_filter_manager.dart';
 import 'package:schuldaten_hub/features/matrix/domain/models/matrix_user.dart';
-import 'package:schuldaten_hub/features/matrix/presentation/matrix_search_text_field.dart';
+import 'package:schuldaten_hub/features/matrix/presentation/widgets/matrix_search_text_field.dart';
 import 'package:watch_it/watch_it.dart';
 
 class MatrixUsersListSearchBar extends WatchingWidget {

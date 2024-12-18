@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:schuldaten_hub/common/domain/session_manager.dart';
+import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/theme/colors.dart';
 import 'package:schuldaten_hub/common/theme/styles.dart';
-import 'package:schuldaten_hub/common/services/locator.dart';
-import 'package:schuldaten_hub/common/domain/session_manager.dart';
-import 'package:schuldaten_hub/features/matrix/domain/models/matrix_room.dart';
-import 'package:schuldaten_hub/features/matrix/presentation/select_matrix_rooms_list_page/controller/select_matrix_rooms_list_controller.dart';
 import 'package:schuldaten_hub/features/matrix/domain/matrix_policy_manager.dart';
 import 'package:schuldaten_hub/features/matrix/domain/matrix_room_helpers.dart';
+import 'package:schuldaten_hub/features/matrix/domain/models/matrix_room.dart';
+import 'package:schuldaten_hub/features/matrix/presentation/select_matrix_rooms_list_page/controller/select_matrix_rooms_list_controller.dart';
 
 class NewMatrixUserPage extends StatefulWidget {
   const NewMatrixUserPage({super.key});

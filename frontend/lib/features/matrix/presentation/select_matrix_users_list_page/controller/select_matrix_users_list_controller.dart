@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/features/matrix/domain/filters/matrix_policy_filter_manager.dart';
+import 'package:schuldaten_hub/features/matrix/domain/matrix_policy_manager.dart';
 import 'package:schuldaten_hub/features/matrix/domain/models/matrix_user.dart';
 import 'package:schuldaten_hub/features/matrix/presentation/select_matrix_users_list_page/select_matrix_users_list_page.dart';
-import 'package:schuldaten_hub/features/matrix/domain/matrix_policy_manager.dart';
-import 'package:schuldaten_hub/features/matrix/domain/matrix_user_helpers.dart';
 import 'package:schuldaten_hub/features/pupil/domain/filters/pupil_filter_enums.dart';
 import 'package:schuldaten_hub/features/pupil/domain/filters/pupil_filter_manager.dart';
 import 'package:watch_it/watch_it.dart';
@@ -93,12 +92,12 @@ class SelectMatrixUsersListController extends State<SelectMatrixUsersList> {
   Widget build(BuildContext context) {
     List<MatrixUser> filteredUsers =
         watchValue((MatrixPolicyFilterManager x) => x.filteredMatrixUsers);
-    List<
-        MatrixUser> filteredListedUsers = MatrixUserHelper.usersFromUserIds(widget
-            .selectableMatrixUsers!) //locator<MatrixPolicyManager>().matrixUsers.value
+    // List<
+    //     MatrixUser> filteredListedUsers = MatrixUserHelper.usersFromUserIds(widget
+    //         .selectableMatrixUsers!) //locator<MatrixPolicyManager>().matrixUsers.value
 
-        .where((user) => filteredUsers.contains(user))
-        .toList();
-    return SelectMatrixUsersListPage(this, filteredListedUsers);
+    //     .where((user) => filteredUsers.contains(user))
+    //     .toList();
+    return SelectMatrixUsersListPage(this, filteredUsers);
   }
 }

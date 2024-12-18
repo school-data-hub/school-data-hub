@@ -12,7 +12,7 @@ import 'package:schuldaten_hub/features/books/utils/book_ids_pdf_generator.dart'
 import 'package:schuldaten_hub/features/competence/utils/competence_report_pdf.dart';
 import 'package:schuldaten_hub/features/matrix/domain/matrix_policy_manager.dart';
 import 'package:schuldaten_hub/features/matrix/presentation/pupil_matrix_contacts.dart';
-import 'package:schuldaten_hub/features/matrix/presentation/set_matrix_environment_values_page.dart';
+import 'package:schuldaten_hub/features/matrix/presentation/set_matrix_environment_page/set_matrix_environment_view_model.dart';
 import 'package:schuldaten_hub/features/schooldays/presentation/schooldays_calendar_page.dart';
 import 'package:schuldaten_hub/features/users/domain/user_manager.dart';
 import 'package:schuldaten_hub/features/users/presentation/users_list_page/users_list_page.dart';
@@ -99,7 +99,7 @@ class SettingsAdminSection extends AbstractSettingsSection with WatchItMixin {
                 }
                 if (context.mounted) {
                   Navigator.of(context).push(MaterialPageRoute(
-                    builder: (ctx) => const SetMatrixEnvironmentValuesPage(),
+                    builder: (ctx) => const SetMatrixEnvironment(),
                   ));
                 }
               }

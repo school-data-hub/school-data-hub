@@ -5,44 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/theme/colors.dart';
 import 'package:schuldaten_hub/common/theme/styles.dart';
-import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/utils/import_string_from_txt_file.dart';
 import 'package:schuldaten_hub/common/utils/scanner.dart';
-import 'package:schuldaten_hub/features/matrix/domain/matrix_policy_manager.dart';
+import 'package:schuldaten_hub/features/matrix/presentation/set_matrix_environment_page/set_matrix_environment_view_model.dart';
 
-class SetMatrixEnvironmentValuesPage extends StatefulWidget {
-  const SetMatrixEnvironmentValuesPage({super.key});
-
-  @override
-  SetMatrixEnvironmentValuesPageState createState() =>
-      SetMatrixEnvironmentValuesPageState();
-}
-
-class SetMatrixEnvironmentValuesPageState
-    extends State<SetMatrixEnvironmentValuesPage> {
-  final TextEditingController urlTextFieldController = TextEditingController();
-  final TextEditingController matrixTokenTextFieldController =
-      TextEditingController();
-  final TextEditingController policyTokenTextFieldController =
-      TextEditingController();
-  Set<String> roomIds = {};
-  //Set<int> pupilIds = {};
-  void setMatrixEnvironment() async {
-    if (!locator.isRegistered<MatrixPolicyManager>()) {
-      registerMatrixPolicyManager();
-    }
-
-    String url = 'https://${urlTextFieldController.text}';
-    String matrixToken = matrixTokenTextFieldController.text;
-    String policyToken = policyTokenTextFieldController.text;
-    await locator.allReady();
-
-    locator<MatrixPolicyManager>().setMatrixEnvironmentValues(
-        url: url,
-        matrixToken: matrixToken,
-        policyToken: policyToken,
-        compulsoryRooms: []);
-  }
+class SetupMatrixEnvironmentPage extends StatelessWidget {
+  final SetMatrixEnvironmentViewModel viewModel;
+  const SetupMatrixEnvironmentPage(this.viewModel, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -93,7 +62,7 @@ class SetMatrixEnvironmentValuesPageState
                       child: TextField(
                         minLines: 1,
                         maxLines: 3,
-                        controller: urlTextFieldController,
+                        controller: viewModel.urlTextFieldController,
                         decoration: AppStyles.textFieldDecoration(
                             labelText: 'Matrix-URL'),
                       ),
@@ -104,7 +73,7 @@ class SetMatrixEnvironmentValuesPageState
                 TextField(
                   minLines: 1,
                   maxLines: 2,
-                  controller: matrixTokenTextFieldController,
+                  controller: viewModel.matrixTokenTextFieldController,
                   decoration: AppStyles.textFieldDecoration(
                       labelText: 'Matrix-Admin Token'),
                 ),
@@ -112,7 +81,7 @@ class SetMatrixEnvironmentValuesPageState
                 TextField(
                   minLines: 1,
                   maxLines: 2,
-                  controller: policyTokenTextFieldController,
+                  controller: viewModel.policyTokenTextFieldController,
                   decoration: AppStyles.textFieldDecoration(
                       labelText: 'Matrix-Corporal Token'),
                 ),
@@ -121,7 +90,7 @@ class SetMatrixEnvironmentValuesPageState
                 ElevatedButton(
                   style: AppStyles.successButtonStyle,
                   onPressed: () async {
-                    setMatrixEnvironment();
+                    viewModel.setMatrixEnvironment();
                     Navigator.pop(context);
                   },
                   child: const Text(
@@ -148,15 +117,16 @@ class SetMatrixEnvironmentValuesPageState
 
                       // final MatrixCredentials matrixCredentials =
                       //     MatrixCredentials.fromJson(matrixCredentialsMap);
-                      urlTextFieldController.text = matrixCredentialsMap['url'];
+                      viewModel.urlTextFieldController.text =
+                          matrixCredentialsMap['url'];
 
-                      matrixTokenTextFieldController.text =
+                      viewModel.matrixTokenTextFieldController.text =
                           matrixCredentialsMap['matrixToken'];
 
-                      policyTokenTextFieldController.text =
+                      viewModel.policyTokenTextFieldController.text =
                           matrixCredentialsMap['policyToken'];
 
-                      setMatrixEnvironment();
+                      viewModel.setMatrixEnvironment();
 
                       if (context.mounted) {
                         Navigator.pop(context);
@@ -187,14 +157,5 @@ class SetMatrixEnvironmentValuesPageState
         ),
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    // Clean up the controller when the widget is removed from the tree
-    urlTextFieldController.dispose();
-    matrixTokenTextFieldController.dispose();
-    policyTokenTextFieldController.dispose();
-    super.dispose();
   }
 }
