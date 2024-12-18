@@ -4,19 +4,21 @@ import 'package:schuldaten_hub/common/domain/models/enums.dart';
 import 'package:schuldaten_hub/common/services/api/api_settings.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_service.dart';
-import 'package:schuldaten_hub/common/theme/colors.dart';
+import 'package:schuldaten_hub/features/learning_support/domain/learning_support_helper_functions.dart';
 import 'package:schuldaten_hub/features/learning_support/domain/models/support_category/support_category.dart';
 import 'package:schuldaten_hub/features/learning_support/domain/models/support_goal/support_goal.dart';
-import 'package:schuldaten_hub/features/pupil/domain/pupil_manager.dart';
 import 'package:schuldaten_hub/features/pupil/domain/models/pupil_data.dart';
 import 'package:schuldaten_hub/features/pupil/domain/models/pupil_proxy.dart';
+import 'package:schuldaten_hub/features/pupil/domain/pupil_manager.dart';
 
 class LearningSupportManager {
+  final _goalCategories = ValueNotifier<List<SupportCategory>>([]);
   ValueListenable<List<SupportCategory>> get goalCategories => _goalCategories;
+
+  final _isRunning = ValueNotifier<bool>(false);
   ValueListenable<bool> get isRunning => _isRunning;
 
-  final _goalCategories = ValueNotifier<List<SupportCategory>>([]);
-  final _isRunning = ValueNotifier<bool>(false);
+  Map<int, int> _rootCategoriesMap = {};
 
   LearningSupportManager();
 
@@ -36,9 +38,12 @@ class LearningSupportManager {
   Future<void> fetchSupportCategories() async {
     final List<SupportCategory> goalCategories =
         await apiLearningSupportService.fetchGoalCategories();
-
+    // let's sort the categories by their category id to make sure they are in the right order
+    goalCategories.sort((a, b) => a.categoryId.compareTo(b.categoryId));
     _goalCategories.value = goalCategories;
-
+    _rootCategoriesMap.clear();
+    _rootCategoriesMap =
+        LearningSupportHelper.generateRootCategoryMap(goalCategories);
     notificationService.showSnackBar(NotificationType.success,
         '${goalCategories.length} Kategorien geladen');
 
@@ -150,34 +155,16 @@ class LearningSupportManager {
   }
 
   SupportCategory getRootSupportCategory(int categoryId) {
-    SupportCategory goalCategory = _goalCategories.value
-        .firstWhere((element) => element.categoryId == categoryId);
-    if (goalCategory.parentCategory == null) {
-      return goalCategory;
-    } else {
-      return getRootSupportCategory(goalCategory.parentCategory!);
-    }
+    final rootCategoryId = _rootCategoriesMap[categoryId];
+    return getSupportCategory(rootCategoryId!);
+  }
+
+  int getRootSupportCategoryId(int categoryId) {
+    return _rootCategoriesMap[categoryId]!;
   }
 
   Color getCategoryColor(int categoryId) {
-    final SupportCategory rootCategory = getRootSupportCategory(categoryId);
-    return getRootSupportCategoryColor(rootCategory);
-  }
-
-  Color getRootSupportCategoryColor(SupportCategory goalCategory) {
-    if (goalCategory.categoryName == 'Körper, Wahrnehmung, Motorik') {
-      return AppColors.koerperWahrnehmungMotorikColor;
-    } else if (goalCategory.categoryName == 'Sozialkompetenz / Emotionalität') {
-      return AppColors.sozialEmotionalColor;
-    } else if (goalCategory.categoryName == 'Mathematik') {
-      return AppColors.mathematikColor;
-    } else if (goalCategory.categoryName == 'Lernen und Leisten') {
-      return AppColors.lernenLeistenColor;
-    } else if (goalCategory.categoryName == 'Deutsch') {
-      return AppColors.deutschColor;
-    } else if (goalCategory.categoryName == 'Sprache und Sprechen') {
-      return AppColors.spracheSprechenColor;
-    }
-    return Colors.deepPurple;
+    final rootCategory = getRootSupportCategory(categoryId);
+    return LearningSupportHelper.getRootSupportCategoryColor(rootCategory);
   }
 }

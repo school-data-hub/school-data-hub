@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
-import 'package:schuldaten_hub/features/learning_support/domain/models/support_category/support_category.dart';
+import 'package:schuldaten_hub/common/theme/colors.dart';
 import 'package:schuldaten_hub/features/learning_support/domain/learning_support_manager.dart';
+import 'package:schuldaten_hub/features/learning_support/domain/models/support_category/support_category.dart';
 
 class SupportCategoryTree extends StatelessWidget {
   final int? parentId;
@@ -22,18 +23,18 @@ class SupportCategoryTree extends StatelessWidget {
     for (var goalCategory in goalCategories) {
       if (backGroundColor == null) {
         if (goalCategory.categoryName == 'Körper, Wahrnehmung, Motorik') {
-          categoryBackgroundColor = const Color.fromARGB(255, 156, 76, 149);
+          categoryBackgroundColor = AppColors.koerperWahrnehmungMotorikColor;
         } else if (goalCategory.categoryName ==
             'Sozialkompetenz / Emotionalität') {
-          categoryBackgroundColor = const Color.fromARGB(255, 233, 127, 22);
+          categoryBackgroundColor = AppColors.sozialEmotionalColor;
         } else if (goalCategory.categoryName == 'Mathematik') {
-          categoryBackgroundColor = const Color.fromARGB(255, 5, 118, 172);
+          categoryBackgroundColor = AppColors.mathematikColor;
         } else if (goalCategory.categoryName == 'Lernen und Leisten') {
-          categoryBackgroundColor = const Color.fromARGB(255, 5, 155, 88);
+          categoryBackgroundColor = AppColors.lernenLeistenColor;
         } else if (goalCategory.categoryName == 'Deutsch') {
-          categoryBackgroundColor = const Color.fromARGB(255, 228, 70, 60);
+          categoryBackgroundColor = AppColors.deutschColor;
         } else if (goalCategory.categoryName == 'Sprache und Sprechen') {
-          categoryBackgroundColor = const Color.fromARGB(255, 244, 198, 17);
+          categoryBackgroundColor = AppColors.spracheSprechenColor;
         }
       } else {
         categoryBackgroundColor = backGroundColor!;

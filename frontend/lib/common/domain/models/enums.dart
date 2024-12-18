@@ -95,19 +95,19 @@ Map<SupportLevel, bool> initialSupportLevelFilterValues = {
 
 enum SupportArea {
   motorics(1),
-  language(2),
+  language(6),
   math(3),
-  german(4),
-  emotions(5),
-  learning(6);
+  german(5),
+  emotions(2),
+  learning(4);
 
   static const intToValue = {
     1: SupportArea.motorics,
-    2: SupportArea.language,
+    6: SupportArea.language,
     3: SupportArea.math,
-    4: SupportArea.german,
-    5: SupportArea.emotions,
-    6: SupportArea.learning,
+    5: SupportArea.german,
+    2: SupportArea.emotions,
+    4: SupportArea.learning,
   };
 
   final int value;

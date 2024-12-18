@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/features/matrix/domain/matrix_policy_manager.dart';
-import 'package:schuldaten_hub/features/matrix/presentation/set_matrix_environment_page/set_matrix_environment_values_page.dart';
+import 'package:schuldaten_hub/features/matrix/presentation/set_matrix_environment_page/set_matrix_environment_page.dart';
 
 class SetMatrixEnvironment extends StatefulWidget {
   const SetMatrixEnvironment({super.key});

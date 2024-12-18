@@ -1,6 +1,9 @@
 import 'package:collection/collection.dart';
-import 'package:schuldaten_hub/common/services/locator.dart';
+import 'package:flutter/material.dart';
 import 'package:schuldaten_hub/common/domain/session_manager.dart';
+import 'package:schuldaten_hub/common/services/locator.dart';
+import 'package:schuldaten_hub/common/theme/colors.dart';
+import 'package:schuldaten_hub/features/learning_support/domain/models/support_category/support_category.dart';
 import 'package:schuldaten_hub/features/learning_support/domain/models/support_category/support_category_status.dart';
 import 'package:schuldaten_hub/features/learning_support/domain/models/support_goal/support_goal.dart';
 import 'package:schuldaten_hub/features/pupil/domain/models/pupil_proxy.dart';
@@ -108,5 +111,60 @@ class LearningSupportHelper {
       return true;
     }
     return false;
+  }
+
+  static Map<int, int> generateRootCategoryMap(
+      List<SupportCategory> categories) {
+    // Map for quick lookup of categories by their ID
+    final Map<int, SupportCategory> categoryMap = {
+      for (var category in categories) category.categoryId: category
+    };
+
+    // Cache to store root category results for efficiency
+    final Map<int, int> rootCategoryCache = {};
+
+    int findRootCategory(int categoryId) {
+      // Check if result is already cached
+      if (rootCategoryCache.containsKey(categoryId)) {
+        return rootCategoryCache[categoryId]!;
+      }
+
+      final category = categoryMap[categoryId];
+      if (category == null || category.parentCategory == null) {
+        // Base case: If there's no parent, this is the root category
+        rootCategoryCache[categoryId] = categoryId;
+        return categoryId;
+      }
+
+      // Recursive case: Find the root of the parent category
+      final rootId = findRootCategory(category.parentCategory!);
+      rootCategoryCache[categoryId] = rootId; // Cache the result
+      return rootId;
+    }
+
+    // Build the final map
+    final Map<int, int> result = {};
+    for (var category in categories) {
+      result[category.categoryId] = findRootCategory(category.categoryId);
+    }
+
+    return result;
+  }
+
+  static Color getRootSupportCategoryColor(SupportCategory goalCategory) {
+    if (goalCategory.categoryName == 'Körper, Wahrnehmung, Motorik') {
+      return AppColors.koerperWahrnehmungMotorikColor;
+    } else if (goalCategory.categoryName == 'Sozialkompetenz / Emotionalität') {
+      return AppColors.sozialEmotionalColor;
+    } else if (goalCategory.categoryName == 'Mathematik') {
+      return AppColors.mathematikColor;
+    } else if (goalCategory.categoryName == 'Lernen und Leisten') {
+      return AppColors.lernenLeistenColor;
+    } else if (goalCategory.categoryName == 'Deutsch') {
+      return AppColors.deutschColor;
+    } else if (goalCategory.categoryName == 'Sprache und Sprechen') {
+      return AppColors.spracheSprechenColor;
+    }
+    return Colors.deepPurple;
   }
 }

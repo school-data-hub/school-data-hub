@@ -24,9 +24,9 @@ class CompetenceHelper {
   }
 
   static Color getCompetenceColor(int competenceId) {
-    final Competence rootCategory =
+    final Competence rootCcompetence =
         locator<CompetenceManager>().getRootCompetence(competenceId);
-    return getRootCompetenceColor(rootCategory);
+    return getRootCompetenceColor(rootCcompetence);
   }
 
   static Color getRootCompetenceColor(Competence competence) {

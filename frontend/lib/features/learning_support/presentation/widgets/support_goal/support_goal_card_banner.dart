@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
+import 'package:schuldaten_hub/features/learning_support/domain/learning_support_helper_functions.dart';
 import 'package:schuldaten_hub/features/learning_support/domain/learning_support_manager.dart';
 
 class SupportCategoryCardBanner extends StatelessWidget {
@@ -10,7 +11,7 @@ class SupportCategoryCardBanner extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
         decoration: BoxDecoration(
-          color: locator<LearningSupportManager>().getRootSupportCategoryColor(
+          color: LearningSupportHelper.getRootSupportCategoryColor(
               locator<LearningSupportManager>()
                   .getRootSupportCategory(categoryId)),
           borderRadius: BorderRadius.circular(5.0),

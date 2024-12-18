@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:schuldaten_hub/features/learning_support/presentation/goal_category_list_page/category_list_view.dart';
+import 'package:schuldaten_hub/features/learning_support/presentation/support_category_list_page/support_category_list_page.dart';
 
 class CategoryList extends StatefulWidget {
   const CategoryList({
@@ -13,6 +13,6 @@ class CategoryList extends StatefulWidget {
 class CategoryListController extends State<CategoryList> {
   @override
   Widget build(BuildContext context) {
-    return CategoryListView(this);
+    return CategoryListPage(this);
   }
 }

@@ -37,7 +37,7 @@ class AppColors {
   static const contactedFailedColor = Color.fromRGBO(239, 108, 0, 1);
   static const goneHomeColor = Colors.blue;
 
-//- Development category colore
+//- support category colors
 
   static const koerperWahrnehmungMotorikColor =
       Color.fromARGB(255, 156, 76, 149);

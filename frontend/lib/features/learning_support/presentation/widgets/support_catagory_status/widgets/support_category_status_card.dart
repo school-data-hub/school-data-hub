@@ -40,8 +40,7 @@ class SupportCategoryStatusCard extends StatelessWidget {
               child: Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(5.0),
-                  color: locator<LearningSupportManager>()
-                      .getRootSupportCategoryColor(
+                  color: LearningSupportHelper.getRootSupportCategoryColor(
                     locator<LearningSupportManager>().getRootSupportCategory(
                       supportCategoryId,
                     ),

@@ -4,6 +4,7 @@ import 'package:schuldaten_hub/common/theme/colors.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/utils/extensions.dart';
 import 'package:schuldaten_hub/common/widgets/dialogues/confirmation_dialog.dart';
+import 'package:schuldaten_hub/features/learning_support/domain/learning_support_helper_functions.dart';
 import 'package:schuldaten_hub/features/learning_support/presentation/widgets/support_catagory_status/widgets/support_category_status_entry/support_category_status_symbol.dart';
 import 'package:schuldaten_hub/features/learning_support/presentation/widgets/support_goal/support_goal_card_banner.dart';
 import 'package:schuldaten_hub/features/learning_support/domain/learning_support_manager.dart';
@@ -47,12 +48,10 @@ class SupportGoalCard extends StatelessWidget {
                       top: 8.0, bottom: 8, left: 10, right: 10),
                   child: Container(
                     decoration: BoxDecoration(
-                      color: locator<LearningSupportManager>()
-                          .getRootSupportCategoryColor(
-                              locator<LearningSupportManager>()
-                                  .getRootSupportCategory(pupil
-                                      .supportGoals![goalIndex]
-                                      .supportCategoryId)),
+                      color: LearningSupportHelper.getRootSupportCategoryColor(
+                          locator<LearningSupportManager>()
+                              .getRootSupportCategory(pupil
+                                  .supportGoals![goalIndex].supportCategoryId)),
                       borderRadius: BorderRadius.circular(5.0),
                     ),
                     child: SupportCategoryCardBanner(

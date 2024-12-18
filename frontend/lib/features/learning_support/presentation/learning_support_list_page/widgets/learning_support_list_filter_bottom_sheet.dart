@@ -105,18 +105,6 @@ class LearningSupportFilterBottomSheet extends WatchingWidget {
                         ]);
                       },
                     ),
-                    ThemedFilterChip(
-                        label: 'AO-SF',
-                        selected: valueSpecialNeeds,
-                        onSelected: (val) {
-                          filterLocator.setSupportLevelFilter(
-                              supportLevelFilterRecords: [
-                                (
-                                  filter: SupportLevel.specialNeeds,
-                                  value: val,
-                                )
-                              ]);
-                        }),
                   ],
                 ),
                 const Row(
@@ -210,8 +198,23 @@ class LearningSupportFilterBottomSheet extends WatchingWidget {
                         ]);
                       },
                     ),
+                  ],
+                ),
+                const Row(
+                  children: [
+                    Text(
+                      'Besondere Förderung',
+                      style: AppStyles.subtitle,
+                    )
+                  ],
+                ),
+                const Gap(5),
+                Wrap(
+                  spacing: 5,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: [
                     ThemedFilterChip(
-                      label: 'EF',
+                      label: 'Erstförderung',
                       selected: valueMigrationSupport,
                       onSelected: (val) {
                         locator<LearningSupportFilterManager>()
@@ -223,6 +226,18 @@ class LearningSupportFilterBottomSheet extends WatchingWidget {
                         ]);
                       },
                     ),
+                    ThemedFilterChip(
+                        label: 'AO-SF',
+                        selected: valueSpecialNeeds,
+                        onSelected: (val) {
+                          filterLocator.setSupportLevelFilter(
+                              supportLevelFilterRecords: [
+                                (
+                                  filter: SupportLevel.specialNeeds,
+                                  value: val,
+                                )
+                              ]);
+                        }),
                   ],
                 ),
                 const Gap(20),
