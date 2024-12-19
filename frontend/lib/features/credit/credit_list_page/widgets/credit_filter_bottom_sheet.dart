@@ -40,6 +40,7 @@ class CreditFilterBottomSheet extends WatchingWidget {
                       Wrap(
                         spacing: 5,
                         crossAxisAlignment: WrapCrossAlignment.center,
+                        alignment: WrapAlignment.center,
                         children: [
                           ThemedFilterChip(
                             label: 'A-Z',

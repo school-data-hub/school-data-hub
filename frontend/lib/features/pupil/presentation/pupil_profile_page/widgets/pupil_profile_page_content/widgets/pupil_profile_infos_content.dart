@@ -127,8 +127,7 @@ class PupilInfosContent extends StatelessWidget {
                 InkWell(
                   onTap: () {
                     if (pupil.contact != null && pupil.contact!.isNotEmpty) {
-                      MatrixHelperFunctions.launchMatrixUrl(
-                          context, pupil.contact!);
+                      MatrixHelper.launchMatrixUrl(context, pupil.contact!);
                     }
                   },
                   onLongPress: () async {
@@ -164,7 +163,7 @@ class PupilInfosContent extends StatelessWidget {
                   onTap: () {
                     if (pupil.parentsContact != null &&
                         pupil.parentsContact!.isNotEmpty) {
-                      MatrixHelperFunctions.launchMatrixUrl(
+                      MatrixHelper.launchMatrixUrl(
                           context, pupil.parentsContact!);
                     }
                   },

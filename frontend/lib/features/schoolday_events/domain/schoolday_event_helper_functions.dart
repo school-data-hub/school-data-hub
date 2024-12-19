@@ -177,13 +177,13 @@ class SchoolDayEventHelper {
     bool firstItem = true;
     String schooldayEventReasonText = '';
 
-    if (value.contains('gm')) {
+    if (value.contains(SchooldayEventReason.violenceAgainstPupils.value)) {
       schooldayEventReasonText =
           '${schooldayEventReasonText}Gewalt gegen Menschen';
       firstItem = false;
     }
 
-    if (value.contains('gs')) {
+    if (value.contains(SchooldayEventReason.violenceAgainstThings.value)) {
       if (firstItem == false) {
         schooldayEventReasonText = '$schooldayEventReasonText - ';
       }
@@ -191,7 +191,7 @@ class SchoolDayEventHelper {
           '${schooldayEventReasonText}Gewalt gegen Sachen';
       firstItem = false;
     }
-    if (value.contains('äa')) {
+    if (value.contains(SchooldayEventReason.annoyOthers.value)) {
       if (firstItem == false) {
         schooldayEventReasonText = '$schooldayEventReasonText - ';
       }
@@ -202,7 +202,7 @@ class SchoolDayEventHelper {
       firstItem = false;
     }
 
-    if (value.contains('il')) {
+    if (value.contains(SchooldayEventReason.ignoreInstructions.value)) {
       if (firstItem == false) {
         schooldayEventReasonText = '$schooldayEventReasonText - ';
       }
@@ -211,7 +211,7 @@ class SchoolDayEventHelper {
       firstItem == false;
     }
 
-    if (value.contains('us')) {
+    if (value.contains(SchooldayEventReason.disturbLesson.value)) {
       if (firstItem == false) {
         schooldayEventReasonText = '$schooldayEventReasonText - ';
       }
@@ -220,7 +220,7 @@ class SchoolDayEventHelper {
       firstItem = false;
     }
 
-    if (value.contains('ss')) {
+    if (value.contains(SchooldayEventReason.other.value)) {
       if (firstItem == false) {
         schooldayEventReasonText = '$schooldayEventReasonText - ';
       }

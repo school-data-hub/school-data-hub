@@ -52,6 +52,7 @@ class LearningSupportFilterBottomSheet extends WatchingWidget {
                 Wrap(
                   spacing: 5,
                   crossAxisAlignment: WrapCrossAlignment.center,
+                  alignment: WrapAlignment.center,
                   children: [
                     ThemedFilterChip(
                       label: 'Ebene 1',
@@ -119,6 +120,7 @@ class LearningSupportFilterBottomSheet extends WatchingWidget {
                 Wrap(
                   spacing: 5,
                   crossAxisAlignment: WrapCrossAlignment.center,
+                  alignment: WrapAlignment.center,
                   children: [
                     ThemedFilterChip(
                       label: 'Motorik',
@@ -212,6 +214,7 @@ class LearningSupportFilterBottomSheet extends WatchingWidget {
                 Wrap(
                   spacing: 5,
                   crossAxisAlignment: WrapCrossAlignment.center,
+                  alignment: WrapAlignment.center,
                   children: [
                     ThemedFilterChip(
                       label: 'Erstförderung',

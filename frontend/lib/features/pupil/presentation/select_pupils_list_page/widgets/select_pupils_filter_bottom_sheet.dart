@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:schuldaten_hub/common/theme/styles.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
-import 'package:schuldaten_hub/features/pupil/presentation/widgets/common_pupil_filters.dart';
+import 'package:schuldaten_hub/common/theme/styles.dart';
 import 'package:schuldaten_hub/features/pupil/domain/filters/pupils_filter.dart';
+import 'package:schuldaten_hub/features/pupil/presentation/widgets/common_pupil_filters.dart';
 import 'package:watch_it/watch_it.dart';
 
 class SelectPupilsFilterBottomSheet extends WatchingWidget {
@@ -49,6 +49,7 @@ class SelectPupilsFilterBottomSheet extends WatchingWidget {
               const Wrap(
                 spacing: 5,
                 crossAxisAlignment: WrapCrossAlignment.center,
+                alignment: WrapAlignment.center,
                 children: [],
               ),
             ],

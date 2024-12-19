@@ -13,40 +13,6 @@ Map<CompetenceFilter, bool> initialCompetenceFilterValues = {
   CompetenceFilter.S4: false
 };
 
-enum SchooldayEventFilter {
-  sevenDays,
-  admonition,
-  afternoonCareAdmonition,
-  admonitionAndBanned,
-  parentsMeeting,
-  otherEvent,
-  violenceAgainstThings,
-  violenceAgainstPupils,
-  insultOthers,
-  annoy,
-  ignoreInstructions,
-  disturbLesson,
-  other,
-  processed,
-}
-
-Map<SchooldayEventFilter, bool> initialSchooldayEventFilterValues = {
-  SchooldayEventFilter.sevenDays: false,
-  SchooldayEventFilter.admonition: false,
-  SchooldayEventFilter.afternoonCareAdmonition: false,
-  SchooldayEventFilter.admonitionAndBanned: false,
-  SchooldayEventFilter.parentsMeeting: false,
-  SchooldayEventFilter.otherEvent: false,
-  SchooldayEventFilter.violenceAgainstThings: false,
-  SchooldayEventFilter.violenceAgainstPupils: false,
-  SchooldayEventFilter.insultOthers: false,
-  SchooldayEventFilter.annoy: false,
-  SchooldayEventFilter.ignoreInstructions: false,
-  SchooldayEventFilter.disturbLesson: false,
-  SchooldayEventFilter.other: false,
-  SchooldayEventFilter.processed: false,
-};
-
 enum PupilSortMode {
   sortByName,
   sortByMissedExcused,

@@ -9,7 +9,7 @@ import 'package:schuldaten_hub/features/matrix/domain/matrix_policy_manager.dart
 import 'package:schuldaten_hub/features/matrix/domain/models/policy.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class MatrixHelperFunctions {
+class MatrixHelper {
   static Future<File> generatePolicyJsonFile() async {
     // create a new json file with the policy
 

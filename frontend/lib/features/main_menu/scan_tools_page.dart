@@ -3,10 +3,10 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:schuldaten_hub/common/domain/session_manager.dart';
+import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/theme/colors.dart';
 import 'package:schuldaten_hub/common/theme/styles.dart';
-import 'package:schuldaten_hub/common/services/locator.dart';
-import 'package:schuldaten_hub/common/domain/session_manager.dart';
 import 'package:schuldaten_hub/common/utils/barcode_stream_scanner.dart';
 import 'package:schuldaten_hub/common/utils/qr_image_picker.dart';
 import 'package:schuldaten_hub/common/widgets/dialogues/confirmation_dialog.dart';
@@ -64,6 +64,28 @@ class ScanToolsPage extends WatchingWidget {
             child: Column(
               children: [
                 const Spacer(),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      backgroundColor: Colors.amber[800],
+                      minimumSize: const Size.fromHeight(90)),
+                  onPressed: () async {
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (ctx) => const BarcodeStreamScanner(),
+                    ));
+                  },
+                  child: const Text(
+                    'Kompetenz-Check einer Gruppe',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                        color: Colors.white),
+                  ),
+                ),
+                const Gap(20),
                 Platform.isWindows && locator<SessionManager>().isAdmin.value
                     ? ElevatedButton(
                         style: ElevatedButton.styleFrom(

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gap/gap.dart';
-import 'package:schuldaten_hub/common/widgets/custom_expansion_tile/custom_expasion_tile_hook.dart';
 import 'package:schuldaten_hub/common/widgets/custom_expansion_tile/custom_expansion_tile_content.dart';
 import 'package:schuldaten_hub/common/widgets/custom_expansion_tile/custom_expansion_tile_switch.dart';
+import 'package:schuldaten_hub/common/widgets/custom_expansion_tile/custom_expasion_tile_hook.dart';
+import 'package:schuldaten_hub/features/competence/domain/competence_helper.dart';
 import 'package:schuldaten_hub/features/competence/domain/models/competence.dart';
 import 'package:schuldaten_hub/features/competence/presentation/competence_list_page/widgets/competence_filtered_pupils.dart';
-import 'package:schuldaten_hub/features/competence/domain/competence_helper.dart';
 
 class CommonCompetenceCard extends HookWidget {
   final Color competenceBackgroundColor;

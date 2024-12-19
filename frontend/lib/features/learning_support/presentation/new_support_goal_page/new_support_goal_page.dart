@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/theme/colors.dart';
 import 'package:schuldaten_hub/common/theme/styles.dart';
-import 'package:schuldaten_hub/common/services/locator.dart';
+import 'package:schuldaten_hub/features/learning_support/domain/learning_support_manager.dart';
 import 'package:schuldaten_hub/features/learning_support/presentation/new_support_category_status_page/controller/new_support_category_status_controller.dart';
 import 'package:schuldaten_hub/features/learning_support/presentation/select_support_category_page/controller/select_support_category_controller.dart';
 import 'package:schuldaten_hub/features/learning_support/presentation/widgets/support_category_parents_names.dart';
 import 'package:schuldaten_hub/features/learning_support/presentation/widgets/support_category_widgets/support_category_status_dropdown.dart';
-import 'package:schuldaten_hub/features/learning_support/domain/learning_support_manager.dart';
 import 'package:schuldaten_hub/features/pupil/domain/pupil_manager.dart';
 
 class NewSupportGoalPage extends StatelessWidget {
@@ -100,6 +100,7 @@ class NewSupportGoalPage extends StatelessWidget {
                                     const EdgeInsets.only(top: 5.0, bottom: 8),
                                 child: Wrap(
                                   crossAxisAlignment: WrapCrossAlignment.center,
+                                  alignment: WrapAlignment.center,
                                   children: [
                                     ...categoryTreeAncestorsNames(
                                       categoryId: controller.goalCategoryId!,

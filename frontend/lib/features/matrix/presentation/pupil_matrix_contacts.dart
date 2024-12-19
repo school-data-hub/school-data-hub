@@ -98,9 +98,8 @@ class PupilsContactList extends WatchingWidget {
                                                         'Nachricht an ${pupil.firstName} schicken?');
                                             if (confirm == true &&
                                                 context.mounted) {
-                                              MatrixHelperFunctions
-                                                  .launchMatrixUrl(
-                                                      context, pupil.contact!);
+                                              MatrixHelper.launchMatrixUrl(
+                                                  context, pupil.contact!);
                                             }
                                           },
                                           onLongPress: () async {
@@ -158,9 +157,9 @@ class PupilsContactList extends WatchingWidget {
                                                           'Nachricht an ${pupil.firstName}s Erziehungsberechtigte schicken?');
                                               if (confirm == true &&
                                                   context.mounted) {
-                                                MatrixHelperFunctions
-                                                    .launchMatrixUrl(context,
-                                                        pupil.parentsContact!);
+                                                MatrixHelper.launchMatrixUrl(
+                                                    context,
+                                                    pupil.parentsContact!);
                                               }
                                             },
                                             onLongPress: () async {

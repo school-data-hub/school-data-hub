@@ -54,6 +54,7 @@ class CommonPupilFiltersWidget extends WatchingWidget {
         Wrap(
           spacing: 5,
           crossAxisAlignment: WrapCrossAlignment.center,
+          alignment: WrapAlignment.center,
           children: [
             for (final schoolGradeFilter in schoolGradeFilters)
               ThemedFilterChip(
@@ -77,6 +78,7 @@ class CommonPupilFiltersWidget extends WatchingWidget {
         Wrap(
           spacing: 5,
           crossAxisAlignment: WrapCrossAlignment.center,
+          alignment: WrapAlignment.center,
           children: [
             for (final groupFilter in groupFilters)
               ThemedFilterChip(

@@ -7,6 +7,7 @@ import 'package:schuldaten_hub/common/widgets/themed_filter_chip.dart';
 import 'package:schuldaten_hub/features/pupil/domain/filters/pupils_filter.dart';
 import 'package:schuldaten_hub/features/pupil/presentation/widgets/common_pupil_filters.dart';
 import 'package:schuldaten_hub/features/schoolday_events/domain/filters/schoolday_event_filter_manager.dart';
+import 'package:schuldaten_hub/features/schoolday_events/domain/models/schoolday_event_enums.dart';
 import 'package:watch_it/watch_it.dart';
 
 class SchooldayEventFilterBottomSheet extends WatchingWidget {
@@ -32,12 +33,29 @@ class SchooldayEventFilterBottomSheet extends WatchingWidget {
         activeSchooldayEventFilters[SchooldayEventFilter.parentsMeeting]!;
     bool valueOtherEvents =
         activeSchooldayEventFilters[SchooldayEventFilter.otherEvent]!;
-    bool valueViolenceAgainstPersons = activeSchooldayEventFilters[
+    bool valueViolenceAgainstPupils = activeSchooldayEventFilters[
         SchooldayEventFilter.violenceAgainstPupils]!;
+    bool valueViolenceAgainstAdults = activeSchooldayEventFilters[
+        SchooldayEventFilter.violenceAgainstAdults]!;
+    bool valueViolenceAgainstThings = activeSchooldayEventFilters[
+        SchooldayEventFilter.violenceAgainstThings]!;
     bool valueInsultOthers =
         activeSchooldayEventFilters[SchooldayEventFilter.insultOthers]!;
+    bool valueAnnoy = activeSchooldayEventFilters[SchooldayEventFilter.annoy]!;
+    bool valueIgnoreInstructions =
+        activeSchooldayEventFilters[SchooldayEventFilter.ignoreInstructions]!;
+    bool valueDangerousBehaviour =
+        activeSchooldayEventFilters[SchooldayEventFilter.dangerousBehaviour]!;
     bool valueDisturbLesson =
         activeSchooldayEventFilters[SchooldayEventFilter.disturbLesson]!;
+    bool valueOtherReasons =
+        activeSchooldayEventFilters[SchooldayEventFilter.other]!;
+    bool valueLearningDevelopmentInfo = activeSchooldayEventFilters[
+        SchooldayEventFilter.learningDevelopmentInfo]!;
+    bool valueLearningSupportInfo =
+        activeSchooldayEventFilters[SchooldayEventFilter.learningSupportInfo]!;
+    bool valueAdmonitionInfo =
+        activeSchooldayEventFilters[SchooldayEventFilter.admonitionInfo]!;
 
     final schooldayEventFilterLocator = locator<SchooldayEventFilterManager>();
     return Padding(
@@ -65,6 +83,7 @@ class SchooldayEventFilterBottomSheet extends WatchingWidget {
                     Wrap(
                       spacing: 5,
                       crossAxisAlignment: WrapCrossAlignment.center,
+                      alignment: WrapAlignment.center,
                       children: [
                         ThemedFilterChip(
                           label: '7 Tage',
@@ -160,48 +179,181 @@ class SchooldayEventFilterBottomSheet extends WatchingWidget {
                                 ]);
                           },
                         ),
-                        ThemedFilterChip(
-                          label: '🤜🤕',
-                          selected: valueViolenceAgainstPersons,
-                          onSelected: (val) {
-                            schooldayEventFilterLocator
-                                .setFilter(schooldayEventFilters: [
-                              (
-                                filter:
-                                    SchooldayEventFilter.violenceAgainstPupils,
-                                value: val
-                              )
-                            ]);
-                          },
-                        ),
-                        ThemedFilterChip(
-                          label: '🤬💔',
-                          selected: valueInsultOthers,
-                          onSelected: (val) {
-                            schooldayEventFilterLocator.setFilter(
-                                schooldayEventFilters: [
-                                  (
-                                    filter: SchooldayEventFilter.insultOthers,
-                                    value: val
-                                  )
-                                ]);
-                          },
-                        ),
-                        ThemedFilterChip(
-                          label: '🛑🎓️',
-                          selected: valueDisturbLesson,
-                          onSelected: (val) {
-                            schooldayEventFilterLocator.setFilter(
-                                schooldayEventFilters: [
-                                  (
-                                    filter: SchooldayEventFilter.disturbLesson,
-                                    value: val
-                                  )
-                                ]);
-                          },
-                        ),
                       ],
                     ),
+                    const Gap(10),
+                    const Row(
+                      children: [
+                        Text(
+                          'Grund',
+                          style: AppStyles.subtitle,
+                        )
+                      ],
+                    ),
+                    const Gap(5),
+                    Wrap(
+                        spacing: 5,
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        alignment: WrapAlignment.center,
+                        children: [
+                          ThemedFilterChip(
+                            label: '🤜🤕',
+                            selected: valueViolenceAgainstPupils,
+                            onSelected: (val) {
+                              schooldayEventFilterLocator.setFilter(
+                                  schooldayEventFilters: [
+                                    (
+                                      filter: SchooldayEventFilter
+                                          .violenceAgainstPupils,
+                                      value: val
+                                    )
+                                  ]);
+                            },
+                          ),
+                          ThemedFilterChip(
+                            label: '🤜🎓️',
+                            selected: valueViolenceAgainstAdults,
+                            onSelected: (val) {
+                              schooldayEventFilterLocator.setFilter(
+                                  schooldayEventFilters: [
+                                    (
+                                      filter: SchooldayEventFilter
+                                          .violenceAgainstAdults,
+                                      value: val
+                                    )
+                                  ]);
+                            },
+                          ),
+                          ThemedFilterChip(
+                            label: '🤜🏠',
+                            selected: valueViolenceAgainstThings,
+                            onSelected: (val) {
+                              schooldayEventFilterLocator.setFilter(
+                                  schooldayEventFilters: [
+                                    (
+                                      filter: SchooldayEventFilter
+                                          .violenceAgainstThings,
+                                      value: val
+                                    )
+                                  ]);
+                            },
+                          ),
+                          ThemedFilterChip(
+                            label: '🤬💔',
+                            selected: valueInsultOthers,
+                            onSelected: (val) {
+                              schooldayEventFilterLocator.setFilter(
+                                  schooldayEventFilters: [
+                                    (
+                                      filter: SchooldayEventFilter.insultOthers,
+                                      value: val
+                                    )
+                                  ]);
+                            },
+                          ),
+                          ThemedFilterChip(
+                            label: '😈😖',
+                            selected: valueAnnoy,
+                            onSelected: (val) {
+                              schooldayEventFilterLocator
+                                  .setFilter(schooldayEventFilters: [
+                                (filter: SchooldayEventFilter.annoy, value: val)
+                              ]);
+                            },
+                          ),
+                          ThemedFilterChip(
+                            label: '🚨😱',
+                            selected: valueDangerousBehaviour,
+                            onSelected: (val) {
+                              schooldayEventFilterLocator
+                                  .setFilter(schooldayEventFilters: [
+                                (
+                                  filter:
+                                      SchooldayEventFilter.dangerousBehaviour,
+                                  value: val
+                                )
+                              ]);
+                            },
+                          ),
+                          ThemedFilterChip(
+                            label: '🛑🎓️',
+                            selected: valueDisturbLesson,
+                            onSelected: (val) {
+                              schooldayEventFilterLocator
+                                  .setFilter(schooldayEventFilters: [
+                                (
+                                  filter: SchooldayEventFilter.disturbLesson,
+                                  value: val
+                                )
+                              ]);
+                            },
+                          ),
+                          ThemedFilterChip(
+                            label: '🎓️🙉',
+                            selected: valueIgnoreInstructions,
+                            onSelected: (val) {
+                              schooldayEventFilterLocator
+                                  .setFilter(schooldayEventFilters: [
+                                (
+                                  filter:
+                                      SchooldayEventFilter.ignoreInstructions,
+                                  value: val
+                                )
+                              ]);
+                            },
+                          ),
+                          ThemedFilterChip(
+                            label: '💡🧠',
+                            selected: valueLearningDevelopmentInfo,
+                            onSelected: (val) {
+                              schooldayEventFilterLocator.setFilter(
+                                  schooldayEventFilters: [
+                                    (
+                                      filter: SchooldayEventFilter
+                                          .learningDevelopmentInfo,
+                                      value: val
+                                    )
+                                  ]);
+                            },
+                          ),
+                          ThemedFilterChip(
+                            label: '🛟🧠',
+                            selected: valueLearningSupportInfo,
+                            onSelected: (val) {
+                              schooldayEventFilterLocator
+                                  .setFilter(schooldayEventFilters: [
+                                (
+                                  filter:
+                                      SchooldayEventFilter.learningSupportInfo,
+                                  value: val
+                                )
+                              ]);
+                            },
+                          ),
+                          ThemedFilterChip(
+                            label: '⚠️ℹ️',
+                            selected: valueAdmonitionInfo,
+                            onSelected: (val) {
+                              schooldayEventFilterLocator
+                                  .setFilter(schooldayEventFilters: [
+                                (
+                                  filter: SchooldayEventFilter.admonitionInfo,
+                                  value: val
+                                )
+                              ]);
+                            },
+                          ),
+                          ThemedFilterChip(
+                            label: '📝',
+                            selected: valueOtherReasons,
+                            onSelected: (val) {
+                              schooldayEventFilterLocator
+                                  .setFilter(schooldayEventFilters: [
+                                (filter: SchooldayEventFilter.other, value: val)
+                              ]);
+                            },
+                          ),
+                        ]),
                     const Gap(10),
                     const Row(
                       children: [
@@ -215,6 +367,7 @@ class SchooldayEventFilterBottomSheet extends WatchingWidget {
                     Wrap(
                       spacing: 5,
                       crossAxisAlignment: WrapCrossAlignment.center,
+                      alignment: WrapAlignment.center,
                       children: [
                         ThemedFilterChip(
                           label: 'A-Z',

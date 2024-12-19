@@ -237,7 +237,7 @@ class MatrixPolicyManager {
   //- USER REPOSITORY
 
   Future createNewMatrixUser(String matrixId, String displayName) async {
-    final password = MatrixHelperFunctions.generatePassword();
+    final password = MatrixHelper.generatePassword();
     final MatrixUser? newUser = await matrixApiService.createNewMatrixUser(
       matrixId: matrixId,
       displayName: displayName,

@@ -190,8 +190,7 @@ class MatrixRepository {
 
   Future<void> putMatrixPolicy() async {
     setClientMatrixCredentials(authType: MatrixAuthType.corporal);
-    final File policyFile =
-        await MatrixHelperFunctions.generatePolicyJsonFile();
+    final File policyFile = await MatrixHelper.generatePolicyJsonFile();
     final bytes = policyFile.readAsBytesSync();
 
     final Response response = await _dioClient.put(

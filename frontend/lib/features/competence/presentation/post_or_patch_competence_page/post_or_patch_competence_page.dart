@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:schuldaten_hub/common/theme/colors.dart';
-import 'package:schuldaten_hub/common/theme/styles.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
+import 'package:schuldaten_hub/common/theme/styles.dart';
 import 'package:schuldaten_hub/common/widgets/generic_app_bar.dart';
 import 'package:schuldaten_hub/common/widgets/themed_filter_chip.dart';
-import 'package:schuldaten_hub/features/competence/domain/models/competence.dart';
 import 'package:schuldaten_hub/features/competence/domain/competence_manager.dart';
+import 'package:schuldaten_hub/features/competence/domain/models/competence.dart';
 
 class PostOrPatchCompetencePage extends StatefulWidget {
   final int? parentCompetence;

@@ -1,7 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:schuldaten_hub/common/domain/filters/filters_state_manager.dart';
-import 'package:schuldaten_hub/common/domain/models/enums.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/features/pupil/domain/filters/pupils_filter.dart';
 import 'package:schuldaten_hub/features/pupil/domain/models/pupil_proxy.dart';
@@ -155,6 +154,24 @@ class SchooldayEventFilterManager {
           }
         }
 
+        if (activeFilters[SchooldayEventFilter.violenceAgainstAdults]!) {
+          if (schooldayEvent.schooldayEventReason
+              .contains(SchooldayEventReason.violenceAgainstTeachers.value)) {
+            isMatched = true;
+            complementaryFilter = true;
+          } else if (!complementaryFilter) {
+            isMatched = false;
+          }
+        }
+        if (activeFilters[SchooldayEventFilter.violenceAgainstThings]!) {
+          if (schooldayEvent.schooldayEventReason
+              .contains(SchooldayEventReason.violenceAgainstThings.value)) {
+            isMatched = true;
+            complementaryFilter = true;
+          } else if (!complementaryFilter) {
+            isMatched = false;
+          }
+        }
         if (activeFilters[SchooldayEventFilter.insultOthers]!) {
           if (schooldayEvent.schooldayEventReason
               .contains(SchooldayEventReason.insultOthers.value)) {
@@ -164,10 +181,72 @@ class SchooldayEventFilterManager {
             isMatched = false;
           }
         }
-
+        if (activeFilters[SchooldayEventFilter.annoy]!) {
+          if (schooldayEvent.schooldayEventReason
+              .contains(SchooldayEventReason.annoyOthers.value)) {
+            isMatched = true;
+            complementaryFilter = true;
+          } else if (!complementaryFilter) {
+            isMatched = false;
+          }
+        }
+        if (activeFilters[SchooldayEventFilter.dangerousBehaviour]!) {
+          if (schooldayEvent.schooldayEventReason
+              .contains(SchooldayEventReason.dangerousBehaviour.value)) {
+            isMatched = true;
+            complementaryFilter = true;
+          } else if (!complementaryFilter) {
+            isMatched = false;
+          }
+        }
         if (activeFilters[SchooldayEventFilter.disturbLesson]!) {
           if (schooldayEvent.schooldayEventReason
               .contains(SchooldayEventReason.disturbLesson.value)) {
+            isMatched = true;
+            complementaryFilter = true;
+          } else if (!complementaryFilter) {
+            isMatched = false;
+          }
+        }
+        if (activeFilters[SchooldayEventFilter.ignoreInstructions]!) {
+          if (schooldayEvent.schooldayEventReason
+              .contains(SchooldayEventReason.ignoreInstructions.value)) {
+            isMatched = true;
+            complementaryFilter = true;
+          } else if (!complementaryFilter) {
+            isMatched = false;
+          }
+        }
+        if (activeFilters[SchooldayEventFilter.learningDevelopmentInfo]!) {
+          if (schooldayEvent.schooldayEventReason
+              .contains(SchooldayEventReason.learningDevelopmentInfo.value)) {
+            isMatched = true;
+            complementaryFilter = true;
+          } else if (!complementaryFilter) {
+            isMatched = false;
+          }
+        }
+        if (activeFilters[SchooldayEventFilter.learningSupportInfo]!) {
+          if (schooldayEvent.schooldayEventReason
+              .contains(SchooldayEventReason.learningSupportInfo.value)) {
+            isMatched = true;
+            complementaryFilter = true;
+          } else if (!complementaryFilter) {
+            isMatched = false;
+          }
+        }
+        if (activeFilters[SchooldayEventFilter.admonitionInfo]!) {
+          if (schooldayEvent.schooldayEventReason
+              .contains(SchooldayEventReason.admonitionInfo.value)) {
+            isMatched = true;
+            complementaryFilter = true;
+          } else if (!complementaryFilter) {
+            isMatched = false;
+          }
+        }
+        if (activeFilters[SchooldayEventFilter.other]!) {
+          if (schooldayEvent.schooldayEventReason
+              .contains(SchooldayEventReason.other.value)) {
             isMatched = true;
             complementaryFilter = true;
           } else if (!complementaryFilter) {
