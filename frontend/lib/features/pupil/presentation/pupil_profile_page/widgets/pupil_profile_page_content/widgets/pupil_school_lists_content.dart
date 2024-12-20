@@ -3,7 +3,7 @@ import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/theme/colors.dart';
 import 'package:schuldaten_hub/common/theme/paddings.dart';
-import 'package:schuldaten_hub/common/widgets/dialogues/long_textfield_dialog.dart';
+import 'package:schuldaten_hub/common/widgets/dialogs/long_textfield_dialog.dart';
 import 'package:schuldaten_hub/features/pupil/domain/models/pupil_proxy.dart';
 import 'package:schuldaten_hub/features/school_lists/domain/models/pupil_list.dart';
 import 'package:schuldaten_hub/features/school_lists/domain/school_list_manager.dart';

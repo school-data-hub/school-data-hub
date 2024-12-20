@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/theme/colors.dart';
 import 'package:schuldaten_hub/common/theme/paddings.dart';
-import 'package:schuldaten_hub/common/widgets/dialogues/information_dialog.dart';
+import 'package:schuldaten_hub/common/widgets/dialogs/information_dialog.dart';
 import 'package:schuldaten_hub/features/learning_support/presentation/learning_support_list_page/learning_support_list_page.dart';
 import 'package:schuldaten_hub/features/pupil/presentation/pupil_profile_page/widgets/pupil_profile_page_content/widgets/pupil_profile_learning_support_content_list.dart';
 import 'package:schuldaten_hub/features/pupil/domain/models/pupil_proxy.dart';

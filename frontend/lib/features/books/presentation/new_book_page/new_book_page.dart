@@ -81,15 +81,13 @@ class NewBookPage extends StatelessWidget {
                                 onChanged: (value) => viewModel
                                     .onChangedReadingLevelDropDown(value)),
                             const Gap(20),
-                            TextField(
-                              style: const TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold),
-                              minLines: 1,
-                              maxLines: 1,
-                              controller: viewModel.locationTextFieldController,
+                            DropdownButtonFormField<String>(
                               decoration: AppStyles.textFieldDecoration(
                                   labelText: 'Ablageort'),
+                              items: viewModel.locationDropdownItems,
+                              value: viewModel.lastLocationValue,
+                              onChanged: (value) =>
+                                  viewModel.onChangedLocationDropDown(value!),
                             ),
                           ],
                         ),

@@ -6,7 +6,7 @@ import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_service.dart';
 import 'package:schuldaten_hub/common/theme/colors.dart';
 import 'package:schuldaten_hub/common/theme/paddings.dart';
-import 'package:schuldaten_hub/common/widgets/dialogues/confirmation_dialog.dart';
+import 'package:schuldaten_hub/common/widgets/dialogs/confirmation_dialog.dart';
 import 'package:schuldaten_hub/features/attendance/domain/attendance_manager.dart';
 import 'package:schuldaten_hub/features/attendance/domain/models/missed_class.dart';
 import 'package:schuldaten_hub/features/attendance/presentation/missed_classes_pupil_list_page/missed_classes_pupil_list_page.dart';

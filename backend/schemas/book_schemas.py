@@ -135,6 +135,17 @@ book_patch_schema = BookPatchSchema()
 book_patches_schema = BookPatchSchema(many=True)
 
 
+class BookLocationSchema(Schema):
+    location = fields.String()
+
+    class Meta:
+        fields = ("location",)
+
+
+book_location_schema = BookLocationSchema()
+book_locations_schema = BookLocationSchema(many=True)
+
+
 class BookSchema(Schema):
     book_id = fields.String()
     isbn = fields.Integer()

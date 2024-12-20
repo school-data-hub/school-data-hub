@@ -16,9 +16,79 @@ class BookRepository {
   final ApiClient _client = locator<ApiClient>();
   final notificationService = locator<NotificationService>();
 
-  //- get workbooks
+  //- get book locations
 
-  static const _getBooksUrl = '/books/all/flat';
+  final _bookLocationsUrl = '/books/locations';
+
+  Future<List<String>> getBookLocations() async {
+    notificationService.apiRunning(true);
+
+    final Response response = await _client.get(_bookLocationsUrl);
+
+    notificationService.apiRunning(false);
+
+    if (response.statusCode != 200) {
+      notificationService.showSnackBar(
+          NotificationType.error, 'Fehler beim Laden der Buchstandorte');
+
+      throw ApiException('Failed to fetch book locations', response.statusCode);
+    }
+
+    final List<String> bookLocations = (response.data as List)
+        .map((e) => (e as Map<String, dynamic>)['location'].toString())
+        .toList();
+
+    return bookLocations;
+  }
+
+  Future<List<String>> postBookLocation(String location) async {
+    final data = jsonEncode({"location": location});
+
+    notificationService.apiRunning(true);
+
+    final Response response = await _client.post(_bookLocationsUrl, data: data);
+
+    notificationService.apiRunning(false);
+
+    if (response.statusCode != 200) {
+      notificationService.showSnackBar(
+          NotificationType.error, 'Fehler beim Erstellen des Buchstandorts');
+
+      throw ApiException('Failed to post book location', response.statusCode);
+    }
+
+    final List<String> bookLocations =
+        (response.data as List).map((e) => e.toString()).toList();
+
+    return bookLocations;
+  }
+
+  Future<List<String>> deleteBookLocation(String location) async {
+    final data = jsonEncode({"location": location});
+
+    notificationService.apiRunning(true);
+
+    final Response response =
+        await _client.delete(_bookLocationsUrl, data: data);
+
+    notificationService.apiRunning(false);
+
+    if (response.statusCode != 200) {
+      notificationService.showSnackBar(
+          NotificationType.error, 'Fehler beim Löschen des Buchstandorts');
+
+      throw ApiException('Failed to delete book location', response.statusCode);
+    }
+
+    final List<String> bookLocations =
+        (response.data as List).map((e) => e.toString()).toList();
+
+    return bookLocations;
+  }
+
+  //- get books
+
+  final _getBooksUrl = '/books/all/flat';
 
   Future<List<Book>> getBooks() async {
     notificationService.apiRunning(true);
@@ -29,9 +99,9 @@ class BookRepository {
 
     if (response.statusCode != 200) {
       notificationService.showSnackBar(
-          NotificationType.error, 'Fehler beim Laden der Arbeitshefte');
+          NotificationType.error, 'Fehler beim Laden der Bücher');
 
-      throw ApiException('Failed to fetch workbooks', response.statusCode);
+      throw ApiException('Failed to fetch books', response.statusCode);
     }
     if (response.data == []) {
       return [];
@@ -42,7 +112,7 @@ class BookRepository {
     return books;
   }
 
-  //- post new workbook
+  //- post new book
 
   static const _postBookUrl = '/books/new';
 
@@ -72,9 +142,9 @@ class BookRepository {
 
     if (response.statusCode != 200) {
       notificationService.showSnackBar(
-          NotificationType.error, 'Fehler beim Erstellen des Arbeitshefts');
+          NotificationType.error, 'Fehler beim Erstellen des Buches');
 
-      throw ApiException('Failed to fetch workbooks', response.statusCode);
+      throw ApiException('Failed to post book', response.statusCode);
     }
 
     Book newBook = Book.fromJson(response.data);
@@ -82,9 +152,9 @@ class BookRepository {
     return newBook;
   }
 
-  //- patch workbook
+  //- patch book
 
-  String _patchBookImage(String bookId) {
+  String _patchBook(String bookId) {
     return '/books/$bookId';
   }
 
@@ -109,7 +179,7 @@ class BookRepository {
     notificationService.apiRunning(true);
 
     final Response response = await _client.patch(
-      _patchBookImage((bookId)),
+      _patchBook((bookId)),
       data: data,
     );
 
@@ -117,9 +187,9 @@ class BookRepository {
 
     if (response.statusCode != 200) {
       notificationService.showSnackBar(
-          NotificationType.error, 'Fehler beim Aktualisieren des Arbeitshefts');
+          NotificationType.error, 'Fehler beim Aktualisieren des Buches');
 
-      throw ApiException('Failed to update a workbook', response.statusCode);
+      throw ApiException('Failed to update a book', response.statusCode);
     }
 
     final Book updatedBook = Book.fromJson(response.data);
@@ -205,8 +275,7 @@ class BookRepository {
       notificationService.showSnackBar(
           NotificationType.error, 'Fehler beim Hochladen des Bildes');
 
-      throw ApiException(
-          'Failed to upload workbook image', response.statusCode);
+      throw ApiException('Failed to upload book image', response.statusCode);
     }
 
     final Book book = Book.fromJson(response.data);
@@ -233,7 +302,7 @@ class BookRepository {
       notificationService.showSnackBar(
           NotificationType.error, 'Fehler beim Laden des Bildes');
 
-      throw ApiException('Failed to fetch workbook image', response.statusCode);
+      throw ApiException('Failed to fetch book image', response.statusCode);
     }
 
     final encryptedBytes = Uint8List.fromList(response.data!);
@@ -260,13 +329,12 @@ class BookRepository {
       notificationService.showSnackBar(
           NotificationType.error, 'Fehler beim Löschen des Bildes');
 
-      throw ApiException(
-          'Failed to delete workbook image', response.statusCode);
+      throw ApiException('Failed to delete book image', response.statusCode);
     }
 
-    final Book workbook = Book.fromJson(response.data);
+    final Book book = Book.fromJson(response.data);
 
-    return workbook;
+    return book;
   }
 
   Future<bool> deleteBook(String bookId) async {
@@ -278,9 +346,9 @@ class BookRepository {
 
     if (response.statusCode != 200) {
       notificationService.showSnackBar(
-          NotificationType.error, 'Fehler beim Löschen des Arbeitshefts');
+          NotificationType.error, 'Fehler beim Löschen des Buches');
 
-      throw ApiException('Failed to delete a workbook', response.statusCode);
+      throw ApiException('Failed to delete a book', response.statusCode);
     }
 
     return true;
@@ -289,7 +357,7 @@ class BookRepository {
   //- these are not being used
   static const getBooksWithPupils = '/books/all';
 
-  String getBook(int isbn) {
-    return '/workbooks/$isbn';
+  String _getBook(int bookId) {
+    return '/books/$bookId';
   }
 }

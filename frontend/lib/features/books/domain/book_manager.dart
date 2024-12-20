@@ -13,9 +13,14 @@ import 'package:schuldaten_hub/features/books/domain/models/book.dart';
 import 'package:schuldaten_hub/features/pupil/domain/pupil_manager.dart';
 
 class BookManager {
+  final _books = ValueNotifier<List<Book>>([]);
   ValueListenable<List<Book>> get books => _books;
 
-  final _books = ValueNotifier<List<Book>>([]);
+  final _locations = ValueNotifier<List<String>>([]);
+  ValueListenable<List<String>> get locations => _locations;
+
+  final _lastLocationValue = ValueNotifier<String>('Bitte auswählen');
+  ValueListenable<String> get lastLocationValue => _lastLocationValue;
 
   BookManager();
 
@@ -31,12 +36,48 @@ class BookManager {
 
   Future<BookManager> init() async {
     await getBooks();
+    await getLocations();
 
     return this;
   }
 
   void clearData() {
     _books.value = [];
+  }
+
+  Future<void> getLocations() async {
+    final List<String> responseLocations =
+        await bookRepository.getBookLocations();
+
+    _locations.value = responseLocations;
+
+    // if (_lastLocationValue.value.isEmpty && responseLocations.isNotEmpty) {
+    //   _lastLocationValue.value = responseLocations.first;
+    // }
+
+    return;
+  }
+
+  Future<void> addLocation(String location) async {
+    final List<String> responseLocations =
+        await bookRepository.postBookLocation(location);
+
+    _locations.value = responseLocations;
+
+    return;
+  }
+
+  Future<void> deleteLocation(String location) async {
+    final List<String> responseLocations =
+        await bookRepository.deleteBookLocation(location);
+
+    _locations.value = responseLocations;
+
+    return;
+  }
+
+  void setLastLocationValue(String location) {
+    _lastLocationValue.value = location;
   }
 
   Future<void> getBooks() async {

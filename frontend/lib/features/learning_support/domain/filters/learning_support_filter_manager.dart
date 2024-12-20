@@ -1,9 +1,9 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:schuldaten_hub/common/domain/filters/filters_state_manager.dart';
-import 'package:schuldaten_hub/common/domain/models/enums.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/features/learning_support/domain/learning_support_manager.dart';
+import 'package:schuldaten_hub/features/learning_support/domain/models/learning_support_enums.dart';
 import 'package:schuldaten_hub/features/pupil/domain/filters/pupil_filter_enums.dart';
 import 'package:schuldaten_hub/features/pupil/domain/filters/pupil_filter_manager.dart';
 import 'package:schuldaten_hub/features/pupil/domain/filters/pupils_filter.dart';

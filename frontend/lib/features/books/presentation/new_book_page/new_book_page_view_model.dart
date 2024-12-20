@@ -8,9 +8,11 @@ import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_service.dart';
 import 'package:schuldaten_hub/common/utils/isbn_book_data_scraper.dart';
 import 'package:schuldaten_hub/common/utils/scanner.dart';
+import 'package:schuldaten_hub/common/widgets/dialogs/short_textfield_dialog.dart';
 import 'package:schuldaten_hub/features/books/data/book_repository.dart';
 import 'package:schuldaten_hub/features/books/domain/book_manager.dart';
 import 'package:schuldaten_hub/features/books/presentation/new_book_page/new_book_page.dart';
+import 'package:watch_it/watch_it.dart';
 
 enum ReadingLevel {
   beginner('Anfänger'),
@@ -40,7 +42,7 @@ enum ReadingLevel {
   const ReadingLevel(this.value);
 }
 
-class NewBook extends StatefulWidget {
+class NewBook extends WatchingStatefulWidget {
   final String? bookTitle;
   final int? bookIsbn;
   final String? bookId;
@@ -82,9 +84,6 @@ class NewBookViewModel extends State<NewBook> {
   final TextEditingController authorTextFieldController =
       TextEditingController();
 
-  final TextEditingController locationTextFieldController =
-      TextEditingController();
-
   final List<DropdownMenuItem<ReadingLevel>> readingLevelDropdownItems = [
     DropdownMenuItem(
       value: ReadingLevel.beginner,
@@ -107,6 +106,10 @@ class NewBookViewModel extends State<NewBook> {
       child: Text(ReadingLevel.notSet.value),
     ),
   ];
+
+  final List<String> locations = locator<BookManager>().locations.value;
+
+  String lastLocationValue = locator<BookManager>().lastLocationValue.value;
 
   final TextEditingController bookDescriptionTextFieldController =
       TextEditingController();
@@ -133,7 +136,8 @@ class NewBookViewModel extends State<NewBook> {
       bookIdTextFieldController.text = widget.bookId ?? '';
       bookTitleTextFieldController.text = widget.bookTitle ?? '';
       authorTextFieldController.text = widget.bookAuthor ?? '';
-      locationTextFieldController.text = widget.location ?? '';
+      lastLocationValue =
+          widget.location ?? locator<BookManager>().lastLocationValue.value;
       readingLevel = widget.bookReadingLevel ?? ReadingLevel.notSet.value;
       if (widget.bookImageId != null) {
         getExistingBookImage();
@@ -146,6 +150,13 @@ class NewBookViewModel extends State<NewBook> {
   void onChangedReadingLevelDropDown(ReadingLevel? value) {
     setState(() {
       readingLevel = value!.value;
+    });
+  }
+
+  void onChangedLocationDropDown(String value) {
+    setState(() {
+      lastLocationValue = value;
+      locator<BookManager>().setLastLocationValue(value);
     });
   }
 
@@ -222,6 +233,32 @@ class NewBookViewModel extends State<NewBook> {
     bookIdTextFieldController.text = bookId;
   }
 
+  final List<DropdownMenuItem<String>> locationDropdownItems = [
+    for (final location in locator<BookManager>().locations.value)
+      DropdownMenuItem(
+        value: location,
+        child: Text(location),
+      ),
+    if (locator<BookManager>().lastLocationValue.value == 'Bitte auswählen')
+      DropdownMenuItem(
+        value: locator<BookManager>().lastLocationValue.value,
+        child: Text(
+          locator<BookManager>().lastLocationValue.value,
+          style: const TextStyle(color: Colors.red),
+        ),
+      ),
+  ];
+  void addLocation() async {
+    final String? newLocation = await shortTextfieldDialog(
+        context: context,
+        title: 'Neuer Ablageort',
+        labelText: 'Ablageort hinzufügen',
+        hintText: 'Name des Ablageorts');
+    if (newLocation != null) {
+      await locator<BookManager>().addLocation(newLocation);
+    }
+  }
+
   void submitBook() {
     if (!validateRequestDataPayload()) {
       return;
@@ -233,7 +270,7 @@ class NewBookViewModel extends State<NewBook> {
         bookId: widget.bookId!,
         title: bookTitleTextFieldController.text,
         description: bookDescriptionTextFieldController.text,
-        location: locationTextFieldController.text,
+        location: lastLocationValue,
         readingLevel: readingLevel,
         author: authorTextFieldController.text,
       );
@@ -246,7 +283,7 @@ class NewBookViewModel extends State<NewBook> {
         isbn: int.parse(isbnTextFieldController.text.replaceAll('-', '')),
         title: bookTitleTextFieldController.text,
         description: bookDescriptionTextFieldController.text,
-        location: locationTextFieldController.text,
+        location: lastLocationValue,
         level: readingLevel,
       );
     }
@@ -263,6 +300,18 @@ class NewBookViewModel extends State<NewBook> {
     if (bookIdTextFieldController.text.isEmpty) {
       locator<NotificationService>().showSnackBar(NotificationType.error,
           'Bitte scannen Sie die Bücherei-Id oder tippen Sie sie ein!');
+
+      return false;
+    }
+    if (bookTitleTextFieldController.text.isEmpty) {
+      locator<NotificationService>().showSnackBar(
+          NotificationType.error, 'Bitte geben Sie den Buchtitel ein!');
+
+      return false;
+    }
+    if (lastLocationValue == 'Bitte auswählen') {
+      locator<NotificationService>().showSnackBar(
+          NotificationType.error, 'Bitte wählen Sie den Ablageort aus!');
 
       return false;
     }
@@ -286,8 +335,6 @@ class NewBookViewModel extends State<NewBook> {
     bookTitleTextFieldController.dispose();
 
     authorTextFieldController.dispose();
-
-    locationTextFieldController.dispose();
 
     bookDescriptionTextFieldController.dispose();
 

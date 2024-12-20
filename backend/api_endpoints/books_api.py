@@ -7,13 +7,63 @@ from flask import current_app, jsonify, request, send_file
 from auth_middleware import token_required
 from helpers.db_helpers import get_book_by_id, get_workbook_by_isbn
 from helpers.log_entries import create_log_entry
-from models.book import Book
+from models.book import Book, BookLocation
 from models.shared import db
 from models.user import User
 from schemas.book_schemas import *
 from schemas.log_entry_schemas import ApiFileSchema
 
 book_api = APIBlueprint("book_api", __name__, url_prefix="/api/books")
+
+# - GET BOOK LOCATIONS
+
+
+@book_api.route("/locations", methods=["GET"])
+@book_api.output(book_locations_schema)
+@book_api.doc(security="ApiKeyAuth", tags=["Books"], summary="Get all book locations")
+@token_required
+def get_book_locations(current_user):
+    locations = BookLocation.query.all()
+    return locations
+
+
+# - ADD BOOK LOCATION
+
+
+@book_api.route("/locations/new", methods=["POST"])
+@book_api.input(book_location_schema)
+@book_api.output(book_locations_schema)
+@book_api.doc(security="ApiKeyAuth", tags=["Books"], summary="Add a new book location")
+@token_required
+def add_book_location(current_user, json_data):
+    location = json_data["location"]
+    if db.session.query(BookLocation).filter_by(location=location).scalar() is not None:
+        abort(400, "This location already exists!")
+    new_location = BookLocation(location=location)
+    db.session.add(new_location)
+    db.session.commit()
+    return BookLocation.query.all()
+
+
+# - DELETE BOOK LOCATION
+
+
+@book_api.route("/locations/<location>", methods=["DELETE"])
+@book_api.output(book_locations_schema)
+@book_api.doc(security="ApiKeyAuth", tags=["Books"], summary="Delete a book location")
+@token_required
+def delete_book_location(current_user, location):
+    if not current_user.admin:
+        abort(401, "Not authorized!")
+
+    this_location = BookLocation.query.filter_by(location=location).first()
+    if this_location == None:
+        abort(404, "This location does not exist!")
+
+    db.session.delete(this_location)
+    db.session.commit()
+    return BookLocation.query.all()
+
 
 # - GET BOOKS
 
@@ -137,47 +187,7 @@ def patch_book(current_user, book_id, json_data):
 
 
 # # - POST BOOK WITH FILE
-
-
-# @book_api.route("/new/file", methods=["POST"])
-# @book_api.input(ApiFileSchema, location="files")
-# @book_api.input(book_flat_schema, location="json")
-# @book_api.output(book_flat_schema)
-# @book_api.doc(security="ApiKeyAuth", tags=["Books"], summary="POST a book with a file")
-# @token_required
-# def create_book_with_file(current_user):
-
-#     if db.session.query(Book).filter_by(book_id=book_id).scalar() is not None:
-#         abort(400, "This book already exists!")
-
-#     if "file" not in request.files:
-#         return jsonify({"error": "No file attached!"}), 400
-
-#     book_id = request.json["book_id"]
-
-#     if db.session.query(Book).filter_by(book_id=book_id).scalar() is not None:
-#         abort(400, "This book already exists!")
-
-#     isbn = request.json["isbn"]
-#     location = request.json["location"]
-#     title = request.json["title"]
-#     author = request.json["author"]
-#     reading_level = request.json["reading_level"]
-#     image_url = request.json["image_url"]
-
-#     new_book = Book(book_id, isbn, title, author, location, reading_level, image_url)
-
-#     file = request.files["file"]
-#     filename = str(uuid.uuid4().hex) + ".jpg"
-#     file_url = current_app.config["UPLOAD_FOLDER"] + "/book/" + filename
-#     file.save(file_url)
-#     new_book.image_url = file_url
-#     db.session.add(new_book)
-#     # - LOG ENTRY
-#     create_log_entry(current_user, request, {"file": filename})
-#     db.session.commit()
-
-#     return new_book
+## - TODO: implement posting a book with a file to avoid two requests
 
 
 # - PATCH BOOK FILE

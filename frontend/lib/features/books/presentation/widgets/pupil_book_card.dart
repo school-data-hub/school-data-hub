@@ -9,9 +9,9 @@ import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/theme/colors.dart';
 import 'package:schuldaten_hub/common/theme/styles.dart';
 import 'package:schuldaten_hub/common/utils/extensions.dart';
-import 'package:schuldaten_hub/common/widgets/dialogues/confirmation_dialog.dart';
-import 'package:schuldaten_hub/common/widgets/dialogues/information_dialog.dart';
-import 'package:schuldaten_hub/common/widgets/dialogues/long_textfield_dialog.dart';
+import 'package:schuldaten_hub/common/widgets/dialogs/confirmation_dialog.dart';
+import 'package:schuldaten_hub/common/widgets/dialogs/information_dialog.dart';
+import 'package:schuldaten_hub/common/widgets/dialogs/long_textfield_dialog.dart';
 import 'package:schuldaten_hub/common/widgets/document_image.dart';
 import 'package:schuldaten_hub/common/widgets/upload_image.dart';
 import 'package:schuldaten_hub/features/books/data/book_repository.dart';
@@ -59,9 +59,24 @@ class PupilBookCard extends StatelessWidget {
         },
         child: Padding(
           padding:
-              const EdgeInsets.only(top: 8.0, bottom: 5, left: 5, right: 5),
+              const EdgeInsets.only(top: 8.0, bottom: 5, left: 10, right: 10),
           child: Column(
             children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Text(
+                        book.title,
+                        style: const TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ),
+                  const Gap(10),
+                ],
+              ),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -118,22 +133,6 @@ class PupilBookCard extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Row(
-                            children: [
-                              Expanded(
-                                child: SingleChildScrollView(
-                                  scrollDirection: Axis.horizontal,
-                                  child: Text(
-                                    book.title,
-                                    style: const TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                              ),
-                              const Gap(10),
-                            ],
-                          ),
                           const Gap(5),
                           Row(
                             children: [
@@ -233,10 +232,17 @@ class PupilBookCard extends StatelessWidget {
                         padding:
                             const EdgeInsets.only(left: 8, right: 8, bottom: 8),
                         child: ElevatedButton(
-                          onPressed: () {
-                            locator<PupilManager>().returnBook(
-                              lendingId: pupilBook.lendingId,
-                            );
+                          onPressed: () async {
+                            final result = await confirmationDialog(
+                                context: context,
+                                title: 'Buch zurückgeben',
+                                message:
+                                    'Buch "${book.title}" wirklich zurückgeben?');
+                            if (result!) {
+                              locator<PupilManager>().returnBook(
+                                lendingId: pupilBook.lendingId,
+                              );
+                            }
                           },
                           style: AppStyles.successButtonStyle,
                           child: const Text(

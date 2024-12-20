@@ -1,6 +1,14 @@
 from models.shared import db
 
 
+class BookLocation(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    location = db.Column(db.String(20), nullable=False, unique=True)
+
+    def __init__(self, location):
+        self.location = location
+
+
 class Book(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     book_id = db.Column(db.String(50), nullable=False, unique=True)

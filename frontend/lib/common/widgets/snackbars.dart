@@ -84,18 +84,23 @@ snackbarWarning(context, message) {
   if (context.mounted) {
     showTopSnackBar(
       Overlay.of(context),
-      CustomSnackBar.info(
-        backgroundColor: Colors.orange,
-        textStyle: const TextStyle(
-          fontWeight: FontWeight.bold,
-          fontSize: 20,
-          color: Colors.white,
+      Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 800),
+          child: CustomSnackBar.info(
+            backgroundColor: Colors.orange,
+            textStyle: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+              color: Colors.white,
+            ),
+            icon: const Icon(
+              Icons.school,
+              color: Colors.orange,
+            ),
+            message: message,
+          ),
         ),
-        icon: const Icon(
-          Icons.school,
-          color: Colors.orange,
-        ),
-        message: message,
       ),
       animationDuration: const Duration(milliseconds: 1600),
       displayDuration: const Duration(
@@ -109,18 +114,23 @@ snackbarError(context, message) {
   if (context.mounted) {
     showTopSnackBar(
       Overlay.of(context),
-      CustomSnackBar.success(
-        backgroundColor: Colors.red,
-        textStyle: const TextStyle(
-          fontWeight: FontWeight.bold,
-          fontSize: 20,
-          color: Colors.white,
+      Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 800),
+          child: CustomSnackBar.success(
+            backgroundColor: Colors.red,
+            textStyle: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+              color: Colors.white,
+            ),
+            icon: const Icon(
+              Icons.school,
+              color: Colors.red,
+            ),
+            message: message,
+          ),
         ),
-        icon: const Icon(
-          Icons.school,
-          color: Colors.red,
-        ),
-        message: message,
       ),
       animationDuration: const Duration(milliseconds: 3000),
       displayDuration: const Duration(

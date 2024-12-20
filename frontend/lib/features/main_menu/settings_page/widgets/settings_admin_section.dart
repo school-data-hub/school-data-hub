@@ -6,7 +6,7 @@ import 'package:schuldaten_hub/common/domain/env_manager.dart';
 import 'package:schuldaten_hub/common/domain/session_manager.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/utils/secure_storage.dart';
-import 'package:schuldaten_hub/common/widgets/dialogues/confirmation_dialog.dart';
+import 'package:schuldaten_hub/common/widgets/dialogs/confirmation_dialog.dart';
 import 'package:schuldaten_hub/common/widgets/qr/qr_utilites.dart';
 import 'package:schuldaten_hub/features/books/utils/book_ids_pdf_generator.dart';
 import 'package:schuldaten_hub/features/competence/utils/competence_report_pdf.dart';
