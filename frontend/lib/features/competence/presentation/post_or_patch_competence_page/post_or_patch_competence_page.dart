@@ -88,7 +88,7 @@ class PostOrPatchCompetencePageState extends State<PostOrPatchCompetencePage> {
               children: <Widget>[
                 if (widget.parentCompetence != null)
                   Text(
-                    'Übergeordnete Kompetenz: ${locator<CompetenceManager>().getCompetence(widget.parentCompetence!).competenceName}',
+                    'Übergeordnete Kompetenz: ${locator<CompetenceManager>().findCompetence(widget.parentCompetence!).competenceName}',
                     style: const TextStyle(
                         fontSize: 18, fontWeight: FontWeight.bold),
                   ),

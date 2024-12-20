@@ -4,7 +4,7 @@ import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/domain/session_manager.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/widgets/dialogs/confirmation_dialog.dart';
-import 'package:schuldaten_hub/features/learning_support/domain/learning_support_helper_functions.dart';
+import 'package:schuldaten_hub/features/learning_support/domain/learning_support_helper.dart';
 import 'package:schuldaten_hub/features/learning_support/domain/learning_support_manager.dart';
 import 'package:schuldaten_hub/features/learning_support/domain/models/support_category/support_category.dart';
 import 'package:schuldaten_hub/features/learning_support/domain/models/support_category/support_category_status.dart';

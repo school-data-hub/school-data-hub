@@ -4,7 +4,7 @@ import 'package:schuldaten_hub/common/domain/models/enums.dart';
 import 'package:schuldaten_hub/common/services/api/api_settings.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_service.dart';
-import 'package:schuldaten_hub/features/learning_support/domain/learning_support_helper_functions.dart';
+import 'package:schuldaten_hub/features/learning_support/domain/learning_support_helper.dart';
 import 'package:schuldaten_hub/features/learning_support/domain/models/support_category/support_category.dart';
 import 'package:schuldaten_hub/features/learning_support/domain/models/support_goal/support_goal.dart';
 import 'package:schuldaten_hub/features/pupil/domain/models/pupil_data.dart';
@@ -12,8 +12,9 @@ import 'package:schuldaten_hub/features/pupil/domain/models/pupil_proxy.dart';
 import 'package:schuldaten_hub/features/pupil/domain/pupil_manager.dart';
 
 class LearningSupportManager {
-  final _goalCategories = ValueNotifier<List<SupportCategory>>([]);
-  ValueListenable<List<SupportCategory>> get goalCategories => _goalCategories;
+  final _supportCategories = ValueNotifier<List<SupportCategory>>([]);
+  ValueListenable<List<SupportCategory>> get goalCategories =>
+      _supportCategories;
 
   final _isRunning = ValueNotifier<bool>(false);
   ValueListenable<bool> get isRunning => _isRunning;
@@ -29,23 +30,23 @@ class LearningSupportManager {
 
   final notificationService = locator<NotificationService>();
 
-  final apiLearningSupportService = LearningSupportRepository();
+  final _learningSupportRepository = LearningSupportRepository();
 
   void clearData() {
-    _goalCategories.value = [];
+    _supportCategories.value = [];
   }
 
   Future<void> fetchSupportCategories() async {
-    final List<SupportCategory> goalCategories =
-        await apiLearningSupportService.fetchGoalCategories();
+    final List<SupportCategory> supportCategories =
+        await _learningSupportRepository.fetchSupportCategories();
     // let's sort the categories by their category id to make sure they are in the right order
-    goalCategories.sort((a, b) => a.categoryId.compareTo(b.categoryId));
-    _goalCategories.value = goalCategories;
+    supportCategories.sort((a, b) => a.categoryId.compareTo(b.categoryId));
+    _supportCategories.value = supportCategories;
     _rootCategoriesMap.clear();
     _rootCategoriesMap =
-        LearningSupportHelper.generateRootCategoryMap(goalCategories);
+        LearningSupportHelper.generateRootCategoryMap(supportCategories);
     notificationService.showSnackBar(NotificationType.success,
-        '${goalCategories.length} Kategorien geladen');
+        '${supportCategories.length} Förderkategorien aktualisiert!');
 
     return;
   }
@@ -71,7 +72,7 @@ class LearningSupportManager {
     String comment,
   ) async {
     final PupilData responsePupil =
-        await apiLearningSupportService.postSupportCategoryStatus(
+        await _learningSupportRepository.postSupportCategoryStatus(
             pupilInternalId: pupil.internalId,
             goalCategoryId: goalCategoryId,
             state: state,
@@ -94,7 +95,7 @@ class LearningSupportManager {
     String? createdAt,
   }) async {
     final PupilData responsePupil =
-        await apiLearningSupportService.updateCategoryStatusProperty(
+        await _learningSupportRepository.updateCategoryStatusProperty(
             pupil, statusId, state, comment, createdBy, createdAt);
 
     locator<PupilManager>().updatePupilProxyWithPupilData(responsePupil);
@@ -107,7 +108,7 @@ class LearningSupportManager {
 
   Future<void> deleteSupportCategoryStatus(String statusId) async {
     final PupilData responsePupil =
-        await apiLearningSupportService.deleteCategoryStatus(statusId);
+        await _learningSupportRepository.deleteCategoryStatus(statusId);
 
     notificationService.showSnackBar(
         NotificationType.success, 'Status gelöscht');
@@ -122,7 +123,7 @@ class LearningSupportManager {
       required String description,
       required String strategies}) async {
     final PupilData responsePupil =
-        await apiLearningSupportService.postNewCategoryGoal(
+        await _learningSupportRepository.postNewCategoryGoal(
             goalCategoryId: goalCategoryId,
             pupilId: pupilId,
             description: description,
@@ -138,7 +139,7 @@ class LearningSupportManager {
 
   Future deleteGoal(String goalId) async {
     final PupilData responsePupil =
-        await apiLearningSupportService.deleteGoal(goalId);
+        await _learningSupportRepository.deleteGoal(goalId);
 
     locator<PupilManager>().updatePupilProxyWithPupilData(responsePupil);
 

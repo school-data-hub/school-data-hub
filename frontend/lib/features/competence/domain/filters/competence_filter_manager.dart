@@ -6,17 +6,20 @@ import 'package:schuldaten_hub/features/competence/domain/competence_manager.dar
 import 'package:schuldaten_hub/features/competence/domain/models/competence.dart';
 
 class CompetenceFilterManager {
-  ValueListenable<Map<CompetenceFilter, bool>> get filterState => _filterState;
-  ValueListenable<List<Competence>> get filteredCompetences =>
-      _filteredCompetences;
-  ValueListenable<bool> get filtersOn => _filtersOn;
-
   final _filterState =
       ValueNotifier<Map<CompetenceFilter, bool>>(initialCompetenceFilterValues);
+  ValueListenable<Map<CompetenceFilter, bool>> get filterState => _filterState;
+
   final _filteredCompetences = ValueNotifier<List<Competence>>(
       locator<CompetenceManager>().competences.value);
+  ValueListenable<List<Competence>> get filteredCompetences =>
+      _filteredCompetences;
+
   final _filtersOn = ValueNotifier<bool>(false);
+  ValueListenable<bool> get filtersOn => _filtersOn;
+
   CompetenceFilterManager();
+
   refreshFilteredCompetences(List<Competence> competences) {
     _filteredCompetences.value = competences;
     logger.i('refreshed filtered competences');
@@ -24,7 +27,9 @@ class CompetenceFilterManager {
 
   resetFilters() {
     _filteredCompetences.value = locator<CompetenceManager>().competences.value;
+
     _filterState.value = {...initialCompetenceFilterValues};
+
     _filtersOn.value = false;
   }
 
@@ -33,14 +38,18 @@ class CompetenceFilterManager {
       ..._filterState.value,
       filter: isActive,
     };
+
     filterCompetences();
   }
 
-  filterCompetences() {
+  void filterCompetences() {
     List<Competence> competences =
         locator<CompetenceManager>().competences.value;
+
     List<Competence> filteredCompetences = [];
+
     final activeFilters = _filterState.value;
+
     for (Competence competence in competences) {
       if (competence.competenceLevel != null) {
         if ((activeFilters[CompetenceFilter.E1]! &&

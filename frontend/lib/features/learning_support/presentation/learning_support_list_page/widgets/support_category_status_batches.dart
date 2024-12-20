@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
-import 'package:schuldaten_hub/features/learning_support/domain/learning_support_helper_functions.dart';
+import 'package:schuldaten_hub/features/learning_support/domain/learning_support_helper.dart';
 import 'package:schuldaten_hub/features/learning_support/domain/learning_support_manager.dart';
 import 'package:schuldaten_hub/features/learning_support/domain/models/support_category/support_category_status.dart';
 import 'package:schuldaten_hub/features/pupil/domain/models/pupil_proxy.dart';

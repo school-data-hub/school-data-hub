@@ -6,7 +6,7 @@ import 'package:schuldaten_hub/features/learning_support/domain/models/support_c
 import 'package:schuldaten_hub/features/learning_support/presentation/new_support_category_status_page/controller/new_support_category_status_controller.dart';
 import 'package:schuldaten_hub/features/learning_support/presentation/widgets/support_catagory_status/widgets/support_category_status_entry/support_category_status_entry.dart';
 import 'package:schuldaten_hub/features/learning_support/presentation/widgets/support_category_parents_names.dart';
-import 'package:schuldaten_hub/features/learning_support/domain/learning_support_helper_functions.dart';
+import 'package:schuldaten_hub/features/learning_support/domain/learning_support_helper.dart';
 import 'package:schuldaten_hub/features/learning_support/domain/learning_support_manager.dart';
 import 'package:schuldaten_hub/features/pupil/domain/models/pupil_proxy.dart';
 

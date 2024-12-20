@@ -194,6 +194,7 @@ Future registerDependentManagers() async {
   locator.registerSingletonWithDependencies<AuthorizationFilterManager>(
       () => AuthorizationFilterManager(),
       dependsOn: [AuthorizationManager]);
+
   locator.registerSingletonWithDependencies<PupilFilterManager>(
       () => PupilFilterManager(),
       dependsOn: [PupilManager]);

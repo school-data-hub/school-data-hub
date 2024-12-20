@@ -4,7 +4,7 @@ import 'package:schuldaten_hub/common/theme/colors.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/utils/extensions.dart';
 import 'package:schuldaten_hub/common/widgets/dialogs/confirmation_dialog.dart';
-import 'package:schuldaten_hub/features/learning_support/domain/learning_support_helper_functions.dart';
+import 'package:schuldaten_hub/features/learning_support/domain/learning_support_helper.dart';
 import 'package:schuldaten_hub/features/learning_support/presentation/widgets/support_catagory_status/widgets/support_category_status_entry/support_category_status_symbol.dart';
 import 'package:schuldaten_hub/features/learning_support/presentation/widgets/support_goal/support_goal_card_banner.dart';
 import 'package:schuldaten_hub/features/learning_support/domain/learning_support_manager.dart';

@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/utils/extensions.dart';
-import 'package:schuldaten_hub/features/competence/domain/models/competence_goal.dart';
 import 'package:schuldaten_hub/features/competence/domain/competence_helper.dart';
 import 'package:schuldaten_hub/features/competence/domain/competence_manager.dart';
+import 'package:schuldaten_hub/features/competence/domain/models/competence_goal.dart';
 import 'package:schuldaten_hub/features/pupil/domain/models/pupil_proxy.dart';
 
 class CompetenceGoalCard extends StatelessWidget {
@@ -35,7 +35,7 @@ class CompetenceGoalCard extends StatelessWidget {
                     children: [
                       Text(
                         locator<CompetenceManager>()
-                            .getRootCompetence(pupilGoal.competenceId)
+                            .findRootCompetence(pupilGoal.competenceId)
                             .competenceName,
                         style: const TextStyle(
                             fontSize: 19,
@@ -55,7 +55,7 @@ class CompetenceGoalCard extends StatelessWidget {
                   Flexible(
                     child: Text(
                       locator<CompetenceManager>()
-                          .getCompetence(pupilGoal.competenceId)
+                          .findCompetence(pupilGoal.competenceId)
                           .competenceName,
                       style: const TextStyle(
                           fontSize: 17, fontWeight: FontWeight.bold),

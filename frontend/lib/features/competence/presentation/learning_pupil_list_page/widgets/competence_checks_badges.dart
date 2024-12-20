@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
-import 'package:schuldaten_hub/features/competence/domain/models/competence_check.dart';
 import 'package:schuldaten_hub/features/competence/domain/competence_helper.dart';
 import 'package:schuldaten_hub/features/competence/domain/competence_manager.dart';
+import 'package:schuldaten_hub/features/competence/domain/models/competence_check.dart';
 import 'package:schuldaten_hub/features/pupil/domain/models/pupil_proxy.dart';
 
 class CompetenceChecksBadges extends StatelessWidget {
@@ -27,7 +27,7 @@ class CompetenceChecksBadges extends StatelessWidget {
       }
       countedCompetenceIds.add(competenceCheck.competenceId);
       int rootCompetenceId = locator<CompetenceManager>()
-          .getRootCompetence(competenceCheck.competenceId)
+          .findRootCompetence(competenceCheck.competenceId)
           .competenceId;
       if (competenceCounts.containsKey(rootCompetenceId)) {
         competenceCounts[rootCompetenceId] =
@@ -44,7 +44,7 @@ class CompetenceChecksBadges extends StatelessWidget {
           height: 21.0,
           decoration: BoxDecoration(
             color: CompetenceHelper.getRootCompetenceColor(
-                locator<CompetenceManager>().getCompetence(competenceId)),
+                locator<CompetenceManager>().findCompetence(competenceId)),
             shape: BoxShape.circle,
           ),
           child: Center(

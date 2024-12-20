@@ -117,7 +117,7 @@ class LearningSupportHelper {
       List<SupportCategory> categories) {
     // Map for quick lookup of categories by their ID
     final Map<int, SupportCategory> categoryMap = {
-      for (var category in categories) category.categoryId: category
+      for (SupportCategory category in categories) category.categoryId: category
     };
 
     // Cache to store root category results for efficiency

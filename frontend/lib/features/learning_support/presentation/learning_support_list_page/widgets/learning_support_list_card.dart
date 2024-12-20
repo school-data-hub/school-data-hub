@@ -5,7 +5,7 @@ import 'package:schuldaten_hub/common/theme/colors.dart';
 import 'package:schuldaten_hub/common/widgets/avatar.dart';
 import 'package:schuldaten_hub/common/widgets/custom_expansion_tile/custom_expansion_tile.dart';
 import 'package:schuldaten_hub/common/widgets/custom_expansion_tile/custom_expansion_tile_content.dart';
-import 'package:schuldaten_hub/features/learning_support/domain/learning_support_helper_functions.dart';
+import 'package:schuldaten_hub/features/learning_support/domain/learning_support_helper.dart';
 import 'package:schuldaten_hub/features/learning_support/presentation/learning_support_list_page/widgets/support_category_status_batches.dart';
 import 'package:schuldaten_hub/features/learning_support/presentation/learning_support_list_page/widgets/support_goals_list.dart';
 import 'package:schuldaten_hub/features/learning_support/presentation/widgets/dialogs/support_level_dialog.dart';

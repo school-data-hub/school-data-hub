@@ -23,9 +23,40 @@ class CompetenceHelper {
     return null;
   }
 
+  static Map<int, int> generateRootCompetencesMap(
+      List<Competence> competences) {
+    final Map<int, Competence> rootCompetencesMap = {
+      for (Competence competence in competences)
+        competence.competenceId: competence
+    };
+    Map<int, int> rootCompetencesCache = {};
+
+    int findRootCompetence(int competenceId) {
+      if (rootCompetencesCache.containsKey(competenceId)) {
+        return rootCompetencesCache[competenceId]!;
+      }
+      final Competence competence = rootCompetencesMap[competenceId]!;
+      if (competence.parentCompetence == null) {
+        rootCompetencesCache[competenceId] = competenceId;
+        return competenceId;
+      }
+      final int rootCompetenceId =
+          findRootCompetence(competence.parentCompetence!);
+      rootCompetencesCache[competenceId] = rootCompetenceId;
+      return rootCompetenceId;
+    }
+
+    final Map<int, int> result = {};
+    for (var competence in competences) {
+      result[competence.competenceId] =
+          findRootCompetence(competence.competenceId);
+    }
+    return result;
+  }
+
   static Color getCompetenceColor(int competenceId) {
     final Competence rootCcompetence =
-        locator<CompetenceManager>().getRootCompetence(competenceId);
+        locator<CompetenceManager>().findRootCompetence(competenceId);
     return getRootCompetenceColor(rootCcompetence);
   }
 
