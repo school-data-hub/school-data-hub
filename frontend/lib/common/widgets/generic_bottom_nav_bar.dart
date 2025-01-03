@@ -10,11 +10,10 @@ import 'package:watch_it/watch_it.dart';
 class GenericBottomNavBar extends WatchingWidget {
   final Function specificFilterBottomSheetFunction;
   final Widget? bottomNavBarButtons;
-  final bool isSearchBar;
+
   const GenericBottomNavBar(
       {required this.specificFilterBottomSheetFunction,
       required this.bottomNavBarButtons,
-      required this.isSearchBar,
       super.key});
 
   @override
@@ -23,6 +22,7 @@ class GenericBottomNavBar extends WatchingWidget {
         watchValue((FiltersStateManager x) => x.filtersActive);
     return BottomNavBarLayout(
       bottomNavBar: BottomAppBar(
+        height: 60,
         padding: const EdgeInsets.all(10),
         shape: null,
         color: AppColors.backgroundColor,
@@ -52,11 +52,7 @@ class GenericBottomNavBar extends WatchingWidget {
                   },
                   child: Icon(
                     Icons.filter_list,
-                    color: filtersActive
-                        ? Colors.deepOrange
-                        : isSearchBar
-                            ? Colors.grey
-                            : Colors.white,
+                    color: filtersActive ? Colors.deepOrange : Colors.white,
                     size: 30,
                   ),
                 ),

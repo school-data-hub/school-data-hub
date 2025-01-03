@@ -19,6 +19,7 @@ class AttendanceRankingListPageBottomNavBar extends WatchingWidget {
         watchValue((FiltersStateManager x) => x.filtersActive);
     return BottomNavBarLayout(
       bottomNavBar: BottomAppBar(
+        height: 60,
         padding: const EdgeInsets.all(10),
         shape: null,
         color: AppColors.backgroundColor,

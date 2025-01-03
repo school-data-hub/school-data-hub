@@ -53,10 +53,9 @@ class SchooldayEventListPage extends WatchingWidget {
         ),
       ),
       bottomNavigationBar: const GenericBottomNavBar(
-          specificFilterBottomSheetFunction:
-              showSchooldayEventFilterBottomSheet,
-          bottomNavBarButtons: null,
-          isSearchBar: false),
+        specificFilterBottomSheetFunction: showSchooldayEventFilterBottomSheet,
+        bottomNavBarButtons: null,
+      ),
     );
   }
 }

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/theme/colors.dart';
 import 'package:schuldaten_hub/common/widgets/bottom_nav_bar_layouts.dart';
-import 'package:schuldaten_hub/common/widgets/filter_button.dart';
-import 'package:schuldaten_hub/features/pupil/presentation/special_info_page/widgets/special_info_filter_bottom_sheet.dart';
+import 'package:schuldaten_hub/common/widgets/generic_filter_bottom_sheet.dart';
+import 'package:schuldaten_hub/features/pupil/domain/filters/pupils_filter.dart';
+import 'package:schuldaten_hub/features/pupil/presentation/widgets/common_pupil_filters.dart';
 
 class SpecialInfoListPageBottomNavBar extends StatelessWidget {
   final bool filtersOn;
@@ -13,6 +15,7 @@ class SpecialInfoListPageBottomNavBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return BottomNavBarLayout(
       bottomNavBar: BottomAppBar(
+        height: 60,
         padding: const EdgeInsets.all(10),
         shape: null,
         color: AppColors.backgroundColor,
@@ -32,9 +35,17 @@ class SpecialInfoListPageBottomNavBar extends StatelessWidget {
                 },
               ),
               const Gap(30),
-              const FilterButton(
-                isSearchBar: false,
-                showBottomSheetFunction: showSpecialInfoFilterBottomSheet,
+              InkWell(
+                onTap: () =>
+                    showGenericFilterBottomSheet(context: context, filterList: [
+                  const CommonPupilFiltersWidget(),
+                ]),
+                onLongPress: () => locator<PupilsFilter>().resetFilters(),
+                child: Icon(
+                  Icons.filter_list,
+                  color: filtersOn ? Colors.deepOrange : Colors.white,
+                  size: 30,
+                ),
               ),
               const Gap(15)
             ],

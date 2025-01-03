@@ -7,7 +7,7 @@ from flask import current_app, jsonify, request, send_file
 from auth_middleware import token_required
 from helpers.db_helpers import get_book_by_id, get_workbook_by_isbn
 from helpers.log_entries import create_log_entry
-from models.book import Book, BookLocation
+from models.book import Book, BookLocation, BookTag
 from models.shared import db
 from models.user import User
 from schemas.book_schemas import *
@@ -126,6 +126,7 @@ def create_book(current_user, json_data):
     author = json_data["author"]
     reading_level = json_data["reading_level"]
     description = json_data["description"]
+    book_tags = json_data["book_tags"]
 
     new_book = Book(
         book_id=book_id,
@@ -139,6 +140,13 @@ def create_book(current_user, json_data):
         description=description,
         available=True,
     )
+    for tag_data in book_tags:
+        tag_name = tag_data["name"]
+        tag = db.session.query(BookTag).filter_by(name=tag_name).first()
+        if tag is None:
+            abort(400, f"Tag '{tag_name}' does not exist!")
+        new_book.book_tags.append(tag)
+
     db.session.add(new_book)
     # - Log entry
     create_log_entry(current_user, request, request.json)
@@ -261,3 +269,78 @@ def delete_book(current_user, book_id):
     db.session.commit()
 
     return jsonify({"message": "Book deleted!"}), 200
+
+
+## - BOOK TAGS - ##
+
+# - GET BOOK TAGS
+
+
+@book_api.route("/tags", methods=["GET"])
+@book_api.output(book_tags_schema)
+@book_api.doc(security="ApiKeyAuth", tags=["Book Tags"], summary="Get all book tags")
+@token_required
+def get_book_tags(current_user):
+    tags = BookTag.query.all()
+    return tags
+
+
+## - ADD BOOK TAG
+
+
+@book_api.route("/tags/new", methods=["POST"])
+@book_api.input(book_tag_schema)
+@book_api.output(book_tags_schema)
+@book_api.doc(security="ApiKeyAuth", tags=["Book Tags"], summary="Add a new book tag")
+@token_required
+def add_book_tag(current_user, json_data):
+    tag_name = json_data["name"]
+    if db.session.query(BookTag).filter_by(name=tag_name).scalar() is not None:
+        abort(400, "This tag already exists!")
+    new_tag = BookTag(name=tag_name, created_by=current_user.username)
+    db.session.add(new_tag)
+    db.session.commit()
+    return BookTag.query.all()
+
+
+## - PATCH BOOK TAG
+
+
+@book_api.route("/tags/<tag_name>", methods=["PATCH"])
+@book_api.input(book_tag_schema)
+@book_api.output(book_tags_schema)
+@book_api.doc(security="ApiKeyAuth", tags=["Book Tags"], summary="Patch a book tag")
+@token_required
+def patch_book_tag(current_user, tag_name, json_data):
+    this_tag = BookTag.query.filter_by(name=tag_name).first()
+    if this_tag == None:
+        abort(404, "This tag does not exist!")
+
+    data = json_data
+    for key in data:
+        match key:
+            case "name":
+                this_tag.name = data["name"]
+
+    db.session.commit()
+    return BookTag.query.all()
+
+
+## - DELETE BOOK TAG
+
+
+@book_api.route("/tags/<tag_name>", methods=["DELETE"])
+@book_api.output(book_tags_schema)
+@book_api.doc(security="ApiKeyAuth", tags=["Book Tags"], summary="Delete a book tag")
+@token_required
+def delete_book_tag(current_user, tag_name):
+    if not current_user.admin:
+        abort(401, "Not authorized!")
+
+    this_tag = BookTag.query.filter_by(name=tag_name).first()
+    if this_tag == None:
+        abort(404, "This tag does not exist!")
+
+    db.session.delete(this_tag)
+    db.session.commit()
+    return BookTag.query.all()

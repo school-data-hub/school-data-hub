@@ -9,6 +9,25 @@ class BookLocation(db.Model):
         self.location = location
 
 
+class BookTag(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), nullable=False, unique=True)
+    created_by = db.Column(db.String(20), nullable=False)
+
+    def __init__(self, name, created_by):
+        self.name = name
+        self.created_by = created_by
+
+
+book_tags = db.Table(
+    "book_tags",
+    db.Column("book_id", db.Integer, db.ForeignKey("book.id"), primary_key=True),
+    db.Column(
+        "book_tag_id", db.Integer, db.ForeignKey("book_tag.id"), primary_key=True
+    ),
+)
+
+
 class Book(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     book_id = db.Column(db.String(50), nullable=False, unique=True)
@@ -25,6 +44,14 @@ class Book(db.Model):
     # - RELATIONSHIP TO PUPIL BOOKS ONE-TO-MANY
     reading_pupils = db.relationship(
         "PupilBook", back_populates="book", cascade="all, delete-orphan"
+    )
+
+    # - RELATIONSHIP TO TAGS MANY-TO-MANY
+    book_tags = db.relationship(
+        "BookTag",
+        secondary=book_tags,
+        lazy="subquery",
+        backref=db.backref("books", lazy=True),
     )
 
     def __init__(

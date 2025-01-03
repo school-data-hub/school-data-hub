@@ -2,8 +2,8 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:schuldaten_hub/common/domain/models/enums.dart';
-import 'package:schuldaten_hub/common/services/api/api_settings.dart';
 import 'package:schuldaten_hub/common/services/api/api_client.dart';
+import 'package:schuldaten_hub/common/services/api/api_settings.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_service.dart';
 import 'package:schuldaten_hub/common/utils/extensions.dart';
@@ -42,6 +42,12 @@ class AttendanceRepository {
     final Response response =
         await _client.get(_getMissedClassesOnDate(schoolday));
 
+    if (response.statusCode == 404) {
+      locator<NotificationService>().showSnackBar(
+          NotificationType.warning, 'Keine Einträge für diesen Tag gefunden!');
+
+      return [];
+    }
     if (response.statusCode != 200) {
       locator<NotificationService>().showSnackBar(
           NotificationType.error, 'Fehler: status code ${response.statusCode}');

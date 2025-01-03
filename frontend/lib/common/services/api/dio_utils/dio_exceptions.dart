@@ -1,4 +1,7 @@
 import 'package:dio/dio.dart';
+import 'package:schuldaten_hub/common/domain/models/enums.dart';
+import 'package:schuldaten_hub/common/services/locator.dart';
+import 'package:schuldaten_hub/common/services/notification_service.dart';
 
 class DioExceptions implements Exception {
   late String message;
@@ -48,6 +51,10 @@ class DioExceptions implements Exception {
       case 403:
         return error['message'] ?? 'Forbidden';
       case 404:
+        locator<NotificationService>().showSnackBar(
+          NotificationType.error,
+          'Resource not found',
+        );
         return error['message'];
       case 420:
         return 'Session Expired. Please LogIn again';

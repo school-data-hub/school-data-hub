@@ -58,6 +58,7 @@ class EnvManager {
 
   void setDependentManagersRegistered(bool value) {
     _dependentMangagersRegistered.value = value;
+    log('message: dependentManagersRegistered: $value');
   }
 
   Future<void> firstRun() async {
@@ -67,6 +68,7 @@ class EnvManager {
     final EnvsInStorage? environmentsObject = await environmentsInStorage();
 
     if (environmentsObject == null) {
+      _envReady.value = false;
       return;
     }
 

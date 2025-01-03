@@ -111,7 +111,7 @@ class PupilBookCard extends StatelessWidget {
                                 value: DocumentImageData(
                                     documentTag: book.imageId!,
                                     documentUrl:
-                                        '${locator<EnvManager>().env.value.serverUrl}${BookRepository().getBookImage(book.bookId)}',
+                                        '${locator<EnvManager>().env.value.serverUrl}${BookRepository.bookImageUrl(book.bookId)}',
                                     size: 100),
                                 child: const DocumentImage(),
                               )
@@ -136,7 +136,19 @@ class PupilBookCard extends StatelessWidget {
                           const Gap(5),
                           Row(
                             children: [
-                              const Text('Erstellt von:'),
+                              const Icon(
+                                Icons.arrow_circle_right_rounded,
+                                color: Colors.orange,
+                              ),
+                              const Gap(5),
+                              Text(
+                                pupilBook.lentAt.formatForUser(),
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const Gap(5),
+                              const Text('von:'),
                               const Gap(5),
                               Text(
                                 pupilBook.lentBy,
@@ -144,21 +156,15 @@ class PupilBookCard extends StatelessWidget {
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              const Gap(5),
-                              const Text('am'),
-                              const Gap(5),
-                              Text(
-                                pupilBook.lentAt.formatForUser(),
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              )
                             ],
                           ),
                           if (pupilBook.returnedAt != null)
                             Row(
                               children: [
-                                const Text('Zurück am:'),
+                                const Icon(
+                                  Icons.arrow_circle_left_rounded,
+                                  color: Colors.green,
+                                ),
                                 const Gap(5),
                                 Text(
                                   pupilBook.returnedAt!.formatForUser(),

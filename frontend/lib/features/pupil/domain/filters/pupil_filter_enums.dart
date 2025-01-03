@@ -18,11 +18,11 @@ enum PupilFilter {
   schoolListNoResponse,
   schoolListNullResponse,
   schoolListCommentResponse,
-  authorizationYesResponse,
-  authorizationNoResponse,
-  authorizationNullResponse,
-  authorizationCommentResponse,
-  authorizationFileResponse,
+  authorizationPositive,
+  authorizationNegative,
+  authorizationNoValue,
+  authorizationComment,
+  authorizationNoFile,
 }
 
 Map<PupilFilter, bool> initialPupilFilterValues = {
@@ -44,9 +44,9 @@ Map<PupilFilter, bool> initialPupilFilterValues = {
   PupilFilter.schoolListNoResponse: false,
   PupilFilter.schoolListNullResponse: false,
   PupilFilter.schoolListCommentResponse: false,
-  PupilFilter.authorizationYesResponse: false,
-  PupilFilter.authorizationNoResponse: false,
-  PupilFilter.authorizationNullResponse: false,
-  PupilFilter.authorizationCommentResponse: false,
-  PupilFilter.authorizationFileResponse: false,
+  PupilFilter.authorizationPositive: false,
+  PupilFilter.authorizationNegative: false,
+  PupilFilter.authorizationNoValue: false,
+  PupilFilter.authorizationComment: false,
+  PupilFilter.authorizationNoFile: false,
 };

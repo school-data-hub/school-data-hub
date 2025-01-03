@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:schuldaten_hub/common/theme/colors.dart';
+import 'package:schuldaten_hub/common/theme/styles.dart';
 import 'package:schuldaten_hub/features/logs/logs_repository.dart';
 
 class LogsPage extends StatefulWidget {
@@ -9,6 +11,7 @@ class LogsPage extends StatefulWidget {
 }
 
 class _LogsPageState extends State<LogsPage> {
+  final logsRepository = LogsRepository();
   String logs = "Bitte warten";
   @override
   void initState() {
@@ -20,7 +23,16 @@ class _LogsPageState extends State<LogsPage> {
   }
 
   Future<void> getLogs() async {
-    final result = await LogsRepository().downloadLog();
+    final result = await logsRepository.downloadLog();
+    if (result != null) {
+      setState(() {
+        logs = result;
+      });
+    }
+  }
+
+  Future<void> resetLogs() async {
+    final result = await logsRepository.resetLog();
     if (result != null) {
       setState(() {
         logs = result;
@@ -34,19 +46,24 @@ class _LogsPageState extends State<LogsPage> {
       appBar: AppBar(
         foregroundColor: Colors.white,
         centerTitle: true,
-        backgroundColor: Colors.blue,
-        title: const Text(
-          'Logs',
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 20,
+        backgroundColor: AppColors.backgroundColor,
+        title: const Text('Logs', style: AppStyles.appBarTextStyle),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            onPressed: resetLogs,
           ),
-        ),
+        ],
       ),
       body: Column(
         children: [
-          SingleChildScrollView(
-            child: Text(logs!),
+          Expanded(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Text(logs),
+              ),
+            ),
           ),
         ],
       ),

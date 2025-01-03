@@ -34,3 +34,14 @@ def upload_log():
         return {"message": "Log file uploaded successfully"}, 200
     else:
         abort(400, description="Invalid file")
+
+
+@log_api.route("/log/reset", methods=["DELETE"])
+def reset_log():
+    try:
+        with open(LOG_FILE_PATH, "w") as log_file:
+            log_file.write("")
+        return {"message": "Log file reset successfully"}, 200
+
+    except Exception as e:
+        abort(500, description=f"Error resetting log file: {str(e)}")

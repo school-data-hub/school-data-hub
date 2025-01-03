@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:schuldaten_hub/common/theme/colors.dart';
-import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/domain/session_manager.dart';
+import 'package:schuldaten_hub/common/services/locator.dart';
+import 'package:schuldaten_hub/common/theme/colors.dart';
 import 'package:schuldaten_hub/common/widgets/bottom_nav_bar_layouts.dart';
 import 'package:schuldaten_hub/common/widgets/dialogs/short_textfield_dialog.dart';
 import 'package:schuldaten_hub/common/widgets/filter_button.dart';
+import 'package:schuldaten_hub/common/widgets/generic_filter_bottom_sheet.dart';
 import 'package:schuldaten_hub/features/pupil/domain/pupil_manager.dart';
-
 import 'package:schuldaten_hub/features/pupil/presentation/select_pupils_list_page/select_pupils_list_page.dart';
+import 'package:schuldaten_hub/features/pupil/presentation/widgets/common_pupil_filters.dart';
 import 'package:schuldaten_hub/features/school_lists/domain/school_list_manager.dart';
-import 'package:schuldaten_hub/features/school_lists/presentation/school_list_pupils_page/widgets/school_list_pupils_filter_bottom_sheet.dart';
+import 'package:schuldaten_hub/features/school_lists/presentation/school_list_pupils_page/widgets/school_list_pupil_filters_widget.dart';
 
 class SchoolListPupilsPageBottomNavBar extends StatelessWidget {
   final String listId;
@@ -21,8 +22,10 @@ class SchoolListPupilsPageBottomNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final schoolList = locator<SchoolListManager>().getSchoolListById(listId);
     return BottomNavBarLayout(
       bottomNavBar: BottomAppBar(
+        height: 60,
         padding: const EdgeInsets.all(9),
         shape: null,
         color: AppColors.backgroundColor,
@@ -41,14 +44,9 @@ class SchoolListPupilsPageBottomNavBar extends StatelessWidget {
                   Navigator.pop(context);
                 },
               ),
-              if (locator<SchoolListManager>()
-                          .getSchoolListById(listId)
-                          .visibility !=
-                      'public' ||
+              if (schoolList.visibility != 'public' ||
                   locator<SessionManager>().credentials.value.username ==
-                      locator<SchoolListManager>()
-                          .getSchoolListById(listId)
-                          .createdBy)
+                      schoolList.createdBy)
                 Row(
                   children: [
                     const Gap(30),
@@ -97,10 +95,15 @@ class SchoolListPupilsPageBottomNavBar extends StatelessWidget {
                 },
               ),
               const Gap(30),
-              const FilterButton(
-                isSearchBar: false,
-                showBottomSheetFunction: showPupilListFilterBottomSheet,
-              ),
+              FilterButton(
+                  isSearchBar: false,
+                  showBottomSheetFunction: () => showGenericFilterBottomSheet(
+                        context: context,
+                        filterList: [
+                          const CommonPupilFiltersWidget(),
+                          const SchoolListPupilFiltersWidget(),
+                        ],
+                      )),
               const Gap(15)
             ],
           ),

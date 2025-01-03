@@ -63,7 +63,7 @@ class SettingsPage extends WatchingWidget {
                   ),
                   SettingsTile.navigation(
                     leading: const Icon(Icons.bug_report_rounded),
-                    title: const Text('Logs'),
+                    title: const Text('Server Logs'),
                     onPressed: (context) {
                       Navigator.of(context).push(MaterialPageRoute(
                         builder: (ctx) => const LogsPage(),

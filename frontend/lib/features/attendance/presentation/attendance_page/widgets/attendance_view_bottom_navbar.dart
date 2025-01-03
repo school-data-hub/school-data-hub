@@ -9,8 +9,8 @@ import 'package:schuldaten_hub/common/widgets/generic_filter_bottom_sheet.dart';
 import 'package:schuldaten_hub/features/attendance/presentation/attendance_page/widgets/attendance_filters.dart';
 import 'package:schuldaten_hub/features/attendance/presentation/missed_classes_pupil_list_page/widgets/missed_classes_badges_info_dialog.dart';
 import 'package:schuldaten_hub/features/pupil/domain/filters/pupils_filter.dart';
-import 'package:schuldaten_hub/features/pupil/presentation/widgets/common_pupil_filters.dart';
 import 'package:schuldaten_hub/features/pupil/domain/pupil_identity_manager.dart';
+import 'package:schuldaten_hub/features/pupil/presentation/widgets/common_pupil_filters.dart';
 import 'package:schuldaten_hub/features/schooldays/domain/schoolday_manager.dart';
 import 'package:watch_it/watch_it.dart';
 
@@ -23,6 +23,7 @@ class AttendanceListPageBottomNavBar extends WatchingWidget {
     bool filtersOn = watchValue((FiltersStateManager x) => x.filtersActive);
     return BottomNavBarLayout(
       bottomNavBar: BottomAppBar(
+        height: 60,
         padding: const EdgeInsets.all(10),
         shape: null,
         color: AppColors.backgroundColor,

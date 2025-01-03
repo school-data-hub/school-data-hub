@@ -57,60 +57,68 @@ class CompetenceHelper {
   static Color getCompetenceColor(int competenceId) {
     final Competence rootCcompetence =
         locator<CompetenceManager>().findRootCompetence(competenceId);
-    return getRootCompetenceColor(rootCcompetence);
+    return getRootCompetenceColor(rootCompetence: rootCcompetence);
   }
 
-  static Color getRootCompetenceColor(Competence competence) {
-    if (competence.competenceName == 'Sachunterricht') {
+  static Color getRootCompetenceColor({required Competence rootCompetence}) {
+    if (rootCompetence.competenceName == 'Sachunterricht') {
       return AppColors.scienceColor;
-    } else if (competence.competenceName == 'Englisch') {
+    } else if (rootCompetence.competenceName == 'Englisch') {
       return AppColors.englishColor;
-    } else if (competence.competenceName == 'Mathematik') {
+    } else if (rootCompetence.competenceName == 'Mathematik') {
       return AppColors.mathColor;
-    } else if (competence.competenceName == 'Musik') {
+    } else if (rootCompetence.competenceName == 'Musik') {
       return AppColors.musicColor;
-    } else if (competence.competenceName == 'Deutsch') {
+    } else if (rootCompetence.competenceName == 'Deutsch') {
       return AppColors.germanColor;
-    } else if (competence.competenceName == 'Kunst') {
+    } else if (rootCompetence.competenceName == 'Kunst') {
       return AppColors.artColor;
-    } else if (competence.competenceName == 'Religion') {
+    } else if (rootCompetence.competenceName == 'Religion') {
       return AppColors.religionColor;
-    } else if (competence.competenceName == 'Sport') {
+    } else if (rootCompetence.competenceName == 'Sport') {
       return AppColors.sportColor;
-    } else if (competence.competenceName == 'Arbeitsverhalten') {
+    } else if (rootCompetence.competenceName == 'Arbeitsverhalten') {
       return AppColors.workBehaviourColor;
-    } else if (competence.competenceName == 'Sozialverhalten') {
+    } else if (rootCompetence.competenceName == 'Sozialverhalten') {
       return AppColors.socialColor;
     }
     return const Color.fromARGB(255, 157, 36, 36);
   }
 
-  static Widget getCompetenceCheckSymbol(int status) {
+  static Widget getCompetenceCheckSymbol(
+      {required int status, required double size}) {
     switch (status) {
       case 1:
-        return SizedBox(width: 50, child: Image.asset('assets/growth_1-4.png'));
+        return SizedBox(
+            width: size, child: Image.asset('assets/growth_1-4.png'));
       case 2:
-        return SizedBox(width: 50, child: Image.asset('assets/growth_2-4.png'));
+        return SizedBox(
+            width: size, child: Image.asset('assets/growth_2-4.png'));
       case 3:
-        return SizedBox(width: 50, child: Image.asset('assets/growth_3-4.png'));
+        return SizedBox(
+            width: size, child: Image.asset('assets/growth_3-4.png'));
       // case 'orange':
       //   return Colors.orange;
       case 4:
-        return SizedBox(width: 50, child: Image.asset('assets/growth_4-4.png'));
+        return SizedBox(
+            width: size, child: Image.asset('assets/growth_4-4.png'));
     }
-    return const SizedBox(
-        width: 50,
-        child: Icon(Icons.question_mark_rounded, color: Colors.white));
+    return SizedBox(
+        width: size,
+        child: const Icon(Icons.question_mark_rounded, color: Colors.white));
   }
 
   static Widget getLastCompetenceCheckSymbol(
-      {required PupilProxy pupil, required int competenceId}) {
+      {required PupilProxy pupil,
+      required int competenceId,
+      required double size}) {
     if (pupil.competenceChecks!.isNotEmpty) {
       final CompetenceCheck? competenceCheck =
           getLastCompetenceCheckOfCompetence(pupil, competenceId);
 
       if (competenceCheck != null) {
-        getCompetenceCheckSymbol(competenceCheck.competenceStatus);
+        getCompetenceCheckSymbol(
+            status: competenceCheck.competenceStatus, size: size);
       }
       return const SizedBox(
           width: 50,

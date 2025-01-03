@@ -15,159 +15,168 @@ class AuthorizationPupilsFilterBottomSheet extends WatchingWidget {
   Widget build(BuildContext context) {
     Map<PupilFilter, bool> activeFilters =
         watchValue((PupilFilterManager x) => x.pupilFilterState);
-    bool valueYesResponse =
-        activeFilters[PupilFilter.authorizationYesResponse]!;
-    bool valueNoResponse = activeFilters[PupilFilter.authorizationNoResponse]!;
-    bool valueNullResponse =
-        activeFilters[PupilFilter.authorizationNullResponse]!;
+    bool valueYesResponse = activeFilters[PupilFilter.authorizationPositive]!;
+    bool valueNoResponse = activeFilters[PupilFilter.authorizationNegative]!;
+    bool valueNullResponse = activeFilters[PupilFilter.authorizationNoValue]!;
     bool valueCommentResponse =
-        activeFilters[PupilFilter.authorizationCommentResponse]!;
-    bool valueFileResponse =
-        activeFilters[PupilFilter.authorizationFileResponse]!;
+        activeFilters[PupilFilter.authorizationComment]!;
+    bool valueFileResponse = activeFilters[PupilFilter.authorizationNoFile]!;
     final filterLocator = locator<PupilFilterManager>();
     return Padding(
       padding: const EdgeInsets.only(left: 20.0, right: 20, top: 8),
       child: Column(
         children: [
           const FilterHeading(),
-          const CommonPupilFiltersWidget(),
-          const Row(
-            children: [
-              Text(
-                'Antwort:',
-                style: AppStyles.subtitle,
-              )
-            ],
-          ),
-          const Gap(5),
-          Wrap(
-            spacing: 5,
-            crossAxisAlignment: WrapCrossAlignment.center,
-            alignment: WrapAlignment.center,
-            children: [
-              ThemedFilterChip(
-                label: 'Ja',
-                selected: valueYesResponse,
-                onSelected: (val) {
-                  if (val) {
-                    filterLocator.setPupilFilter(pupilFilterRecords: [
-                      (
-                        filter: PupilFilter.authorizationYesResponse,
-                        value: true
-                      ),
-                      (
-                        filter: PupilFilter.authorizationNoResponse,
-                        value: false
-                      ),
-                      (
-                        filter: PupilFilter.authorizationNullResponse,
-                        value: false
-                      ),
-                    ]);
-                    return;
-                  }
-                  filterLocator.setPupilFilter(pupilFilterRecords: [
-                    (filter: PupilFilter.authorizationYesResponse, value: val)
-                  ]);
-                },
-              ),
-              ThemedFilterChip(
-                  label: 'Nein',
-                  selected: valueNoResponse,
-                  onSelected: (val) {
-                    if (val) {
-                      filterLocator.setPupilFilter(
-                        pupilFilterRecords: [
-                          (
-                            filter: PupilFilter.authorizationNoResponse,
-                            value: true
-                          ),
-                          (
-                            filter: PupilFilter.authorizationYesResponse,
-                            value: false
-                          ),
-                          (
-                            filter: PupilFilter.authorizationNullResponse,
-                            value: false
-                          ),
-                        ],
-                      );
-                      return;
-                    }
-                    filterLocator.setPupilFilter(
-                      pupilFilterRecords: [
-                        (
-                          filter: PupilFilter.authorizationNoResponse,
-                          value: val
-                        )
-                      ],
-                    );
-                  }),
-              ThemedFilterChip(
-                label: 'keine Antwort',
-                selected: valueNullResponse,
-                onSelected: (val) {
-                  if (val) {
-                    filterLocator.setPupilFilter(
-                      pupilFilterRecords: [
-                        (
-                          filter: PupilFilter.authorizationNullResponse,
-                          value: true
-                        ),
-                        (
-                          filter: PupilFilter.authorizationYesResponse,
-                          value: false
-                        ),
-                        (
-                          filter: PupilFilter.authorizationNoResponse,
-                          value: false
-                        ),
-                      ],
-                    );
-                    return;
-                  }
-
-                  filterLocator.setPupilFilter(
-                    pupilFilterRecords: [
-                      (
-                        filter: PupilFilter.authorizationNullResponse,
-                        value: val
+          Expanded(
+            child: SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+              child: Column(
+                children: [
+                  const CommonPupilFiltersWidget(),
+                  const Row(
+                    children: [
+                      Text(
+                        'Antwort:',
+                        style: AppStyles.subtitle,
                       )
                     ],
-                  );
-                },
-              ),
-              ThemedFilterChip(
-                label: 'Kommentar',
-                selected: valueCommentResponse,
-                onSelected: (val) {
-                  filterLocator.setPupilFilter(
-                    pupilFilterRecords: [
-                      (
-                        filter: PupilFilter.authorizationCommentResponse,
-                        value: val
+                  ),
+                  const Gap(5),
+                  Wrap(
+                    spacing: 5,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    alignment: WrapAlignment.center,
+                    children: [
+                      ThemedFilterChip(
+                        label: 'Ja',
+                        selected: valueYesResponse,
+                        onSelected: (val) {
+                          if (val) {
+                            filterLocator.setPupilFilter(pupilFilterRecords: [
+                              (
+                                filter: PupilFilter.authorizationPositive,
+                                value: true
+                              ),
+                              (
+                                filter: PupilFilter.authorizationNegative,
+                                value: false
+                              ),
+                              (
+                                filter: PupilFilter.authorizationNoValue,
+                                value: false
+                              ),
+                            ]);
+                            return;
+                          }
+                          filterLocator.setPupilFilter(pupilFilterRecords: [
+                            (
+                              filter: PupilFilter.authorizationPositive,
+                              value: val
+                            )
+                          ]);
+                        },
+                      ),
+                      ThemedFilterChip(
+                          label: 'Nein',
+                          selected: valueNoResponse,
+                          onSelected: (val) {
+                            if (val) {
+                              filterLocator.setPupilFilter(
+                                pupilFilterRecords: [
+                                  (
+                                    filter: PupilFilter.authorizationNegative,
+                                    value: true
+                                  ),
+                                  (
+                                    filter: PupilFilter.authorizationPositive,
+                                    value: false
+                                  ),
+                                  (
+                                    filter: PupilFilter.authorizationNoValue,
+                                    value: false
+                                  ),
+                                ],
+                              );
+                              return;
+                            }
+                            filterLocator.setPupilFilter(
+                              pupilFilterRecords: [
+                                (
+                                  filter: PupilFilter.authorizationNegative,
+                                  value: val
+                                )
+                              ],
+                            );
+                          }),
+                      ThemedFilterChip(
+                        label: 'keine Antwort',
+                        selected: valueNullResponse,
+                        onSelected: (val) {
+                          if (val) {
+                            filterLocator.setPupilFilter(
+                              pupilFilterRecords: [
+                                (
+                                  filter: PupilFilter.authorizationNoValue,
+                                  value: true
+                                ),
+                                (
+                                  filter: PupilFilter.authorizationPositive,
+                                  value: false
+                                ),
+                                (
+                                  filter: PupilFilter.authorizationNegative,
+                                  value: false
+                                ),
+                              ],
+                            );
+                            return;
+                          }
+
+                          filterLocator.setPupilFilter(
+                            pupilFilterRecords: [
+                              (
+                                filter: PupilFilter.authorizationNoValue,
+                                value: val
+                              )
+                            ],
+                          );
+                        },
+                      ),
+                      ThemedFilterChip(
+                        label: 'Kommentar',
+                        selected: valueCommentResponse,
+                        onSelected: (val) {
+                          filterLocator.setPupilFilter(
+                            pupilFilterRecords: [
+                              (
+                                filter: PupilFilter.authorizationComment,
+                                value: val
+                              ),
+                            ],
+                          );
+                          return;
+                        },
+                      ),
+                      ThemedFilterChip(
+                        label: 'Kein Bild',
+                        selected: valueFileResponse,
+                        onSelected: (val) {
+                          filterLocator.setPupilFilter(
+                            pupilFilterRecords: [
+                              (
+                                filter: PupilFilter.authorizationNoFile,
+                                value: val
+                              ),
+                            ],
+                          );
+                          return;
+                        },
                       ),
                     ],
-                  );
-                  return;
-                },
+                  ),
+                ],
               ),
-              ThemedFilterChip(
-                label: 'Bild',
-                selected: valueFileResponse,
-                onSelected: (val) {
-                  filterLocator.setPupilFilter(
-                    pupilFilterRecords: [
-                      (
-                        filter: PupilFilter.authorizationFileResponse,
-                        value: val
-                      ),
-                    ],
-                  );
-                  return;
-                },
-              ),
-            ],
+            ),
           ),
         ],
       ),

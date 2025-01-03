@@ -194,9 +194,7 @@ class PostOrPatchCompetencePageState extends State<PostOrPatchCompetencePage> {
                 ),
                 const Spacer(),
                 ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromARGB(255, 47, 202, 76),
-                      minimumSize: const Size.fromHeight(60)),
+                  style: AppStyles.actionButtonStyle,
                   onPressed: () {
                     widget.competence == null
                         ? postNewCompetence()
@@ -204,20 +202,18 @@ class PostOrPatchCompetencePageState extends State<PostOrPatchCompetencePage> {
                   },
                   child: const Text(
                     'SENDEN',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    style: AppStyles.buttonTextStyle,
                   ),
                 ),
                 const Gap(15),
                 ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromARGB(255, 235, 67, 67),
-                      minimumSize: const Size.fromHeight(60)),
+                  style: AppStyles.cancelButtonStyle,
                   onPressed: () {
                     Navigator.pop(context);
                   },
                   child: const Text(
                     'ABBRECHEN',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    style: AppStyles.buttonTextStyle,
                   ),
                 ),
               ],

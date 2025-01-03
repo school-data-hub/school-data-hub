@@ -6,7 +6,7 @@ import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/theme/colors.dart';
 import 'package:schuldaten_hub/common/theme/styles.dart';
 import 'package:schuldaten_hub/common/utils/import_string_from_txt_file.dart';
-import 'package:schuldaten_hub/common/utils/scanner.dart';
+import 'package:schuldaten_hub/common/widgets/qr/scanner.dart';
 import 'package:schuldaten_hub/features/matrix/presentation/set_matrix_environment_page/set_matrix_environment_view_model.dart';
 
 class SetupMatrixEnvironmentPage extends StatelessWidget {

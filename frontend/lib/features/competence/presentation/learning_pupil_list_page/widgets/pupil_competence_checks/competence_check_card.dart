@@ -3,20 +3,21 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
-import 'package:schuldaten_hub/common/theme/colors.dart';
 import 'package:schuldaten_hub/common/domain/env_manager.dart';
-import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/domain/session_helper_functions.dart';
+import 'package:schuldaten_hub/common/services/locator.dart';
+import 'package:schuldaten_hub/common/theme/colors.dart';
 import 'package:schuldaten_hub/common/utils/extensions.dart';
 import 'package:schuldaten_hub/common/widgets/date_picker.dart';
 import 'package:schuldaten_hub/common/widgets/dialogs/confirmation_dialog.dart';
 import 'package:schuldaten_hub/common/widgets/dialogs/short_textfield_dialog.dart';
 import 'package:schuldaten_hub/common/widgets/document_image.dart';
 import 'package:schuldaten_hub/common/widgets/upload_image.dart';
-import 'package:schuldaten_hub/features/competence/domain/models/competence_check.dart';
 import 'package:schuldaten_hub/features/competence/data/competence_check_repository.dart';
 import 'package:schuldaten_hub/features/competence/domain/competence_helper.dart';
 import 'package:schuldaten_hub/features/competence/domain/competence_manager.dart';
+import 'package:schuldaten_hub/features/competence/domain/models/competence_check.dart';
+import 'package:schuldaten_hub/features/competence/presentation/widgets/competence_check_dropdown.dart';
 import 'package:schuldaten_hub/features/schooldays/domain/schoolday_manager.dart';
 
 class CompetenceCheckCard extends StatelessWidget {
@@ -43,6 +44,10 @@ class CompetenceCheckCard extends StatelessWidget {
           color: AppColors.cardInCardColor,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
+            side: const BorderSide(
+              color: AppColors.cardInCardBorderColor,
+              width: 2,
+            ),
           ),
           child: Padding(
             padding: const EdgeInsets.all(10),
@@ -115,23 +120,34 @@ class CompetenceCheckCard extends StatelessWidget {
                             style: const TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 18),
                           ),
-                    const Gap(10),
+                    const Gap(5),
                   ],
                 ),
                 const Gap(10),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.all(5.0),
-                      child: InkWell(
-                        // onTap: () => newCompetenceCheckDialog(
-                        //     pupil, competence.competenceId, context),
-                        onLongPress: () {},
-                        child: CompetenceHelper.getCompetenceCheckSymbol(
-                            competenceCheck.competenceStatus),
-                      ),
-                    ),
+                    const Gap(5),
+                    isAuthorized
+                        ? GrowthDropdown(
+                            dropdownValue: competenceCheck.competenceStatus,
+                            onChangedFunction: (int? value) async {
+                              if (value == competenceCheck.competenceStatus) {
+                                return;
+                              }
+                              await locator<CompetenceManager>()
+                                  .updateCompetenceCheck(
+                                      competenceCheckId:
+                                          competenceCheck.checkId,
+                                      competenceStatus: value);
+                            },
+                          )
+                        : Padding(
+                            padding: const EdgeInsets.all(5.0),
+                            child: CompetenceHelper.getCompetenceCheckSymbol(
+                                status: competenceCheck.competenceStatus,
+                                size: 60),
+                          ),
                     const Spacer(),
                     //- Take picture button only visible if there are less than 4 pictures
                     if (competenceCheck.competenceCheckFiles!.length < 4)
@@ -222,10 +238,10 @@ class CompetenceCheckCard extends StatelessWidget {
                         ),
                       ],
 
-                    const Gap(10),
+                    const Gap(5),
                   ],
                 ),
-                const SizedBox(height: 15),
+                const Gap(15),
                 Row(
                   children: [
                     InkWell(
@@ -256,10 +272,31 @@ class CompetenceCheckCard extends StatelessWidget {
                     ),
                     const Gap(5),
                     Flexible(
-                      child: Text(
-                        competenceCheck.comment,
-                        style: const TextStyle(
-                          fontSize: 16,
+                      child: InkWell(
+                        onTap: () async {
+                          if (isAuthorized) {
+                            final String? comment = await shortTextfieldDialog(
+                                context: context,
+                                title: 'Kommentar',
+                                labelText: 'Kommentar eingeben',
+                                hintText: 'Kommentar eingeben',
+                                obscureText: false);
+                            if (comment != null) {
+                              await locator<CompetenceManager>()
+                                  .updateCompetenceCheck(
+                                      competenceCheckId:
+                                          competenceCheck.checkId,
+                                      competenceComment: comment);
+                            }
+                          }
+                        },
+                        child: Text(
+                          (competenceCheck.comment.isEmpty)
+                              ? 'Kein Kommentar'
+                              : competenceCheck.comment,
+                          style: const TextStyle(
+                            fontSize: 16,
+                          ),
                         ),
                       ),
                     ),

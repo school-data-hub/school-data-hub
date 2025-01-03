@@ -15,7 +15,8 @@ class LearningSupportListPageBottomNavBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return BottomNavBarLayout(
       bottomNavBar: BottomAppBar(
-        padding: const EdgeInsets.all(15),
+        height: 60,
+        //padding: const EdgeInsets.all(15),
         shape: null,
         color: AppColors.backgroundColor,
         child: IconTheme(
@@ -23,15 +24,12 @@ class LearningSupportListPageBottomNavBar extends StatelessWidget {
           child: Row(
             children: <Widget>[
               const Spacer(),
-              IconButton(
-                tooltip: 'zurück',
-                icon: const Icon(
+              InkWell(
+                onTap: () => Navigator.pop(context),
+                child: const Icon(
                   Icons.arrow_back,
                   size: 30,
                 ),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
               ),
               const Gap(30),
               InkWell(

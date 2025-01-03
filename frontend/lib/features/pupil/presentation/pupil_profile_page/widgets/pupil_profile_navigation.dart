@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-
-import 'package:schuldaten_hub/common/theme/colors.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
+import 'package:schuldaten_hub/common/theme/colors.dart';
 import 'package:schuldaten_hub/features/main_menu/widgets/landing_bottom_nav_bar.dart';
 import 'package:watch_it/watch_it.dart';
 
@@ -239,6 +238,7 @@ class _PupilProfileNavigationState extends State<PupilProfileNavigation> {
                   Expanded(
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
+                        padding: EdgeInsets.zero,
                         elevation: 0,
                         shape: const RoundedRectangleBorder(
                             borderRadius: BorderRadius.zero),
@@ -257,7 +257,8 @@ class _PupilProfileNavigationState extends State<PupilProfileNavigation> {
                                     5
                                 ? AppColors.backgroundColor
                                 : Colors.white,
-                            fontWeight: FontWeight.bold),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 13),
                       ),
                     ),
                   ),

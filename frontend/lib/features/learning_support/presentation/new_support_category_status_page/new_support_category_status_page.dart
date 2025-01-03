@@ -113,7 +113,7 @@ class NewSupportCategoryStatusPage extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                        const Gap(10),
+                        const Gap(5),
                         controller.goalCategoryId == null
                             ? const SizedBox.shrink()
                             : controller.goalCategoryId == 0
@@ -138,7 +138,7 @@ class NewSupportCategoryStatusPage extends StatelessWidget {
                                       ),
                                     ],
                                   ),
-                        const Gap(15),
+                        const Gap(5),
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -192,12 +192,14 @@ class NewSupportCategoryStatusPage extends StatelessWidget {
                         const Gap(20),
                         if (controller.widget.appBarTitle != 'Neues Förderziel')
                           Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               const Text(
-                                'Aktueller Zustand',
+                                'Aktueller Status:',
                                 style: TextStyle(fontWeight: FontWeight.bold),
                               ),
                               const Gap(10),
+                              //- TODO: use int in categoryStatus and a  GrowthDropdown(dropdownValue: controller.categoryStatusValue, onChangedFunction: onChangedFunction)
                               Padding(
                                 padding: const EdgeInsets.only(right: 5.0),
                                 child: DropdownButtonHideUnderline(
@@ -218,47 +220,48 @@ class NewSupportCategoryStatusPage extends StatelessWidget {
                                     },
                                   ),
                                 ),
-                              )
+                              ),
                             ],
                           ),
                         const Padding(
                             padding: EdgeInsets.symmetric(vertical: 40)),
-                        if (controller.goalCategoryId != null)
-                          if (locator<LearningSupportManager>()
-                              .getGoalsForSupportCategory(
-                                  controller.goalCategoryId!)
-                              .isNotEmpty) ...<Widget>[
-                            ElevatedButton(
-                              style: AppStyles.actionButtonStyle,
-                              onPressed: () async {
-                                final Map<String, String?>? result =
-                                    await goalExamplesDialog(
-                                        context,
-                                        'Beispiele',
-                                        locator<LearningSupportManager>()
-                                            .getGoalsForSupportCategory(
-                                                controller.goalCategoryId!));
-                                if (result != null) {
-                                  controller.setTextFieldControllerValues(
-                                      description: result['goal']!,
-                                      strategies: result['strategies']!);
-                                }
-                              },
-                              child: const Text(
-                                'BEISPIELE',
-                                style: AppStyles.buttonTextStyle,
-                              ),
-                            ),
-                          ],
                       ],
                     ),
                   ),
                 ),
-                const Gap(15),
+                const Spacer(),
                 ConstrainedBox(
                   constraints: const BoxConstraints(maxWidth: 800),
                   child: Column(
                     children: [
+                      if (controller.goalCategoryId != null)
+                        if (locator<LearningSupportManager>()
+                            .getGoalsForSupportCategory(
+                                controller.goalCategoryId!)
+                            .isNotEmpty) ...<Widget>[
+                          ElevatedButton(
+                            style: AppStyles.actionButtonStyle,
+                            onPressed: () async {
+                              final Map<String, String?>? result =
+                                  await goalExamplesDialog(
+                                      context,
+                                      'Beispiele',
+                                      locator<LearningSupportManager>()
+                                          .getGoalsForSupportCategory(
+                                              controller.goalCategoryId!));
+                              if (result != null) {
+                                controller.setTextFieldControllerValues(
+                                    description: result['goal']!,
+                                    strategies: result['strategies']!);
+                              }
+                            },
+                            child: const Text(
+                              'BEISPIELE',
+                              style: AppStyles.buttonTextStyle,
+                            ),
+                          ),
+                          const Gap(15),
+                        ],
                       ElevatedButton(
                         style: AppStyles.successButtonStyle,
                         onPressed: () {

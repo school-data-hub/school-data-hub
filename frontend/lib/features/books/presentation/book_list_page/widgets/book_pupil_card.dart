@@ -35,7 +35,7 @@ class BookPupilCard extends WatchingWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              AvatarWithBadges(pupil: pupil!, size: 80),
+              AvatarWithBadges(pupil: pupil, size: 80),
               Expanded(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,

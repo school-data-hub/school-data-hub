@@ -7,6 +7,7 @@ import 'package:schuldaten_hub/features/workbooks/presentation/new_workbook_page
 Widget workbookListBottomNavBar(BuildContext context) {
   return BottomNavBarLayout(
     bottomNavBar: BottomAppBar(
+      height: 60,
       padding: const EdgeInsets.all(9),
       shape: null,
       color: AppColors.backgroundColor,

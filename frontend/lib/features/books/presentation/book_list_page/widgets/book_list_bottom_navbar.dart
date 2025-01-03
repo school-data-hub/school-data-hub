@@ -12,6 +12,7 @@ class BookListBottomNavBar extends WatchingWidget {
   Widget build(BuildContext context) {
     return BottomNavBarLayout(
       bottomNavBar: BottomAppBar(
+        height: 60,
         padding: const EdgeInsets.all(9),
         shape: null,
         color: AppColors.backgroundColor,

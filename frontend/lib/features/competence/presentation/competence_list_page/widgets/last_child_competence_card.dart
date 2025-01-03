@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gap/gap.dart';
-import 'package:schuldaten_hub/common/widgets/custom_expansion_tile/custom_expasion_tile_hook.dart';
 import 'package:schuldaten_hub/common/widgets/custom_expansion_tile/custom_expansion_tile_content.dart';
 import 'package:schuldaten_hub/common/widgets/custom_expansion_tile/custom_expansion_tile_switch.dart';
+import 'package:schuldaten_hub/common/widgets/custom_expansion_tile/custom_expasion_tile_hook.dart';
 import 'package:schuldaten_hub/features/competence/domain/models/competence.dart';
 import 'package:schuldaten_hub/features/competence/presentation/competence_list_page/widgets/competence_filtered_pupils.dart';
 
@@ -33,8 +33,8 @@ class LastChildCompetenceCard extends HookWidget {
               children: [
                 Flexible(
                   child: InkWell(
-                    onTap: () => navigateToNewOrPatchCompetencePage(
-                        competence: competence),
+                    // onTap: () => navigateToNewOrPatchCompetencePage(
+                    //     competence: competence),
                     onLongPress: () => navigateToNewOrPatchCompetencePage(
                         competenceId: competence.competenceId),
                     child: Text(
@@ -42,7 +42,7 @@ class LastChildCompetenceCard extends HookWidget {
                       textAlign: TextAlign.start,
                       style: const TextStyle(
                         color: Colors.black,
-                        fontSize: 15,
+                        fontSize: 17,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -50,6 +50,7 @@ class LastChildCompetenceCard extends HookWidget {
                 ),
               ],
             ),
+            const Gap(10),
             if (competence.indicators != null) ...[
               const Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -61,9 +62,9 @@ class LastChildCompetenceCard extends HookWidget {
                         fontWeight: FontWeight.bold,
                         fontStyle: FontStyle.italic),
                   ),
-                  Gap(10),
                 ],
               ),
+              const Gap(5),
               Text(
                 competence.indicators!,
                 textAlign: TextAlign.start,
@@ -75,17 +76,47 @@ class LastChildCompetenceCard extends HookWidget {
             ],
             competence.competenceLevel != null
                 ? Padding(
-                    padding: const EdgeInsets.only(top: 4.0, bottom: 8),
+                    padding: const EdgeInsets.only(top: 10.0, bottom: 8),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Flexible(
-                          child: Text(
-                            competence.competenceLevel!,
-                            style: const TextStyle(
-                                color: Colors.black,
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              if (competence.competenceLevel!
+                                  .contains('E1')) ...[
+                                Image.asset(
+                                  'assets/grade_1.png',
+                                  width: 22,
+                                ),
+                                const Gap(5)
+                              ],
+                              if (competence.competenceLevel!
+                                  .contains('E2')) ...[
+                                Image.asset(
+                                  'assets/grade_2.png',
+                                  width: 22,
+                                ),
+                                const Gap(5)
+                              ],
+                              if (competence.competenceLevel!
+                                  .contains('S3')) ...[
+                                Image.asset(
+                                  'assets/grade_3.png',
+                                  width: 22,
+                                ),
+                                const Gap(5)
+                              ],
+                              if (competence.competenceLevel!
+                                  .contains('S4')) ...[
+                                Image.asset(
+                                  'assets/grade_4.png',
+                                  width: 22,
+                                ),
+                                const Gap(5)
+                              ],
+                            ],
                           ),
                         ),
                         const Gap(10),

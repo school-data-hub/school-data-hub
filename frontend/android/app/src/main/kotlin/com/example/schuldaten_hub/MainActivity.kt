@@ -1,4 +1,4 @@
-package de.medien_sandkasten.schuldaten_hub
+package de.medien_sandkiste.schuldaten_hub
 
 import io.flutter.embedding.android.FlutterActivity
 

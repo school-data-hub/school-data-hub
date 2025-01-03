@@ -6,7 +6,7 @@ import 'package:schuldaten_hub/common/domain/models/enums.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_service.dart';
 import 'package:schuldaten_hub/common/theme/styles.dart';
-import 'package:schuldaten_hub/common/utils/scanner.dart';
+import 'package:schuldaten_hub/common/widgets/qr/scanner.dart';
 import 'package:schuldaten_hub/common/widgets/dialogs/short_textfield_dialog.dart';
 import 'package:schuldaten_hub/features/books/domain/models/pupil_book.dart';
 import 'package:schuldaten_hub/features/books/presentation/widgets/pupil_book_card.dart';

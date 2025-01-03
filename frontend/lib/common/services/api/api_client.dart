@@ -4,7 +4,6 @@ import 'package:dio/dio.dart';
 import 'package:schuldaten_hub/common/domain/env_manager.dart';
 import 'package:schuldaten_hub/common/domain/session_manager.dart';
 import 'package:schuldaten_hub/common/services/api/api_settings.dart';
-import 'package:schuldaten_hub/common/services/api/dio_utils/dio_interceptor.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 
 class ApiClient {
@@ -18,10 +17,12 @@ class ApiClient {
       ..options.baseUrl = baseUrl
       ..options.connectTimeout = ApiSettings.connectionTimeout
       //..options.headers['content-Type'] = 'application/json'
-
+      ..options.validateStatus = (status) {
+        return status! < 500;
+      }
       ..options.receiveTimeout = ApiSettings.receiveTimeout
-      ..options.responseType = ResponseType.json
-      ..interceptors.add(DioInterceptor());
+      ..options.responseType = ResponseType.json;
+    //   ..interceptors.add(DioInterceptor());
     // ..interceptors.add(LogInterceptor(
     //   request: true,
     //   requestHeader: true,

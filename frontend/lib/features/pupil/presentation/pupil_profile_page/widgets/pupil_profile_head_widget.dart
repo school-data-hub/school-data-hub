@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:schuldaten_hub/common/theme/colors.dart';
-import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/domain/session_manager.dart';
+import 'package:schuldaten_hub/common/services/locator.dart';
+import 'package:schuldaten_hub/common/theme/colors.dart';
 import 'package:schuldaten_hub/common/widgets/avatar.dart';
 import 'package:schuldaten_hub/features/pupil/domain/models/pupil_proxy.dart';
 import 'package:watch_it/watch_it.dart';
@@ -97,19 +97,6 @@ class PupilProfileHeadWidget extends WatchingWidget {
                 ],
               ),
               const Gap(2),
-              Row(
-                children: [
-                  const Icon(Icons.attach_money),
-                  const Gap(5),
-                  Text(
-                    pupil.credit.toString(),
-                    style: const TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18.0),
-                  )
-                ],
-              ),
             ],
           ),
         )

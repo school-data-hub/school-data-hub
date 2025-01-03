@@ -307,7 +307,7 @@ class AttendanceHelper {
     String createdOrModifiedBy = pupil.missedClasses![missedClass].modifiedBy ??
         pupil.missedClasses![missedClass].createdBy;
 
-    final bool excused = pupil.missedClasses![missedClass].unexcused!;
+    final bool excused = pupil.missedClasses![missedClass].unexcused;
     final bool returned = pupil.missedClasses![missedClass].backHome!;
     final String? returnedTime = pupil.missedClasses![missedClass].backHomeAt;
     final String? comment = pupil.missedClasses![missedClass].comment;

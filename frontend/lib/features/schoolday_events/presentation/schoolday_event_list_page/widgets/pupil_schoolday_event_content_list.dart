@@ -6,8 +6,8 @@ import 'package:schuldaten_hub/common/theme/styles.dart';
 import 'package:schuldaten_hub/common/widgets/dialogs/confirmation_dialog.dart';
 import 'package:schuldaten_hub/features/pupil/domain/models/pupil_proxy.dart';
 import 'package:schuldaten_hub/features/schoolday_events/domain/filters/schoolday_event_filter_manager.dart';
-import 'package:schuldaten_hub/features/schoolday_events/domain/schoolday_event_manager.dart';
 import 'package:schuldaten_hub/features/schoolday_events/domain/models/schoolday_event.dart';
+import 'package:schuldaten_hub/features/schoolday_events/domain/schoolday_event_manager.dart';
 import 'package:schuldaten_hub/features/schoolday_events/presentation/new_schoolday_event_page/new_schoolday_event_page.dart';
 import 'package:schuldaten_hub/features/schoolday_events/presentation/schoolday_event_list_page/widgets/pupil_schoolday_event_card.dart';
 import 'package:watch_it/watch_it.dart';
@@ -54,7 +54,7 @@ class SchooldayEventsContentList extends WatchingWidget {
         itemCount: filteredSchooldayEvents.length,
         itemBuilder: (BuildContext context, int index) {
           return Padding(
-            padding: const EdgeInsets.symmetric(vertical: 5.0),
+            padding: const EdgeInsets.symmetric(vertical: 2.5),
             child: GestureDetector(
               onTap: () {
                 //- TO-DO: change schooldayEvent

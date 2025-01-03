@@ -16,7 +16,7 @@ def setup_logging(app):
         "%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]"
     )
     handler.setFormatter(formatter)
-    handler.setLevel(logging.DEBUG)  # only log errors and above
+    handler.setLevel(logging.ERROR)  # only log errors and above
     app.logger.addHandler(handler)  # attach the handler to the app's logger
     # handler = RotatingFileHandler("error.log", maxBytes=10000, backupCount=1)
     # handler.setLevel(logging.ERROR)

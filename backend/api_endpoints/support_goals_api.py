@@ -153,9 +153,10 @@ def add_goalcheck(current_user, goal_id, json_data):
     check_id = str(uuid.uuid4().hex)
     created_by = current_user.name
     created_at = datetime.now().date()
+    achieved = json_data["achieved"]
     comment = json_data["comment"]
     new_goalcheck = SupportGoalCheck(
-        this_goal_id, check_id, created_by, created_at, comment
+        this_goal_id, check_id, created_by, created_at, achieved, comment
     )
     db.session.add(new_goalcheck)
     # - LOG ENTRY

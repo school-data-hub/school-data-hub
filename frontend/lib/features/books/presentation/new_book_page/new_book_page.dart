@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/theme/colors.dart';
 import 'package:schuldaten_hub/common/theme/styles.dart';
+import 'package:schuldaten_hub/common/widgets/themed_filter_chip.dart';
 import 'package:schuldaten_hub/features/books/presentation/new_book_page/new_book_page_view_model.dart';
 
 class NewBookPage extends StatelessWidget {
@@ -123,6 +124,20 @@ class NewBookPage extends StatelessWidget {
                         color: Colors.black, fontWeight: FontWeight.bold),
                     decoration: AppStyles.textFieldDecoration(
                         labelText: 'Buchbeschreibung'),
+                  ),
+                  const Gap(20),
+                  Wrap(
+                    spacing: 5,
+                    runSpacing: 5,
+                    children: viewModel.bookTagSelection.entries.map((entry) {
+                      return ThemedFilterChip(
+                        label: entry.key.name,
+                        selected: entry.value,
+                        onSelected: (bool selected) {
+                          viewModel.switchBookTagSelection(entry.key);
+                        },
+                      );
+                    }).toList(),
                   ),
                   const Gap(30),
                   ...<Widget>[

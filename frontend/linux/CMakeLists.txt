@@ -7,7 +7,7 @@ project(runner LANGUAGES CXX)
 set(BINARY_NAME "schuldaten_hub")
 # The unique GTK application identifier for this application. See:
 # https://wiki.gnome.org/HowDoI/ChooseApplicationID
-set(APPLICATION_ID "de.medien_sandkasten.schuldaten_hub")
+set(APPLICATION_ID "de.medien_sandkiste.schuldaten_hub")
 
 # Explicitly opt in to modern CMake behaviors to avoid warnings with recent
 # versions of CMake.

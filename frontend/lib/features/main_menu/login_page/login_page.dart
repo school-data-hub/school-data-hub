@@ -122,7 +122,7 @@ class LoginPage extends WatchingWidget {
                               height: 15,
                             )
                           : const SizedBox(
-                              height: 30,
+                              height: 15,
                             ),
                       if (envReady) ...<Widget>[
                         ConstrainedBox(
@@ -249,7 +249,7 @@ class LoginPage extends WatchingWidget {
                           ),
                         ),
                       ],
-                      const Gap(20),
+                      const Gap(5),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 10.0),
                         child: Container(

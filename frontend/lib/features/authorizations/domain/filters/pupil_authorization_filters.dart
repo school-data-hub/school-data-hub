@@ -179,32 +179,35 @@ class AuthorizationFilterManager {
     bool filterIsOn = false;
     for (PupilAuthorization pupilAuthorization in pupilAuthorizations) {
       if (activeFilters
-              .pupilFilterState.value[PupilFilter.authorizationYesResponse]! &&
+              .pupilFilterState.value[PupilFilter.authorizationPositive]! &&
           pupilAuthorization.status != true) {
         filterIsOn = true;
         continue;
       }
       if (activeFilters
-              .pupilFilterState.value[PupilFilter.authorizationNoResponse]! &&
+              .pupilFilterState.value[PupilFilter.authorizationNegative]! &&
           pupilAuthorization.status != false) {
         filterIsOn = true;
         continue;
       }
       if (activeFilters
-              .pupilFilterState.value[PupilFilter.authorizationNullResponse]! &&
+              .pupilFilterState.value[PupilFilter.authorizationNoValue]! &&
           pupilAuthorization.status != null) {
         filterIsOn = true;
         continue;
       }
-      if (activeFilters.pupilFilterState
-              .value[PupilFilter.authorizationCommentResponse]! &&
+      if (activeFilters
+              .pupilFilterState.value[PupilFilter.authorizationComment]! &&
           pupilAuthorization.comment == null) {
         filterIsOn = true;
         continue;
       }
       if (activeFilters
-              .pupilFilterState.value[PupilFilter.authorizationFileResponse]! &&
-          pupilAuthorization.fileId == null) {}
+              .pupilFilterState.value[PupilFilter.authorizationNoFile]! &&
+          pupilAuthorization.fileId != null) {
+        filterIsOn = true;
+        continue;
+      }
 
       filteredPupilAuthorizations.add(pupilAuthorization);
     }

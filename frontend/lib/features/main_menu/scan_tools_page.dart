@@ -8,8 +8,8 @@ import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/theme/colors.dart';
 import 'package:schuldaten_hub/common/theme/styles.dart';
 import 'package:schuldaten_hub/common/utils/barcode_stream_scanner.dart';
-import 'package:schuldaten_hub/common/utils/qr_image_picker.dart';
 import 'package:schuldaten_hub/common/widgets/dialogs/confirmation_dialog.dart';
+import 'package:schuldaten_hub/common/widgets/qr/qr_image_picker.dart';
 import 'package:schuldaten_hub/features/pupil/domain/pupil_identity_manager.dart';
 import 'package:watch_it/watch_it.dart';
 

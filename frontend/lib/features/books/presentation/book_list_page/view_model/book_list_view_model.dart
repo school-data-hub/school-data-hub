@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
+import 'package:schuldaten_hub/features/books/domain/book_manager.dart';
 import 'package:schuldaten_hub/features/books/presentation/book_list_page/book_list_page.dart';
-import 'package:schuldaten_hub/features/workbooks/domain/workbook_manager.dart';
 
 class BookList extends StatefulWidget {
   const BookList({
@@ -15,7 +15,7 @@ class BookList extends StatefulWidget {
 class BookListViewModel extends State<BookList> {
   @override
   void initState() {
-    locator<WorkbookManager>().getWorkbooks();
+    locator<BookManager>().getBooks();
     super.initState();
   }
 

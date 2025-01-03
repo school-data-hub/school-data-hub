@@ -10,6 +10,7 @@ class AppColors {
   static const gridViewColor = Color.fromRGBO(252, 160, 39, 1);
   static const pupilProfileCardColor = Color.fromARGB(255, 237, 237, 251);
   static const cardInCardColor = Color.fromARGB(255, 248, 248, 255);
+  static const cardInCardBorderColor = Color.fromARGB(255, 195, 195, 253);
   static const notProcessedColor = Color.fromARGB(255, 249, 202, 131);
   static const mainMenuCardsColor = Color.fromARGB(255, 220, 220, 255);
 //button colors
@@ -49,16 +50,16 @@ class AppColors {
 
 //- Competence colors
 
-  static const scienceColor = Color.fromARGB(255, 156, 76, 149);
-  static const englishColor = Color.fromARGB(255, 233, 127, 22);
-  static const mathColor = Color.fromARGB(255, 5, 118, 172);
-  static const musicColor = Color.fromARGB(255, 5, 155, 88);
-  static const germanColor = Color.fromARGB(255, 228, 70, 60);
-  static const artColor = Color.fromARGB(255, 244, 198, 17);
-  static const religionColor = Color.fromARGB(255, 211, 115, 13);
-  static const sportColor = Color.fromARGB(255, 245, 62, 114);
-  static const workBehaviourColor = Color.fromARGB(255, 125, 46, 108);
-  static const socialColor = Color.fromARGB(255, 18, 165, 27);
+  static const germanColor = Color.fromARGB(255, 151, 0, 65);
+  static const mathColor = Color.fromARGB(255, 204, 60, 77);
+  static const scienceColor = Color.fromARGB(255, 235, 108, 60);
+  static const englishColor = Color.fromARGB(255, 246, 173, 90);
+  static const artColor = Color.fromARGB(255, 251, 223, 134);
+  static const musicColor = Color.fromARGB(255, 231, 245, 147);
+  static const religionColor = Color.fromARGB(255, 176, 221, 162);
+  static const sportColor = Color.fromARGB(255, 114, 194, 164);
+  static const workBehaviourColor = Color.fromARGB(255, 67, 137, 191);
+  static const socialColor = Color.fromARGB(255, 94, 80, 164);
 
 //- text colors
   static const ogsColor = Color.fromRGBO(126, 87, 194, 1);

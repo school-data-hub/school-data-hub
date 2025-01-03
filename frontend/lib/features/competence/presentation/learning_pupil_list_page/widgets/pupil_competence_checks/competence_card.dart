@@ -35,17 +35,17 @@ class CompetenceCard extends HookWidget {
   });
   @override
   Widget build(BuildContext context) {
-    final controller = useCustomExpansionTileController();
+    final competenceAreaController = useCustomExpansionTileController();
     final checksController = useCustomExpansionTileController();
+    final competenceColor =
+        CompetenceHelper.getCompetenceColor(competence.competenceId);
     return Padding(
       padding: isReport
           ? const EdgeInsets.symmetric(vertical: 4, horizontal: 4)
           : EdgeInsets.symmetric(
               vertical: competence.parentCompetence == null ? 3 : 0),
       child: Card(
-        color: isReport
-            ? Colors.white
-            : CompetenceHelper.getCompetenceColor(competence.competenceId),
+        color: isReport ? Colors.white : competenceColor,
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
@@ -109,19 +109,27 @@ class CompetenceCard extends HookWidget {
                     Padding(
                       padding: const EdgeInsets.all(10.0),
                       child: CustomExpansionTileSwitch(
-                        customExpansionTileController: controller,
+                        customExpansionTileController: competenceAreaController,
                       ),
                     ),
                   const Gap(10),
                   InkWell(
-                      onTap: () {
-                        newCompetenceCheckDialog(
-                            pupil: pupil,
+                      onTap: () async {
+                        await locator<CompetenceManager>().postCompetenceCheck(
+                            pupilId: pupil.internalId,
                             competenceId: competence.competenceId,
+                            competenceStatus: 0,
+                            competenceComment: '',
                             isReport: false,
-                            parentContext: context);
+                            reportId: null);
+                        checksController.collapseExpand();
+                        // newCompetenceCheckDialog(
+                        //     pupil: pupil,
+                        //     competenceId: competence.competenceId,
+                        //     isReport: false,
+                        //     parentContext: context);
                       },
-                      child: Icon(Icons.add,
+                      child: Icon(Icons.edit_note_rounded,
                           color: isReport
                               ? AppColors.backgroundColor
                               : Colors.white)),
@@ -139,20 +147,19 @@ class CompetenceCard extends HookWidget {
                       width: 23.0,
                       height: 23.0,
                       decoration: BoxDecoration(
-                        color: CompetenceHelper.getCompetenceColor(
-                            competence.competenceId),
+                        color: isReport ? competenceColor : Colors.white,
                         shape: BoxShape.circle,
-                        border: Border.all(
-                          color: Colors.white, // Set the border color to white
-                          width: 2.0, // Set the border width
-                        ),
+                        // border: Border.all(
+                        //   color: Colors.white,
+                        //   width: 2.0,
+                        // ),
                       ),
                       child: Center(
                         child: Text(
                           competenceChecks.length.toString(),
                           textAlign: TextAlign.center,
-                          style: const TextStyle(
-                              color: Colors.white,
+                          style: TextStyle(
+                              color: isReport ? Colors.white : competenceColor,
                               fontSize: 14,
                               fontWeight: FontWeight.bold),
                         ),
@@ -176,7 +183,7 @@ class CompetenceCard extends HookWidget {
                       ),
                     if (isReport) ...<Widget>[
                       const Spacer(),
-                      InkWell(
+                      GestureDetector(
                         onLongPress: () {
                           newCompetenceCheckDialog(
                               pupil: pupil,
@@ -190,8 +197,10 @@ class CompetenceCard extends HookWidget {
                             shape: BoxShape.circle,
                             color: Colors.white,
                           ),
-                          child: getCompetenceReportCheckSymbol(
-                              pupil, competence.competenceId),
+                          child: InkWell(
+                            child: getCompetenceReportCheckSymbol(
+                                pupil, competence.competenceId),
+                          ),
                         ),
                       ),
                     ],
@@ -203,7 +212,7 @@ class CompetenceCard extends HookWidget {
               widgetList: competenceChecks,
             ),
             CustomExpansionTileContent(
-              tileController: controller,
+              tileController: competenceAreaController,
               widgetList: children,
             ),
           ],

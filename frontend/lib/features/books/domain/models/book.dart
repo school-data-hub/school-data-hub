@@ -5,6 +5,18 @@ import 'package:json_annotation/json_annotation.dart';
 part 'book.g.dart';
 
 @JsonSerializable()
+class BookTag {
+  final String name;
+
+  factory BookTag.fromJson(Map<String, dynamic> json) =>
+      _$BookTagFromJson(json);
+
+  Map<String, dynamic> toJson() => _$BookTagToJson(this);
+
+  BookTag({required this.name});
+}
+
+@JsonSerializable()
 class Book {
   final String author;
   final String? description;
@@ -18,6 +30,8 @@ class Book {
   @JsonKey(name: "reading_level")
   final String readingLevel;
   final String title;
+  @JsonKey(name: "book_tags")
+  final List<BookTag>? bookTags;
 
   factory Book.fromJson(Map<String, dynamic> json) => _$BookFromJson(json);
 
@@ -32,5 +46,6 @@ class Book {
       required this.isbn,
       required this.location,
       required this.readingLevel,
-      required this.title});
+      required this.title,
+      required this.bookTags});
 }

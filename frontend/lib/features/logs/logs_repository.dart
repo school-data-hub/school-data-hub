@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
@@ -13,13 +12,14 @@ class LogsRepository {
   final NotificationService _notificationService =
       locator<NotificationService>();
 
-  final String _downloadUrl = '/log/download';
+  final String _downloadLogUrl = '/log/download';
   final String _uploadUrl = '/log/upload';
+  final String _resetLogUrl = '/log/reset';
 
   Future<String?> downloadLog() async {
     try {
       final response = await _client.get(
-        _downloadUrl,
+        _downloadLogUrl,
         options: Options(responseType: ResponseType.bytes),
       );
 
@@ -27,8 +27,9 @@ class LogsRepository {
         final Map<String, dynamic> jsonResponse =
             jsonDecode(utf8.decode(response.data));
         final String logContent = jsonResponse['log'];
-        debugger();
-        return logContent;
+        final formattedLogContent = logContent.replaceAll('\n', '\n\n');
+
+        return formattedLogContent;
       } else {
         _notificationService.showSnackBar(
             NotificationType.error, 'Failed to download log file');
@@ -37,6 +38,27 @@ class LogsRepository {
     } catch (e) {
       _notificationService.showSnackBar(
           NotificationType.error, 'Error downloading log file: $e');
+      return null;
+    }
+  }
+
+  Future<String?> resetLog() async {
+    try {
+      final response = await _client.delete(
+        _resetLogUrl,
+        options: Options(responseType: ResponseType.bytes),
+      );
+
+      if (response.statusCode == 200) {
+        return 'Log file reset successfully';
+      } else {
+        _notificationService.showSnackBar(
+            NotificationType.error, 'Failed to reset log file');
+        return null;
+      }
+    } catch (e) {
+      _notificationService.showSnackBar(
+          NotificationType.error, 'Error resetting log file: $e');
       return null;
     }
   }

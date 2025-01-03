@@ -57,28 +57,39 @@ pupil_book_schema = PupilBookSchema()
 pupil_books_schema = PupilBookSchema(many=True)
 
 
-# class PupilBookListSchema(Schema):
-#     pupil_id = fields.Integer()
-#     book_id = fields.String()
-#     state = fields.String()
-#     lent_at = fields.Date()
-#     lent_by = fields.String()
-#     returned_at = fields.Date()
-#     received_by = fields.String()
+class BookLocationSchema(Schema):
+    location = fields.String()
 
-#     class Meta:
-#         fields = (
-#             "pupil_id",
-#             "state",
-#             "lent_at",
-#             "lent_by",
-#             "returned_at",
-#             "received_by",
-#         )
+    class Meta:
+        fields = ("location",)
 
 
-# pupil_book_list_schema = PupilBookListSchema()
-# pupil_books_list_schema = PupilBookListSchema(many=True)
+book_location_schema = BookLocationSchema()
+book_locations_schema = BookLocationSchema(many=True)
+
+
+class BookTagSchema(Schema):
+    name = fields.String()
+    created_by = fields.String()
+
+    class Meta:
+        fields = ("name", "created_by")
+
+
+book_tag_schema = BookTagSchema()
+book_tags_schema = BookTagSchema(many=True)
+
+
+class TagsInBookSchema(Schema):
+    name = fields.String()
+
+    class Meta:
+        fields = ("name",)
+
+
+tag_in_book_schema = TagsInBookSchema()
+tags_in_books_schema = TagsInBookSchema(many=True)
+
 
 # - BOOK SCHEMA
 ##############
@@ -93,6 +104,7 @@ class NewBookSchema(Schema):
     location = fields.String()
     reading_level = fields.String()
     description = fields.String()
+    book_tags = fields.List(fields.Nested(TagsInBookSchema))
 
     class Meta:
         fields = (
@@ -104,6 +116,7 @@ class NewBookSchema(Schema):
             "location",
             "reading_level",
             "description",
+            "book_tags",
         )
 
 
@@ -135,17 +148,6 @@ book_patch_schema = BookPatchSchema()
 book_patches_schema = BookPatchSchema(many=True)
 
 
-class BookLocationSchema(Schema):
-    location = fields.String()
-
-    class Meta:
-        fields = ("location",)
-
-
-book_location_schema = BookLocationSchema()
-book_locations_schema = BookLocationSchema(many=True)
-
-
 class BookSchema(Schema):
     book_id = fields.String()
     isbn = fields.Integer()
@@ -157,6 +159,7 @@ class BookSchema(Schema):
     reading_level = fields.String()
     image_id = fields.String(allow_none=True)
     reading_pupils = fields.List(fields.Nested(PupilBookSchema))
+    book_tags = fields.List(fields.Nested(TagsInBookSchema))
 
     class Meta:
         fields = (
@@ -170,6 +173,7 @@ class BookSchema(Schema):
             "reading_level",
             "image_id",
             "reading_pupils",
+            "book_tags",
         )
 
 
@@ -187,6 +191,7 @@ class BookFlatSchema(Schema):
     location = fields.String()
     reading_level = fields.String()
     title = fields.String()
+    book_tags = fields.List(fields.Nested(TagsInBookSchema))
 
     class Meta:
         fields = (
@@ -199,6 +204,7 @@ class BookFlatSchema(Schema):
             "location",
             "reading_level",
             "image_id",
+            "book_tags",
         )
 
 

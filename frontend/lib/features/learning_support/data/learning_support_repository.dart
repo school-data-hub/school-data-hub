@@ -236,8 +236,36 @@ class LearningSupportRepository {
     return '/support_goals/$goalId';
   }
 
-  String postGoalCheck(int id) {
-    return '/support_goals/$id/check/new';
+  String _postGoalCheck(int goalId) {
+    return '/support_goals/$goalId/check/new';
+  }
+
+  Future<PupilData> postGoalCheck(int goalId) async {
+    notificationService.apiRunning(true);
+
+    final data = jsonEncode({
+      "created_at": DateTime.now().formatForJson(),
+      "checked": false,
+      "checked_at": null,
+    });
+
+    final Response response =
+        await _client.post(_postGoalCheck(goalId), data: data);
+
+    if (response.statusCode != 200) {
+      notificationService.showSnackBar(
+          NotificationType.error, 'Fehler beim Hinzufügen des Checks');
+
+      notificationService.apiRunning(false);
+
+      throw ApiException('Failed to post goal check', response.statusCode);
+    }
+
+    final PupilData pupil = PupilData.fromJson(response.data);
+
+    notificationService.apiRunning(false);
+
+    return pupil;
   }
 
   String patchGoalCheck(int goalId, String checkId) {

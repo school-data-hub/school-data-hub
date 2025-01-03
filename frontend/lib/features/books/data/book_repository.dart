@@ -16,7 +16,83 @@ class BookRepository {
   final ApiClient _client = locator<ApiClient>();
   final notificationService = locator<NotificationService>();
 
-  //- get book locations
+  // - BOOK TAGS - //
+
+  final _bookTagsUrl = '/books/tags';
+
+  Future<List<BookTag>> getBookTags() async {
+    notificationService.apiRunning(true);
+
+    final Response response = await _client.get(_bookTagsUrl);
+
+    notificationService.apiRunning(false);
+
+    if (response.statusCode != 200) {
+      notificationService.showSnackBar(
+          NotificationType.error, 'Fehler beim Laden der Buchtags');
+
+      throw ApiException('Failed to fetch book tags', response.statusCode);
+    }
+
+    final List<BookTag> bookTags = (response.data as List)
+        .map((e) => BookTag.fromJson(e as Map<String, dynamic>))
+        .toList();
+
+    return bookTags;
+  }
+
+  final _postBookTagUrl = '/books/tags/new';
+
+  Future<List<BookTag>> postBookTag(String tag) async {
+    final data = jsonEncode({"tag": tag});
+
+    notificationService.apiRunning(true);
+
+    final Response response = await _client.post(_postBookTagUrl, data: data);
+
+    notificationService.apiRunning(false);
+
+    if (response.statusCode != 200) {
+      notificationService.showSnackBar(
+          NotificationType.error, 'Fehler beim Erstellen des Buchtags');
+
+      throw ApiException('Failed to post book tag', response.statusCode);
+    }
+
+    final List<BookTag> bookTags = (response.data as List)
+        .map((e) => BookTag.fromJson(e as Map<String, dynamic>))
+        .toList();
+
+    return bookTags;
+  }
+
+  final _deleteBookTagUrl = '/books/tags';
+
+  Future<List<BookTag>> deleteBookTag(String tag) async {
+    final data = jsonEncode({"tag": tag});
+
+    notificationService.apiRunning(true);
+
+    final Response response =
+        await _client.delete(_deleteBookTagUrl, data: data);
+
+    notificationService.apiRunning(false);
+
+    if (response.statusCode != 200) {
+      notificationService.showSnackBar(
+          NotificationType.error, 'Fehler beim Löschen des Buchtags');
+
+      throw ApiException('Failed to delete book tag', response.statusCode);
+    }
+
+    final List<BookTag> bookTags = (response.data as List)
+        .map((e) => BookTag.fromJson(e as Map<String, dynamic>))
+        .toList();
+
+    return bookTags;
+  }
+
+  // - BOOK LOCATIONS - //
 
   final _bookLocationsUrl = '/books/locations';
 
@@ -86,7 +162,7 @@ class BookRepository {
     return bookLocations;
   }
 
-  //- get books
+  // - BOOKS - //
 
   final _getBooksUrl = '/books/all/flat';
 
@@ -112,8 +188,6 @@ class BookRepository {
     return books;
   }
 
-  //- post new book
-
   static const _postBookUrl = '/books/new';
 
   Future<Book> postBook({
@@ -124,6 +198,7 @@ class BookRepository {
     required String location,
     String? readingLevel,
     required String title,
+    required List<BookTag> tags,
   }) async {
     final data = jsonEncode({
       "author": author,
@@ -132,7 +207,8 @@ class BookRepository {
       "isbn": isbn,
       "location": location,
       "reading_level": readingLevel,
-      "title": title
+      "title": title,
+      "book_tags": tags.map((e) => e.toJson()).toList(),
     });
 
     notificationService.apiRunning(true);
@@ -151,8 +227,6 @@ class BookRepository {
 
     return newBook;
   }
-
-  //- patch book
 
   String _patchBook(String bookId) {
     return '/books/$bookId';
@@ -288,13 +362,13 @@ class BookRepository {
   }
 
   //- get workbook image
-  String _getBookImage(String bookId) {
+  static String bookImageUrl(String bookId) {
     return '/books/$bookId/file';
   }
 
   Future<File> getBookImage(String bookId) async {
     notificationService.apiRunning(true);
-    final Response response = await _client.get(_getBookImage(bookId),
+    final Response response = await _client.get(bookImageUrl(bookId),
         options: Options(responseType: ResponseType.bytes));
     notificationService.apiRunning(false);
 
@@ -322,7 +396,7 @@ class BookRepository {
 
   Future<Book> deleteBookFile(String bookId) async {
     notificationService.apiRunning(true);
-    final Response response = await _client.delete(_getBookImage(bookId));
+    final Response response = await _client.delete(bookImageUrl(bookId));
     notificationService.apiRunning(false);
 
     if (response.statusCode != 200) {

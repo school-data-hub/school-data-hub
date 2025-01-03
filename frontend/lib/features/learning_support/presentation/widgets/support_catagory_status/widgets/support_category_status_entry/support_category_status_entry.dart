@@ -58,6 +58,42 @@ class SupportCategoryStatusEntry extends StatelessWidget {
                   authorizedToChangeStatus
                       ? InkWell(
                           onTap: () async {
+                            final DateTime? correctedCreatedAt =
+                                await showDatePicker(
+                              context: context,
+                              initialDate: status.createdAt,
+                              firstDate: DateTime(2000),
+                              lastDate: DateTime.now(),
+                            );
+                            if (correctedCreatedAt != null) {
+                              locator<LearningSupportManager>()
+                                  .updateSupportCategoryStatusProperty(
+                                pupil: pupil,
+                                statusId: status.statusId,
+                                createdAt: correctedCreatedAt.formatForJson(),
+                              );
+                            }
+                          },
+                          child: Text(
+                            status.createdAt.formatForUser(),
+                            style: const TextStyle(
+                              color: AppColors.interactiveColor,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                            ),
+                          ),
+                        )
+                      : Text(
+                          status.createdAt.formatForUser(),
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                          ),
+                        ),
+                  const Gap(5),
+                  authorizedToChangeStatus
+                      ? InkWell(
+                          onTap: () async {
                             final String? correctedComment =
                                 await longTextFieldDialog(
                                     title: 'Status korrigieren',
@@ -113,41 +149,6 @@ class SupportCategoryStatusEntry extends StatelessWidget {
                             )
                           : Text(
                               status.createdBy,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                      const Text(' am '),
-                      authorizedToChangeStatus
-                          ? InkWell(
-                              onTap: () async {
-                                final DateTime? correctedCreatedAt =
-                                    await showDatePicker(
-                                  context: context,
-                                  initialDate: status.createdAt,
-                                  firstDate: DateTime(2000),
-                                  lastDate: DateTime.now(),
-                                );
-                                if (correctedCreatedAt != null) {
-                                  locator<LearningSupportManager>()
-                                      .updateSupportCategoryStatusProperty(
-                                    pupil: pupil,
-                                    statusId: status.statusId,
-                                    createdAt:
-                                        correctedCreatedAt.formatForJson(),
-                                  );
-                                }
-                              },
-                              child: Text(
-                                status.createdAt.formatForUser(),
-                                style: const TextStyle(
-                                  color: AppColors.interactiveColor,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            )
-                          : Text(
-                              status.createdAt.formatForUser(),
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                               ),

@@ -7,10 +7,11 @@ import 'package:schuldaten_hub/common/domain/models/enums.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_service.dart';
 import 'package:schuldaten_hub/common/utils/isbn_book_data_scraper.dart';
-import 'package:schuldaten_hub/common/utils/scanner.dart';
 import 'package:schuldaten_hub/common/widgets/dialogs/short_textfield_dialog.dart';
+import 'package:schuldaten_hub/common/widgets/qr/scanner.dart';
 import 'package:schuldaten_hub/features/books/data/book_repository.dart';
 import 'package:schuldaten_hub/features/books/domain/book_manager.dart';
+import 'package:schuldaten_hub/features/books/domain/models/book.dart';
 import 'package:schuldaten_hub/features/books/presentation/new_book_page/new_book_page.dart';
 import 'package:watch_it/watch_it.dart';
 
@@ -107,6 +108,9 @@ class NewBookViewModel extends State<NewBook> {
     ),
   ];
 
+  final List<BookTag> bookTags = locator<BookManager>().bookTags.value;
+  Map<BookTag, bool> bookTagSelection = {};
+
   final List<String> locations = locator<BookManager>().locations.value;
 
   String lastLocationValue = locator<BookManager>().lastLocationValue.value;
@@ -118,6 +122,12 @@ class NewBookViewModel extends State<NewBook> {
 
   Image? bookImage;
   Uint8List? bookImageBytes;
+
+  void switchBookTagSelection(BookTag tag) {
+    setState(() {
+      bookTagSelection[tag] = !bookTagSelection[tag]!;
+    });
+  }
 
   Future<void> getExistingBookImage() async {
     final File result = await BookRepository().getBookImage(widget.bookId!);
@@ -143,6 +153,9 @@ class NewBookViewModel extends State<NewBook> {
         getExistingBookImage();
       }
       bookDescriptionTextFieldController.text = widget.bookDescription ?? '';
+    }
+    for (var tag in locator<BookManager>().bookTags.value) {
+      bookTagSelection[tag] = false;
     }
     isbnTextFieldController.addListener(_listenToIsbn);
   }
@@ -285,6 +298,10 @@ class NewBookViewModel extends State<NewBook> {
         description: bookDescriptionTextFieldController.text,
         location: lastLocationValue,
         level: readingLevel,
+        tags: bookTagSelection.entries
+            .where((element) => element.value)
+            .map((e) => e.key)
+            .toList(),
       );
     }
     Navigator.pop(context);

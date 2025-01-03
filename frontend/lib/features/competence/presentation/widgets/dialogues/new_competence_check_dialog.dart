@@ -4,7 +4,7 @@ import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/theme/colors.dart';
 import 'package:schuldaten_hub/common/theme/styles.dart';
 import 'package:schuldaten_hub/features/competence/domain/competence_manager.dart';
-import 'package:schuldaten_hub/features/competence/presentation/widgets/competence_check_dropdown_items.dart';
+import 'package:schuldaten_hub/features/competence/presentation/widgets/competence_check_dropdown.dart';
 import 'package:schuldaten_hub/features/pupil/domain/models/pupil_proxy.dart';
 
 final GlobalKey<FormState> _competenceStatusKey = GlobalKey<FormState>();
@@ -22,6 +22,12 @@ Future newCompetenceCheckDialog(
       builder: (context) {
         int competenceCheckStatusValue = 0;
         return StatefulBuilder(builder: (statefulContext, setState) {
+          void onChangedFunction(int newValue) {
+            setState(() {
+              competenceCheckStatusValue = newValue;
+            });
+          }
+
           return AlertDialog(
             content: Form(
                 key: _competenceStatusKey,
@@ -54,26 +60,9 @@ Future newCompetenceCheckDialog(
                           style: TextStyle(fontWeight: FontWeight.bold),
                         ),
                         const Gap(10),
-                        Padding(
-                          padding: const EdgeInsets.only(right: 5.0),
-                          child: DropdownButtonHideUnderline(
-                            child: DropdownButton<int>(
-                              icon: const Visibility(
-                                  visible: false,
-                                  child: Icon(Icons.arrow_downward)),
-                              onTap: () {
-                                FocusManager.instance.primaryFocus!.unfocus();
-                              },
-                              value: competenceCheckStatusValue,
-                              items: competenceCheckDropdownItems,
-                              onChanged: (newValue) {
-                                setState(() {
-                                  competenceCheckStatusValue = newValue!;
-                                });
-                              },
-                            ),
-                          ),
-                        ),
+                        GrowthDropdown(
+                            dropdownValue: competenceCheckStatusValue,
+                            onChangedFunction: onChangedFunction),
                       ],
                     ),
                   ],
@@ -114,7 +103,7 @@ Future newCompetenceCheckDialog(
                       Navigator.of(parentContext).pop();
                     }
                   },
-                  child: const Text("OKAY", style: AppStyles.buttonTextStyle),
+                  child: const Text("SENDEN", style: AppStyles.buttonTextStyle),
                 ),
               ),
             ],

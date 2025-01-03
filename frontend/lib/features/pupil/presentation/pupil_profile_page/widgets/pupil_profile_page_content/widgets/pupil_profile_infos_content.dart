@@ -237,42 +237,32 @@ class PupilInfosContent extends StatelessWidget {
                               child: Padding(
                                 padding: const EdgeInsets.all(15.0),
                                 child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     AvatarWithBadges(pupil: sibling, size: 80),
                                     const Gap(10),
                                     Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
                                       children: [
+                                        const Gap(5),
                                         Text(
                                           sibling.firstName,
                                           style: const TextStyle(
                                               fontWeight: FontWeight.bold,
-                                              fontSize: 16),
+                                              fontSize: 18),
                                         ),
                                         Text(
                                           sibling.lastName,
+                                          style: const TextStyle(fontSize: 18),
+                                        ),
+                                        Text(
+                                          'Geburtsdatum: ${sibling.birthday.formatForUser()}',
                                           style: const TextStyle(fontSize: 16),
                                         ),
                                       ],
-                                    ),
-                                    const Gap(20),
-                                    Text(
-                                      sibling.group,
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: AppColors.groupColor,
-                                        fontSize: 18,
-                                      ),
-                                    ),
-                                    const Gap(20),
-                                    Text(
-                                      sibling.schoolyear,
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: AppColors.schoolyearColor,
-                                        fontSize: 18,
-                                      ),
                                     ),
                                   ],
                                 ),

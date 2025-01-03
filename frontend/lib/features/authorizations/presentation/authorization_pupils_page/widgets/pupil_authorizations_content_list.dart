@@ -77,12 +77,19 @@ class PupilAuthorizationsContentList extends WatchingWidget {
                                         ));
                                       },
                                       child: Row(children: [
-                                        (Text(authorization.authorizationName,
-                                            style: const TextStyle(
-                                                fontSize: 20,
-                                                fontWeight: FontWeight.bold,
-                                                color: AppColors
-                                                    .interactiveColor))),
+                                        Expanded(
+                                          child: SingleChildScrollView(
+                                            scrollDirection: Axis.horizontal,
+                                            child: Text(
+                                              authorization.authorizationName,
+                                              style: const TextStyle(
+                                                  fontSize: 20,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: AppColors
+                                                      .interactiveColor),
+                                            ),
+                                          ),
+                                        ),
                                       ]),
                                     ),
                                     const Gap(5),

@@ -50,7 +50,7 @@ class CompetenceGoalCard extends StatelessWidget {
               Row(
                 children: [
                   CompetenceHelper.getCompetenceCheckSymbol(
-                      pupilGoal.achieved ?? 0),
+                      status: pupilGoal.achieved ?? 0, size: 50),
                   const Gap(10),
                   Flexible(
                     child: Text(

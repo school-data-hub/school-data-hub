@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
-import 'package:schuldaten_hub/common/domain/env_manager.dart';
 import 'package:schuldaten_hub/common/domain/models/enums.dart';
 import 'package:schuldaten_hub/common/services/api/api_settings.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
@@ -25,7 +24,7 @@ class CompetenceManager {
 
   CompetenceManager();
   Future<CompetenceManager> init() async {
-    await fetchCompetences();
+    await firstFetchCompetences();
 
     return this;
   }
@@ -38,6 +37,29 @@ class CompetenceManager {
 
   void clearData() {
     _competences.value = [];
+  }
+
+  //-TODO: Workaround to avoid registration error
+  //- when inclduing the CompetenceFilterManager because
+  //- the CompetenceFilterManager is not registered in the locator yet
+
+  Future<void> firstFetchCompetences() async {
+    final List<Competence> competences =
+        await _competenceRepository.fetchCompetences();
+
+    competences.sort((a, b) => a.competenceId.compareTo(b.competenceId));
+
+    _competences.value = competences;
+
+    _rootCompetencesMap.clear();
+
+    _rootCompetencesMap =
+        CompetenceHelper.generateRootCompetencesMap(competences);
+
+    notificationService.showSnackBar(
+        NotificationType.success, 'Kompetenzen aktualisiert!');
+
+    return;
   }
 
   Future<void> fetchCompetences() async {
@@ -53,10 +75,7 @@ class CompetenceManager {
     _rootCompetencesMap =
         CompetenceHelper.generateRootCompetencesMap(competences);
 
-    if (locator<EnvManager>().dependentManagersRegistered.value) {
-      locator<CompetenceFilterManager>()
-          .refreshFilteredCompetences(competences);
-    }
+    locator<CompetenceFilterManager>().refreshFilteredCompetences(competences);
 
     notificationService.showSnackBar(
         NotificationType.success, 'Kompetenzen aktualisiert!');

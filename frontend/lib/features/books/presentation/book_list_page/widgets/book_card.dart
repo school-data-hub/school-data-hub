@@ -7,6 +7,8 @@ import 'package:provider/provider.dart';
 import 'package:schuldaten_hub/common/domain/env_manager.dart';
 import 'package:schuldaten_hub/common/domain/session_manager.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
+import 'package:schuldaten_hub/common/theme/colors.dart';
+import 'package:schuldaten_hub/common/theme/styles.dart';
 import 'package:schuldaten_hub/common/utils/extensions.dart';
 import 'package:schuldaten_hub/common/widgets/custom_expansion_tile/custom_expansion_tile_content.dart';
 import 'package:schuldaten_hub/common/widgets/custom_expansion_tile/custom_expansion_tile_switch.dart';
@@ -109,11 +111,12 @@ class BookCard extends HookWidget {
                         Text(
                           book.author,
                           style: const TextStyle(
-                              fontSize: 15, fontWeight: FontWeight.normal),
+                              fontSize: 13, fontWeight: FontWeight.normal),
                         ),
                       ],
                     ),
                   ),
+                  const Gap(5),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -164,8 +167,7 @@ class BookCard extends HookWidget {
                       ),
                       Expanded(
                         child: Padding(
-                          padding: const EdgeInsets.only(
-                              top: 8.0, left: 15, bottom: 8),
+                          padding: const EdgeInsets.only(left: 15, bottom: 8),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.start,
@@ -239,6 +241,26 @@ class BookCard extends HookWidget {
                                       ),
                                     ),
                                   ),
+                                ],
+                              ),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text('Tags: '),
+                                  for (final tag in book.bookTags!) ...[
+                                    const Gap(5),
+                                    Chip(
+                                      padding: const EdgeInsets.all(2),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                      labelStyle:
+                                          AppStyles.filterItemsTextStyle,
+                                      label: Text(tag.name),
+                                      backgroundColor:
+                                          AppColors.backgroundColor,
+                                    ),
+                                  ],
                                 ],
                               ),
                               const Gap(10),

@@ -47,7 +47,11 @@ class PupilSchooldayEventCard extends WatchingWidget {
                       .orangeAccent, // Specify the color of the border here
                   width: 3, // Specify the width of the border here
                 )
-              : null,
+              : Border.all(
+                  color: AppColors
+                      .cardInCardBorderColor, // Specify the color of the border here
+                  width: 2,
+                ),
           borderRadius: BorderRadius.circular(10),
         ),
         child: Padding(
@@ -312,105 +316,121 @@ class PupilSchooldayEventCard extends WatchingWidget {
               const Gap(5),
               Row(
                 children: [
-                  InkWell(
-                    onTap: () async {
-                      bool? confirm = await confirmationDialog(
-                          context: context,
-                          title: 'Ereignis bearbeitet?',
-                          message: 'Ereignis als bearbeitet markieren?');
-                      if (confirm! == false) return;
-                      await locator<SchooldayEventManager>()
-                          .patchSchooldayEvent(
-                              schooldayEventId: schooldayEvent.schooldayEventId,
-                              processed: true);
-                      locator<NotificationService>().showSnackBar(
-                          NotificationType.success,
-                          'Ereignis als bearbeitet markiert!');
-                    },
-                    onLongPress: () async {
-                      bool? confirm = await confirmationDialog(
-                          context: context,
-                          title: 'Ereignis unbearbeitet?',
-                          message: 'Ereignis als unbearbeitet markieren?');
-                      if (confirm! == false) return;
-                      await locator<SchooldayEventManager>()
-                          .patchSchooldayEvent(
-                        schooldayEventId: schooldayEvent.schooldayEventId,
-                        processed: false,
-                        processedBy: 'none',
-                      );
-                    },
-                    child: Text(
-                        schooldayEvent.processed
-                            ? 'Bearbeitet von'
-                            : 'Nicht bearbeitet',
-                        style: const TextStyle(
-                            fontSize: 16, color: AppColors.backgroundColor)),
-                  ),
-                  const Gap(10),
-                  if (schooldayEvent.processedBy != null)
-                    locator<SessionManager>().isAdmin.value
-                        ? InkWell(
+                  Expanded(
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: [
+                          InkWell(
                             onTap: () async {
-                              final String? processingUser =
-                                  await shortTextfieldDialog(
-                                      context: context,
-                                      title: 'Bearbeitet von:',
-                                      labelText: 'Kürzel eingeben',
-                                      hintText: 'Kürzel eingeben',
-                                      obscureText: false);
-                              if (processingUser != null) {
-                                await locator<SchooldayEventManager>()
-                                    .patchSchooldayEvent(
-                                  schooldayEventId:
-                                      schooldayEvent.schooldayEventId,
-                                  processedBy: processingUser,
-                                );
-                              }
+                              bool? confirm = await confirmationDialog(
+                                  context: context,
+                                  title: 'Ereignis bearbeitet?',
+                                  message:
+                                      'Ereignis als bearbeitet markieren?');
+                              if (confirm! == false) return;
+                              await locator<SchooldayEventManager>()
+                                  .patchSchooldayEvent(
+                                      schooldayEventId:
+                                          schooldayEvent.schooldayEventId,
+                                      processed: true);
+                              locator<NotificationService>().showSnackBar(
+                                  NotificationType.success,
+                                  'Ereignis als bearbeitet markiert!');
+                            },
+                            onLongPress: () async {
+                              bool? confirm = await confirmationDialog(
+                                  context: context,
+                                  title: 'Ereignis unbearbeitet?',
+                                  message:
+                                      'Ereignis als unbearbeitet markieren?');
+                              if (confirm! == false) return;
+                              await locator<SchooldayEventManager>()
+                                  .patchSchooldayEvent(
+                                schooldayEventId:
+                                    schooldayEvent.schooldayEventId,
+                                processed: false,
+                                processedBy: 'none',
+                              );
                             },
                             child: Text(
-                              schooldayEvent.processedBy!,
-                              style: const TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                  color: AppColors.interactiveColor),
-                            ),
-                          )
-                        : Text(
-                            schooldayEvent.processedBy!,
-                            style: const TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold),
+                                schooldayEvent.processed
+                                    ? 'Bearbeitet von'
+                                    : 'Nicht bearbeitet',
+                                style: const TextStyle(
+                                    fontSize: 16,
+                                    color: AppColors.backgroundColor)),
                           ),
-                  if (schooldayEvent.processedAt != null) const Gap(10),
-                  if (schooldayEvent.processedAt != null)
-                    locator<SessionManager>().isAdmin.value
-                        ? InkWell(
-                            onTap: () async {
-                              final DateTime? newDate =
-                                  await selectSchooldayDate(
-                                      context, DateTime.now());
+                          const Gap(10),
+                          if (schooldayEvent.processedBy != null)
+                            locator<SessionManager>().isAdmin.value
+                                ? InkWell(
+                                    onTap: () async {
+                                      final String? processingUser =
+                                          await shortTextfieldDialog(
+                                              context: context,
+                                              title: 'Bearbeitet von:',
+                                              labelText: 'Kürzel eingeben',
+                                              hintText: 'Kürzel eingeben',
+                                              obscureText: false);
+                                      if (processingUser != null) {
+                                        await locator<SchooldayEventManager>()
+                                            .patchSchooldayEvent(
+                                          schooldayEventId:
+                                              schooldayEvent.schooldayEventId,
+                                          processedBy: processingUser,
+                                        );
+                                      }
+                                    },
+                                    child: Text(
+                                      schooldayEvent.processedBy!,
+                                      style: const TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                          color: AppColors.interactiveColor),
+                                    ),
+                                  )
+                                : Text(
+                                    schooldayEvent.processedBy!,
+                                    style: const TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                          if (schooldayEvent.processedAt != null) const Gap(10),
+                          if (schooldayEvent.processedAt != null)
+                            locator<SessionManager>().isAdmin.value
+                                ? InkWell(
+                                    onTap: () async {
+                                      final DateTime? newDate =
+                                          await selectSchooldayDate(
+                                              context, DateTime.now());
 
-                              if (newDate != null) {
-                                await locator<SchooldayEventManager>()
-                                    .patchSchooldayEvent(
-                                        schooldayEventId:
-                                            schooldayEvent.schooldayEventId,
-                                        processedAt: newDate);
-                              }
-                            },
-                            child: Text(
-                              'am ${schooldayEvent.processedAt!.formatForUser()}',
-                              style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18,
-                                  color: AppColors.interactiveColor),
-                            ),
-                          )
-                        : Text(
-                            'am ${schooldayEvent.processedAt!.formatForUser()}',
-                            style: const TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 18),
-                          ),
+                                      if (newDate != null) {
+                                        await locator<SchooldayEventManager>()
+                                            .patchSchooldayEvent(
+                                                schooldayEventId: schooldayEvent
+                                                    .schooldayEventId,
+                                                processedAt: newDate);
+                                      }
+                                    },
+                                    child: Text(
+                                      'am ${schooldayEvent.processedAt!.formatForUser()}',
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 18,
+                                          color: AppColors.interactiveColor),
+                                    ),
+                                  )
+                                : Text(
+                                    'am ${schooldayEvent.processedAt!.formatForUser()}',
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18),
+                                  ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ],
               )
             ],

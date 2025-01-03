@@ -19,6 +19,9 @@ class BookManager {
   final _locations = ValueNotifier<List<String>>([]);
   ValueListenable<List<String>> get locations => _locations;
 
+  final _bookTags = ValueNotifier<List<BookTag>>([]);
+  ValueListenable<List<BookTag>> get bookTags => _bookTags;
+
   final _lastLocationValue = ValueNotifier<String>('Bitte auswählen');
   ValueListenable<String> get lastLocationValue => _lastLocationValue;
 
@@ -37,12 +40,15 @@ class BookManager {
   Future<BookManager> init() async {
     await getBooks();
     await getLocations();
+    await getBookTags();
 
     return this;
   }
 
   void clearData() {
     _books.value = [];
+    _locations.value = [];
+    _bookTags.value = [];
   }
 
   Future<void> getLocations() async {
@@ -54,6 +60,27 @@ class BookManager {
     // if (_lastLocationValue.value.isEmpty && responseLocations.isNotEmpty) {
     //   _lastLocationValue.value = responseLocations.first;
     // }
+
+    return;
+  }
+
+  Future<void> getBookTags() async {
+    final List<BookTag> responseTags = await bookRepository.getBookTags();
+    _bookTags.value = responseTags;
+  }
+
+  Future<void> addBookTag(String tag) async {
+    final List<BookTag> responseTags = await bookRepository.postBookTag(tag);
+
+    _bookTags.value = responseTags;
+
+    return;
+  }
+
+  Future<void> deleteBookTag(String tag) async {
+    final List<BookTag> responseTags = await bookRepository.deleteBookTag(tag);
+
+    _bookTags.value = responseTags;
 
     return;
   }
@@ -103,6 +130,7 @@ class BookManager {
     required String location,
     String? level,
     required String author,
+    required List<BookTag> tags,
   }) async {
     final Book responseBook = await bookRepository.postBook(
       isbn: isbn,
@@ -112,6 +140,7 @@ class BookManager {
       readingLevel: level,
       title: title,
       author: author,
+      tags: tags,
     );
 
     _books.value = [..._books.value, responseBook];
@@ -173,6 +202,7 @@ class BookManager {
     String? level,
     required Uint8List imageBytes,
     required String author,
+    required List<BookTag> tags,
   }) async {
     final Book responseBook = await bookRepository.postBook(
       author: author,
@@ -182,6 +212,7 @@ class BookManager {
       location: location,
       readingLevel: level,
       title: title,
+      tags: tags,
     );
     final tempDir = await getTemporaryDirectory();
     final file =

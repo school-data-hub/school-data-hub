@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:schuldaten_hub/common/theme/colors.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
+import 'package:schuldaten_hub/common/theme/colors.dart';
 import 'package:schuldaten_hub/common/widgets/bottom_nav_bar_layouts.dart';
 import 'package:schuldaten_hub/common/widgets/generic_filter_bottom_sheet.dart';
 import 'package:schuldaten_hub/features/competence/domain/filters/competence_filter_manager.dart';
@@ -17,6 +17,7 @@ class CompetenceListPageBottomNavBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return BottomNavBarLayout(
       bottomNavBar: BottomAppBar(
+        height: 60,
         padding: const EdgeInsets.all(10),
         shape: null,
         color: AppColors.backgroundColor,

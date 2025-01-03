@@ -43,8 +43,7 @@ class CompetenceChecksBadges extends StatelessWidget {
           width: 21.0,
           height: 21.0,
           decoration: BoxDecoration(
-            color: CompetenceHelper.getRootCompetenceColor(
-                locator<CompetenceManager>().findCompetence(competenceId)),
+            color: CompetenceHelper.getCompetenceColor(competenceId),
             shape: BoxShape.circle,
           ),
           child: Center(

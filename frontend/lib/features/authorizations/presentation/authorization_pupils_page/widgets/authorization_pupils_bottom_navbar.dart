@@ -5,12 +5,12 @@ import 'package:schuldaten_hub/common/domain/session_manager.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/theme/colors.dart';
 import 'package:schuldaten_hub/common/widgets/bottom_nav_bar_layouts.dart';
+import 'package:schuldaten_hub/features/authorizations/domain/authorization_manager.dart';
 import 'package:schuldaten_hub/features/authorizations/domain/models/authorization.dart';
 import 'package:schuldaten_hub/features/authorizations/presentation/authorization_pupils_page/widgets/authorization_pupils_filter_bottom_sheet.dart';
-import 'package:schuldaten_hub/features/authorizations/domain/authorization_manager.dart';
 import 'package:schuldaten_hub/features/pupil/domain/filters/pupils_filter.dart';
-import 'package:schuldaten_hub/features/pupil/presentation/select_pupils_list_page/select_pupils_list_page.dart';
 import 'package:schuldaten_hub/features/pupil/domain/pupil_manager.dart';
+import 'package:schuldaten_hub/features/pupil/presentation/select_pupils_list_page/select_pupils_list_page.dart';
 import 'package:watch_it/watch_it.dart';
 
 class AuthorizationPupilsBottomNavBar extends WatchingWidget {
@@ -28,6 +28,7 @@ class AuthorizationPupilsBottomNavBar extends WatchingWidget {
         watchValue((FiltersStateManager x) => x.filtersActive);
     return BottomNavBarLayout(
       bottomNavBar: BottomAppBar(
+        height: 60,
         padding: const EdgeInsets.all(9),
         shape: null,
         color: AppColors.backgroundColor,

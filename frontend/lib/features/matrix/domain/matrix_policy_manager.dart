@@ -281,6 +281,8 @@ class MatrixPolicyManager {
 
   void addMatrixUserToGroupRooms(MatrixUser matrixUser) {
     List<MatrixRoom> matrixRooms = List.from(_matrixRooms.value);
-    for (MatrixRoom room in matrixRooms) {}
+    for (MatrixRoom room in matrixRooms) {
+      //-TODO: implement this
+    }
   }
 }
