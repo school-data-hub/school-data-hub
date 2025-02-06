@@ -78,11 +78,13 @@ class CompetenceGoal(db.Model):
 class CompetenceCheck(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     check_id = db.Column(db.String(50), unique=True)
-    is_report = db.Column(db.Boolean)
     created_by = db.Column(db.String(20), nullable=False)
     created_at = db.Column(db.Date, nullable=False)
     competence_status = db.Column(db.Integer, nullable=False)
     comment = db.Column(db.String(200), nullable=False)
+    value_factor = db.Column(db.Float, nullable=True)
+    group_id = db.Column(db.String(50), nullable=True)
+    group_name = db.Column(db.String(50), nullable=True)
 
     # - RELATIONSHIP TO COMPETENCE CHECK FILES ONE-TO-MANY
     competence_check_files = db.relationship(
@@ -98,35 +100,29 @@ class CompetenceCheck(db.Model):
     competence_id = db.Column(db.Integer, db.ForeignKey("competence.competence_id"))
     competence_check = db.relationship("Competence", back_populates="competence_checks")
 
-    # - RELATIONSHIP TO COMPETENCE REPORT MANY-TO-ONE
-    report_id = db.Column(
-        db.String(50), db.ForeignKey("competence_report.report_id"), nullable=True
-    )
-    competence_report = db.relationship(
-        "CompetenceReport", back_populates="competence_checks"
-    )
-
     def __init__(
         self,
         check_id,
-        is_report,
         created_by,
         created_at,
         competence_status,
         comment,
         pupil_id,
         competence_id,
-        report_id,
+        value_factor,
+        group_id,
+        group_name,
     ):
         self.check_id = check_id
-        self.is_report = is_report
         self.created_by = created_by
         self.created_at = created_at
         self.competence_status = competence_status
         self.comment = comment
         self.pupil_id = pupil_id
         self.competence_id = competence_id
-        self.report_id = report_id
+        self.value_factor = value_factor
+        self.group_id = group_id
+        self.group_name = group_name
 
 
 class CompetenceCheckFile(db.Model):
@@ -151,14 +147,14 @@ class CompetenceReport(db.Model):
     report_id = db.Column(db.String(50), unique=True)
     created_by = db.Column(db.String(20), nullable=False)
     created_at = db.Column(db.Date, nullable=False)
+
     # - RELATIONSHIP TO PUPIL MANY-TO-ONE
     pupil_id = db.Column(db.Integer, db.ForeignKey("pupil.internal_id"))
     pupil = db.relationship("Pupil", back_populates="competence_reports")
-    # - RELATIONSHIP TO COMPETENCE CHECK ONE-TO-MANY
-    competence_checks = db.relationship(
-        "CompetenceCheck",
-        back_populates="competence_report",
-        cascade="all, delete-orphan",
+
+    # - RELATIONSHIP WITH COMPETENCE REPORT CHECKS ONE-TO-MANY
+    competence_report_checks = db.relationship(
+        "CompetenceReportCheck", back_populates="competence_report"
     )
 
     school_semester_id = db.Column(db.Integer, db.ForeignKey("school_semester.id"))
@@ -177,3 +173,41 @@ class CompetenceReport(db.Model):
         self.created_at = created_at
         self.pupil_id = pupil_id
         self.school_semester_id = school_semester_id
+
+
+class CompetenceReportCheck(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    report_check_id = db.Column(db.String(50), unique=True)
+    created_by = db.Column(db.String(20), nullable=False)
+    created_at = db.Column(db.Date, nullable=False)
+    competence_status = db.Column(db.Integer, nullable=False)
+    comment = db.Column(db.String(200), nullable=False)
+
+    # - RELATIONSHIP TO PUPIL MANY-TO-ONE
+
+    pupil_id = db.Column(db.Integer, db.ForeignKey("pupil.internal_id"))
+    pupil = db.relationship("Pupil", back_populates="competence_report_checks")
+
+    # - RELATIONSHIP TO COMPETENCE REPORT MANY-TO-ONE
+    report_id = db.Column(db.String(50), db.ForeignKey("competence_report.report_id"))
+    competence_report = db.relationship(
+        "CompetenceReport", back_populates="competence_report_checks"
+    )
+
+    def __init__(
+        self,
+        report_check_id,
+        pupil_id,
+        created_by,
+        created_at,
+        competence_status,
+        comment,
+        report_id,
+    ):
+        self.report_check_id = report_check_id
+        self.pupil_id = pupil_id
+        self.created_by = created_by
+        self.created_at = created_at
+        self.competence_status = competence_status
+        self.comment = comment
+        self.report_id = report_id

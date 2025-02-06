@@ -3,7 +3,7 @@ import uuid
 from datetime import datetime
 
 from apiflask import APIBlueprint, FileSchema, abort
-from flask import current_app, jsonify, request, send_file
+from flask import current_app, request, send_file
 
 from auth_middleware import token_required
 from helpers.db_helpers import get_pupil_by_id, get_support_category_by_id
@@ -42,9 +42,6 @@ def add_support_category_status(current_user, internal_id, category_id, json_dat
     if this_category == None:
         abort(400, message="Diese Kategorie existiert nicht!")
     goal_category_id = this_category.category_id
-    # category_status_exists = db.session.query(SupportCategoryStatus).filter(SupportCategoryStatus.pupil_id == internal_id, SupportCategoryStatus.goal_category_id == category_id ).first() is not None
-    # if category_status_exists == True :
-    #     return jsonify( {"message": "This category status exists already - please update instead!"}), 400
 
     status_id = uuid.uuid4().hex
     data = json_data

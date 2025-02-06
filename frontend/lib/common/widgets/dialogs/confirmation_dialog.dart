@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:schuldaten_hub/common/theme/colors.dart';
+import 'package:schuldaten_hub/common/theme/app_colors.dart';
+import 'package:schuldaten_hub/common/theme/styles.dart';
 
 Future<bool?> confirmationDialog(
     {required BuildContext context,
@@ -9,28 +10,50 @@ Future<bool?> confirmationDialog(
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        title: Text(title),
-        content: Text(message),
+        title: Text(
+          title,
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
+        icon: const Icon(
+          Icons.question_mark_rounded,
+          color: AppColors.backgroundColor,
+          size: 50,
+        ),
+        content: Text(message, textAlign: TextAlign.center),
         actions: <Widget>[
-          TextButton(
-            child: const Text(
-              'Abbrechen',
-              style: TextStyle(color: Colors.red),
-            ),
-            onPressed: () {
-              Navigator.of(context)
-                  .pop(false); // Return false to indicate cancellation
-            },
-          ),
-          TextButton(
-            child: const Text(
-              'Okay',
-              style: TextStyle(color: AppColors.backgroundColor),
-            ),
-            onPressed: () {
-              Navigator.of(context)
-                  .pop(true); // Return true to indicate confirmation
-            },
+          Row(
+            children: [
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(5.0),
+                  child: ElevatedButton(
+                    style: AppStyles.cancelButtonStyle,
+                    onPressed: () {
+                      Navigator.of(context).pop(false);
+                    }, // Add onPressed
+                    child: const Text(
+                      "NEIN",
+                      style: AppStyles.buttonTextStyle,
+                    ),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(5.0),
+                  child: ElevatedButton(
+                    style: AppStyles.successButtonStyle,
+                    onPressed: () {
+                      Navigator.of(context).pop(true);
+                    }, // Add onPressed
+                    child: const Text(
+                      "JA",
+                      style: AppStyles.buttonTextStyle,
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       );

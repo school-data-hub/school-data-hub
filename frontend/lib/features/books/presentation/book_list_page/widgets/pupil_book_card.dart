@@ -65,7 +65,7 @@ class PupilBookCard extends WatchingWidget {
                 children: [
                   InkWell(
                     onTap: () async {
-                      final File? file = await uploadImage(context);
+                      final File? file = await uploadImageFile(context);
                       if (file == null) return;
                       await locator<WorkbookManager>()
                           .postWorkbookFile(file, book.isbn);
@@ -95,7 +95,7 @@ class PupilBookCard extends WatchingWidget {
                             value: DocumentImageData(
                                 documentTag: book.imageId!,
                                 documentUrl:
-                                    '${locator<EnvManager>().env.value.serverUrl}${WorkbookRepository().getWorkbookImage(book.isbn)}',
+                                    '${locator<EnvManager>().env!.serverUrl}${WorkbookApiService().getWorkbookImage(book.isbn)}',
                                 size: 100),
                             child: const DocumentImage(),
                           )

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
-import 'package:schuldaten_hub/common/theme/colors.dart';
+import 'package:schuldaten_hub/common/theme/app_colors.dart';
 import 'package:schuldaten_hub/common/widgets/avatar.dart';
 import 'package:schuldaten_hub/common/widgets/dialogs/confirmation_dialog.dart';
 import 'package:schuldaten_hub/common/widgets/dialogs/long_textfield_dialog.dart';
@@ -11,6 +11,7 @@ import 'package:schuldaten_hub/features/pupil/domain/models/pupil_proxy.dart';
 import 'package:schuldaten_hub/features/pupil/domain/pupil_helper_functions.dart';
 import 'package:schuldaten_hub/features/pupil/domain/pupil_manager.dart';
 import 'package:schuldaten_hub/features/pupil/presentation/pupil_profile_page/pupil_profile_page.dart';
+import 'package:schuldaten_hub/features/pupil/presentation/pupil_profile_page/widgets/pupil_profile_navigation.dart';
 import 'package:watch_it/watch_it.dart';
 
 class OgsCard extends WatchingWidget {
@@ -53,8 +54,9 @@ class OgsCard extends WatchingWidget {
                                   scrollDirection: Axis.horizontal,
                                   child: InkWell(
                                     onTap: () {
-                                      locator<BottomNavManager>()
-                                          .setPupilProfileNavPage(5);
+                                      locator<MainMenuBottomNavManager>()
+                                          .setPupilProfileNavPage(
+                                              ProfileNavigation.ogs.value);
                                       Navigator.of(context)
                                           .push(MaterialPageRoute(
                                         builder: (ctx) => PupilProfilePage(
@@ -145,8 +147,10 @@ class OgsCard extends WatchingWidget {
                               textinField: pupil.ogsInfo ?? '',
                               parentContext: context);
                           if (ogsInfo == null) return;
-                          await locator<PupilManager>().patchPupil(
-                              pupil.internalId, 'ogs_info', ogsInfo);
+                          await locator<PupilManager>().patchOnePupilProperty(
+                              pupilId: pupil.internalId,
+                              jsonKey: 'ogs_info',
+                              value: ogsInfo);
                         },
                         onLongPress: () async {
                           if (pupil.ogsInfo == null) return;
@@ -156,8 +160,10 @@ class OgsCard extends WatchingWidget {
                               message:
                                   'OGS Informationen für dieses Kind löschen?');
                           if (confirm == false || confirm == null) return;
-                          await locator<PupilManager>()
-                              .patchPupil(pupil.internalId, 'ogs_info', null);
+                          await locator<PupilManager>().patchOnePupilProperty(
+                              pupilId: pupil.internalId,
+                              jsonKey: 'ogs_info',
+                              value: null);
                         },
                         child: Text(
                           pupil.ogsInfo == null || pupil.ogsInfo!.isEmpty

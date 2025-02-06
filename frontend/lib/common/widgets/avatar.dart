@@ -1,8 +1,11 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:schuldaten_hub/common/services/api/api_settings.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
-import 'package:schuldaten_hub/common/theme/colors.dart';
+import 'package:schuldaten_hub/common/theme/app_colors.dart';
+import 'package:schuldaten_hub/common/widgets/dialogs/information_dialog.dart';
 import 'package:schuldaten_hub/common/widgets/download_or_cached_and_decrypt_image.dart';
 import 'package:schuldaten_hub/features/attendance/domain/attendance_helper_functions.dart';
 import 'package:schuldaten_hub/features/pupil/domain/models/pupil_proxy.dart';
@@ -30,13 +33,18 @@ class AvatarImage extends StatelessWidget {
     final avatarId = Provider.of<AvatarData>(context).avatarId;
     final internalId = Provider.of<AvatarData>(context).internalId;
     final size = Provider.of<AvatarData>(context).size;
+    final random = String.fromCharCodes(
+      List.generate(4, (index) => Random().nextInt(26) + 65),
+    );
+    final bool avatarAuth =
+        locator<PupilManager>().getPupilById(internalId)!.avatarAuth;
     return SizedBox(
       width: size,
       height: size,
       child: Center(
         child: avatarId != null
             ? WidgetZoom(
-                heroAnimationTag: internalId,
+                heroAnimationTag: '$avatarId$random',
                 zoomWidget: FutureBuilder<Widget>(
                   future: cachedOrDownloadAndDecryptImage(
                     imageUrl: PupilDataApiService.getPupilAvatar(internalId),
@@ -66,12 +74,19 @@ class AvatarImage extends StatelessWidget {
               )
             : ClipRRect(
                 borderRadius: BorderRadius.circular(size / 2),
-                child: Image.asset(
-                  'assets/dummy-profile-pic.png',
-                  width: 100,
-                  height: 100,
-                  fit: BoxFit.cover,
-                ),
+                child: avatarAuth
+                    ? Image.asset(
+                        'assets/dummy-profile-pic-auth.png',
+                        width: 100,
+                        height: 100,
+                        fit: BoxFit.cover,
+                      )
+                    : Image.asset(
+                        'assets/dummy-profile-pic-unauth.png',
+                        width: 100,
+                        height: 100,
+                        fit: BoxFit.cover,
+                      ),
               ),
       ),
     );
@@ -91,6 +106,11 @@ class AvatarWithBadges extends WatchingWidget {
         children: [
           GestureDetector(
             onLongPressStart: (details) {
+              if (pupil.avatarAuth == false) {
+                informationDialog(context, 'Einwilligung nicht vorhanden',
+                    'Bitte zuerst die Einwilligung einholen und in der App dokumentieren (im Kindprofil unter "Infos"). ');
+                return;
+              }
               final offset = details.globalPosition;
               final position = RelativeRect.fromLTRB(
                   offset.dx, offset.dy, offset.dx, offset.dy);
@@ -166,8 +186,10 @@ class AvatarWithBadges extends WatchingWidget {
               child: Center(
                 child: Text(
                   pupil.schoolyear,
-                  style: const TextStyle(
-                    color: Colors.white,
+                  style: TextStyle(
+                    color: pupil.fiveYears != null
+                        ? const Color.fromARGB(255, 250, 197, 98)
+                        : Colors.white,
                     fontSize: 15,
                     fontWeight: FontWeight.bold,
                   ),

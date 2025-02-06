@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
-import 'package:schuldaten_hub/common/widgets/generic_app_bar.dart';
+import 'package:schuldaten_hub/common/widgets/list_view_components/generic_app_bar.dart';
 import 'package:schuldaten_hub/features/competence/domain/competence_manager.dart';
 import 'package:schuldaten_hub/features/competence/domain/filters/competence_filter_manager.dart';
 import 'package:schuldaten_hub/features/competence/domain/models/competence.dart';

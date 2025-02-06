@@ -24,7 +24,7 @@ class AuthorizationManager {
   }
 
   final notificationService = locator<NotificationService>();
-  final authorizationApiService = AuthorizationRepository();
+  final authorizationApiService = AuthorizationApiService();
 
   void clearData() {
     _authorizations.value = [];
@@ -58,6 +58,23 @@ class AuthorizationManager {
 
     notificationService.showSnackBar(
         NotificationType.success, 'Einwilligung erstellt');
+
+    return;
+  }
+
+  Future<void> deleteAuthorization(String authId) async {
+    final confirm = await authorizationApiService.deleteAuthorization(authId);
+    if (!confirm) {
+      notificationService.showSnackBar(
+          NotificationType.error, 'Einwilligung konnte nicht gelöscht werden');
+      return;
+    }
+    _authorizationsMap.remove(authId);
+
+    _authorizations.value = _authorizationsMap.values.toList();
+
+    notificationService.showSnackBar(
+        NotificationType.success, 'Einwilligung gelöscht');
 
     return;
   }

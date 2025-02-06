@@ -2,7 +2,6 @@ import uuid
 from datetime import datetime
 
 from apiflask import APIBlueprint, abort
-from flask import jsonify
 
 from auth_middleware import token_required
 from models.competence import Competence, CompetenceGoal
@@ -107,6 +106,9 @@ def delete_competence_goal(current_user, goal_id):
     competence_goal = CompetenceGoal.query.filter_by(competence_goal_id=goal_id).first()
     if competence_goal == None:
         abort(400, message="Diese Kompetenz existiert nicht!")
+    if not current_user.admin or current_user.name != competence_goal.created_by:
+        abort(403, message="Keine Berechtigung!")
     db.session.delete(competence_goal)
     db.session.commit()
-    return jsonify({"message": "Kompetenz erfolgreich gelöscht!"})
+
+    abort(200, message="Kompetenz erfolgreich gelöscht!")

@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
-import 'package:schuldaten_hub/common/widgets/generic_app_bar.dart';
-import 'package:schuldaten_hub/common/widgets/sliver_search_app_bar.dart';
+import 'package:schuldaten_hub/common/theme/app_colors.dart';
+import 'package:schuldaten_hub/common/widgets/list_view_components/generic_app_bar.dart';
+import 'package:schuldaten_hub/common/widgets/list_view_components/generic_sliver_search_app_bar.dart';
 import 'package:schuldaten_hub/features/matrix/domain/filters/matrix_policy_filter_manager.dart';
+import 'package:schuldaten_hub/features/matrix/domain/matrix_policy_manager.dart';
+import 'package:schuldaten_hub/features/matrix/domain/matrix_room_helpers.dart';
 import 'package:schuldaten_hub/features/matrix/domain/models/matrix_room.dart';
 import 'package:schuldaten_hub/features/matrix/domain/models/matrix_user.dart';
 import 'package:schuldaten_hub/features/matrix/presentation/matrix_users_list_page/widgets/matrix_user_list_card.dart';
 import 'package:schuldaten_hub/features/matrix/presentation/matrix_users_list_page/widgets/matrix_user_list_searchbar.dart';
 import 'package:schuldaten_hub/features/matrix/presentation/matrix_users_list_page/widgets/matrix_users_list_view_bottom_navbar.dart';
-import 'package:schuldaten_hub/features/matrix/domain/matrix_policy_manager.dart';
-import 'package:schuldaten_hub/features/matrix/domain/matrix_room_helpers.dart';
 import 'package:watch_it/watch_it.dart';
 
 class MatrixRoomPage extends WatchingWidget {
@@ -29,6 +30,7 @@ class MatrixRoomPage extends WatchingWidget {
         .toList();
 
     return Scaffold(
+      backgroundColor: AppColors.canvasColor,
       appBar: GenericAppBar(iconData: Icons.room, title: matrixRoom.name!),
       body: RefreshIndicator(
         onRefresh: () async =>
@@ -39,7 +41,7 @@ class MatrixRoomPage extends WatchingWidget {
             child: CustomScrollView(
               slivers: [
                 const SliverGap(5),
-                SliverSearchAppBar(
+                GenericSliverSearchAppBar(
                     title: MatrixUsersListSearchBar(
                         matrixUsers: matrixUsersInRoom),
                     height: 110),

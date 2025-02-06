@@ -1,9 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
+import 'package:schuldaten_hub/features/matrix/domain/matrix_policy_manager.dart';
 import 'package:schuldaten_hub/features/matrix/domain/models/matrix_room.dart';
 import 'package:schuldaten_hub/features/matrix/domain/models/matrix_user.dart';
-import 'package:schuldaten_hub/features/matrix/domain/matrix_policy_manager.dart';
 
 class MatrixPolicyFilterManager {
   final _filtersOn = ValueNotifier<bool>(false);
@@ -27,7 +27,18 @@ class MatrixPolicyFilterManager {
   ValueListenable<TextEditingController> get searchController =>
       _searchController;
 
-  MatrixPolicyFilterManager();
+  MatrixPolicyFilterManager(MatrixPolicyManager matrixPolicyManager)
+      : _policyManager = matrixPolicyManager {
+    refreshFilteredMatrixUsers();
+    _policyManager.addListener(refreshFilteredMatrixUsers);
+  }
+
+  final MatrixPolicyManager _policyManager;
+
+  void dispose() {
+    _searchController.value.dispose();
+    _policyManager.removeListener(refreshFilteredMatrixUsers);
+  }
 
   resetAllMatrixFilters() {
     _searchText.value = '';
@@ -40,19 +51,8 @@ class MatrixPolicyFilterManager {
   }
 
   refreshFilteredMatrixUsers() {
-    final matrixUsers = locator<MatrixPolicyManager>().matrixUsers.value;
-    final filteredMatrixUsers = _filteredMatrixUsers.value;
-    for (var user in matrixUsers) {
-      final index = filteredMatrixUsers
-          .indexWhere((filteredUser) => filteredUser.id == user.id);
-      if (index != -1) {
-        if (filteredMatrixUsers[index] != user) {
-          filteredMatrixUsers[index] = user;
-        }
-      }
-    }
-
-    _filteredMatrixUsers.value = filteredMatrixUsers;
+    setUsersFilterText(_searchText.value);
+    setRoomsFilterText(_searchText.value);
   }
 
   setUsersFilterText(String text) {

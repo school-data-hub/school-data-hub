@@ -23,7 +23,9 @@ class GrowthDropdown extends StatelessWidget {
           value: dropdownValue,
           items: competenceCheckDropdownItems,
           onChanged: (value) {
-            onChangedFunction(value!);
+            if (value != dropdownValue) {
+              onChangedFunction(value!);
+            }
           },
           alignment: Alignment.center,
         )),
@@ -37,23 +39,23 @@ List<DropdownMenuItem<int>> competenceCheckDropdownItems = [
     value: 0,
     alignment: AlignmentDirectional.center,
     child: Center(
-      child: Icon(Icons.question_mark_rounded, color: Colors.black, size: 40),
+      child: Icon(Icons.question_mark_rounded, color: Colors.black, size: 50),
     ),
   ),
   DropdownMenuItem(
     value: 1,
-    child: Image.asset('assets/growth_1-4.png'),
+    child: Image.asset('assets/growth_1-4.png', width: 50, height: 50),
   ),
   DropdownMenuItem(
     value: 2,
-    child: Image.asset('assets/growth_2-4.png'),
+    child: Image.asset('assets/growth_2-4.png', width: 50, height: 50),
   ),
   DropdownMenuItem(
     value: 3,
-    child: Image.asset('assets/growth_3-4.png'),
+    child: Image.asset('assets/growth_3-4.png', width: 50, height: 50),
   ),
   DropdownMenuItem(
     value: 4,
-    child: Image.asset('assets/growth_4-4.png'),
+    child: Image.asset('assets/growth_4-4.png', width: 50, height: 50),
   ),
 ];

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:schuldaten_hub/features/pupil/domain/models/pupil_proxy.dart';
-
+import 'package:schuldaten_hub/common/theme/app_colors.dart';
 import 'package:schuldaten_hub/common/widgets/avatar.dart';
+import 'package:schuldaten_hub/features/pupil/domain/models/pupil_proxy.dart';
 import 'package:schuldaten_hub/features/pupil/presentation/pupil_profile_page/pupil_profile_page.dart';
 import 'package:watch_it/watch_it.dart';
 
@@ -27,9 +27,7 @@ class SelectPupilListCard extends WatchingWidget {
       onLongPress: () => onCardPress(pupil.internalId),
       onTap: () => isSelectMode ? onCardPress(pupil.internalId) : {},
       child: Card(
-          color: isSelected
-              ? const Color.fromARGB(255, 197, 212, 255)
-              : Colors.white,
+          color: isSelected ? AppColors.selectedCardColor : Colors.white,
           child: Row(
             children: [
               AvatarWithBadges(pupil: pupil, size: 80),

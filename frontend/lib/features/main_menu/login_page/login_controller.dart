@@ -27,19 +27,19 @@ class LoginController extends State<Login> {
   final TextEditingController passwordController = TextEditingController();
 
   late Map<String, Env> envs;
-  late Env activeEnv;
+  late Env? activeEnv;
   String selectedEnv = '';
 
   @override
   initState() {
     super.initState();
     if (locator<EnvManager>().envReady.value) {
-      envs = locator<EnvManager>().envs.value;
-      activeEnv = locator<EnvManager>().env.value;
-      selectedEnv = activeEnv.server!;
+      envs = locator<EnvManager>().envs;
+      activeEnv = locator<EnvManager>().env!;
+      selectedEnv = activeEnv!.server;
     } else {
       envs = {};
-      activeEnv = Env();
+      activeEnv = null;
     }
   }
 

@@ -1,7 +1,7 @@
 name: schuldaten_hub
 description: A new Flutter project.
 publish_to: 'none'
-version: 0.4.5+2
+version: 0.4.52+15
 
 environment:
   sdk: '>=3.2.0 <4.0.0'
@@ -56,7 +56,6 @@ dependencies:
   flutter_riverpod: ^2.5.3
   hooks_riverpod: ^2.5.4
   riverpod_annotation: ^2.5.3
-  flutter_hooks: ^0.20.5
   html: ^0.15.4
   http: ^1.2.2
   flutterware: ^0.5.1
@@ -64,12 +63,17 @@ dependencies:
   buffer_image: ^0.3.12
   qr_code_vision: ^0.1.2
   isbn: ^1.0.4
+  custom_image_crop: ^0.1.1
+  image: ^4.5.2
+  uuid: ^4.5.1
+  pdfrx: ^1.0.101
+  printing: ^5.13.4
 
 dev_dependencies:
   flutter_test: 
     sdk: flutter
   flutter_lints: ^4.0.0
-  #msix: ^3.16.8
+  msix: ^3.16.8
   build_runner: ^2.4.6
   json_serializable: ^6.8.0
 
@@ -79,15 +83,18 @@ flutter:
   generate: true
   assets:
     - assets/
+    - shorebird.yaml
 
 dependency_overrides:
   archive: ^3.6.1
-# msix_config:
-#   display_name: Schuldaten Hub
-#   publisher_display_name: Medien-Sandkasten
-#   identity_name: de.medien-sandkiste.schuldaten-hub
-#   msix_version: 1.0.0.1
-#   app_installer: #<-- app installer configuration
-#     publish_folder_path: V:\
-#   logo_path: V:\schuldaten_hub_logo.png
-#   capabilities: internetClient
+  get_it: ^8.0.3
+msix_config:
+  display_name: Schuldaten Hub
+  publisher_display_name: Medien-Sandkasten
+  identity_name: de.medien-sandkasten.schuldaten-hub
+  msix_version: 0.4.53.1
+  app_installer: #<-- app installer configuration
+    publish_folder_path: V:\
+  logo_path: V:\schuldaten_hub_logo.png
+  capabilities: internetClient
+

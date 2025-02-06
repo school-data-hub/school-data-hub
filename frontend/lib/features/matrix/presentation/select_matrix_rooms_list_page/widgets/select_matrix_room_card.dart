@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:schuldaten_hub/features/matrix/domain/models/matrix_room.dart';
+import 'package:schuldaten_hub/common/theme/app_colors.dart';
 import 'package:schuldaten_hub/features/matrix/domain/matrix_policy_manager.dart';
+import 'package:schuldaten_hub/features/matrix/domain/models/matrix_room.dart';
 import 'package:schuldaten_hub/features/matrix/presentation/select_matrix_rooms_list_page/controller/select_matrix_rooms_list_controller.dart';
 import 'package:watch_it/watch_it.dart';
 
@@ -23,7 +24,7 @@ class SelectMatrixRoomCard extends WatchingWidget {
           controller.isSelectMode ? controller.onCardPress(room.id) : {},
       child: Card(
           color: controller.selectedRooms.contains(room.id)
-              ? const Color.fromARGB(255, 197, 212, 255)
+              ? AppColors.selectedCardColor
               : Colors.white,
           child: Padding(
             padding: const EdgeInsets.all(10.0),

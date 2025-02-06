@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:schuldaten_hub/features/pupil/presentation/pupil_profile_page/widgets/pupil_profile_page_content/widgets/pupil_profile_attendance_content.dart';
-import 'package:schuldaten_hub/features/pupil/presentation/pupil_profile_page/widgets/pupil_profile_page_content/widgets/pupil_profile_authorizations_content.dart';
-import 'package:schuldaten_hub/features/pupil/presentation/pupil_profile_page/widgets/pupil_profile_page_content/widgets/pupil_profile_credit_content.dart';
 import 'package:schuldaten_hub/features/main_menu/widgets/landing_bottom_nav_bar.dart';
 import 'package:schuldaten_hub/features/pupil/domain/models/pupil_proxy.dart';
-import 'package:schuldaten_hub/features/pupil/presentation/pupil_profile_page/widgets/pupil_profile_page_content/widgets/pupil_profile_infos_content.dart';
+import 'package:schuldaten_hub/features/pupil/presentation/pupil_profile_page/widgets/pupil_profile_page_content/widgets/pupil_ogs_content.dart';
+import 'package:schuldaten_hub/features/pupil/presentation/pupil_profile_page/widgets/pupil_profile_page_content/widgets/pupil_profile_attendance_content.dart';
+import 'package:schuldaten_hub/features/pupil/presentation/pupil_profile_page/widgets/pupil_profile_page_content/widgets/pupil_profile_authorizations_content.dart';
 import 'package:schuldaten_hub/features/pupil/presentation/pupil_profile_page/widgets/pupil_profile_page_content/widgets/pupil_profile_communication_content.dart';
+import 'package:schuldaten_hub/features/pupil/presentation/pupil_profile_page/widgets/pupil_profile_page_content/widgets/pupil_profile_credit_content.dart';
+import 'package:schuldaten_hub/features/pupil/presentation/pupil_profile_page/widgets/pupil_profile_page_content/widgets/pupil_profile_infos_content.dart';
 import 'package:schuldaten_hub/features/pupil/presentation/pupil_profile_page/widgets/pupil_profile_page_content/widgets/pupil_profile_learning_content.dart';
 import 'package:schuldaten_hub/features/pupil/presentation/pupil_profile_page/widgets/pupil_profile_page_content/widgets/pupil_profile_learning_support_content.dart';
-import 'package:schuldaten_hub/features/pupil/presentation/pupil_profile_page/widgets/pupil_profile_page_content/widgets/pupil_ogs_content.dart';
 import 'package:schuldaten_hub/features/pupil/presentation/pupil_profile_page/widgets/pupil_profile_page_content/widgets/pupil_school_lists_content.dart';
 import 'package:schuldaten_hub/features/pupil/presentation/pupil_profile_page/widgets/pupil_profile_page_content/widgets/pupil_schoolday_events_content.dart';
 import 'package:watch_it/watch_it.dart';
@@ -21,7 +21,8 @@ class PupilProfilePageContent extends WatchingWidget {
 
   @override
   Widget build(BuildContext context) {
-    int navState = watchValue((BottomNavManager x) => x.pupilProfileNavState);
+    int navState =
+        watchValue((MainMenuBottomNavManager x) => x.pupilProfileNavState);
     final pupil = watch<PupilProxy>(this.pupil);
     return SingleChildScrollView(
       child: Column(

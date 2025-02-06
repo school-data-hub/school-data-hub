@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
-import 'package:schuldaten_hub/common/theme/colors.dart';
+import 'package:schuldaten_hub/common/theme/app_colors.dart';
 import 'package:schuldaten_hub/common/theme/paddings.dart';
 import 'package:schuldaten_hub/common/theme/styles.dart';
-import 'package:schuldaten_hub/features/credit/credit_list_page/credit_list_page.dart';
-import 'package:schuldaten_hub/features/credit/credit_list_page/widgets/dialogues/change_credit_dialog.dart';
+import 'package:schuldaten_hub/features/pupil/presentation/credit/credit_list_page/credit_list_page.dart';
+import 'package:schuldaten_hub/features/pupil/presentation/credit/credit_list_page/widgets/dialogues/change_credit_dialog.dart';
 import 'package:schuldaten_hub/features/pupil/domain/models/credit_history_log.dart';
 import 'package:schuldaten_hub/features/pupil/domain/models/pupil_proxy.dart';
 
@@ -127,47 +127,44 @@ class PupilCreditContent extends StatelessWidget {
                   onLongPress: () async {},
                   child: SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
-                    child: Padding(
-                      padding: const EdgeInsets.only(bottom: 10),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(
-                            DateFormat('dd.MM.yyyy')
-                                .format(creditHistoryLog.createdAt)
-                                .toString(),
-                            style: const TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20,
-                            ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          DateFormat('dd.MM.yyyy')
+                              .format(creditHistoryLog.createdAt)
+                              .toString(),
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
                           ),
-                          const Gap(10),
-                          const Text('Betrag:'),
-                          const Gap(10),
-                          Text(
-                            creditHistoryLog.operation.toString(),
-                            style: TextStyle(
-                              color: creditHistoryLog.operation < 0
-                                  ? Colors.red
-                                  : AppColors.groupColor,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20,
-                            ),
+                        ),
+                        const Gap(10),
+                        const Text('Betrag:'),
+                        const Gap(10),
+                        Text(
+                          creditHistoryLog.operation.toString(),
+                          style: TextStyle(
+                            color: creditHistoryLog.operation < 0
+                                ? Colors.red
+                                : AppColors.groupColor,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
                           ),
-                          const Gap(10),
-                          const Text('von:'),
-                          const Gap(10),
-                          Text(
-                            creditHistoryLog.createdBy,
-                            style: const TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20,
-                            ),
-                          )
-                        ],
-                      ),
+                        ),
+                        const Gap(10),
+                        const Text('von:'),
+                        const Gap(10),
+                        Text(
+                          creditHistoryLog.createdBy,
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                          ),
+                        )
+                      ],
                     ),
                   ),
                 ),

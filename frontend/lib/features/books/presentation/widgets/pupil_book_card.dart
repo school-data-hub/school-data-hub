@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:schuldaten_hub/common/domain/env_manager.dart';
 import 'package:schuldaten_hub/common/domain/session_manager.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
-import 'package:schuldaten_hub/common/theme/colors.dart';
+import 'package:schuldaten_hub/common/theme/app_colors.dart';
 import 'package:schuldaten_hub/common/theme/styles.dart';
 import 'package:schuldaten_hub/common/utils/extensions.dart';
 import 'package:schuldaten_hub/common/widgets/dialogs/confirmation_dialog.dart';
@@ -14,10 +14,11 @@ import 'package:schuldaten_hub/common/widgets/dialogs/information_dialog.dart';
 import 'package:schuldaten_hub/common/widgets/dialogs/long_textfield_dialog.dart';
 import 'package:schuldaten_hub/common/widgets/document_image.dart';
 import 'package:schuldaten_hub/common/widgets/upload_image.dart';
-import 'package:schuldaten_hub/features/books/data/book_repository.dart';
+import 'package:schuldaten_hub/features/books/data/book_api_service.dart';
 import 'package:schuldaten_hub/features/books/domain/book_manager.dart';
 import 'package:schuldaten_hub/features/books/domain/models/book.dart';
 import 'package:schuldaten_hub/features/books/domain/models/pupil_book.dart';
+import 'package:schuldaten_hub/features/competence/presentation/widgets/competence_check_dropdown.dart';
 import 'package:schuldaten_hub/features/pupil/domain/pupil_manager.dart';
 
 class PupilBookCard extends StatelessWidget {
@@ -29,17 +30,15 @@ class PupilBookCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Book book = locator<BookManager>().getBookByBookId(pupilBook.bookId)!;
+    updatepupilBookRating(int rating) {
+      locator<PupilManager>()
+          .patchPupilBook(lendingId: pupilBook.lendingId, rating: rating);
+    }
+
     return ClipRRect(
       borderRadius: BorderRadius.circular(20),
       child: Card(
           child: InkWell(
-        // onTap: () {
-        //   Navigator.of(context).push(MaterialPageRoute(
-        //     builder: (ctx) => SchoolListPupils(
-        //       workbook,
-        //     ),
-        //   ));
-        // },
         onLongPress: () async {
           if (pupilBook.lentBy !=
                   locator<SessionManager>().credentials.value.username ||
@@ -53,14 +52,15 @@ class PupilBookCard extends StatelessWidget {
               title: 'Ausleihe löschen',
               message: 'Ausleihe von "${book.title}" wirklich löschen?');
           if (result == true) {
-            // locator<BookManager>()
-            //     .deletePupilBook(pupilId, book.bookId);
+            locator<PupilManager>()
+                .deletePupilBook(lendingId: pupilBook.lendingId);
           }
         },
         child: Padding(
           padding:
               const EdgeInsets.only(top: 8.0, bottom: 5, left: 10, right: 10),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
                 children: [
@@ -86,7 +86,7 @@ class PupilBookCard extends StatelessWidget {
                     children: [
                       InkWell(
                         onTap: () async {
-                          final File? file = await uploadImage(context);
+                          final File? file = await uploadImageFile(context);
                           if (file == null) return;
                           await locator<BookManager>()
                               .postBookFile(file, book.bookId);
@@ -111,7 +111,7 @@ class PupilBookCard extends StatelessWidget {
                                 value: DocumentImageData(
                                     documentTag: book.imageId!,
                                     documentUrl:
-                                        '${locator<EnvManager>().env.value.serverUrl}${BookRepository.bookImageUrl(book.bookId)}',
+                                        '${locator<EnvManager>().env!.serverUrl}${BookApiService.bookImageUrl(book.bookId)}',
                                     size: 100),
                                 child: const DocumentImage(),
                               )
@@ -136,22 +136,20 @@ class PupilBookCard extends StatelessWidget {
                           const Gap(5),
                           Row(
                             children: [
-                              const Icon(
-                                Icons.arrow_circle_right_rounded,
-                                color: Colors.orange,
-                              ),
-                              const Gap(5),
                               Text(
-                                pupilBook.lentAt.formatForUser(),
+                                pupilBook.lentBy,
                                 style: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              const Gap(5),
-                              const Text('von:'),
-                              const Gap(5),
+                              const Gap(2),
+                              const Icon(
+                                Icons.arrow_circle_right_rounded,
+                                color: Colors.orange,
+                              ),
+                              const Gap(2),
                               Text(
-                                pupilBook.lentBy,
+                                pupilBook.lentAt.formatForUser(),
                                 style: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -161,26 +159,24 @@ class PupilBookCard extends StatelessWidget {
                           if (pupilBook.returnedAt != null)
                             Row(
                               children: [
+                                Text(
+                                  pupilBook.receivedBy!,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const Gap(2),
                                 const Icon(
                                   Icons.arrow_circle_left_rounded,
                                   color: Colors.green,
                                 ),
-                                const Gap(5),
+                                const Gap(2),
                                 Text(
                                   pupilBook.returnedAt!.formatForUser(),
                                   style: const TextStyle(
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                const Gap(5),
-                                const Text('bei:'),
-                                const Gap(5),
-                                Text(
-                                  pupilBook.receivedBy!,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                )
                               ],
                             ),
                           const Gap(10),
@@ -188,45 +184,42 @@ class PupilBookCard extends StatelessWidget {
                       ),
                     ),
                   ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      GrowthDropdown(
+                          dropdownValue: pupilBook.rating ?? 0,
+                          onChangedFunction: updatepupilBookRating),
+                    ],
+                  ),
                 ],
               ),
-              Row(
-                children: [
-                  Expanded(
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children: [
-                          const Text('Status:'),
-                          const Gap(10),
-                          InkWell(
-                            onLongPress: () async {
-                              final status = await longTextFieldDialog(
-                                  title: 'Status',
-                                  labelText: 'Status',
-                                  textinField: pupilBook.state ?? '',
-                                  parentContext: context);
-                              if (status == null) return;
-                              await locator<PupilManager>().patchPupilBook(
-                                  lendingId: pupilBook.lendingId,
-                                  state: status);
-                            },
-                            child: Text(
-                              (pupilBook.state == null || pupilBook.state == '')
-                                  ? 'Kein Eintrag'
-                                  : pupilBook.state!,
-                              style: const TextStyle(
-                                fontSize: 16,
-                                color: AppColors.interactiveColor,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+              const Text(
+                'Beobachtungen:',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              InkWell(
+                onLongPress: () async {
+                  final status = await longTextFieldDialog(
+                      title: 'Status',
+                      labelText: 'Status',
+                      textinField: pupilBook.state ?? '',
+                      parentContext: context);
+                  if (status == null) return;
+                  await locator<PupilManager>().patchPupilBook(
+                      lendingId: pupilBook.lendingId, comment: status);
+                },
+                child: Text(
+                  (pupilBook.state == null || pupilBook.state == '')
+                      ? 'Kein Eintrag'
+                      : pupilBook.state!,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    color: AppColors.interactiveColor,
                   ),
-                  const Gap(10),
-                ],
+                ),
               ),
               const Gap(10),
               if (pupilBook.returnedAt == null) ...[

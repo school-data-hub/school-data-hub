@@ -8,8 +8,9 @@ import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/features/matrix/domain/matrix_policy_manager.dart';
 import 'package:schuldaten_hub/features/matrix/domain/models/policy.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:uuid/uuid.dart';
 
-class MatrixHelper {
+class MatrixPolicyHelper {
   static Future<File> generatePolicyJsonFile() async {
     // create a new json file with the policy
 
@@ -25,6 +26,33 @@ class MatrixHelper {
     file.writeAsStringSync(policyJson);
 
     return file;
+  }
+
+  static Policy refreshMatrixPolicy() {
+    final oldPolicy = locator<MatrixPolicyManager>().matrixPolicy;
+    final refreshedPolicy = oldPolicy!.copyWith(
+        managedRoomIds: locator<MatrixPolicyManager>()
+            .matrixRooms
+            .value
+            .map((room) => room.id)
+            .toList(),
+        matrixUsers: locator<MatrixPolicyManager>().matrixUsers.value);
+    return refreshedPolicy;
+  }
+
+  static String generateMatrixId({required isParent}) {
+    var uuid = const Uuid();
+    String randomUUID = uuid.v4().replaceAll('-', '');
+
+    final matrixId = randomUUID.substring(0, 12);
+    switch (isParent) {
+      case true:
+        return '${matrixId}_e';
+      case false:
+        return '${matrixId}_';
+    }
+
+    return matrixId;
   }
 
   static String generatePassword() {
@@ -53,13 +81,7 @@ class MatrixHelper {
   static Future<void> launchMatrixUrl(
       BuildContext context, String contact) async {
     final Uri matrixUrl = Uri.parse('https://matrix.to/#/$contact');
-    // bool canLaunchThis = await canLaunchUrl(matrixUrl);
-    // if (!canLaunchThis) {
-    //   if (context.mounted) {
-    //     informationDialog(context, 'Verbindung nicht möglich',
-    //         'Es konnte keine Verbindung mit dem Messenger hergestellt werden.');
-    //   }
-    // }
+
     try {
       final bool launched = await launchUrl(
         matrixUrl,

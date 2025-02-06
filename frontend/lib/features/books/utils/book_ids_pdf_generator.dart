@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:pdf/widgets.dart' as pw;
+import 'package:schuldaten_hub/common/services/locator.dart';
+import 'package:schuldaten_hub/common/services/notification_service.dart';
 
 List<String> generateBookIds({required int startAtIdNr, required int count}) {
   List<String> bookIds = [];
@@ -43,8 +45,9 @@ pw.Widget buildBarcodePage(List<String> bookIds, int startIndex) {
 }
 
 void generateBookIdsPdf() async {
+  locator<NotificationService>().setHeavyLoadingValue(true);
   final pdf = pw.Document();
-  List<String> bookIds = generateBookIds(startAtIdNr: 1, count: 100);
+  List<String> bookIds = generateBookIds(startAtIdNr: 1, count: 5000);
 
   int itemsPerPage = 9 * 6;
   int totalPages = (bookIds.length / itemsPerPage).ceil();
@@ -61,4 +64,5 @@ void generateBookIdsPdf() async {
 
   final file = File("book_ids_qr.pdf");
   await file.writeAsBytes(await pdf.save());
+  locator<NotificationService>().setHeavyLoadingValue(false);
 }

@@ -3,6 +3,8 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'matrix_room.g.dart';
 
+enum RoomMembers { pupils, parents, teachers, workers, ogs }
+
 @JsonSerializable()
 class MatrixRoom extends ChangeNotifier {
   final String id;

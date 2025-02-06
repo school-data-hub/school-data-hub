@@ -2,7 +2,7 @@ import uuid
 from datetime import datetime
 from typing import Optional
 
-from apiflask import APIBlueprint
+from apiflask import APIBlueprint, abort
 from flask import jsonify, request
 from sqlalchemy.sql import exists
 
@@ -31,7 +31,7 @@ def add_book_to_pupil(current_user: User, internal_id, book_id):
     pupil_id = this_pupil.internal_id
     this_book: Optional[Book] = Book.query.filter_by(book_id=book_id).first()
     if this_book == None:
-        return jsonify({"error": "Book not found!"}), 401
+        return jsonify({"error": "Book not found!"}), 404
     if this_book.available == False:
         return jsonify({"error": "This book is not available - return it first!"})
     # # - TODO: Do we need to check if the pupil has already borrowed this book?
@@ -127,16 +127,21 @@ def update_PupilBook(current_user: User, lending_id, json_data):
 # - DELETE PUPIL BOOK
 ####################
 @pupil_book_api.route("/<lending_id>", methods=["DELETE"])
+@pupil_book_api.output(pupil_schema)
 @pupil_book_api.doc(
     security="ApiKeyAuth", tags=["Pupil Books"], summary="delete a pupil book"
 )
 @token_required
 def delete_PupilBook(current_user: User, lending_id):
-    if not current_user.admin:
-        return jsonify({"message": "Not authorized!"})
     this_book: Optional[PupilBook] = PupilBook.query.filter_by(
         lending_id=lending_id
     ).first()
+    if this_book == None:
+        abort(404, message="Diese Ausleihe existiert nicht!")
+    if not current_user.admin or this_book.lent_by != current_user.name:
+        abort(403, message="Nicht autorisiert!")
+
+    pupil = get_pupil_by_id(this_book.pupil_id)
     db.session.delete(this_book)
     db.session.commit()
-    return jsonify({"message": "Das ausgeliehene Buch wurde gelöscht!"}), 200
+    return pupil

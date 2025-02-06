@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:schuldaten_hub/common/theme/colors.dart';
+import 'package:schuldaten_hub/common/theme/app_colors.dart';
 
 Widget contactedBadge(contacted) {
   if (contacted == 1 || contacted == 2 || contacted == 3) {

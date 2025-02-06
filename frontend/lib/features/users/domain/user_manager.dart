@@ -3,8 +3,8 @@ import 'package:schuldaten_hub/common/domain/models/enums.dart';
 import 'package:schuldaten_hub/common/domain/session_manager.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_service.dart';
+import 'package:schuldaten_hub/features/users/data/user_api_service.dart';
 import 'package:schuldaten_hub/features/users/domain/models/user.dart';
-import 'package:schuldaten_hub/features/users/data/user_repository.dart';
 
 class UserManager {
   ValueListenable<List<User>> get users => _users;
@@ -16,7 +16,7 @@ class UserManager {
     return this;
   }
 
-  final userApiService = UserRepository();
+  final userApiService = UserApiService();
   Future<void> fetchUsers() async {
     if (locator<SessionManager>().isAdmin.value == false) {
       return;
@@ -68,6 +68,31 @@ class UserManager {
     updateUser(user);
     notificationService.showSnackBar(
         NotificationType.success, 'Passwort erfolgreich geändert!');
+    return;
+  }
+
+  Future<void> updateUserProperties({
+    required User user,
+    bool? admin,
+    String? contact,
+    int? credit,
+    String? name,
+    String? role,
+    int? timeUnits,
+    String? tutoring,
+  }) async {
+    final User updatedUser = await userApiService.patchUser(
+        publicId: user.publicId,
+        admin: admin,
+        contact: contact,
+        credit: credit,
+        name: name,
+        role: role,
+        timeUnits: timeUnits,
+        tutoring: tutoring);
+    updateUser(updatedUser);
+    notificationService.showSnackBar(
+        NotificationType.success, 'User aktualisiert!');
     return;
   }
 

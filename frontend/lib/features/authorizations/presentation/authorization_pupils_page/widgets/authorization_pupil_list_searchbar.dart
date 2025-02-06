@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/domain/models/enums.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
-import 'package:schuldaten_hub/common/theme/colors.dart';
+import 'package:schuldaten_hub/common/theme/app_colors.dart';
 import 'package:schuldaten_hub/common/widgets/filter_button.dart';
-import 'package:schuldaten_hub/common/widgets/search_text_field.dart';
+import 'package:schuldaten_hub/features/pupil/presentation/widgets/pupil_search_text_field.dart';
 import 'package:schuldaten_hub/features/authorizations/presentation/authorization_pupils_page/widgets/authorization_pupils_filter_bottom_sheet.dart';
 import 'package:schuldaten_hub/features/pupil/domain/filters/pupils_filter.dart';
 import 'package:schuldaten_hub/features/pupil/domain/models/pupil_proxy.dart';
@@ -51,7 +51,7 @@ class AuthorizationPupilListSearchBar extends WatchingWidget {
             child: Row(
               children: [
                 Expanded(
-                    child: SearchTextField(
+                    child: PupilSearchTextField(
                         searchType: SearchType.pupil,
                         hintText: 'Schüler/in suchen',
                         refreshFunction: locator<PupilsFilter>().refreshs)),

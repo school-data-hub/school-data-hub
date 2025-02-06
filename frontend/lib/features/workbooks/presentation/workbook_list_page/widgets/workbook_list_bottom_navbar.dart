@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:schuldaten_hub/common/theme/colors.dart';
+import 'package:schuldaten_hub/common/theme/app_colors.dart';
 import 'package:schuldaten_hub/common/widgets/bottom_nav_bar_layouts.dart';
-import 'package:schuldaten_hub/features/workbooks/presentation/new_workbook_page/new_workbook_view_model.dart';
+import 'package:schuldaten_hub/features/workbooks/presentation/new_workbook_page/new_workbook_controller.dart';
 
 Widget workbookListBottomNavBar(BuildContext context) {
   return BottomNavBarLayout(

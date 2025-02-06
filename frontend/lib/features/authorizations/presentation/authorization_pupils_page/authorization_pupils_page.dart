@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
-import 'package:schuldaten_hub/common/theme/colors.dart';
-import 'package:schuldaten_hub/common/widgets/sliver_search_app_bar.dart';
-import 'package:schuldaten_hub/features/authorizations/domain/filters/pupil_authorization_filters.dart';
+import 'package:schuldaten_hub/common/theme/app_colors.dart';
+import 'package:schuldaten_hub/common/widgets/list_view_components/generic_sliver_search_app_bar.dart';
+import 'package:schuldaten_hub/features/authorizations/domain/authorization_manager.dart';
+import 'package:schuldaten_hub/features/authorizations/domain/filters/pupil_authorization_filter_manager.dart';
 import 'package:schuldaten_hub/features/authorizations/domain/models/authorization.dart';
 import 'package:schuldaten_hub/features/authorizations/domain/models/pupil_authorization.dart';
 import 'package:schuldaten_hub/features/authorizations/presentation/authorization_pupils_page/widgets/authorization_pupil_card.dart';
 import 'package:schuldaten_hub/features/authorizations/presentation/authorization_pupils_page/widgets/authorization_pupil_list_searchbar.dart';
 import 'package:schuldaten_hub/features/authorizations/presentation/authorization_pupils_page/widgets/authorization_pupils_bottom_navbar.dart';
-import 'package:schuldaten_hub/features/authorizations/domain/authorization_manager.dart';
 import 'package:schuldaten_hub/features/pupil/domain/filters/pupils_filter.dart';
 import 'package:schuldaten_hub/features/pupil/domain/models/pupil_proxy.dart';
 import 'package:schuldaten_hub/features/pupil/domain/pupil_manager.dart';
@@ -33,7 +33,7 @@ class AuthorizationPupilsPage extends WatchingWidget {
     final filteredPupils = watchValue((PupilsFilter x) => x.filteredPupils);
 
     final List<PupilAuthorization> pupilAuthorizations =
-        locator<AuthorizationFilterManager>()
+        locator<PupilAuthorizationFilterManager>()
             .applyAuthorizationFiltersToPupilAuthorizations(
                 thisAuthorization.authorizedPupils);
 
@@ -71,7 +71,7 @@ class AuthorizationPupilsPage extends WatchingWidget {
               child: CustomScrollView(
                 slivers: [
                   const SliverGap(5),
-                  SliverSearchAppBar(
+                  GenericSliverSearchAppBar(
                     height: 110,
                     title:
                         AuthorizationPupilListSearchBar(pupils: pupilsInList),

@@ -1,7 +1,7 @@
 import uuid
 
 from apiflask import APIBlueprint, abort
-from flask import jsonify, request
+from flask import request
 from sqlalchemy.sql import exists
 
 from auth_middleware import token_required
@@ -30,8 +30,7 @@ school_list_api = APIBlueprint(
 )
 @token_required
 def add_list_all(current_user, json_data):
-    if not current_user.admin:
-        abort(401, message="Keine Berechtigung!")
+
     data = json_data
     list_name = data["list_name"]
     existing_list = SchoolList.query.filter_by(list_name=list_name).first()
@@ -252,9 +251,10 @@ def delete_list(current_user, list_id):
         db.session.query(SchoolList).filter(SchoolList.list_id == this_list_id).first()
     )
     if this_list == None:
-        return jsonify({"message": "The school list does not exist!"}), 404
-    if current_user.name != this_list.created_by:
-        abort(401, message="Keine Berechtigung!")
+        abort(404, message="Die Liste existiert nicht!")
+
+    if current_user.name != this_list.created_by or current_user.admin == False:
+        abort(403, message="Keine Berechtigung!")
     for item in this_list.pupils_in_list:
         db.session.delete(item)
     db.session.delete(this_list)

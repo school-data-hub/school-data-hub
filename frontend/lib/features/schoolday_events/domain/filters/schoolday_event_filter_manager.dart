@@ -24,6 +24,8 @@ class SchooldayEventFilterManager {
   final filtersStateManager = locator<FiltersStateManager>();
   resetFilters() {
     _schooldayEventsFilterState.value = {...initialSchooldayEventFilterValues};
+    locator<FiltersStateManager>()
+        .setFilterState(filterState: FilterState.schooldayEvent, value: false);
   }
 
   void setFilter(

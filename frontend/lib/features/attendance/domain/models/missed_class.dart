@@ -1,6 +1,7 @@
 // ignore_for_file: invalid_annotation_target
 
 import 'package:json_annotation/json_annotation.dart';
+import 'package:schuldaten_hub/common/utils/extensions.dart';
 
 part 'missed_class.g.dart';
 
@@ -11,9 +12,9 @@ class MissedClass {
   final String? contacted;
   @JsonKey(name: 'created_by')
   final String createdBy;
-  bool unexcused;
+  final bool unexcused;
   @JsonKey(name: 'minutes_late')
-  int? minutesLate;
+  final int? minutesLate;
   @JsonKey(name: 'missed_day')
   final DateTime missedDay;
   @JsonKey(name: 'missed_pupil_id')

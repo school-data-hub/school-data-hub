@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/widgets/custom_expansion_tile/custom_expansion_tile.dart';
 
 class CustomExpansionTileSwitch extends StatefulWidget {
   final Widget? expansionSwitchWidget;
+  final bool? includeSwitch;
+  final Color? switchColor;
   final CustomExpansionTileController customExpansionTileController;
   const CustomExpansionTileSwitch(
       {this.expansionSwitchWidget,
+      this.includeSwitch,
+      this.switchColor,
       required this.customExpansionTileController,
       super.key});
 
@@ -39,10 +44,30 @@ class CustomExpansionTileSwitchState extends State<CustomExpansionTileSwitch> {
             });
           }
         },
-        child: widget.expansionSwitchWidget ??
-            Icon(
-              isExpanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
-              color: Colors.white,
-            ));
+        child: widget.expansionSwitchWidget != null &&
+                widget.includeSwitch != null &&
+                widget.includeSwitch == true
+            ? Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  widget.expansionSwitchWidget!,
+                  const Gap(10),
+                  Icon(
+                    isExpanded
+                        ? Icons.keyboard_arrow_up
+                        : Icons.keyboard_arrow_down,
+                    color: widget.switchColor!,
+                  ),
+                ],
+              )
+            : widget.expansionSwitchWidget != null &&
+                    widget.includeSwitch != true
+                ? widget.expansionSwitchWidget
+                : Icon(
+                    isExpanded
+                        ? Icons.keyboard_arrow_up
+                        : Icons.keyboard_arrow_down,
+                    color: Colors.white,
+                  ));
   }
 }

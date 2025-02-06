@@ -1,8 +1,9 @@
 import os
 import uuid
+from typing import List
 
 from apiflask import APIBlueprint, abort
-from flask import current_app, jsonify, request, send_file
+from flask import current_app, request, send_file
 
 from auth_middleware import token_required
 from helpers.db_helpers import get_book_by_id, get_workbook_by_isbn
@@ -23,7 +24,7 @@ book_api = APIBlueprint("book_api", __name__, url_prefix="/api/books")
 @book_api.doc(security="ApiKeyAuth", tags=["Books"], summary="Get all book locations")
 @token_required
 def get_book_locations(current_user):
-    locations = BookLocation.query.all()
+    locations: List[BookLocation] = BookLocation.query.all()
     return locations
 
 
@@ -53,12 +54,13 @@ def add_book_location(current_user, json_data):
 @book_api.doc(security="ApiKeyAuth", tags=["Books"], summary="Delete a book location")
 @token_required
 def delete_book_location(current_user, location):
-    if not current_user.admin:
-        abort(401, "Not authorized!")
 
     this_location = BookLocation.query.filter_by(location=location).first()
     if this_location == None:
         abort(404, "This location does not exist!")
+
+    if not current_user.admin or current_user.name != this_location.created_by:
+        abort(403, "Keine Berechtigung!")
 
     db.session.delete(this_location)
     db.session.commit()
@@ -198,6 +200,66 @@ def patch_book(current_user, book_id, json_data):
 ## - TODO: implement posting a book with a file to avoid two requests
 
 
+@book_api.route("/new_with_file", methods=["POST"])
+@book_api.input(NewBookWithFileSchema, location="form_and_files")
+@book_api.output(book_flat_schema)
+@book_api.doc(
+    security="ApiKeyAuth", tags=["Books"], summary="POST a new book with a file"
+)
+@token_required
+def create_book_with_file(current_user, form_and_files_data):
+
+    book_data = form_and_files_data["book"]
+    book_id = book_data["book_id"]
+    if db.session.query(Book).filter_by(book_id=book_id).scalar() is not None:
+        abort(400, "This book already exists!")
+
+    isbn = book_data["isbn"]
+    location = book_data["location"]
+    title = book_data["title"]
+    author = book_data["author"]
+    reading_level = book_data["reading_level"]
+    description = book_data["description"]
+    book_tags = book_data["book_tags"]
+
+    new_book = Book(
+        book_id=book_id,
+        isbn=isbn,
+        title=title,
+        author=author,
+        location=location,
+        reading_level=reading_level,
+        image_url=None,
+        image_id=None,
+        description=description,
+        available=True,
+    )
+    for tag_data in book_tags:
+        tag_name = tag_data["name"]
+        tag = db.session.query(BookTag).filter_by(name=tag_name).first()
+        if tag is None:
+            abort(400, f"Tag '{tag_name}' does not exist!")
+        new_book.book_tags.append(tag)
+
+    db.session.add(new_book)
+    file = form_and_files_data["file"]
+    image_id = str(uuid.uuid4().hex)
+    filename = image_id + ".jpg"
+    filename = image_id + ".jpg"
+    file_url = current_app.config["UPLOAD_FOLDER"] + "/book/" + filename
+    file.save(file_url)
+    if len(str(new_book.image_url)) > 4:
+        os.remove(str(new_book.image_url))
+    new_book.image_id = image_id
+    new_book.image_url = file_url
+
+    # - Log entry
+    create_log_entry(current_user, request, request.json)
+    db.session.commit()
+
+    return new_book
+
+
 # - PATCH BOOK FILE
 
 
@@ -211,9 +273,11 @@ def patch_book(current_user, book_id, json_data):
 def upload_book_file(current_user, book_id, files_data):
     book = db.session.query(Book).filter_by(book_id=book_id).scalar()
     if book is None:
-        return jsonify({"message": "Das Buch existiert nicht!"}), 404
+        abort(404, "Das Buch existiert nicht!")
+
     if "file" not in files_data:
-        return jsonify({"error": "No file attached!"}), 400
+        abort(400, "Keine Datei angehängt!")
+
     file = files_data["file"]
     image_id = str(uuid.uuid4().hex)
     filename = image_id + ".jpg"
@@ -241,7 +305,8 @@ def upload_book_file(current_user, book_id, files_data):
 def get_book_image(current_user: User, book_id):
     book = get_book_by_id(book_id=book_id)
     if book is None:
-        return jsonify({"message": "Das Buch existiert nicht!"}), 404
+        abort(404, "Das Buch existiert nicht!")
+
     if len(str(book.image_url)) < 5:
         abort(404, message="Keine Datei vorhanden!")
     return send_file(str(book.image_url), mimetype="image/jpg")
@@ -254,12 +319,12 @@ def get_book_image(current_user: User, book_id):
 @book_api.doc(security="ApiKeyAuth", tags=["Books"])
 @token_required
 def delete_book(current_user, book_id):
-    if not current_user.admin:
-        abort(401, "Not authorized!")
-
     this_book = Book.query.filter_by(book_id=book_id).first()
     if this_book == None:
         abort(404, "This book does not exist!")
+
+    if not current_user.admin or current_user.name != this_book.created_by:
+        abort(403, "Keine Berechtigung!")
 
     if len(str(this_book.image_url)) > 4:
         os.remove(str(this_book.image_url))
@@ -268,7 +333,7 @@ def delete_book(current_user, book_id):
     create_log_entry(current_user, request, {"data": "none"})
     db.session.commit()
 
-    return jsonify({"message": "Book deleted!"}), 200
+    abort(200, "Buch gelöscht!")
 
 
 ## - BOOK TAGS - ##
@@ -295,9 +360,10 @@ def get_book_tags(current_user):
 @token_required
 def add_book_tag(current_user, json_data):
     tag_name = json_data["name"]
+    created_by = json_data["created_by"]
     if db.session.query(BookTag).filter_by(name=tag_name).scalar() is not None:
         abort(400, "This tag already exists!")
-    new_tag = BookTag(name=tag_name, created_by=current_user.username)
+    new_tag = BookTag(name=tag_name, created_by=created_by)
     db.session.add(new_tag)
     db.session.commit()
     return BookTag.query.all()
@@ -334,12 +400,12 @@ def patch_book_tag(current_user, tag_name, json_data):
 @book_api.doc(security="ApiKeyAuth", tags=["Book Tags"], summary="Delete a book tag")
 @token_required
 def delete_book_tag(current_user, tag_name):
-    if not current_user.admin:
-        abort(401, "Not authorized!")
-
     this_tag = BookTag.query.filter_by(name=tag_name).first()
     if this_tag == None:
         abort(404, "This tag does not exist!")
+
+    if not current_user.admin or current_user.name != this_tag.created_by:
+        abort(403, "Keine Berechtigung!")
 
     db.session.delete(this_tag)
     db.session.commit()

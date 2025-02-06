@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 
-import 'colors.dart';
+import 'app_colors.dart';
 
 class AppStyles {
   static InputDecoration textFieldDecoration({required String labelText}) {

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:schuldaten_hub/common/theme/colors.dart';
+import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
+import 'package:schuldaten_hub/common/theme/app_colors.dart';
+import 'package:schuldaten_hub/common/theme/styles.dart';
 import 'package:schuldaten_hub/common/utils/extensions.dart';
-import 'package:schuldaten_hub/common/widgets/date_picker.dart';
+import 'package:schuldaten_hub/common/widgets/dialogs/date_picker.dart';
 import 'package:schuldaten_hub/features/attendance/domain/attendance_manager.dart';
 import 'package:schuldaten_hub/features/pupil/domain/models/pupil_proxy.dart';
 import 'package:schuldaten_hub/features/schooldays/domain/schoolday_manager.dart';
@@ -86,81 +88,119 @@ Future<void> createMissedClassList(
                             }),
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: InkWell(
-                          onTap: () async {
-                            final DateTime? date =
-                                await selectSchooldayDate(context, thisDate);
-                            if (date != null) {
-                              setState(() {
-                                startDate = date;
-                              });
-                            }
-                          },
-                          child: Text(
-                            'von ${startDate.formatForUser()}',
-                            style: const TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 22,
-                            ),
-                          )),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text('von',
+                            style: TextStyle(
+                                fontSize: 22, fontWeight: FontWeight.bold)),
+                        const Gap(15),
+                        InkWell(
+                            onTap: () async {
+                              final DateTime? date =
+                                  await selectSchooldayDate(context, thisDate);
+                              if (date != null) {
+                                setState(() {
+                                  startDate = date;
+                                });
+                              }
+                            },
+                            child: Text(
+                              startDate.formatForUser(),
+                              style: const TextStyle(
+                                color: AppColors.interactiveColor,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 22,
+                              ),
+                            )),
+                        const Gap(5),
+                        IconButton(
+                            onPressed: () async {
+                              final DateTime? date =
+                                  await selectSchooldayDate(context, thisDate);
+                              if (date != null) {
+                                setState(() {
+                                  startDate = date;
+                                });
+                              }
+                            },
+                            icon: const Icon(
+                              Icons.calendar_today,
+                              color: AppColors.interactiveColor,
+                            )),
+                      ],
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: InkWell(
-                          onTap: () async {
-                            final DateTime? date =
-                                await selectSchooldayDate(context, thisDate);
-                            if (date != null) {
-                              setState(() {
-                                endDate = date;
-                              });
-                            }
-                          },
-                          child: Text(
-                            'bis ${endDate.formatForUser()}',
-                            style: const TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 22,
-                            ),
-                          )),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text('bis',
+                            style: TextStyle(
+                                fontSize: 22, fontWeight: FontWeight.bold)),
+                        const Gap(15),
+                        InkWell(
+                            onTap: () async {
+                              final DateTime? date =
+                                  await selectSchooldayDate(context, thisDate);
+                              if (date != null) {
+                                setState(() {
+                                  endDate = date;
+                                });
+                              }
+                            },
+                            child: Text(
+                              endDate.formatForUser(),
+                              style: const TextStyle(
+                                color: AppColors.interactiveColor,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 22,
+                              ),
+                            )),
+                        const Gap(5),
+                        IconButton(
+                            onPressed: () async {
+                              final DateTime? date =
+                                  await selectSchooldayDate(context, thisDate);
+                              if (date != null) {
+                                setState(() {
+                                  endDate = date;
+                                });
+                              }
+                            },
+                            icon: const Icon(
+                              Icons.calendar_today,
+                              color: AppColors.interactiveColor,
+                            )),
+                      ],
                     ),
                   ],
                 )),
-            title: const Text('Mehrere Einträge'),
+            title: const Text(
+              'Mehrere Einträge',
+              style: TextStyle(fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
+            ),
             actions: <Widget>[
               Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: InkWell(
-                  child: const Text(
-                    'ABBRECHEN',
-                    style: TextStyle(
-                        color: AppColors.accentColor,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold),
-                  ),
-                  onTap: () {
+                padding: const EdgeInsets.all(5.0),
+                child: ElevatedButton(
+                  style: AppStyles.cancelButtonStyle,
+                  onPressed: () {
                     if (_missedDatesformKey.currentState!.validate()) {
                       // Do something like updating SharedPreferences or User Settings etc.
                       Navigator.of(context).pop();
                     }
-                  },
+                  }, // Add onPressed
+                  child: const Text(
+                    "ABBRECHEN",
+                    style: AppStyles.buttonTextStyle,
+                  ),
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: InkWell(
-                  child: const Text(
-                    'OK',
-                    style: TextStyle(
-                        color: AppColors.accentColor,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold),
-                  ),
-                  onTap: () {
+                padding: const EdgeInsets.all(5.0),
+                child: ElevatedButton(
+                  style: AppStyles.successButtonStyle,
+                  onPressed: () {
                     if (_missedDatesformKey.currentState!.validate()) {
                       locator<AttendanceManager>().createManyMissedClasses(
                           pupil.internalId,
@@ -170,7 +210,11 @@ Future<void> createMissedClassList(
                       _missedDatesformKey.currentState!.reset();
                       Navigator.of(context).pop();
                     }
-                  },
+                  }, // Add onPressed
+                  child: const Text(
+                    "OK",
+                    style: AppStyles.buttonTextStyle,
+                  ),
                 ),
               ),
             ],

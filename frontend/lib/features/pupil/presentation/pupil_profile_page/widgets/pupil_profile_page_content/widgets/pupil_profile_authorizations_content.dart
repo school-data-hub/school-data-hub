@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:schuldaten_hub/common/theme/colors.dart';
+import 'package:schuldaten_hub/common/theme/app_colors.dart';
 import 'package:schuldaten_hub/common/theme/paddings.dart';
 import 'package:schuldaten_hub/features/authorizations/presentation/authorization_pupils_page/widgets/pupil_authorizations_content_list.dart';
 import 'package:schuldaten_hub/features/authorizations/presentation/authorizations_list_page/authorizations_list_page.dart';

@@ -1,6 +1,8 @@
 from apiflask import Schema, fields
 from marshmallow import post_dump
 
+from schemas.log_entry_schemas import ApiFileSchema
+
 # - COMPETENCE CHECK FILE SCHEMA
 ###############################
 
@@ -103,7 +105,7 @@ class CompetenceGoalSchema(Schema):
 competence_goal_schema = CompetenceGoalSchema()
 competence_goals_schema = CompetenceGoalSchema(many=True)
 
-# - COMPETENCE CHECKS SCHEMA
+# - COMPETENCE CHECK SCHEMA
 ############################
 
 
@@ -115,6 +117,9 @@ class CompetenceCheckInSchema(Schema):
     created_at = fields.Date()
     created_by = fields.String()
     competence_id = fields.Integer()
+    value_factor = fields.Float(allow_none=True)
+    group_id = fields.String(allow_none=True)
+    group_name = fields.String(allow_none=True)
 
     class Meta:
         fields = (
@@ -126,6 +131,9 @@ class CompetenceCheckInSchema(Schema):
             "created_at",
             "created_by",
             "report_id",
+            "value_factor",
+            "group_id",
+            "group_name",
         )
 
 
@@ -133,36 +141,103 @@ competence_check_in_schema = CompetenceCheckInSchema()
 competence_checks_in_schema = CompetenceCheckInSchema(many=True)
 
 
+class CompetenceChceckInWithFilesSchema(Schema):
+    competence_status = fields.Integer()
+    comment = fields.String()
+    created_at = fields.Date()
+    created_by = fields.String()
+    competence_id = fields.Integer()
+    value_factor = fields.Float(allow_none=True)
+    group_id = fields.String(allow_none=True)
+    group_name = fields.String(allow_none=True)
+    competence_check_file = ApiFileSchema()
+
+    class Meta:
+        fields = (
+            "competence_status",
+            "comment",
+            "created_at",
+            "created_by",
+            "competence_id",
+            "value_factor",
+            "group_id",
+            "group_name",
+            "competence_check_file",
+        )
+
+
+competence_check_file_schema = CompetenceChceckInWithFilesSchema()
+competence_check_files_schema = CompetenceChceckInWithFilesSchema(many=True)
+
+
 class CompetenceCheckSchema(Schema):
     check_id = fields.String()
-    is_report = fields.Boolean()
-    report_id = fields.String()
     created_by = fields.String()
     created_at = fields.Date()
     competence_status = fields.Integer()
     comment = fields.String()
     pupil_id = fields.Integer()
     competence_id = fields.Integer()
+    value_factor = fields.Float(allow_none=True)
+    group_id = fields.String(allow_none=True)
+    group_name = fields.String(allow_none=True)
     competence_check_files = fields.List(fields.Nested(CompetenceCheckFileSchema))
 
     class Meta:
         fields = (
             "check_id",
-            "is_report",
-            "report_id",
             "created_by",
             "created_at",
             "competence_status",
             "comment",
             "pupil_id",
             "competence_id",
-            "competence_check_files",
+            "value_factor",
+            "group_id",
+            "group_name",
             "report_id",
+            "competence_check_files",
         )
 
 
 competence_check_schema = CompetenceCheckSchema()
 competence_checks_schema = CompetenceCheckSchema(many=True)
+
+# - COMPETENCE REPORT CHECK SCHEMAS
+
+
+class CompetenceReportCheckInSchema(Schema):
+    competence_status = fields.Integer()
+    comment = fields.String()
+
+    class Meta:
+        fields = ("competence_status", "comment")
+
+
+competence_report_check_in_schema = CompetenceReportCheckInSchema()
+competence_report_checks_in_schema = CompetenceReportCheckInSchema(many=True)
+
+
+class CompetenceReportCheckSchema(Schema):
+    report_check_id = fields.String()
+    created_by = fields.String()
+    created_at = fields.Date()
+    competence_status = fields.Integer()
+    comment = fields.String()
+
+    class Meta:
+        fields = (
+            "check_id",
+            "created_by",
+            "created_at",
+            "competence_status",
+            "comment",
+        )
+
+
+competence_report_check_schema = CompetenceReportCheckSchema()
+competence_report_checks_schema = CompetenceReportCheckSchema(many=True)
+
 
 # - COMPETENCE REPORT SCHEMA
 ############################
@@ -195,7 +270,7 @@ class CompetenceReportSchema(Schema):
     created_at = fields.Date()
     pupil_id = fields.Integer()
     school_semester_id = fields.Integer()
-    competence_checks = fields.List(fields.Nested(CompetenceCheckSchema))
+    competence_report_checks = fields.List(fields.Nested(CompetenceReportCheckSchema))
 
     class Meta:
         fields = (
@@ -204,21 +279,21 @@ class CompetenceReportSchema(Schema):
             "created_at",
             "pupil_id",
             "school_semester_id",
-            "competence_checks",
+            "competence_report_checks",
         )
 
-    @post_dump(pass_many=False)
-    def filter_report_checks(self, data, **kwargs):
+    # @post_dump(pass_many=False)
+    # def filter_report_checks(self, data, **kwargs):
 
-        if "competence_checks" in data:
+    #     if "competence_checks" in data:
 
-            data["competence_checks"] = [
-                check
-                for check in data["competence_checks"]
-                if (check["is_report"] == True)
-            ]
+    #         data["competence_checks"] = [
+    #             check
+    #             for check in data["competence_checks"]
+    #             if (check["is_report"] == True)
+    #         ]
 
-        return data
+    #     return data
 
 
 competence_report_schema = CompetenceReportSchema()

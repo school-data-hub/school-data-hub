@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
-
-import 'package:schuldaten_hub/common/theme/colors.dart';
-import 'package:schuldaten_hub/common/domain/session_manager.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:schuldaten_hub/common/domain/session_manager.dart';
+import 'package:schuldaten_hub/common/theme/app_colors.dart';
 import 'package:schuldaten_hub/features/attendance/presentation/attendance_page/attendance_list_page.dart';
 import 'package:schuldaten_hub/features/attendance/presentation/missed_classes_pupil_list_page/missed_classes_pupil_list_page.dart';
-import 'package:schuldaten_hub/features/credit/credit_list_page/credit_list_page.dart';
-import 'package:schuldaten_hub/features/competence/presentation/learning_pupil_list_page/learning_pupil_list_page.dart';
-import 'package:schuldaten_hub/features/main_menu/widgets/main_menu_button.dart';
+import 'package:schuldaten_hub/features/competence/presentation/pupil_competence_list_page/learning_pupil_list_page.dart';
 import 'package:schuldaten_hub/features/learning_support/presentation/learning_support_list_page/learning_support_list_page.dart';
-import 'package:schuldaten_hub/features/matrix/presentation/matrix_rooms_list_page/matrix_rooms_list_page.dart';
+import 'package:schuldaten_hub/features/main_menu/widgets/main_menu_button.dart';
+import 'package:schuldaten_hub/features/matrix/presentation/matrix_users_list_page/matrix_users_list_page.dart';
 import 'package:schuldaten_hub/features/ogs/ogs_list_page.dart';
+import 'package:schuldaten_hub/features/pupil/presentation/credit/credit_list_page/credit_list_page.dart';
 import 'package:schuldaten_hub/features/pupil/presentation/special_info_page/special_info_list_page.dart';
 import 'package:schuldaten_hub/features/schoolday_events/presentation/schoolday_event_list_page/schoolday_event_list_page.dart';
 import 'package:watch_it/watch_it.dart';
@@ -95,7 +94,7 @@ class PupilListButtons extends WatchingWidget {
             buttonText: locale.allDayCare),
         if (matrixSessionConfigured)
           MainMenuButton(
-              destinationPage: const RoomListPage(),
+              destinationPage: const MatrixUsersListPage(),
               buttonIcon: const Icon(
                 Icons.chat_rounded,
                 size: 50,

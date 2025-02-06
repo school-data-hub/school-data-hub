@@ -2,6 +2,7 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:schuldaten_hub/common/domain/filters/filters.dart';
+import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/features/attendance/domain/models/missed_class.dart';
 import 'package:schuldaten_hub/features/books/domain/models/pupil_book.dart';
 import 'package:schuldaten_hub/features/competence/domain/models/competence_check.dart';
@@ -12,6 +13,7 @@ import 'package:schuldaten_hub/features/pupil/domain/models/credit_history_log.d
 import 'package:schuldaten_hub/features/pupil/domain/models/pupil_data.dart';
 import 'package:schuldaten_hub/features/pupil/domain/models/pupil_identity.dart';
 import 'package:schuldaten_hub/features/schoolday_events/domain/models/schoolday_event.dart';
+import 'package:schuldaten_hub/features/schooldays/domain/schoolday_manager.dart';
 import 'package:schuldaten_hub/features/workbooks/domain/models/pupil_workbook.dart';
 
 enum SchoolGrade {
@@ -31,6 +33,19 @@ enum SchoolGrade {
 
   final String value;
   const SchoolGrade(this.value);
+}
+
+enum Gender {
+  male('m'),
+  female('w');
+
+  static const stringToValue = {
+    'm': Gender.male,
+    'w': Gender.female,
+  };
+
+  final String value;
+  const Gender(this.value);
 }
 
 enum GroupId {
@@ -83,6 +98,18 @@ class GroupFilter extends SelectorFilter<PupilProxy, GroupId> {
   }
 }
 
+class GenderFilter extends SelectorFilter<PupilProxy, Gender> {
+  GenderFilter(Gender gender)
+      : super(
+            name: gender.value == 'm' ? '♂️' : '♀️',
+            selector: (proxy) => Gender.stringToValue[proxy.gender]!);
+
+  @override
+  bool matches(PupilProxy item) {
+    return selector(item).value == (name == '♂️' ? 'm' : 'w');
+  }
+}
+
 class PupilProxy with ChangeNotifier {
   PupilProxy(
       {required PupilData pupilData, required PupilIdentity pupilIdentity})
@@ -111,6 +138,11 @@ class PupilProxy with ChangeNotifier {
     SchoolGradeFilter(SchoolGrade.S4),
   ];
 
+  static List<GenderFilter> genderFilters = [
+    GenderFilter(Gender.male),
+    GenderFilter(Gender.female),
+  ];
+
   late PupilData _pupilData;
   PupilIdentity _pupilIdentity;
 
@@ -123,6 +155,30 @@ class PupilProxy with ChangeNotifier {
     _missedClasses = Map.fromIterable(pupilData.pupilMissedClasses,
         key: (e) => e.missedDay, value: (e) => e);
 
+    pupilIsDirty = true;
+    notifyListeners();
+  }
+
+  //- TODO - remove this method
+
+  void updatePupilIdentity(PupilIdentity pupilIdentity) {
+    if (_pupilIdentity != pupilIdentity) {
+      _pupilIdentity = pupilIdentity;
+      pupilIsDirty = true;
+      notifyListeners();
+    }
+  }
+
+  void deleteAvatarAuthId() {
+    final updatedPupil = _pupilData.copyWith(avatarAuthId: (value: null));
+    _pupilData = updatedPupil;
+    pupilIsDirty = true;
+    notifyListeners();
+  }
+
+  void deletePublicMediaAuthId() {
+    final updatedPupil = _pupilData.copyWith(publicMediaAuthId: (value: null));
+    _pupilData = updatedPupil;
     pupilIsDirty = true;
     notifyListeners();
   }
@@ -142,34 +198,33 @@ class PupilProxy with ChangeNotifier {
     notifyListeners();
   }
 
-  void updateFromMissedClassesOnASchoolday(List<MissedClass> allMissedClasses) {
+  void updateFromMissedClassesOnASchoolday(
+      List<MissedClass> allMissedClassesThisDay) {
     pupilIsDirty = false;
 
-    for (final missedClass in allMissedClasses) {
-      // if the missed class is for this pupil
-
-      if (missedClass.missedPupilId == _pupilData.internalId) {
-        // if the missed class is not already in the missed classes
-        // or if the missed class is different from the one in the missed classes
-        // write it
-        if (!_missedClasses.containsKey(missedClass.missedDay) ||
-            !(_missedClasses[missedClass.missedDay] == missedClass)) {
-          _missedClasses[missedClass.missedDay] = missedClass;
-          pupilIsDirty = true;
-        }
+    if (allMissedClassesThisDay.any(
+        (missedClass) => missedClass.missedPupilId == _pupilData.internalId)) {
+      final missedClass = allMissedClassesThisDay.firstWhere(
+          (missedClass) => missedClass.missedPupilId == _pupilData.internalId);
+      // if the missed class is not already in the missed classes
+      // or if the missed class is different from the one in the missed classes
+      // write it
+      if (!_missedClasses.containsKey(missedClass.missedDay) ||
+          !(_missedClasses[missedClass.missedDay] == missedClass)) {
+        _missedClasses[missedClass.missedDay] = missedClass;
+        pupilIsDirty = true;
+      }
+    } else {
+      // there is no missed class for this pupil on this date
+      // if there is a missed class for this date in the pupil's missed classes in memory
+      // remove it
+      if (_missedClasses
+          .containsKey(locator<SchooldayManager>().thisDate.value)) {
+        _missedClasses.remove(locator<SchooldayManager>().thisDate.value);
+        pupilIsDirty = true;
       }
     }
-    var missedClassesValues = List.from(_missedClasses.values);
 
-    /// remove missed classes that are no longer [allMissedClasses]
-    //- TODO: this code was taking the rest of missedclasses from memory,
-    //- cannot figure out why it's needed
-    // for (final pupilMissedClass in missedClassesValues) {
-    //   if (!allMissedClasses.contains(pupilMissedClass)) {
-    //     _missedClasses.remove(pupilMissedClass.missedDay);
-    //     pupilIsDirty = true;
-    //   }
-    // }
     if (pupilIsDirty) {
       notifyListeners();
     }
@@ -208,7 +263,10 @@ class PupilProxy with ChangeNotifier {
   bool _avatarUpdated = false;
   String? get avatarId =>
       _avatarUpdated ? _avatarIdOverride : _pupilData.avatarId;
-
+  bool get avatarAuth => _pupilData.avatarAuth;
+  String? get avatarAuthId => _pupilData.avatarAuthId;
+  int get publicMediaAuth => _pupilData.publicMediaAuth;
+  String? get publicMediaAuthId => _pupilData.publicMediaAuthId;
   String? get communicationPupil => _pupilData.communicationPupil;
   String? get communicationTutor1 => _pupilData.communicationTutor1;
   String? get communicationTutor2 => _pupilData.communicationTutor2;

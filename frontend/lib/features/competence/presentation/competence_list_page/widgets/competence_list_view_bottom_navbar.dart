@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
-import 'package:schuldaten_hub/common/theme/colors.dart';
+import 'package:schuldaten_hub/common/theme/app_colors.dart';
 import 'package:schuldaten_hub/common/widgets/bottom_nav_bar_layouts.dart';
-import 'package:schuldaten_hub/common/widgets/generic_filter_bottom_sheet.dart';
+import 'package:schuldaten_hub/common/widgets/list_view_components/generic_filter_bottom_sheet.dart';
 import 'package:schuldaten_hub/features/competence/domain/filters/competence_filter_manager.dart';
 import 'package:schuldaten_hub/features/competence/domain/models/competence.dart';
 import 'package:schuldaten_hub/features/competence/presentation/competence_list_page/widgets/competence_filters_widget.dart';
-import 'package:schuldaten_hub/features/pupil/presentation/widgets/common_pupil_filters.dart';
 
 class CompetenceListPageBottomNavBar extends StatelessWidget {
   final List<Competence> competences;
@@ -50,11 +49,7 @@ class CompetenceListPageBottomNavBar extends StatelessWidget {
                 tooltip: 'Filter',
                 icon: const Icon(Icons.filter_list_rounded),
                 onPressed: () => showGenericFilterBottomSheet(
-                    context: context,
-                    filterList: [
-                      const CommonPupilFiltersWidget(),
-                      const CompetenceFilters()
-                    ]),
+                    context: context, filterList: [const CompetenceFilters()]),
               ),
               const Gap(10)
             ],

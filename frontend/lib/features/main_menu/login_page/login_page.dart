@@ -7,11 +7,13 @@ import 'package:schuldaten_hub/common/domain/env_manager.dart';
 import 'package:schuldaten_hub/common/domain/session_manager.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_service.dart';
+import 'package:schuldaten_hub/common/theme/app_colors.dart';
 import 'package:schuldaten_hub/common/theme/styles.dart';
 import 'package:schuldaten_hub/common/utils/logger.dart';
 import 'package:schuldaten_hub/common/widgets/dialogs/confirmation_dialog.dart';
 import 'package:schuldaten_hub/common/widgets/snackbars.dart';
 import 'package:schuldaten_hub/features/main_menu/login_page/login_controller.dart';
+import 'package:schuldaten_hub/features/main_menu/login_page/widgets/environments_dropdown.dart';
 import 'package:schuldaten_hub/features/main_menu/widgets/landing_bottom_nav_bar.dart';
 import 'package:watch_it/watch_it.dart';
 
@@ -34,11 +36,11 @@ class LoginPage extends WatchingWidget {
     //FocusScopeNode currentFocus = FocusScope.of(context);
 
     return (envReady && isAuthenticated)
-        ? BottomNavigation()
+        ? MainMenuBottomNavigation()
         : Scaffold(
             resizeToAvoidBottomInset: true,
             body: Container(
-              color: const Color.fromRGBO(74, 76, 161, 1),
+              color: AppColors.backgroundColor,
               child: Center(
                 child: ConstrainedBox(
                   constraints: const BoxConstraints(maxWidth: 380),
@@ -74,40 +76,9 @@ class LoginPage extends WatchingWidget {
                       const Gap(10),
                       if (controller.envs.isNotEmpty)
                         controller.envs.length > 1
-                            ? DropdownButton<String>(
-                                value: controller.selectedEnv,
-                                hint: const Text(
-                                  'Select Server',
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                                dropdownColor: Colors.grey[800],
-                                icon: const Icon(Icons.arrow_downward,
-                                    color: Colors.white),
-                                iconSize: 24,
-                                elevation: 16,
-                                style: const TextStyle(color: Colors.white),
-                                underline: const SizedBox.shrink(),
-                                onChanged: (String? newValue) {
-                                  controller.changeEnv(newValue!);
-                                },
-                                items: controller.envs.keys
-                                    .map<DropdownMenuItem<String>>(
-                                        (String value) {
-                                  return DropdownMenuItem<String>(
-                                    value: value,
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(10.0),
-                                      child: Text(
-                                        value,
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 18,
-                                        ),
-                                      ),
-                                    ),
-                                  );
-                                }).toList(),
+                            ? EnvironmentsDropdown(
+                                selectedEnv: controller.selectedEnv,
+                                changeEnv: controller.changeEnv,
                               )
                             : Text(
                                 controller.envs.keys.first,
@@ -165,7 +136,7 @@ class LoginPage extends WatchingWidget {
                                 fillColor: Colors.white,
                                 labelText: locale.password,
                                 labelStyle: const TextStyle(
-                                  color: Color.fromRGBO(74, 76, 161, 1),
+                                  color: AppColors.backgroundColor,
                                 ),
                               ),
                             ),

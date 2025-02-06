@@ -1,5 +1,5 @@
 from apiflask import APIBlueprint, abort
-from flask import jsonify, request
+from flask import request
 from sqlalchemy import func
 
 from auth_middleware import token_required
@@ -11,41 +11,41 @@ from schemas.competence_schemas import *
 competence_api = APIBlueprint("competence_api", __name__, url_prefix="/api/competence")
 
 
-# - GET COMPETENCES
-##################
-@competence_api.route("/all", methods=["GET"])
-@competence_api.doc(
-    security="ApiKeyAuth",
-    tags=["Competence"],
-    summary="Get competence list as a JSON tree",
-    deprecated=True,
-)
-@token_required
-def get_competences(current_user):
-    if not current_user:
-        abort(404, message="Bitte erneut einloggen!")
-    root = {
-        "parent_competence": "",
-        "competence_id": 0,
-        "competence_name": "competences",
-        "competence_level": "",
-        "subcompetences": [],
-    }
-    dict = {0: root}
-    all_competences = Competence.query.all()
-    for item in all_competences:
-        dict[item.competence_id] = current = {
-            "competence_id": item.competence_id,
-            "parent_competence": item.parent_competence,
-            "competence_name": item.competence_name,
-            "competence_level": item.competence_level,
-            "subcompetences": [],
-        }
-        # Adds actual category to the subcategories list of the parent
-        parent = dict.get(item.parent_competence, root)
-        parent["subcompetences"].append(current)
+# # - GET COMPETENCES
+# ##################
+# @competence_api.route("/all", methods=["GET"])
+# @competence_api.doc(
+#     security="ApiKeyAuth",
+#     tags=["Competence"],
+#     summary="Get competence list as a JSON tree",
+#     deprecated=True,
+# )
+# @token_required
+# def get_competences(current_user):
+#     if not current_user:
+#         abort(404, message="Bitte erneut einloggen!")
+#     root = {
+#         "parent_competence": "",
+#         "competence_id": 0,
+#         "competence_name": "competences",
+#         "competence_level": "",
+#         "subcompetences": [],
+#     }
+#     dict = {0: root}
+#     all_competences = Competence.query.all()
+#     for item in all_competences:
+#         dict[item.competence_id] = current = {
+#             "competence_id": item.competence_id,
+#             "parent_competence": item.parent_competence,
+#             "competence_name": item.competence_name,
+#             "competence_level": item.competence_level,
+#             "subcompetences": [],
+#         }
+#         # Adds actual category to the subcategories list of the parent
+#         parent = dict.get(item.parent_competence, root)
+#         parent["subcompetences"].append(current)
 
-    return jsonify(root)
+#     return jsonify(root)
 
 
 # - GET COMPETENCES FLAT
@@ -59,12 +59,11 @@ def get_competences(current_user):
 )
 @token_required
 def get_flat_competences(current_user):
-    if not current_user:
-        abort(404, message="Bitte erneut einloggen!")
+
     all_competences = Competence.query.all()
     if all_competences == None:
-        return jsonify({"error": "No competences found!"})
-    # result = competences_flat_schema.dump(all_competences)
+        abort(404, message="Keine Kompetenzen gefunden!")
+
     return all_competences
 
 
@@ -98,7 +97,7 @@ def post_new_competence(current_user, json_data):
     # - Log entry
     create_log_entry(current_user, request, json_data)
     db.session.commit()
-    return new_competence  # competences_flat_schema.jsonify([new_competence])
+    return new_competence
 
 
 # - PATCH COMPETENCE
@@ -129,7 +128,7 @@ def patch_competence(current_user, competence_id, json_data):
     # - Log entry
     create_log_entry(current_user, request, json_data)
     db.session.commit()
-    return competence  # competence_flat_schema.jsonify(competence)
+    return competence
 
 
 # - DELETE COMPETENCE
@@ -147,4 +146,4 @@ def delete_competence(current_user, competence_id):
     # - Log entry
     create_log_entry(current_user, request, {"data": "none"})
     db.session.commit()
-    return jsonify({"message": "Kompetenz erfolgreich gelöscht!"})
+    abort(200, "Die Kompetenz wurde gelöscht!")

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:schuldaten_hub/common/theme/colors.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
+import 'package:schuldaten_hub/common/theme/app_colors.dart';
 import 'package:schuldaten_hub/features/pupil/domain/models/pupil_proxy.dart';
 import 'package:schuldaten_hub/features/pupil/domain/pupil_manager.dart';
 
@@ -110,8 +110,10 @@ Future<void> pickUpTimeDialog(
                         fontWeight: FontWeight.bold),
                   ),
                   onTap: () {
-                    locator<PupilManager>().patchPupil(pupil.internalId,
-                        'pick_up_time', dialogDropdownValue.toString());
+                    locator<PupilManager>().patchOnePupilProperty(
+                        pupilId: pupil.internalId,
+                        jsonKey: 'pick_up_time',
+                        value: dialogDropdownValue.toString());
                     Navigator.of(context).pop();
                   },
                 ),

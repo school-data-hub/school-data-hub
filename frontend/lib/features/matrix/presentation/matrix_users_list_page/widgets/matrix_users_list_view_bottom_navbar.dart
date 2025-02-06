@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:schuldaten_hub/common/theme/colors.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
+import 'package:schuldaten_hub/common/theme/app_colors.dart';
 import 'package:schuldaten_hub/common/widgets/bottom_nav_bar_layouts.dart';
-import 'package:schuldaten_hub/features/credit/credit_list_page/widgets/credit_filter_bottom_sheet.dart';
 import 'package:schuldaten_hub/features/matrix/domain/filters/matrix_policy_filter_manager.dart';
-import 'package:schuldaten_hub/features/matrix/presentation/new_matrix_user_page.dart';
-import 'package:schuldaten_hub/features/matrix/presentation/matrix_rooms_list_page/matrix_rooms_list_page.dart';
 import 'package:schuldaten_hub/features/matrix/domain/matrix_policy_manager.dart';
+import 'package:schuldaten_hub/features/matrix/presentation/matrix_rooms_list_page/matrix_rooms_list_page.dart';
+import 'package:schuldaten_hub/features/matrix/presentation/new_matrix_user_page/new_matrix_user_page.dart';
+import 'package:schuldaten_hub/features/pupil/presentation/credit/credit_list_page/widgets/credit_filter_bottom_sheet.dart';
 import 'package:watch_it/watch_it.dart';
 
 class MatrixUsersListViewBottomNavbar extends WatchingWidget {
@@ -50,7 +50,7 @@ class MatrixUsersListViewBottomNavbar extends WatchingWidget {
                       size: 30,
                     ),
                     onPressed: () {
-                      locator<MatrixPolicyManager>().putPolicy();
+                      locator<MatrixPolicyManager>().applyPolicyChanges();
                     },
                   ),
                 ],
@@ -63,7 +63,7 @@ class MatrixUsersListViewBottomNavbar extends WatchingWidget {
                   ),
                   onPressed: () {
                     Navigator.of(context).push(MaterialPageRoute(
-                      builder: (ctx) => const NewMatrixUserPage(),
+                      builder: (ctx) => NewMatrixUserPage(),
                     ));
                   },
                 ),

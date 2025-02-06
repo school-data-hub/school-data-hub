@@ -4,8 +4,8 @@ import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/domain/filters/filters_state_manager.dart';
 import 'package:schuldaten_hub/common/domain/models/enums.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
-import 'package:schuldaten_hub/common/theme/colors.dart';
-import 'package:schuldaten_hub/common/widgets/search_text_field.dart';
+import 'package:schuldaten_hub/common/theme/app_colors.dart';
+import 'package:schuldaten_hub/features/pupil/presentation/widgets/pupil_search_text_field.dart';
 import 'package:schuldaten_hub/features/pupil/domain/filters/pupils_filter.dart';
 import 'package:schuldaten_hub/features/pupil/domain/models/pupil_proxy.dart';
 import 'package:schuldaten_hub/features/pupil/presentation/select_pupils_list_page/widgets/select_pupils_filter_bottom_sheet.dart';
@@ -77,7 +77,7 @@ class SelectPupilsSearchBar extends WatchingWidget {
             child: Row(
               children: [
                 Expanded(
-                    child: SearchTextField(
+                    child: PupilSearchTextField(
                         searchType: SearchType.pupil,
                         hintText: 'Schüler/in suchen',
                         refreshFunction: locator<PupilsFilter>().refreshs)),

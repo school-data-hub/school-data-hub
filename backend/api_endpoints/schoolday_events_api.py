@@ -3,7 +3,7 @@ import uuid
 from datetime import datetime
 
 from apiflask import APIBlueprint, FileSchema, abort
-from flask import current_app, jsonify, request, send_file
+from flask import current_app, request, send_file
 from sqlalchemy.sql import exists
 
 from auth_middleware import token_required
@@ -51,11 +51,13 @@ def add_schoolday_event(current_user, json_data):
     created_by = current_user.name
     schoolday_event_pupil_id = json_data["schoolday_event_pupil_id"]
     if get_pupil_by_id(schoolday_event_pupil_id) == None:
-        return jsonify({"message": "This pupil does not exist!"}), 404
+        abort(404, "Dieser/diese Schüler:in existiert nicht!")
+
     schoolday_event_day = json_data["schoolday_event_day"]
     this_schoolday = get_schoolday_by_day(schoolday_event_day)
     if this_schoolday == None:
-        return jsonify({"message": "This schoolday does not exist!"}), 404
+        abort(404, "Dieser Schultag existiert nicht!")
+
     schoolday_event_day_id = this_schoolday.schoolday
     schoolday_event_id = str(uuid.uuid4().hex)
     schoolday_event_type = json_data["schoolday_event_type"]
@@ -103,9 +105,9 @@ def add_schoolday_event(current_user, json_data):
 def get_schoolday_events(current_user):
     all_schoolday_events = SchooldayEvent.query.all()
     if all_schoolday_events == []:
-        return jsonify({"message": "Keine Ereignisse gefunden!"}), 404
-    result = schoolday_events_schema.dump(all_schoolday_events)
-    return jsonify(result)
+        abort(404, "Keine Ereignisse gefunden!")
+
+    return all_schoolday_events
 
 
 # - GET ONE SCHOOLDAY EVENT
@@ -121,8 +123,9 @@ def get_schoolday_events(current_user):
 def get_schoolday_event(current_user, schoolday_event_id):
     this_schoolday_event = get_schoolday_event_by_id(schoolday_event_id)
     if this_schoolday_event == None:
-        return jsonify({"message": "Diese Ermahnung existiert nicht!"}), 404
-    return schoolday_event_schema.jsonify(this_schoolday_event)
+        abort(404, "Dieses Ereignis existiert nicht!")
+
+    return this_schoolday_event
 
 
 # - PATCH SCHOOLDAY EVENT
@@ -158,7 +161,8 @@ def patch_schoolday_event(current_user, schoolday_event_id, json_data):
                 schoolday_event_day = json_data["schoolday_event_day"]
                 this_schoolday = get_schoolday_by_day(schoolday_event_day)
                 if this_schoolday == None:
-                    return jsonify({"message": "This schoolday does not exist!"}), 404
+                    abort(404, "Dieser Schultag existiert nicht!")
+
                 schoolday_event.schoolday_event_day_id = this_schoolday.schoolday
             # - we handle the file upload separately
             # case 'file_url':
@@ -187,14 +191,11 @@ def patch_schoolday_event(current_user, schoolday_event_id, json_data):
 def upload_schoolday_event_file(current_user, schoolday_event_id, files_data):
     schoolday_event = get_schoolday_event_by_id(schoolday_event_id)
     if schoolday_event is None:
-        return (
-            jsonify(
-                {
-                    "message": "A schoolday event with this date and this student does not exist!"
-                }
-            ),
+        abort(
             404,
+            "Ein Ereignis an diesem Tag mit diesem/dieser Schüler:in existiert nicht!",
         )
+
     if "file" not in files_data:
         abort(400, message="Keine Datei angegeben!")
     file = files_data["file"]
@@ -227,14 +228,11 @@ def upload_schoolday_event_file(current_user, schoolday_event_id, files_data):
 def upload_schoolday_event_processed_file(current_user, schoolday_event_id, files_data):
     schoolday_event = get_schoolday_event_by_id(schoolday_event_id)
     if schoolday_event is None:
-        return (
-            jsonify(
-                {
-                    "message": "A schoolday event with this date and this student does not exist!"
-                }
-            ),
+        abort(
             404,
+            "Ein Ereignis an diesem Tag mit diesem/dieser Schüler:in existiert nicht!",
         )
+
     if "file" not in files_data:
         abort(400, message="Keine Datei angegeben!")
     file = files_data["file"]
@@ -314,14 +312,11 @@ def delete_schoolday_event_file(current_user, schoolday_event_id):
         abort(404, message="Bitte erneut einloggen!")
     schoolday_event = get_schoolday_event_by_id(schoolday_event_id)
     if schoolday_event is None:
-        return (
-            jsonify(
-                {
-                    "message": "An schoolday event with this date and this student does not exist!"
-                }
-            ),
+        abort(
             404,
+            message="Ein Ereignis an diesem Tag mit diesem/dieser Schüler:in existiert nicht!",
         )
+
     if len(str(schoolday_event.file_url)) < 5:
         abort(404, message="This schoolday event has no file!")
     if len(str(schoolday_event.file_url)) > 4:
@@ -351,16 +346,12 @@ def delete_schoolday_event_processed_file(current_user, schoolday_event_id):
         abort(404, message="Bitte erneut einloggen!")
     schoolday_event = get_schoolday_event_by_id(schoolday_event_id)
     if schoolday_event is None:
-        return (
-            jsonify(
-                {
-                    "message": "An schoolday event with this date and this student does not exist!"
-                }
-            ),
+        abort(
             404,
+            message="Ein Ereignis an diesem Tag mit diesem/dieser Schüler:in existiert nicht!",
         )
     if len(str(schoolday_event.processed_file_url)) < 5:
-        abort(404, message="This schoolday event has no processed file!")
+        abort(404, message="Dieses Ereignis hat keine Datei zur Bearbeitung!")
     if len(str(schoolday_event.processed_file_url)) > 4:
         os.remove(str(schoolday_event.processed_file_url))
     schoolday_event.processed_file_url = None
@@ -385,14 +376,11 @@ def delete_schoolday_event_processed_file(current_user, schoolday_event_id):
 def delete_schoolday_event(current_user, schoolday_event_id):
     schoolday_event = get_schoolday_event_by_id(schoolday_event_id)
     if schoolday_event is None:
-        return (
-            jsonify(
-                {
-                    "message": "An schoolday event with this date and this student does not exist!"
-                }
-            ),
+        abort(
             404,
+            message="Ein Ereignis an diesem Tag mit diesem/dieser Schüler:in existiert nicht!",
         )
+
     pupil = get_pupil_by_id(schoolday_event.schoolday_event_pupil_id)
     if schoolday_event.file_url is not None:
         os.remove(str(schoolday_event.file_url))

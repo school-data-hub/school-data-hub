@@ -1,37 +1,43 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
 import 'package:schuldaten_hub/common/domain/env_manager.dart';
 import 'package:schuldaten_hub/common/domain/session_manager.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
-import 'package:schuldaten_hub/common/theme/colors.dart';
+import 'package:schuldaten_hub/common/theme/app_colors.dart';
 import 'package:schuldaten_hub/common/theme/styles.dart';
 import 'package:schuldaten_hub/common/utils/extensions.dart';
+import 'package:schuldaten_hub/common/widgets/custom_expansion_tile/custom_expansion_tile.dart';
 import 'package:schuldaten_hub/common/widgets/custom_expansion_tile/custom_expansion_tile_content.dart';
 import 'package:schuldaten_hub/common/widgets/custom_expansion_tile/custom_expansion_tile_switch.dart';
-import 'package:schuldaten_hub/common/widgets/custom_expansion_tile/custom_expasion_tile_hook.dart';
 import 'package:schuldaten_hub/common/widgets/dialogs/confirmation_dialog.dart';
 import 'package:schuldaten_hub/common/widgets/dialogs/information_dialog.dart';
+import 'package:schuldaten_hub/common/widgets/dialogs/long_textfield_dialog.dart';
 import 'package:schuldaten_hub/common/widgets/document_image.dart';
 import 'package:schuldaten_hub/common/widgets/upload_image.dart';
-import 'package:schuldaten_hub/features/books/data/book_repository.dart';
+import 'package:schuldaten_hub/features/books/data/book_api_service.dart';
 import 'package:schuldaten_hub/features/books/domain/book_helper.dart';
 import 'package:schuldaten_hub/features/books/domain/book_manager.dart';
 import 'package:schuldaten_hub/features/books/domain/models/book.dart';
 import 'package:schuldaten_hub/features/books/presentation/book_list_page/widgets/book_pupil_card.dart';
-import 'package:schuldaten_hub/features/books/presentation/new_book_page/new_book_page_view_model.dart';
+import 'package:schuldaten_hub/features/books/presentation/new_book_page/new_book_controller.dart';
 import 'package:schuldaten_hub/features/workbooks/domain/workbook_manager.dart';
+import 'package:watch_it/watch_it.dart';
 
-class BookCard extends HookWidget {
+class BookCard extends WatchingWidget {
   const BookCard({required this.book, super.key});
   final Book book;
 
   @override
   Widget build(BuildContext context) {
-    final tileController = useCustomExpansionTileController();
+    final tileController = createOnce<CustomExpansionTileController>(
+        () => CustomExpansionTileController());
+    final descriptionTileController = createOnce<ExpansionTileController>(
+      () => ExpansionTileController(),
+    );
+
     final bookPupilBooks =
         BookHelpers.pupilBooksLinkedToBook(bookId: book.bookId);
     BookBorrowStatus? bookBorrowStatus = bookPupilBooks.isEmpty
@@ -124,7 +130,7 @@ class BookCard extends HookWidget {
                         children: [
                           InkWell(
                             onTap: () async {
-                              final File? file = await uploadImage(context);
+                              final File? file = await uploadImageFile(context);
                               if (file == null) return;
                               await locator<BookManager>()
                                   .postBookFile(file, book.bookId);
@@ -149,7 +155,7 @@ class BookCard extends HookWidget {
                                     value: DocumentImageData(
                                         documentTag: book.imageId!,
                                         documentUrl:
-                                            '${locator<EnvManager>().env.value.serverUrl}${BookRepository.getBookImageUrl(book.bookId)}',
+                                            '${locator<EnvManager>().env!.serverUrl}${BookApiService.getBookImageUrl(book.bookId)}',
                                         size: 140),
                                     child: const DocumentImage(),
                                   )
@@ -243,8 +249,8 @@ class BookCard extends HookWidget {
                                   ),
                                 ],
                               ),
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                              Wrap(
+                                spacing: 2,
                                 children: [
                                   const Text('Tags: '),
                                   for (final tag in book.bookTags!) ...[
@@ -270,13 +276,47 @@ class BookCard extends HookWidget {
                       ),
                     ],
                   ),
-                  CustomExpansionTileContent(
-                    title: null,
-                    tileController: tileController,
-                    widgetList: bookPupilBooks.map((pupilBook) {
-                      return BookPupilCard(pupilBook: pupilBook);
-                    }).toList(),
+                  ExpansionTile(
+                    tilePadding: const EdgeInsets.all(0),
+                    controller: descriptionTileController,
+                    title: const Text(
+                      'Beschreibung:',
+                      style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black),
+                    ),
+                    children: [
+                      InkWell(
+                        onTap: () async {
+                          final String? description = await longTextFieldDialog(
+                              title: 'Beschreibung',
+                              labelText: 'Beschreibung',
+                              textinField: book.description ?? '',
+                              parentContext: context);
+                          locator<BookManager>().updateBookProperty(
+                            bookId: book.bookId,
+                            description: description,
+                          );
+                        },
+                        child: Text(
+                          book.description ?? 'Keine Beschreibung',
+                          style: const TextStyle(
+                            fontSize: 14,
+                            color: AppColors.interactiveColor,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
+                  CustomExpansionTileContent(
+                      title: null,
+                      tileController: tileController,
+                      widgetList: [
+                        ...bookPupilBooks.map((pupilBook) {
+                          return BookPupilCard(passedPupilBook: pupilBook);
+                        })
+                      ]),
                   const Gap(10),
                 ],
               ),

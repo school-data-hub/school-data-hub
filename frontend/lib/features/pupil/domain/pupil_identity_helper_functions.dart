@@ -11,7 +11,7 @@ class PupilIdentityHelper {
   //- LOCAL STORAGE HELPERS
   static Future<Map<int, PupilIdentity>> readPupilIdentitiesFromStorage(
       {required String envKey}) async {
-    final pupilsJson = await secureStorageRead(
+    final pupilsJson = await AppSecureStorage.read(
         '${SecureStorageKey.pupilIdentities.value}_$envKey');
     if (pupilsJson == null) return {};
 
@@ -21,7 +21,7 @@ class PupilIdentityHelper {
   }
 
   static Future<void> deletePupilIdentitiesForEnv(String envKey) async {
-    await secureStorageDelete(
+    await AppSecureStorage.delete(
         '${SecureStorageKey.pupilIdentities.value}_$envKey');
     locator<PupilIdentityManager>().clearPupilIdentities();
 

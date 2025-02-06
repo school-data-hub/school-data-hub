@@ -32,16 +32,16 @@ class EnvsInStorage {
 }
 
 class Env {
-  final String? server;
-  final String? key;
-  final String? iv;
-  final String? serverUrl;
+  final String server;
+  final String key;
+  final String iv;
+  final String serverUrl;
 
   Env({
-    this.server,
-    this.key,
-    this.iv,
-    this.serverUrl,
+    required this.server,
+    required this.key,
+    required this.iv,
+    required this.serverUrl,
   });
 
   Env copyWith({

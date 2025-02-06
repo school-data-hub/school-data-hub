@@ -8,19 +8,26 @@ import 'package:schuldaten_hub/common/domain/session_manager.dart';
 import 'package:schuldaten_hub/common/services/api/api_settings.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/utils/extensions.dart';
+import 'package:schuldaten_hub/common/widgets/custom_expansion_tile/custom_expansion_tile.dart';
+import 'package:schuldaten_hub/common/widgets/custom_expansion_tile/custom_expansion_tile_content.dart';
+import 'package:schuldaten_hub/common/widgets/custom_expansion_tile/custom_expansion_tile_switch.dart';
 import 'package:schuldaten_hub/common/widgets/dialogs/confirmation_dialog.dart';
 import 'package:schuldaten_hub/common/widgets/document_image.dart';
+import 'package:schuldaten_hub/common/widgets/grades_widget.dart';
 import 'package:schuldaten_hub/common/widgets/upload_image.dart';
 import 'package:schuldaten_hub/features/workbooks/domain/models/workbook.dart';
 import 'package:schuldaten_hub/features/workbooks/domain/workbook_manager.dart';
-import 'package:schuldaten_hub/features/workbooks/presentation/new_workbook_page/new_workbook_view_model.dart';
+import 'package:schuldaten_hub/features/workbooks/presentation/new_workbook_page/new_workbook_controller.dart';
+import 'package:watch_it/watch_it.dart';
 
-class WorkbookCard extends StatelessWidget {
+class WorkbookCard extends WatchingWidget {
   const WorkbookCard({required this.workbook, super.key});
   final Workbook workbook;
 
   @override
   Widget build(BuildContext context) {
+    final expansionTileController = createOnce<CustomExpansionTileController>(
+        () => CustomExpansionTileController());
     return ClipRRect(
       borderRadius: BorderRadius.circular(20),
       child: Card(
@@ -60,7 +67,7 @@ class WorkbookCard extends StatelessWidget {
                       const Gap(10),
                       InkWell(
                         onTap: () async {
-                          final File? file = await uploadImage(context);
+                          final File? file = await uploadImageFile(context);
                           if (file == null) return;
                           await locator<WorkbookManager>()
                               .postWorkbookFile(file, workbook.isbn);
@@ -88,7 +95,7 @@ class WorkbookCard extends StatelessWidget {
                                     documentTag:
                                         workbook.imageUrl!.split('/').last,
                                     documentUrl:
-                                        '${locator<EnvManager>().env.value.serverUrl}${WorkbookRepository().getWorkbookImage(workbook.isbn)}',
+                                        '${locator<EnvManager>().env!.serverUrl}${WorkbookApiService().getWorkbookImage(workbook.isbn)}',
                                     size: 140),
                                 child: const DocumentImage(),
                               )
@@ -149,7 +156,7 @@ class WorkbookCard extends StatelessWidget {
                             children: [
                               const Text('ISBN:'),
                               const Gap(10),
-                              Text(
+                              SelectableText(
                                 workbook.isbn.displayAsIsbn(),
                                 style: const TextStyle(
                                   fontSize: 16,
@@ -180,15 +187,7 @@ class WorkbookCard extends StatelessWidget {
                             children: [
                               const Text('Kompetenzstufe:'),
                               const Gap(10),
-                              Text(
-                                workbook.level!,
-                                overflow: TextOverflow.fade,
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black,
-                                ),
-                              ),
+                              GradesWidget(stringWithGrades: workbook.level!)
                             ],
                           ),
                           const Gap(5),
@@ -205,9 +204,21 @@ class WorkbookCard extends StatelessWidget {
                                   color: Colors.black,
                                 ),
                               ),
+                              const Spacer(),
+                              CustomExpansionTileSwitch(
+                                  expansionSwitchWidget:
+                                      const Icon(Icons.arrow_downward),
+                                  customExpansionTileController:
+                                      expansionTileController),
+                              const Gap(5)
                             ],
                           ),
                           const Gap(10),
+                          CustomExpansionTileContent(
+                              tileController: expansionTileController,
+                              widgetList: [
+                                // TODO: Add cards with pupilworkbooks
+                              ]),
                         ],
                       ),
                     ),

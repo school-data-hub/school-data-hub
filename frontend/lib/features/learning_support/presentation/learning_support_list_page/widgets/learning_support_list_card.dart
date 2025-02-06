@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
-import 'package:schuldaten_hub/common/theme/colors.dart';
+import 'package:schuldaten_hub/common/theme/app_colors.dart';
 import 'package:schuldaten_hub/common/widgets/avatar.dart';
 import 'package:schuldaten_hub/common/widgets/custom_expansion_tile/custom_expansion_tile.dart';
 import 'package:schuldaten_hub/common/widgets/custom_expansion_tile/custom_expansion_tile_content.dart';
@@ -57,7 +57,7 @@ class _LearningSupportCardState extends State<LearningSupportCard> {
                             scrollDirection: Axis.horizontal,
                             child: InkWell(
                               onTap: () {
-                                locator<BottomNavManager>()
+                                locator<MainMenuBottomNavManager>()
                                     .setPupilProfileNavPage(8);
                                 Navigator.of(context).push(MaterialPageRoute(
                                   builder: (ctx) => PupilProfilePage(

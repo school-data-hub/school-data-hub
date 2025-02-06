@@ -1,4 +1,5 @@
 from apiflask import Schema, fields
+from apiflask.fields import File
 
 # - PUPIL BOOK SCHEMA
 ####################
@@ -210,3 +211,8 @@ class BookFlatSchema(Schema):
 
 book_flat_schema = BookFlatSchema()
 books_flat_schema = BookFlatSchema(many=True)
+
+
+class NewBookWithFileSchema(Schema):
+    book = fields.Nested(NewBookSchema)
+    file = File()

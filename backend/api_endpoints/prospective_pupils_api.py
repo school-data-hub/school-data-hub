@@ -1,6 +1,7 @@
 import os
 import uuid
 from datetime import datetime
+from typing import Optional
 
 from apiflask import APIBlueprint, FileSchema, abort
 from flask import current_app, json, jsonify, request, send_file
@@ -15,7 +16,7 @@ from schemas.log_entry_schemas import ApiFileSchema
 pupil_api = APIBlueprint("pupils_api", __name__, url_prefix="/api/prospective_pupils")
 
 from auth_middleware import token_required
-from models.pupil import CreditHistoryLog, ProspectivePupil
+from models.pupil import CreditHistoryLog, ProspectivePupil, SupportLevel
 from schemas.pupil_schemas import *
 
 
@@ -49,10 +50,8 @@ def add_pupil(current_user, json_data):
     internal_id = data["internal_id"]
     exists = get_pupil_by_id(internal_id) is not None
     if exists == True:
-        return (
-            jsonify({"message": "This pupil exists already - please update the page!"}),
-            400,
-        )
+        abort(400, message="Dieser Schüler/diese Schülerin existiert bereits!")
+
     else:
         contact = data["contact"]
         parents_contact = data["parents_contact"]
@@ -304,11 +303,13 @@ def get_pupil(current_user, internal_id):
 @pupil_api.doc(security="ApiKeyAuth", tags=["Pupil"], summary="delete given pupil")
 @token_required
 def delete_pupil(current_user, internal_id):
-    if not current_user.admin:
-        return jsonify({"message": "Keine Berechtigung!"}), 403
+
     pupil = get_pupil_by_id(internal_id)
     if pupil == None:
-        return jsonify({"message": "Der Schüler/die Schülerin existiert nicht!"}), 404
+        abort(404, message="Der Schüler/die Schüler existiert nicht!")
+
+    if not current_user.admin:
+        abort(403, message="Keine Berechtigung!")
 
     if len(str(pupil.avatar_url)) > 4:
         os.remove(str(pupil.avatar_url))
@@ -410,7 +411,7 @@ def delete_avatar(current_user, internal_id):
     return jsonify({"message": "Avatar gelöscht!"}), 200
 
 
-# - PATCH INDIVIDUAL DEVELOPMENT PLAN
+# - PATCH SUPPORT LEVEL
 ####################################
 @pupil_api.route("/<internal_id>/plan", methods=["PATCH"])
 @pupil_api.input(support_level_in_schema)
@@ -418,7 +419,7 @@ def delete_avatar(current_user, internal_id):
 @pupil_api.doc(
     security="ApiKeyAuth",
     tags=["Pupil"],
-    summary="Patch an individual development plan",
+    summary="Add a support level entry",
 )
 @token_required
 def update_plan(current_user, internal_id, json_data):
@@ -430,7 +431,7 @@ def update_plan(current_user, internal_id, json_data):
     created_at = data["created_at"]
     level = data["level"]
     comment = data["comment"]
-    new_plan = IndividualDevelopmentPlan(
+    new_plan: Optional[SupportLevel] = SupportLevel(
         pupil_id=internal_id,
         created_by=created_by,
         created_at=created_at,

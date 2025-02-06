@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
-import 'package:schuldaten_hub/common/theme/colors.dart';
+import 'package:schuldaten_hub/common/theme/app_colors.dart';
 import 'package:schuldaten_hub/common/theme/styles.dart';
 import 'package:schuldaten_hub/common/widgets/dialogs/information_dialog.dart';
 import 'package:schuldaten_hub/features/users/domain/user_manager.dart';
@@ -63,7 +63,7 @@ class NewUserPageState extends State<NewUserPage> {
             ),
             Gap(10),
             Text(
-              'Neues MPT-Konto',
+              'Neues Team-Konto',
               style: AppStyles.appBarTextStyle,
             ),
           ],
@@ -259,7 +259,6 @@ class NewUserPageState extends State<NewUserPage> {
 
   @override
   void dispose() {
-    // Clean up the controller when the widget is removed from the tree
     nameController.dispose();
     displayNameController.dispose();
     passwordController.dispose();

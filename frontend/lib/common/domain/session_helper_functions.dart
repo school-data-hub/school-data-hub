@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:schuldaten_hub/common/domain/env_manager.dart';
-import 'package:schuldaten_hub/common/domain/session_manager.dart';
 import 'package:schuldaten_hub/common/domain/models/enums.dart';
 import 'package:schuldaten_hub/common/domain/models/session.dart';
+import 'package:schuldaten_hub/common/domain/session_manager.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_service.dart';
 import 'package:schuldaten_hub/common/utils/logger.dart';
@@ -70,11 +70,11 @@ class SessionHelper {
   }
 
   static Future<Map<String, Session>?> sessionsInStorage() async {
-    if (await secureStorageContainsKey(SecureStorageKey.sessions.value) ==
+    if (await AppSecureStorage.containsKey(SecureStorageKey.sessions.value) ==
         true) {
       // if so, read them
       final String? storedSessions =
-          await secureStorageRead(SecureStorageKey.sessions.value);
+          await AppSecureStorage.read(SecureStorageKey.sessions.value);
       log('Session(s) found!');
       // decode the stored sessions
       final Map<String, Session> sessions = (json.decode(storedSessions!)
@@ -84,7 +84,7 @@ class SessionHelper {
       // check if the sessions in the secure storage are empty
       if (sessions.isEmpty) {
         logger.w('Empty sessions found in secure storage! Deleting...');
-        await secureStorageDelete(SecureStorageKey.sessions.value);
+        await AppSecureStorage.delete(SecureStorageKey.sessions.value);
         return null;
       }
 

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:schuldaten_hub/common/theme/colors.dart';
+import 'package:schuldaten_hub/common/theme/app_colors.dart';
 import 'package:schuldaten_hub/common/theme/styles.dart';
 import 'package:schuldaten_hub/features/learning_support/presentation/select_support_category_page/controller/select_support_category_controller.dart';
 import 'package:schuldaten_hub/features/learning_support/presentation/widgets/support_category_widgets/pupil_support_category_tree.dart';

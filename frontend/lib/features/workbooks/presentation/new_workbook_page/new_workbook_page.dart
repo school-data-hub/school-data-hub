@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:schuldaten_hub/common/theme/colors.dart';
+import 'package:schuldaten_hub/common/theme/app_colors.dart';
 import 'package:schuldaten_hub/common/theme/styles.dart';
-import 'package:schuldaten_hub/features/workbooks/presentation/new_workbook_page/new_workbook_view_model.dart';
+import 'package:schuldaten_hub/features/workbooks/presentation/new_workbook_page/new_workbook_controller.dart';
 
 class NewWorkbookPage extends StatelessWidget {
-  final NewWorkbookViewModel viewModel;
-  const NewWorkbookPage({required this.viewModel, super.key});
+  final NewWorkbookController controller;
+  const NewWorkbookPage({required this.controller, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +16,9 @@ class NewWorkbookPage extends StatelessWidget {
         backgroundColor: AppColors.backgroundColor,
         title: Center(
           child: Text(
-            (viewModel.isEdit) ? 'Arbeitsheft bearbeiten' : 'Neues Arbeitsheft',
+            (controller.isEdit)
+                ? 'Arbeitsheft bearbeiten'
+                : 'Neues Arbeitsheft',
             style: AppStyles.appBarTextStyle,
           ),
         ),
@@ -33,30 +35,59 @@ class NewWorkbookPage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
+                  Row(
+                    children: [
+                      if (controller.workbookImage != null) ...<Widget>[
+                        Expanded(
+                          flex: 1,
+                          child: Column(
+                            children: [
+                              ClipRRect(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  child: controller.workbookImage!),
+                              const Gap(20),
+                            ],
+                          ),
+                        ),
+                        const Gap(10),
+                      ],
+                      Expanded(
+                        flex: 2,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Gap(20),
+                            TextField(
+                                style: const TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold),
+                                minLines: 1,
+                                maxLines: 1,
+                                controller: controller.isbnTextFieldController,
+                                decoration: AppStyles.textFieldDecoration(
+                                    labelText: 'ISBN')),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                   TextField(
                       style: const TextStyle(
                           color: Colors.black, fontWeight: FontWeight.bold),
                       minLines: 2,
                       maxLines: 2,
-                      controller: viewModel.nameTextFieldController,
+                      controller: controller.workbookNameTextFieldController,
                       decoration: AppStyles.textFieldDecoration(
                           labelText: 'Name des Heftes')),
                   const Gap(20),
-                  TextField(
-                      style: const TextStyle(
-                          color: Colors.black, fontWeight: FontWeight.bold),
-                      minLines: 1,
-                      maxLines: 1,
-                      controller: viewModel.isbnTextFieldController,
-                      decoration:
-                          AppStyles.textFieldDecoration(labelText: 'ISBN')),
-                  const Gap(20),
+
                   TextField(
                     style: const TextStyle(
                         color: Colors.black, fontWeight: FontWeight.bold),
                     minLines: 1,
                     maxLines: 1,
-                    controller: viewModel.subjectTextFieldController,
+                    controller: controller.subjectTextFieldController,
                     decoration:
                         AppStyles.textFieldDecoration(labelText: 'Fach'),
                   ),
@@ -64,25 +95,25 @@ class NewWorkbookPage extends StatelessWidget {
                   TextField(
                       minLines: 1,
                       maxLines: 1,
-                      controller: viewModel.level,
+                      controller: controller.level,
                       style: const TextStyle(
                           color: Colors.black, fontWeight: FontWeight.bold),
                       decoration: AppStyles.textFieldDecoration(
                           labelText: 'Kompetenzstufe')),
-                  const Gap(20),
-                  TextField(
-                      style: const TextStyle(
-                          color: Colors.black, fontWeight: FontWeight.bold),
-                      minLines: 1,
-                      maxLines: 1,
-                      controller: viewModel.amountTextFieldController,
-                      decoration:
-                          AppStyles.textFieldDecoration(labelText: 'Bestand')),
+                  // const Gap(20),
+                  // TextField(
+                  //     style: const TextStyle(
+                  //         color: Colors.black, fontWeight: FontWeight.bold),
+                  //     minLines: 1,
+                  //     maxLines: 1,
+                  //     controller: controller.amountTextFieldController,
+                  //     decoration:
+                  //         AppStyles.textFieldDecoration(labelText: 'Bestand')),
                   const Gap(30),
-                  if (!viewModel.isEdit) ...<Widget>[
+                  if (!controller.isEdit) ...<Widget>[
                     ElevatedButton(
                       style: AppStyles.actionButtonStyle,
-                      onPressed: () async => viewModel.scanIsbn(),
+                      onPressed: () async => controller.scanIsbn(),
                       child: const Text(
                         'ISBN SCANNEN',
                         style: AppStyles.buttonTextStyle,
@@ -92,7 +123,7 @@ class NewWorkbookPage extends StatelessWidget {
                   ],
                   ElevatedButton(
                     style: AppStyles.successButtonStyle,
-                    onPressed: () => viewModel.sendWorkbookRequest(),
+                    onPressed: () => controller.sendWorkbookRequest(),
                     child: const Text(
                       'SENDEN',
                       style: AppStyles.buttonTextStyle,

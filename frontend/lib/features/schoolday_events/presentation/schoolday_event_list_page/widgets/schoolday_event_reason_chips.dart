@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:schuldaten_hub/common/theme/colors.dart';
+import 'package:schuldaten_hub/common/theme/app_colors.dart';
 import 'package:schuldaten_hub/features/schoolday_events/domain/models/schoolday_event_enums.dart';
 
 class SchooldayEventReasonChip extends StatelessWidget {

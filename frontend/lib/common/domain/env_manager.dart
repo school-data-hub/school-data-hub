@@ -8,7 +8,6 @@ import 'package:schuldaten_hub/common/domain/models/enums.dart';
 import 'package:schuldaten_hub/common/domain/models/env.dart';
 import 'package:schuldaten_hub/common/domain/session_helper_functions.dart';
 import 'package:schuldaten_hub/common/domain/session_manager.dart';
-import 'package:schuldaten_hub/common/services/api/api_client.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_service.dart';
 import 'package:schuldaten_hub/common/utils/logger.dart';
@@ -29,14 +28,15 @@ class EnvManager {
   ValueListenable<bool> get dependentManagersRegistered =>
       _dependentMangagersRegistered;
 
-  final _activeEnv = ValueNotifier<Env>(Env());
-  ValueListenable<Env> get env => _activeEnv;
+  Env? _activeEnv;
 
-  final _environments = ValueNotifier<Map<String, Env>>({});
-  ValueListenable<Map<String, Env>> get envs => _environments;
+  Env? get env => _activeEnv;
 
-  final _defaultEnv = ValueNotifier<String>('');
-  ValueListenable<String> get defaultEnv => _defaultEnv;
+  Map<String, Env> _environments = {};
+  Map<String, Env> get envs => _environments;
+
+  String _defaultEnv = '';
+  String get defaultEnv => _defaultEnv;
 
   final _envReady = ValueNotifier<bool>(false);
   ValueListenable<bool> get envReady => _envReady;
@@ -72,18 +72,17 @@ class EnvManager {
       return;
     }
 
-    _defaultEnv.value = environmentsObject.defalutEnv;
+    _defaultEnv = environmentsObject.defalutEnv;
 
-    _environments.value = environmentsObject.environmentsMap;
+    _environments = environmentsObject.environmentsMap;
 
-    _activeEnv.value =
-        environmentsObject.environmentsMap[_defaultEnv.value] ?? Env();
+    _activeEnv = environmentsObject.environmentsMap[_defaultEnv];
 
-    log('new defaultEnv: ${_defaultEnv.value}');
+    log('Default Environment: $_defaultEnv');
 
     // set the base url for the api client
 
-    locator<ApiClient>().setBaseUrl(_activeEnv.value.serverUrl!);
+    // locator<ApiClient>().setBaseUrl(_activeEnv!.serverUrl);
 
     _envReady.value = true;
 
@@ -92,11 +91,11 @@ class EnvManager {
 
   Future<EnvsInStorage?> environmentsInStorage() async {
     bool environmentsInStorage =
-        await secureStorageContainsKey(SecureStorageKey.environments.value);
+        await AppSecureStorage.containsKey(SecureStorageKey.environments.value);
 
     if (environmentsInStorage == true) {
       final String? storedEnvironmentsAsString =
-          await secureStorageRead(SecureStorageKey.environments.value);
+          await AppSecureStorage.read(SecureStorageKey.environments.value);
 
       try {
         final environmentsInStorage = EnvsInStorage.fromJson(
@@ -109,50 +108,50 @@ class EnvManager {
 
         log('deleting faulty environments from secure storage');
 
-        await secureStorageDelete(SecureStorageKey.environments.value);
+        await AppSecureStorage.delete(SecureStorageKey.environments.value);
 
         return null;
       }
     }
 
-    //- TODO: remove this after all users have migrated to the new env storage
+    // //- TODO: remove this after all users have migrated to the new env storage
 
-    bool legacyEnvironmentInStorage = await secureStorageContainsKey('env');
+    // bool legacyEnvironmentInStorage = await AppSecureStorage.containsKey(SecureStorageKey.environments'env');
 
-    if (legacyEnvironmentInStorage == true) {
-      final String? storedEnvironmentAsString = await secureStorageRead('env');
+    // if (legacyEnvironmentInStorage == true) {
+    //   final String? storedEnvironmentAsString = await secureStorageRead('env');
 
-      final Map<String, dynamic> storedEnvironmentMap =
-          json.decode(storedEnvironmentAsString!) as Map<String, dynamic>;
+    //   final Map<String, dynamic> storedEnvironmentMap =
+    //       json.decode(storedEnvironmentAsString!) as Map<String, dynamic>;
 
-      storedEnvironmentMap['server'] = 'Hermannschule';
+    //   storedEnvironmentMap['server'] = 'Hermannschule';
 
-      try {
-        final Env legacyEnvironment = Env.fromJson(storedEnvironmentMap);
+    //   try {
+    //     final Env legacyEnvironment = Env.fromJson(storedEnvironmentMap);
 
-        final EnvsInStorage environmentsInStorage = EnvsInStorage(
-            defalutEnv: legacyEnvironment.server!,
-            environmentsMap: {legacyEnvironment.server!: legacyEnvironment});
+    //     final EnvsInStorage environmentsInStorage = EnvsInStorage(
+    //         defalutEnv: legacyEnvironment.server!,
+    //         environmentsMap: {legacyEnvironment.server!: legacyEnvironment});
 
-        final String jsonEnvs = jsonEncode(environmentsInStorage);
+    //     final String jsonEnvs = jsonEncode(environmentsInStorage);
 
-        await secureStorageWrite(SecureStorageKey.environments.value, jsonEnvs);
+    //     await secureStorageWrite(SecureStorageKey.environments.value, jsonEnvs);
 
-        return environmentsInStorage;
-      } catch (e) {
-        logger.f('Error reading env from secureStorage: $e',
-            stackTrace: StackTrace.current);
+    //     return environmentsInStorage;
+    //   } catch (e) {
+    //     logger.f('Error reading env from secureStorage: $e',
+    //         stackTrace: StackTrace.current);
 
-        // log('deleting faulty environments from secure storage');
+    //     // log('deleting faulty environments from secure storage');
 
-        // await secureStorageDelete(SecureStorageKey.environments.value);
+    //     // await secureStorageDelete(SecureStorageKey.environments.value);
 
-        locator<NotificationService>().showSnackBar(NotificationType.error,
-            'Fehler beim Lesen der Umgebung aus dem sicheren Speicher');
+    //     locator<NotificationService>().showSnackBar(NotificationType.error,
+    //         'Fehler beim Lesen der Umgebung aus dem sicheren Speicher');
 
-        return null;
-      }
-    }
+    //     return null;
+    //   }
+    // }
     return null;
   }
 
@@ -161,77 +160,80 @@ class EnvManager {
     final Env env =
         Env.fromJson(json.decode(envAsString) as Map<String, dynamic>);
 
-    _environments.value = {..._environments.value, env.server!: env};
+    _environments = {..._environments, env.server: env};
 
-    _defaultEnv.value = env.server!;
+    _defaultEnv = env.server;
 
     logger.i(
-        'New Env ${env.server} stored, there are now ${_environments.value.length} environments stored!');
+        'New Env ${env.server} stored, there are now ${_environments.length} environments stored!');
 
     locator<NotificationService>().showSnackBar(NotificationType.success,
         'Schulschlüssel für ${env.server} gespeichert!');
 
-    activateEnv(envName: env.server!);
+    activateEnv(envName: env.server);
 
     return;
   }
 
   deleteEnv() async {
-    final deltedEnvironment = _activeEnv.value.server!;
+    final deletedEnvironment = _activeEnv!.server;
 
-    // delete _env.value from _envs.value
+    // delete _env.value from _envs
 
-    _environments.value.remove(_activeEnv.value.server);
+    _environments.remove(_activeEnv!.server);
 
-    // write _envs.value to secure storage
+    // write _envs to secure storage
 
-    final jsonEnvs = json.encode(_environments.value);
+    final jsonEnvs = json.encode(_environments);
 
-    await secureStorageWrite(SecureStorageKey.environments.value, jsonEnvs);
+    await AppSecureStorage.write(SecureStorageKey.environments.value, jsonEnvs);
 
-    // if there are environments left in _envs.value, set the last one as value
+    // if there are environments left in _envs, set the last one as value
 
-    if (_environments.value.isNotEmpty) {
-      _activeEnv.value = _environments.value.values.last;
+    if (_environments.isNotEmpty) {
+      _activeEnv = _environments.values.last;
 
-      _defaultEnv.value = _environments.value.keys.last;
+      _defaultEnv = _environments.keys.last;
 
-      logger.i('Env $deltedEnvironment New defaultEnv: ${_defaultEnv.value}');
+      logger.i('Env $deletedEnvironment New defaultEnv: ${_defaultEnv}');
 
-      locator<ApiClient>().setBaseUrl(_activeEnv.value.serverUrl!);
+      //  locator<ApiClient>().setBaseUrl(_activeEnv!.serverUrl);
     } else {
       // if there are no environments left, delete the environments from secure storage
 
-      await secureStorageDelete(SecureStorageKey.environments.value);
+      await AppSecureStorage.delete(SecureStorageKey.environments.value);
 
-      _activeEnv.value = Env();
+      _activeEnv = null;
 
-      _defaultEnv.value = '';
+      _defaultEnv = '';
 
       _envReady.value = false;
     }
 
-    locator<BottomNavManager>().setBottomNavPage(0);
+    locator<MainMenuBottomNavManager>().setBottomNavPage(0);
   }
 
   Future<void> activateEnv({required String envName}) async {
-    _activeEnv.value = _environments.value[envName]!;
-    locator<ApiClient>().setBaseUrl(_activeEnv.value.serverUrl!);
+    _activeEnv = _environments[envName]!;
+
     final updatedEnvsForStorage = EnvsInStorage(
-        defalutEnv: _activeEnv.value.server!,
-        environmentsMap: _environments.value);
+        defalutEnv: _activeEnv!.server, environmentsMap: _environments);
 
     final String jsonEnvs = jsonEncode(updatedEnvsForStorage);
 
-    await secureStorageWrite(SecureStorageKey.environments.value, jsonEnvs);
+    await AppSecureStorage.write(SecureStorageKey.environments.value, jsonEnvs);
 
-    _defaultEnv.value = envName;
+    _defaultEnv = envName;
 
     _envReady.value = true;
-    logger.i('Activated Env: ${_activeEnv.value.server}');
+
+    logger.i('Activated Env: ${_activeEnv!.server}');
+
     if (_dependentMangagersRegistered.value == true) {
-      locator<NotificationService>().heavyLoadingValue(true);
+      locator<NotificationService>().setNewInstanceLoadingValue(true);
+
       await SessionHelper.clearInstanceSessionServerData();
+
       locator<SessionManager>().unauthenticate();
 
       await locator<SessionManager>().checkStoredCredentials();
@@ -242,7 +244,7 @@ class EnvManager {
 
   setEnvNotReady() {
     _envReady.value = false;
-    _activeEnv.value = Env();
+    _activeEnv = null;
   }
 
   Future<void> propagateNewEnv() async {
@@ -257,11 +259,13 @@ class EnvManager {
     await locator<SchoolListManager>().fetchSchoolLists();
     await locator<AuthorizationManager>().fetchAuthorizations();
     await locator<WorkbookManager>().getWorkbooks();
-    await locator<BottomNavManager>().setBottomNavPage(0);
+    await locator<MainMenuBottomNavManager>().setBottomNavPage(0);
     if (locator<SessionManager>().isAdmin.value == true) {
       await locator<UserManager>().fetchUsers();
     }
     logger.i('New Env propagated');
-    locator<NotificationService>().heavyLoadingValue(false);
+    locator<NotificationService>().setNewInstanceLoadingValue(false);
+    locator<NotificationService>().showInformationDialog(
+        'Instanz "${_activeEnv!.server}" erfolgreich geladen!');
   }
 }

@@ -1,6 +1,7 @@
 // ignore_for_file: invalid_annotation_target
 
 import 'package:json_annotation/json_annotation.dart';
+
 part 'pupil_workbook.g.dart';
 
 @JsonSerializable()
@@ -9,7 +10,8 @@ class PupilWorkbook {
   final DateTime createdAt;
   @JsonKey(name: 'created_by')
   final String createdBy;
-  final String? state;
+  final String? comment;
+  final int? status;
   @JsonKey(name: 'workbook_isbn')
   final int workbookIsbn;
   @JsonKey(name: 'finished_at')
@@ -23,7 +25,8 @@ class PupilWorkbook {
   PupilWorkbook(
       {required this.createdAt,
       required this.createdBy,
-      required this.state,
+      required this.comment,
+      required this.status,
       required this.workbookIsbn,
       required this.finishedAt});
 }

@@ -5,7 +5,7 @@ import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/domain/models/enums.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_service.dart';
-import 'package:schuldaten_hub/common/theme/colors.dart';
+import 'package:schuldaten_hub/common/theme/app_colors.dart';
 import 'package:schuldaten_hub/common/utils/logger.dart';
 import 'package:schuldaten_hub/common/widgets/avatar.dart';
 import 'package:schuldaten_hub/common/widgets/dialogs/long_textfield_dialog.dart';
@@ -74,7 +74,7 @@ class AttendanceCard extends WatchingWidget {
                                     scrollDirection: Axis.horizontal,
                                     child: InkWell(
                                       onTap: () {
-                                        locator<BottomNavManager>()
+                                        locator<MainMenuBottomNavManager>()
                                             .setPupilProfileNavPage(3);
                                         Navigator.of(context)
                                             .pushReplacement(MaterialPageRoute(
@@ -390,10 +390,10 @@ class AttendanceCard extends WatchingWidget {
                                   scrollDirection: Axis.horizontal,
                                   child: InkWell(
                                     onTap: () {
-                                      locator<BottomNavManager>()
+                                      locator<MainMenuBottomNavManager>()
                                           .setPupilProfileNavPage(3);
                                       Navigator.of(context)
-                                          .push(MaterialPageRoute(
+                                          .pushReplacement(MaterialPageRoute(
                                         builder: (ctx) => PupilProfilePage(
                                           pupil: pupil,
                                         ),
@@ -670,8 +670,8 @@ class AttendanceCard extends WatchingWidget {
                 ),
               ],
             ),
-            if (attendanceInfo.missedTypeValue !=
-                MissedType.notSet) ...<Widget>[
+            if (attendanceInfo.missedTypeValue != MissedType.notSet ||
+                attendanceInfo.returnedValue) ...<Widget>[
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -686,21 +686,23 @@ class AttendanceCard extends WatchingWidget {
                         final String? commentValue = await longTextFieldDialog(
                             title: 'Kommentar',
                             labelText: 'Kommentar',
-                            textinField: null,
+                            textinField: attendanceInfo.commentValue,
                             parentContext: context);
-                        if (commentValue == null ||
-                            commentValue.isEmpty ||
-                            commentValue == attendanceInfo.commentValue) {
+                        if (commentValue == attendanceInfo.commentValue) {
                           return;
                         }
+
                         attendanceManager.changeCommentValue(
                           pupil.internalId,
-                          commentValue,
+                          commentValue ?? '',
                           thisDate,
                         );
                       },
                       child: Text(
-                        attendanceInfo.commentValue ?? 'Kein Kommentar',
+                        attendanceInfo.commentValue == null ||
+                                attendanceInfo.commentValue!.isEmpty
+                            ? 'Kein Eintrag'
+                            : attendanceInfo.commentValue!,
                         softWrap: true,
                       ),
                     ),

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/domain/models/enums.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
-import 'package:schuldaten_hub/common/theme/colors.dart';
-import 'package:schuldaten_hub/common/widgets/search_text_field.dart';
+import 'package:schuldaten_hub/common/theme/app_colors.dart';
+import 'package:schuldaten_hub/features/pupil/presentation/widgets/pupil_search_text_field.dart';
 import 'package:schuldaten_hub/features/matrix/domain/filters/matrix_policy_filter_manager.dart';
 import 'package:schuldaten_hub/features/matrix/domain/models/matrix_user.dart';
 import 'package:schuldaten_hub/features/matrix/presentation/select_matrix_users_list_page/controller/select_matrix_users_list_controller.dart';
@@ -71,7 +71,7 @@ class SelectUserListSearchBar extends WatchingWidget {
             child: Row(
               children: [
                 Expanded(
-                    child: SearchTextField(
+                    child: PupilSearchTextField(
                         searchType: SearchType.room,
                         hintText: 'Matrix-Konto suchen',
                         refreshFunction: locator<MatrixPolicyFilterManager>()

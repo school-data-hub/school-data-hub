@@ -27,7 +27,7 @@ Map<String, dynamic> _$MissedClassToJson(MissedClass instance) =>
       'created_by': instance.createdBy,
       'unexcused': instance.unexcused,
       'minutes_late': instance.minutesLate,
-      'missed_day': instance.missedDay.toIso8601String(),
+      'missed_day': instance.missedDay.formatForJson(),
       'missed_pupil_id': instance.missedPupilId,
       'missed_type': instance.missedType,
       'modified_by': instance.modifiedBy,

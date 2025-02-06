@@ -21,7 +21,7 @@ class EventFluxService {
   void _init() {
     EventFlux.instance.connect(
       EventFluxConnectionType.get,
-      '${envManager.env.value.serverUrl}/listen',
+      '${envManager.env!.serverUrl}/listen',
       files: [
         /// Optional, If you want to send multipart files with the request
       ],

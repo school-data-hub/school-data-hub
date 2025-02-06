@@ -8,8 +8,8 @@ import 'package:schuldaten_hub/common/domain/env_manager.dart';
 import 'package:schuldaten_hub/common/domain/models/enums.dart';
 import 'package:schuldaten_hub/common/domain/models/session.dart';
 import 'package:schuldaten_hub/common/domain/session_helper_functions.dart';
-import 'package:schuldaten_hub/common/services/api/api_settings.dart';
 import 'package:schuldaten_hub/common/services/api/api_client.dart';
+import 'package:schuldaten_hub/common/services/api/api_settings.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_service.dart';
 import 'package:schuldaten_hub/common/utils/logger.dart';
@@ -34,7 +34,7 @@ class SessionManager {
   ValueListenable<bool> get matrixPolicyManagerRegistrationStatus =>
       _matrixPolicyManagerRegistrationStatus;
 
-  final userApiService = UserRepository();
+  final userApiService = UserApiService();
 
   Future<SessionManager> init() async {
     await checkStoredCredentials();
@@ -59,7 +59,11 @@ class SessionManager {
     _isAdmin.value = _credentials.value.isAdmin!;
     _isAuthenticated.value = true;
     locator<ApiClient>()
-        .setHeaders(tokenKey: 'x-access-token', token: session.jwt!);
+        .setApiOptions(tokenKey: Token.hub, token: _credentials.value.jwt!);
+  }
+
+  bool isAuthorized(String user) {
+    return _credentials.value.username == user || _isAdmin.value;
   }
 
   void changeSessionCredit(int value) async {
@@ -79,10 +83,10 @@ class SessionManager {
   }
 
   Future<void> checkStoredCredentials() async {
-    if (locator<EnvManager>().env.value.serverUrl == null) {
+    if (locator<EnvManager>().env == null) {
       logger.w('Checking credentials, but no environment found!',
           stackTrace: StackTrace.current);
-
+      _isAuthenticated.value = false;
       return;
     }
 
@@ -92,33 +96,17 @@ class SessionManager {
 
     if (storedSessions == null) {
       logger.w('No sessions found in secure storage!');
-      //-TODO: delete legacy code when sure it's not needed anymore
-      if (await secureStorageContainsKey('session') == true) {
-        // if so, read them
-        final String? legacySessioninStorage =
-            await secureStorageRead('session');
-        log('Legacy session found!');
-        // decode the stored session and add missing keys and values
-        final Map<String, dynamic> legacySessionMap =
-            json.decode(legacySessioninStorage!) as Map<String, dynamic>;
-        legacySessionMap['server'] = locator<EnvManager>().env.value.server;
-        legacySessionMap['contact'] = null;
-        legacySessionMap['tutoring'] = null;
-        final Session session =
-            Session.fromJson(legacySessionMap); // as Session;
-        saveSession(session);
-      } else {
-        return;
-      }
     }
 
     final Session? linkedSession =
-        _sessions.value[locator<EnvManager>().env.value.server!];
+        _sessions.value[locator<EnvManager>().env!.server];
 
     if (linkedSession == null) {
-      logger
-          .w('No session found for ${locator<EnvManager>().env.value.server!}');
-
+      logger.w('No session found for ${locator<EnvManager>().env!.server}');
+      //- TODO: this call is there in case the credentials are checked
+      //- after calling a new instance and is hacky
+      //- find a better way to handle this
+      locator<NotificationService>().setNewInstanceLoadingValue(false);
       return;
     }
     logger.i('Session found for ${linkedSession.server!}');
@@ -130,16 +118,18 @@ class SessionManager {
 
       logger.w('Session found, but was not valid - deleted!',
           stackTrace: StackTrace.current);
+      _isAuthenticated.value = false;
 
+      //- TODO: this call is there in case the credentials are checked
+      //- after calling a new instance and is hacky
+      //- find a better way to handle this
+      locator<NotificationService>().setNewInstanceLoadingValue(false);
       return;
     }
 
     // There are sessions stored - let's decode them
     try {
-      // check if there is a session linked to the default server
-
       // check if the session is still valid
-      // if not, delete the session
 
       log('Stored session is valid!');
       authenticate(_credentials.value);
@@ -160,7 +150,8 @@ class SessionManager {
         'Error reading session from secureStorage: $e',
         stackTrace: StackTrace.current,
       );
-      await removeSession(server: locator<EnvManager>().env.value.server!);
+      // if not, delete the session
+      await removeSession(server: locator<EnvManager>().env!.server);
 
       return;
     }
@@ -172,10 +163,9 @@ class SessionManager {
 
     authenticate(session);
     await saveSession(session);
-    locator<ApiClient>().setHeaders(
-      tokenKey: 'x-access-token',
-      token: _credentials.value.jwt!,
-    );
+    locator<ApiClient>()
+        .setApiOptions(tokenKey: Token.hub, token: _credentials.value.jwt!);
+
     return;
   }
 
@@ -221,7 +211,7 @@ class SessionManager {
     final Map<String, Session> updatedSessions = _sessions.value;
     updatedSessions[session.server!] = session;
     final updatedSessionsAsJson = json.encode(updatedSessions);
-    await secureStorageWrite(
+    await AppSecureStorage.write(
         SecureStorageKey.sessions.value, updatedSessionsAsJson);
     // let's keep them in memory as well
     _sessions.value = updatedSessions;
@@ -237,7 +227,7 @@ class SessionManager {
     if (updatedSessions.isNotEmpty) {
       await saveSession(_credentials.value);
     } else {
-      await secureStorageDelete(SecureStorageKey.sessions.value);
+      await AppSecureStorage.delete(SecureStorageKey.sessions.value);
     }
     _credentials.value = Session();
     locator<NotificationService>().showSnackBar(
@@ -252,10 +242,10 @@ class SessionManager {
     locator<NotificationService>()
         .showSnackBar(NotificationType.success, 'Logout erfolgreich!');
 
-    locator.get<BottomNavManager>().setBottomNavPage(0);
+    locator.get<MainMenuBottomNavManager>().setBottomNavPage(0);
     _isAuthenticated.value = false;
     _credentials.value = Session();
-    locator<ApiClient>().setHeaders(tokenKey: '', token: '');
+
     await unregisterDependentManagers();
     return;
   }

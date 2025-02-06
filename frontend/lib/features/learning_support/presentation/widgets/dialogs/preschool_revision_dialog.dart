@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:schuldaten_hub/common/theme/colors.dart';
-import 'package:schuldaten_hub/features/pupil/domain/models/pupil_proxy.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
-
+import 'package:schuldaten_hub/common/theme/app_colors.dart';
+import 'package:schuldaten_hub/features/pupil/domain/models/pupil_proxy.dart';
 import 'package:schuldaten_hub/features/pupil/domain/pupil_manager.dart';
 
 // based on https://mobikul.com/creating-stateful-dialog-form-in-flutter/
@@ -111,8 +110,10 @@ Future<void> preschoolRevisionDialog(
                         fontWeight: FontWeight.bold),
                   ),
                   onTap: () async {
-                    locator<PupilManager>().patchPupil(pupil.internalId,
-                        'preschool_revision', dialogdropdownValue);
+                    locator<PupilManager>().patchOnePupilProperty(
+                        pupilId: pupil.internalId,
+                        jsonKey: 'preschool_revision',
+                        value: dialogdropdownValue);
                     Navigator.of(context).pop();
                   },
                 ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
-import 'package:schuldaten_hub/common/theme/colors.dart';
+import 'package:schuldaten_hub/common/theme/app_colors.dart';
 import 'package:schuldaten_hub/features/learning_support/domain/learning_support_manager.dart';
 import 'package:schuldaten_hub/features/learning_support/domain/models/support_category/support_category.dart';
 

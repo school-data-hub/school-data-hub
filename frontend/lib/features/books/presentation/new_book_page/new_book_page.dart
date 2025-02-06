@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:schuldaten_hub/common/theme/colors.dart';
+import 'package:schuldaten_hub/common/theme/app_colors.dart';
 import 'package:schuldaten_hub/common/theme/styles.dart';
 import 'package:schuldaten_hub/common/widgets/themed_filter_chip.dart';
-import 'package:schuldaten_hub/features/books/presentation/new_book_page/new_book_page_view_model.dart';
+import 'package:schuldaten_hub/features/books/presentation/new_book_page/new_book_controller.dart';
 
 class NewBookPage extends StatelessWidget {
-  final NewBookViewModel viewModel;
+  final NewBookController controller;
 
   const NewBookPage(
-    this.viewModel, {
+    this.controller, {
     super.key,
   });
 
@@ -21,7 +21,7 @@ class NewBookPage extends StatelessWidget {
         backgroundColor: AppColors.backgroundColor,
         title: Center(
           child: Text(
-            (viewModel.widget.isEdit) ? 'Buch bearbeiten' : 'Neues Buch',
+            (controller.widget.isEdit) ? 'Buch bearbeiten' : 'Neues Buch',
             style: AppStyles.appBarTextStyle,
           ),
         ),
@@ -40,14 +40,22 @@ class NewBookPage extends StatelessWidget {
                 children: <Widget>[
                   Row(
                     children: [
-                      if (viewModel.bookImage != null) ...<Widget>[
-                        ClipRRect(
-                            borderRadius: BorderRadius.circular(
-                                10.0), // Adjust the radius as needed
-                            child: viewModel.bookImage!),
-                        const Gap(20),
+                      if (controller.bookImage != null) ...<Widget>[
+                        Expanded(
+                          flex: 1,
+                          child: Column(
+                            children: [
+                              ClipRRect(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  child: controller.bookImage!),
+                              const Gap(20),
+                            ],
+                          ),
+                        ),
+                        const Gap(10),
                       ],
-                      Flexible(
+                      Expanded(
+                        flex: 2,
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
@@ -57,7 +65,7 @@ class NewBookPage extends StatelessWidget {
                                   fontWeight: FontWeight.bold),
                               minLines: 1,
                               maxLines: 1,
-                              controller: viewModel.isbnTextFieldController,
+                              controller: controller.isbnTextFieldController,
                               decoration: AppStyles.textFieldDecoration(
                                   labelText: 'ISBN'),
                             ),
@@ -68,7 +76,7 @@ class NewBookPage extends StatelessWidget {
                                   fontWeight: FontWeight.bold),
                               minLines: 1,
                               maxLines: 1,
-                              controller: viewModel.bookIdTextFieldController,
+                              controller: controller.bookIdTextFieldController,
                               decoration: AppStyles.textFieldDecoration(
                                   labelText: 'Bücherei-ID'),
                             ),
@@ -76,19 +84,19 @@ class NewBookPage extends StatelessWidget {
                             DropdownButtonFormField<ReadingLevel>(
                                 decoration: AppStyles.textFieldDecoration(
                                     labelText: 'Lesestufe'),
-                                items: viewModel.readingLevelDropdownItems,
+                                items: controller.readingLevelDropdownItems,
                                 value: ReadingLevel.fromString(
-                                    viewModel.readingLevel),
-                                onChanged: (value) => viewModel
+                                    controller.readingLevel),
+                                onChanged: (value) => controller
                                     .onChangedReadingLevelDropDown(value)),
                             const Gap(20),
                             DropdownButtonFormField<String>(
                               decoration: AppStyles.textFieldDecoration(
                                   labelText: 'Ablageort'),
-                              items: viewModel.locationDropdownItems,
-                              value: viewModel.lastLocationValue,
+                              items: controller.locationDropdownItems,
+                              value: controller.lastLocationValue,
                               onChanged: (value) =>
-                                  viewModel.onChangedLocationDropDown(value!),
+                                  controller.onChangedLocationDropDown(value!),
                             ),
                           ],
                         ),
@@ -101,7 +109,7 @@ class NewBookPage extends StatelessWidget {
                         color: Colors.black, fontWeight: FontWeight.bold),
                     minLines: 2,
                     maxLines: 2,
-                    controller: viewModel.bookTitleTextFieldController,
+                    controller: controller.bookTitleTextFieldController,
                     decoration:
                         AppStyles.textFieldDecoration(labelText: 'Buchtitel'),
                   ),
@@ -111,7 +119,7 @@ class NewBookPage extends StatelessWidget {
                         color: Colors.black, fontWeight: FontWeight.bold),
                     minLines: 1,
                     maxLines: 1,
-                    controller: viewModel.authorTextFieldController,
+                    controller: controller.authorTextFieldController,
                     decoration:
                         AppStyles.textFieldDecoration(labelText: 'Author*in'),
                   ),
@@ -119,7 +127,7 @@ class NewBookPage extends StatelessWidget {
                   TextField(
                     minLines: 3,
                     maxLines: 3,
-                    controller: viewModel.bookDescriptionTextFieldController,
+                    controller: controller.bookDescriptionTextFieldController,
                     style: const TextStyle(
                         color: Colors.black, fontWeight: FontWeight.bold),
                     decoration: AppStyles.textFieldDecoration(
@@ -129,12 +137,12 @@ class NewBookPage extends StatelessWidget {
                   Wrap(
                     spacing: 5,
                     runSpacing: 5,
-                    children: viewModel.bookTagSelection.entries.map((entry) {
+                    children: controller.bookTagSelection.entries.map((entry) {
                       return ThemedFilterChip(
                         label: entry.key.name,
                         selected: entry.value,
                         onSelected: (bool selected) {
-                          viewModel.switchBookTagSelection(entry.key);
+                          controller.switchBookTagSelection(entry.key);
                         },
                       );
                     }).toList(),
@@ -143,26 +151,26 @@ class NewBookPage extends StatelessWidget {
                   ...<Widget>[
                     ElevatedButton(
                       style: AppStyles.actionButtonStyle,
-                      onPressed: () async => viewModel.scanIsbn(),
+                      onPressed: () async => controller.scanIsbn(),
                       child: const Text(
                         'ISBN SCANNEN',
                         style: AppStyles.buttonTextStyle,
                       ),
                     ),
+                    // const Gap(15),
+                    // ElevatedButton(
+                    //   style: AppStyles.actionButtonStyle,
+                    //   onPressed: () => viewModel.getIsbnData(),
+                    //   child: const Text(
+                    //     'DATEN AUS ISBN API HOLEN',
+                    //     style: AppStyles.buttonTextStyle,
+                    //   ),
+                    // ),
                     const Gap(15),
-                    ElevatedButton(
-                      style: AppStyles.actionButtonStyle,
-                      onPressed: () => viewModel.getIsbnData(),
-                      child: const Text(
-                        'DATEN AUS ISBN API HOLEN',
-                        style: AppStyles.buttonTextStyle,
-                      ),
-                    ),
-                    const Gap(15),
-                    if (!viewModel.widget.isEdit) ...<Widget>[
+                    if (!controller.widget.isEdit) ...<Widget>[
                       ElevatedButton(
                         style: AppStyles.actionButtonStyle,
-                        onPressed: () async => viewModel.scanBookId(),
+                        onPressed: () async => controller.scanBookId(),
                         child: const Text(
                           'BÜCHEREI-ID SCANNEN',
                           style: AppStyles.buttonTextStyle,
@@ -172,7 +180,7 @@ class NewBookPage extends StatelessWidget {
                     ],
                     ElevatedButton(
                       style: AppStyles.successButtonStyle,
-                      onPressed: () => viewModel.submitBook(),
+                      onPressed: () => controller.submitBook(),
                       child: const Text(
                         'SENDEN',
                         style: AppStyles.buttonTextStyle,

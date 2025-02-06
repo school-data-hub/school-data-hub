@@ -25,6 +25,20 @@ class Policy {
 
   Map<String, dynamic> toJson() => _$PolicyToJson(this);
 
+  copyWith(
+          {int? schemaVersion,
+          dynamic identificationStamp,
+          Flags? flags,
+          dynamic hooks,
+          List<String>? managedRoomIds,
+          List<MatrixUser>? matrixUsers}) =>
+      Policy(
+          schemaVersion: schemaVersion ?? this.schemaVersion,
+          identificationStamp: identificationStamp ?? this.identificationStamp,
+          flags: flags ?? this.flags,
+          hooks: hooks ?? this.hooks,
+          managedRoomIds: managedRoomIds ?? this.managedRoomIds,
+          matrixUsers: matrixUsers ?? this.matrixUsers);
   Policy(
       {required this.schemaVersion,
       required this.identificationStamp,

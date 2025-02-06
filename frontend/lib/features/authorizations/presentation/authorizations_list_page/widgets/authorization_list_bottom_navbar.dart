@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/domain/session_manager.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
-import 'package:schuldaten_hub/common/theme/colors.dart';
+import 'package:schuldaten_hub/common/theme/app_colors.dart';
+import 'package:schuldaten_hub/common/theme/paddings.dart';
 import 'package:schuldaten_hub/common/widgets/bottom_nav_bar_layouts.dart';
 import 'package:schuldaten_hub/features/authorizations/presentation/new_authorization_page/new_authorization_page.dart';
 
@@ -32,8 +33,8 @@ class AuthorizationListBottomNavBar extends StatelessWidget {
                   Navigator.pop(context);
                 },
               ),
-              const Gap(30),
-              if (locator<SessionManager>().isAdmin.value == true)
+              if (locator<SessionManager>().isAdmin.value == true) ...[
+                const Gap(AppPaddings.bottomNavBarButtonGap),
                 IconButton(
                   tooltip: 'Neue Liste',
                   icon: const Icon(
@@ -46,6 +47,7 @@ class AuthorizationListBottomNavBar extends StatelessWidget {
                     ));
                   },
                 ),
+              ],
               const Gap(15)
             ],
           ),

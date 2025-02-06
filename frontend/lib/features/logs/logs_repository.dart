@@ -2,15 +2,21 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:schuldaten_hub/common/domain/env_manager.dart';
 import 'package:schuldaten_hub/common/domain/models/enums.dart';
 import 'package:schuldaten_hub/common/services/api/api_client.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_service.dart';
 
-class LogsRepository {
+class LogsApiService {
   final ApiClient _client = locator<ApiClient>();
+
   final NotificationService _notificationService =
       locator<NotificationService>();
+
+  String _baseUrl() {
+    return locator<EnvManager>().env!.serverUrl;
+  }
 
   final String _downloadLogUrl = '/log/download';
   final String _uploadUrl = '/log/upload';
@@ -19,7 +25,7 @@ class LogsRepository {
   Future<String?> downloadLog() async {
     try {
       final response = await _client.get(
-        _downloadLogUrl,
+        '${_baseUrl()}$_downloadLogUrl',
         options: Options(responseType: ResponseType.bytes),
       );
 
@@ -43,10 +49,13 @@ class LogsRepository {
   }
 
   Future<String?> resetLog() async {
+    final options =
+        _client.hubOptions.copyWith(responseType: ResponseType.bytes);
+
     try {
       final response = await _client.delete(
-        _resetLogUrl,
-        options: Options(responseType: ResponseType.bytes),
+        '${_baseUrl()}$_resetLogUrl',
+        options: options,
       );
 
       if (response.statusCode == 200) {
@@ -81,6 +90,7 @@ class LogsRepository {
       final response = await _client.post(
         _uploadUrl,
         data: formData,
+        options: _client.hubOptions,
       );
 
       if (response.statusCode == 200) {

@@ -2,7 +2,7 @@ import uuid
 from typing import List, Optional
 
 from apiflask import APIBlueprint, abort
-from flask import jsonify, request
+from flask import request
 
 from auth_middleware import token_required
 from helpers.db_helpers import (
@@ -185,12 +185,13 @@ def get_authorizations_flat(current_user):
 )
 @token_required
 def delete_authorization(current_user, auth_id):
-    if not current_user.admin:
-        abort(401, "Keine Berechtigung!")
 
     authorization = get_authorization_by_id(auth_id)
     if authorization == None:
         abort(404, "This authorization does not exist!")
+
+    if not current_user.admin or current_user.name != authorization.created_by:
+        abort(403, "Keine Berechtigung!")
 
     db.session.delete(authorization)
     # - Log entry
@@ -211,13 +212,14 @@ def delete_authorization(current_user, auth_id):
 )
 @token_required
 def patch_authorization(current_user, auth_id, json_data):
-    if not current_user.admin:
-        abort(401, "Keine Berechtigung!")
-
-    data = json_data
     existing_authorization = get_authorization_by_id(auth_id)
     if existing_authorization is None:
         abort(404, "Diese Einwilligung existiert nicht!")
+
+    if not current_user.admin or current_user.name != existing_authorization.created_by:
+        abort(403, "Keine Berechtigung!")
+
+    data = json_data
 
     authorization_name = data["authorization_name"]
     authorization_description = data["authorization_description"]

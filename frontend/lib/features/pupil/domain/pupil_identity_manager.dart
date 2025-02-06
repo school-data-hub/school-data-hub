@@ -13,15 +13,15 @@ import 'package:schuldaten_hub/common/services/notification_service.dart';
 import 'package:schuldaten_hub/common/utils/custom_encrypter.dart';
 import 'package:schuldaten_hub/common/utils/extensions.dart';
 import 'package:schuldaten_hub/common/utils/logger.dart';
-import 'package:schuldaten_hub/common/widgets/qr/scanner.dart';
 import 'package:schuldaten_hub/common/utils/secure_storage.dart';
+import 'package:schuldaten_hub/common/widgets/qr/scanner.dart';
 import 'package:schuldaten_hub/features/main_menu/widgets/landing_bottom_nav_bar.dart';
 import 'package:schuldaten_hub/features/pupil/domain/filters/pupils_filter.dart';
-import 'package:schuldaten_hub/features/pupil/domain/pupil_identity_helper_functions.dart';
-import 'package:schuldaten_hub/features/pupil/domain/pupil_manager.dart';
 import 'package:schuldaten_hub/features/pupil/domain/models/pupil_data.dart';
 import 'package:schuldaten_hub/features/pupil/domain/models/pupil_identity.dart';
 import 'package:schuldaten_hub/features/pupil/domain/models/pupil_proxy.dart';
+import 'package:schuldaten_hub/features/pupil/domain/pupil_identity_helper_functions.dart';
+import 'package:schuldaten_hub/features/pupil/domain/pupil_manager.dart';
 
 class PupilIdentityManager {
   Map<int, PupilIdentity> _pupilIdentities = {};
@@ -44,7 +44,7 @@ class PupilIdentityManager {
   }
 
   Future<void> deleteAllPupilIdentities() async {
-    await secureStorageDelete('pupilIdentities');
+    await AppSecureStorage.delete(SecureStorageKey.pupilIdentities.value);
     _pupilIdentities.clear();
     locator<PupilsFilter>().clearFilteredPupils();
     locator<PupilManager>().clearData();
@@ -56,7 +56,7 @@ class PupilIdentityManager {
   }
 
   Future<void> getPupilIdentitiesForEnv() async {
-    final defaultEnv = locator<EnvManager>().defaultEnv.value;
+    final defaultEnv = locator<EnvManager>().defaultEnv;
 
     final Map<int, PupilIdentity> pupilIdentities =
         await PupilIdentityHelper.readPupilIdentitiesFromStorage(
@@ -119,12 +119,13 @@ class PupilIdentityManager {
         if (!PupilProxy.groupFilters.any((GroupFilter filter) =>
                 filter.name == newPupilIdentity.group) ==
             false) {
-          //- add the new pupil to the pupilIdentities map
+          // TODO: implement class filter dinamically and get rid of enums
         }
+        //- add the new pupil to the pupilIdentities map
         _pupilIdentities[newPupilIdentity.id] = newPupilIdentity;
 
         final existingPupilProxy =
-            locator<PupilManager>().findPupilById(newPupilIdentity.id);
+            locator<PupilManager>().getPupilById(newPupilIdentity.id);
 
         if (existingPupilProxy != null) {
           existingPupilProxy
@@ -133,12 +134,11 @@ class PupilIdentityManager {
       }
     }
 
-    writePupilIdentitiesToStorage(
-        envKey: locator<EnvManager>().defaultEnv.value);
+    writePupilIdentitiesToStorage(envKey: locator<EnvManager>().defaultEnv);
 
     await locator<PupilManager>().fetchAllPupils();
-    locator<BottomNavManager>().setBottomNavPage(0);
-    locator<BottomNavManager>().pageViewController.value.jumpToPage(0);
+    locator<MainMenuBottomNavManager>().setBottomNavPage(0);
+    locator<MainMenuBottomNavManager>().pageViewController.value.jumpToPage(0);
   }
 
   Future<void> writePupilIdentitiesToStorage({required String envKey}) async {
@@ -147,7 +147,7 @@ class PupilIdentityManager {
     );
 
     final jsonPupilIdentities = json.encode(jsonMap);
-    await secureStorageWrite(
+    await AppSecureStorage.write(
         '${SecureStorageKey.pupilIdentities.value}_$envKey',
         jsonPupilIdentities);
     log('Pupil identities written to secure storage for ${SecureStorageKey.pupilIdentities.value}_$envKey');
@@ -161,9 +161,11 @@ class PupilIdentityManager {
     String pupilListTxtFileContentForBackendUpdate = '';
     // The properties are separated by commas, let's build the pupilbase objects with them
     List<PupilIdentity> importedPupilIdentityList = [];
+
     for (String data in splittedPupilIdentities) {
       if (data != '') {
         List<String> pupilIdentityValues = data.split(',');
+
         PupilIdentity pupilIdentity =
             PupilIdentityHelper.pupilIdentityFromString(pupilIdentityValues);
 
@@ -171,8 +173,10 @@ class PupilIdentityManager {
 
         final bool ogsStatus =
             pupilIdentityValues[13] == 'OFFGANZ' ? true : false;
+
         final idAndOgsStatus =
             '${int.parse(pupilIdentityValues[0])},$ogsStatus';
+
         pupilListTxtFileContentForBackendUpdate += '$idAndOgsStatus\n';
       }
     }
@@ -185,9 +189,9 @@ class PupilIdentityManager {
 
     final textFile = File('temp.txt')
       ..writeAsStringSync(pupilListTxtFileContentForBackendUpdate);
-    final List<PupilData> updatedRepository =
+    final List<PupilData> updatedPupilDataRepository =
         await PupilDataApiService().updateBackendPupilsDatabase(file: textFile);
-    for (PupilData pupil in updatedRepository) {
+    for (PupilData pupil in updatedPupilDataRepository) {
       locator<PupilManager>().updatePupilProxyWithPupilData(pupil);
     }
     // We don't need the temp file any more, let's delete it
@@ -197,8 +201,8 @@ class PupilIdentityManager {
       _pupilIdentities[element.id] = element;
     }
 
-    await secureStorageWrite(
-        '${SecureStorageKey.sessions.value}_${locator<EnvManager>().defaultEnv.value}',
+    await AppSecureStorage.write(
+        '${SecureStorageKey.sessions.value}_${locator<EnvManager>().defaultEnv}',
         jsonEncode(_pupilIdentities.values.toList()));
 
     await locator<PupilManager>().fetchAllPupils();
@@ -206,8 +210,8 @@ class PupilIdentityManager {
     locator<NotificationService>().showSnackBar(NotificationType.success,
         '${_pupilIdentities.length} Schülerdaten wurden aktualisiert!');
 
-    locator<BottomNavManager>().setBottomNavPage(0);
-    locator<BottomNavManager>().pageViewController.value.jumpToPage(0);
+    locator<MainMenuBottomNavManager>().setBottomNavPage(0);
+    locator<MainMenuBottomNavManager>().pageViewController.value.jumpToPage(0);
     return;
   }
 
@@ -292,8 +296,7 @@ class PupilIdentityManager {
       _pupilIdentities.remove(id);
     }
 
-    writePupilIdentitiesToStorage(
-        envKey: locator<EnvManager>().defaultEnv.value);
+    writePupilIdentitiesToStorage(envKey: locator<EnvManager>().defaultEnv);
 
     log(' ${toBeDeletedPupilIds.length} SuS sind nicht mehr in der Datenbank und wurden gelöscht!');
 

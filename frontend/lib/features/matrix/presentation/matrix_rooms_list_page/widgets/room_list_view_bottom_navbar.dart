@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:schuldaten_hub/common/theme/colors.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
+import 'package:schuldaten_hub/common/theme/app_colors.dart';
 import 'package:schuldaten_hub/common/widgets/bottom_nav_bar_layouts.dart';
 import 'package:schuldaten_hub/features/matrix/domain/filters/matrix_policy_filter_manager.dart';
+import 'package:schuldaten_hub/features/matrix/domain/matrix_policy_manager.dart';
 import 'package:schuldaten_hub/features/matrix/presentation/matrix_rooms_list_page/widgets/rooms_filter_bottom_sheet.dart';
 import 'package:schuldaten_hub/features/matrix/presentation/matrix_users_list_page/matrix_users_list_page.dart';
 import 'package:watch_it/watch_it.dart';
@@ -13,7 +14,11 @@ class RoomListPageBottomNavBar extends WatchingWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool filtersOn = watchValue((MatrixPolicyFilterManager x) => x.filtersOn);
+    final bool filtersOn =
+        watchValue((MatrixPolicyFilterManager x) => x.filtersOn);
+    final bool pendingChanges =
+        watchValue((MatrixPolicyManager x) => x.pendingChanges);
+
     return BottomNavBarLayout(
       bottomNavBar: BottomAppBar(
         padding: const EdgeInsets.all(10),
@@ -36,6 +41,19 @@ class RoomListPageBottomNavBar extends WatchingWidget {
                     Navigator.pop(context);
                   },
                 ),
+                if (pendingChanges) ...<Widget>[
+                  const Gap(30),
+                  IconButton(
+                    tooltip: 'Änderungen speichern',
+                    icon: const Icon(
+                      Icons.save,
+                      size: 30,
+                    ),
+                    onPressed: () {
+                      locator<MatrixPolicyManager>().applyPolicyChanges();
+                    },
+                  ),
+                ],
                 const Gap(30),
                 IconButton(
                   tooltip: 'Neuer Raum',

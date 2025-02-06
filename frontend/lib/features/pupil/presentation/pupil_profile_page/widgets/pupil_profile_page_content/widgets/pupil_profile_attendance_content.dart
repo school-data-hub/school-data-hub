@@ -1,17 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:intl/intl.dart';
-import 'package:schuldaten_hub/common/domain/models/enums.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
-import 'package:schuldaten_hub/common/services/notification_service.dart';
-import 'package:schuldaten_hub/common/theme/colors.dart';
+import 'package:schuldaten_hub/common/theme/app_colors.dart';
 import 'package:schuldaten_hub/common/theme/paddings.dart';
-import 'package:schuldaten_hub/common/widgets/dialogs/confirmation_dialog.dart';
 import 'package:schuldaten_hub/features/attendance/domain/attendance_manager.dart';
 import 'package:schuldaten_hub/features/attendance/domain/models/missed_class.dart';
 import 'package:schuldaten_hub/features/attendance/presentation/missed_classes_pupil_list_page/missed_classes_pupil_list_page.dart';
-import 'package:schuldaten_hub/features/attendance/presentation/widgets/attendance_badges.dart';
 import 'package:schuldaten_hub/features/attendance/presentation/widgets/attendance_stats_pupil.dart';
+import 'package:schuldaten_hub/features/attendance/presentation/widgets/missed_class_card.dart';
 import 'package:schuldaten_hub/features/pupil/domain/models/pupil_proxy.dart';
 
 class PupilAttendanceContent extends StatelessWidget {
@@ -22,7 +18,7 @@ class PupilAttendanceContent extends StatelessWidget {
   Widget build(BuildContext context) {
     final List<int> missedHoursForActualReport =
         locator<AttendanceManager>().missedHoursforSemesterOrSchoolyear(pupil);
-    List<MissedClass> missedClasses = List.from(pupil.missedClasses!);
+    List<MissedClass> missedClasses = pupil.missedClasses!;
     // sort by missedDay
     missedClasses.sort((b, a) => a.missedDay.compareTo(b.missedDay));
     return Card(
@@ -98,111 +94,8 @@ class PupilAttendanceContent extends StatelessWidget {
               // pupil.pupilMissedClasses.sort(
               //     (a, b) => a.missedDay.compareTo(b.missedDay));
 
-              return Card(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                color: AppColors.cardInCardColor,
-                child: Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: GestureDetector(
-                    onTap: () {
-                      //- TO-DO: change missed class function
-                    },
-                    onLongPress: () async {
-                      bool? confirm = await confirmationDialog(
-                          context: context,
-                          title: 'Fehlzeit löschen',
-                          message: 'Die Fehlzeit löschen?');
-                      if (confirm != true) return;
-                      await locator<AttendanceManager>().deleteMissedClass(
-                          pupil.internalId, missedClasses[index].missedDay);
-
-                      locator<NotificationService>().showSnackBar(
-                          NotificationType.success, 'Fehlzeit gelöscht!');
-                    },
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Text(
-                              DateFormat('dd.MM.yyyy')
-                                  .format(missedClasses[index].missedDay)
-                                  .toString(),
-                              style: const TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20,
-                              ),
-                            ),
-                            const Gap(5),
-                            missedTypeBadge(missedClasses[index].missedType),
-                            const Gap(3),
-                            excusedBadge(missedClasses[index].unexcused),
-                            const Gap(3),
-                            contactedDayBadge(missedClasses[index].contacted),
-                            const Gap(3),
-                            returnedBadge(missedClasses[index].backHome),
-                          ],
-                        ),
-                        const Gap(5),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            if (missedClasses[index].missedType == 'late')
-                              Row(
-                                children: [
-                                  const Text('Verspätung:'),
-                                  const Gap(5),
-                                  Text(
-                                      '${missedClasses[index].minutesLate ?? 0} min',
-                                      style: const TextStyle(
-                                          fontWeight: FontWeight.bold)),
-                                ],
-                              ),
-                            const Gap(10),
-                            if (missedClasses[index].backHome == true)
-                              RichText(
-                                  text: TextSpan(
-                                text: 'abgeholt um: ',
-                                style: DefaultTextStyle.of(context).style,
-                                children: <TextSpan>[
-                                  TextSpan(
-                                      text: missedClasses[index].backHomeAt,
-                                      style: const TextStyle(
-                                          fontWeight: FontWeight.bold)),
-                                ],
-                              )),
-                          ],
-                        ),
-                        const Gap(5),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            const Text('erstellt von:'),
-                            const Gap(5),
-                            Text(
-                              missedClasses[index].createdBy,
-                              style:
-                                  const TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            const Spacer(),
-                            if (missedClasses[index].modifiedBy != null)
-                              const Text('zuletzt geändert von: '),
-                            if (missedClasses[index].modifiedBy != null)
-                              Text(
-                                missedClasses[index].createdBy,
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold),
-                              ),
-                          ],
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-              );
+              return MissedClassCard(
+                  pupil: pupil, missedClass: missedClasses[index]);
             },
           ),
         ]),
@@ -225,108 +118,7 @@ List<Widget> pupilAttendanceContentList(PupilProxy pupil, context) {
         // pupil.pupilMissedClasses.sort(
         //     (a, b) => a.missedDay.compareTo(b.missedDay));
 
-        return Card(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10.0),
-          ),
-          color: AppColors.cardInCardColor,
-          child: Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: GestureDetector(
-              onTap: () {
-                //- TO-DO: change missed class function
-              },
-              onLongPress: () async {
-                bool? confirm = await confirmationDialog(
-                    context: context,
-                    title: 'Fehlzeit löschen',
-                    message: 'Die Fehlzeit löschen?');
-                if (confirm != true) return;
-                await locator<AttendanceManager>().deleteMissedClass(
-                    pupil.internalId, missedClasses[index].missedDay);
-
-                locator<NotificationService>().showSnackBar(
-                    NotificationType.success, 'Fehlzeit gelöscht!');
-              },
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(
-                        DateFormat('dd.MM.yyyy')
-                            .format(missedClasses[index].missedDay)
-                            .toString(),
-                        style: const TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20,
-                        ),
-                      ),
-                      const Gap(5),
-                      missedTypeBadge(missedClasses[index].missedType),
-                      const Gap(3),
-                      excusedBadge(missedClasses[index].unexcused),
-                      const Gap(3),
-                      contactedDayBadge(missedClasses[index].contacted),
-                      const Gap(3),
-                      returnedBadge(missedClasses[index].backHome),
-                    ],
-                  ),
-                  const Gap(5),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      if (missedClasses[index].missedType == 'late')
-                        Row(
-                          children: [
-                            const Text('Verspätung:'),
-                            const Gap(5),
-                            Text('${missedClasses[index].minutesLate ?? 0} min',
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold)),
-                          ],
-                        ),
-                      const Gap(10),
-                      if (missedClasses[index].backHome == true)
-                        RichText(
-                            text: TextSpan(
-                          text: 'abgeholt um: ',
-                          style: DefaultTextStyle.of(context).style,
-                          children: <TextSpan>[
-                            TextSpan(
-                                text: missedClasses[index].backHomeAt,
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold)),
-                          ],
-                        )),
-                    ],
-                  ),
-                  const Gap(5),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      const Text('erstellt von:'),
-                      const Gap(5),
-                      Text(
-                        missedClasses[index].createdBy,
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      const Spacer(),
-                      if (missedClasses[index].modifiedBy != null)
-                        const Text('zuletzt geändert von: '),
-                      if (missedClasses[index].modifiedBy != null)
-                        Text(
-                          missedClasses[index].createdBy,
-                          style: const TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                    ],
-                  )
-                ],
-              ),
-            ),
-          ),
-        );
+        return MissedClassCard(pupil: pupil, missedClass: missedClasses[index]);
       },
     ),
   ];

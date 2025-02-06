@@ -8,7 +8,7 @@ import 'package:schuldaten_hub/common/domain/models/enums.dart';
 import 'package:schuldaten_hub/common/services/api/api_settings.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_service.dart';
-import 'package:schuldaten_hub/common/theme/colors.dart';
+import 'package:schuldaten_hub/common/theme/app_colors.dart';
 import 'package:schuldaten_hub/common/widgets/dialogs/confirmation_dialog.dart';
 import 'package:schuldaten_hub/common/widgets/dialogs/long_textfield_dialog.dart';
 import 'package:schuldaten_hub/common/widgets/document_image.dart';
@@ -112,7 +112,7 @@ class PupilAuthorizationsContentList extends WatchingWidget {
                                   InkWell(
                                     onTap: () async {
                                       final File? file =
-                                          await uploadImage(context);
+                                          await uploadImageFile(context);
                                       if (file == null) return;
                                       await locator<AuthorizationManager>()
                                           .postAuthorizationFile(
@@ -158,7 +158,7 @@ class PupilAuthorizationsContentList extends WatchingWidget {
                                                 documentTag:
                                                     pupilAuthorization.fileId!,
                                                 documentUrl:
-                                                    '${locator<EnvManager>().env.value.serverUrl}${AuthorizationRepository().getPupilAuthorizationFile(pupil.internalId, authorization.authorizationId)}',
+                                                    '${locator<EnvManager>().env!.serverUrl}${AuthorizationApiService().getPupilAuthorizationFile(pupil.internalId, authorization.authorizationId)}',
                                                 size: 70),
                                             child: const DocumentImage(),
                                           )

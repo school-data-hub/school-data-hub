@@ -25,6 +25,10 @@ Map<String, dynamic> _$SupportLevelToJson(SupportLevel instance) =>
 
 PupilData _$PupilDataFromJson(Map<String, dynamic> json) => PupilData(
       avatarId: json['avatar_id'] as String?,
+      avatarAuth: json['avatar_auth'] as bool,
+      avatarAuthId: json['avatar_auth_id'] as String?,
+      publicMediaAuth: (json['public_media_auth'] as num).toInt(),
+      publicMediaAuthId: json['public_media_auth_id'] as String?,
       communicationPupil: json['communication_pupil'] as String?,
       communicationTutor1: json['communication_tutor1'] as String?,
       communicationTutor2: json['communication_tutor2'] as String?,
@@ -42,6 +46,7 @@ PupilData _$PupilDataFromJson(Map<String, dynamic> json) => PupilData(
       pickUpTime: json['pick_up_time'] as String?,
       specialInformation: json['special_information'] as String?,
       preschoolRevision: (json['preschool_revision'] as num?)?.toInt(),
+      preschoolAttendance: json['preschool_attendance'] as String?,
       emergencyCare: json['emergency_care'] as bool?,
       supportCategoryStatuses: (json['support_category_statuses']
               as List<dynamic>)
@@ -81,6 +86,10 @@ PupilData _$PupilDataFromJson(Map<String, dynamic> json) => PupilData(
 
 Map<String, dynamic> _$PupilDataToJson(PupilData instance) => <String, dynamic>{
       'avatar_id': instance.avatarId,
+      'avatar_auth': instance.avatarAuth,
+      'avatar_auth_id': instance.avatarAuthId,
+      'public_media_auth': instance.publicMediaAuth,
+      'public_media_auth_id': instance.publicMediaAuthId,
       'communication_pupil': instance.communicationPupil,
       'communication_tutor1': instance.communicationTutor1,
       'communication_tutor2': instance.communicationTutor2,
@@ -95,6 +104,7 @@ Map<String, dynamic> _$PupilDataToJson(PupilData instance) => <String, dynamic>{
       'ogs_info': instance.ogsInfo,
       'pick_up_time': instance.pickUpTime,
       'preschool_revision': instance.preschoolRevision,
+      'preschool_attendance': instance.preschoolAttendance,
       'special_information': instance.specialInformation,
       'emergency_care': instance.emergencyCare,
       'competence_checks': instance.competenceChecks,

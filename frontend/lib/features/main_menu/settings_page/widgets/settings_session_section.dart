@@ -43,7 +43,7 @@ class SettingsSessionSection extends AbstractSettingsSection with WatchItMixin {
           leading: const Icon(Icons.home),
           title: const Text('Instanz:'),
           value: Text(
-            locator<EnvManager>().env.value.server!,
+            locator<EnvManager>().env!.server,
           ),
           trailing: null,
         ),
@@ -120,7 +120,7 @@ class SettingsSessionSection extends AbstractSettingsSection with WatchItMixin {
             final confirm = await confirmationDialog(
                 context: context,
                 title: 'Ausloggen',
-                message: 'Wirklich ausloggen?');
+                message: 'Wirklich ausloggen?\n\nDaten bleiben erhalten!');
             if (confirm == true && context.mounted) {
               sessionManager.logout();
               locator<NotificationService>().showSnackBar(
@@ -148,7 +148,7 @@ class SettingsSessionSection extends AbstractSettingsSection with WatchItMixin {
                 message: 'Kinder-Ids für diese Instanz löschen?');
             if (confirm == true && context.mounted) {
               PupilIdentityHelper.deletePupilIdentitiesForEnv(
-                  envManager.env.value.server!);
+                  envManager.env!.server);
               locator<NotificationService>().showSnackBar(
                   NotificationType.success, 'ID-Schlüssel gelöscht');
             }

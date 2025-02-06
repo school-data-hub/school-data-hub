@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:schuldaten_hub/common/theme/colors.dart';
 import 'package:schuldaten_hub/common/theme/styles.dart';
 
 Future<String?> longTextFieldDialog(
@@ -40,59 +39,59 @@ Future<String?> longTextFieldDialog(
             ),
             title: Text(title,
                 textAlign: TextAlign.center,
-                style:
-                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                )),
             actions: <Widget>[
-              TextButton(
-                onPressed: () {
-                  textEditingController.dispose();
-                  Navigator.of(parentContext).pop(null);
-                  return;
-                },
-                child: const Text(
-                  "ZURÜCK",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 17.0,
-                    color: AppColors.dangerButtonColor,
+              Padding(
+                padding: const EdgeInsets.all(5.0),
+                child: ElevatedButton(
+                  style: AppStyles.cancelButtonStyle,
+                  onPressed: () {
+                    textEditingController.dispose();
+                    Navigator.of(parentContext).pop(null);
+                    return;
+                  }, // Add onPressed
+                  child: const Text(
+                    "ABBRECHEN",
+                    style: AppStyles.buttonTextStyle,
                   ),
                 ),
               ),
               textinField != null
-                  ? TextButton(
-                      onPressed: () {
-                        String newSpecialInformation = '';
-
-                        textEditingController.dispose();
-                        Navigator.of(parentContext).pop(newSpecialInformation);
-                      },
-                      child: const Text(
-                        "LÖSCHEN",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 17.0,
-                          color: AppColors.warningButtonColor,
+                  ? Padding(
+                      padding: const EdgeInsets.all(5.0),
+                      child: ElevatedButton(
+                        style: AppStyles.actionButtonStyle,
+                        onPressed: () {
+                          textEditingController.dispose();
+                          Navigator.of(parentContext).pop(null);
+                          return;
+                        }, // Add onPressed
+                        child: const Text(
+                          "LÖSCHEN",
+                          style: AppStyles.buttonTextStyle,
                         ),
                       ),
                     )
                   : const SizedBox.shrink(),
-              TextButton(
-                onPressed: () {
-                  String? newSpecialInformation = textEditingController.text;
+              Padding(
+                padding: const EdgeInsets.all(5.0),
+                child: ElevatedButton(
+                  style: AppStyles.successButtonStyle,
+                  onPressed: () {
+                    String? newSpecialInformation = textEditingController.text;
 
-                  if (newSpecialInformation.isEmpty) {
-                    return;
-                  }
+                    if (newSpecialInformation.isEmpty) {
+                      return;
+                    }
 
-                  textEditingController.dispose();
-                  Navigator.of(parentContext).pop(newSpecialInformation);
-                },
-                child: const Text(
-                  "OKAY",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 17.0,
-                    color: AppColors.successButtonColor,
+                    textEditingController.dispose();
+                    Navigator.of(parentContext).pop(newSpecialInformation);
+                  }, // Add onPressed
+                  child: const Text(
+                    "OK",
+                    style: AppStyles.buttonTextStyle,
                   ),
                 ),
               ),

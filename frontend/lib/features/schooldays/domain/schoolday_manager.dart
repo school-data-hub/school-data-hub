@@ -34,7 +34,7 @@ class SchooldayManager {
     return this;
   }
 
-  final apiSchooldayService = SchooldayRepository();
+  final apiSchooldayService = SchooldayApiService();
 
   void clearData() {
     _schooldays.value = [];

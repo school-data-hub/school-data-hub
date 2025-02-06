@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:schuldaten_hub/common/theme/colors.dart';
-import 'package:schuldaten_hub/common/theme/paddings.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
+import 'package:schuldaten_hub/common/theme/app_colors.dart';
+import 'package:schuldaten_hub/common/theme/paddings.dart';
 import 'package:schuldaten_hub/common/utils/extensions.dart';
 import 'package:schuldaten_hub/features/pupil/domain/models/pupil_proxy.dart';
+import 'package:schuldaten_hub/features/pupil/domain/pupil_manager.dart';
 import 'package:schuldaten_hub/features/pupil/presentation/pupil_profile_page/widgets/dialogs/language_dialog.dart';
 import 'package:schuldaten_hub/features/pupil/presentation/pupil_profile_page/widgets/pupil_profile_page_content/widgets/pupil_communication_content_language_values.dart';
-import 'package:schuldaten_hub/features/pupil/domain/pupil_manager.dart';
 
 class PupilCommunicationContent extends StatelessWidget {
   final PupilProxy pupil;
@@ -91,8 +91,10 @@ class PupilCommunicationContent extends StatelessWidget {
           InkWell(
             onTap: () => languageDialog(context, pupil, 'communication_pupil',
                 pupil.communicationPupil),
-            onLongPress: () => locator<PupilManager>()
-                .patchPupil(pupil.internalId, 'communication_pupil', null),
+            onLongPress: () => locator<PupilManager>().patchOnePupilProperty(
+                pupilId: pupil.internalId,
+                jsonKey: 'communication_pupil',
+                value: null),
             child: pupil.communicationPupil == null
                 ? const Text(
                     'kein Eintrag',
@@ -135,8 +137,10 @@ class PupilCommunicationContent extends StatelessWidget {
           InkWell(
             onTap: () => languageDialog(context, pupil, 'communication_tutor1',
                 pupil.communicationTutor1),
-            onLongPress: () => locator<PupilManager>()
-                .patchPupil(pupil.internalId, 'communication_tutor1', null),
+            onLongPress: () => locator<PupilManager>().patchOnePupilProperty(
+                pupilId: pupil.internalId,
+                jsonKey: 'communication_tutor1',
+                value: null),
             child: pupil.communicationTutor1 == null
                 ? const Text(
                     'kein Eintrag',
@@ -179,8 +183,10 @@ class PupilCommunicationContent extends StatelessWidget {
           InkWell(
             onTap: () => languageDialog(context, pupil, 'communication_tutor2',
                 pupil.communicationTutor2),
-            onLongPress: () => locator<PupilManager>()
-                .patchPupil(pupil.internalId, 'communication_tutor2', null),
+            onLongPress: () => locator<PupilManager>().patchOnePupilProperty(
+                pupilId: pupil.internalId,
+                jsonKey: 'communication_tutor2',
+                value: null),
             child: pupil.communicationTutor2 == null
                 ? const Text(
                     'kein Eintrag',

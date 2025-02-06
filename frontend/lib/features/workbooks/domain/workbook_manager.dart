@@ -19,9 +19,9 @@ class WorkbookManager {
   WorkbookManager();
   final session = locator.get<SessionManager>().credentials.value;
 
-  final apiPupilWorkbookService = PupilWorkbookRepository();
+  final apiPupilWorkbookService = PupilWorkbookApiService();
 
-  final apiWorkbookService = WorkbookRepository();
+  final apiWorkbookService = WorkbookApiService();
 
   final notificationService = locator<NotificationService>();
 
@@ -142,6 +142,32 @@ class WorkbookManager {
 
     notificationService.showSnackBar(
         NotificationType.success, 'Arbeitsheft erstellt');
+
+    return;
+  }
+
+  Future<void> updatePupilWorkbook(
+      {required int pupilId,
+      required int isbn,
+      String? comment,
+      int? status,
+      String? createdBy,
+      DateTime? createdAt,
+      DateTime? finishedAt}) async {
+    final PupilData responsePupil =
+        await apiPupilWorkbookService.patchPupilWorkbook(
+            pupilId: pupilId,
+            isbn: isbn,
+            comment: comment,
+            status: status,
+            createdBy: createdBy,
+            createdAt: createdAt,
+            finishedAt: finishedAt);
+
+    pupilManager.updatePupilProxyWithPupilData(responsePupil);
+
+    notificationService.showSnackBar(
+        NotificationType.success, 'Arbeitsheft aktualisiert');
 
     return;
   }

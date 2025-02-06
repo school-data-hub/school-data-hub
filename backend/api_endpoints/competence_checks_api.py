@@ -46,26 +46,91 @@ def post_competence_check(current_user, internal_id, json_data):
     if competence == None:
         abort(400, "Diese Kompetenz existiert nicht!")
     check_id = str(uuid.uuid4().hex)
-    is_report = data["is_report"]
     created_by = current_user.name
     created_at = now_as_date()
     competence_status = data["competence_status"]
     comment = data["comment"]
-    report_id = data["report_id"]
+    value_factor = json_data.get("value_factor")
+    group_id = json_data.get("group_id")
+    group_name = json_data.get("group_name")
+
     new_competence_check = CompetenceCheck(
         check_id,
-        is_report,
         created_by,
         created_at,
         competence_status,
         comment,
         internal_id,
         competence_id,
-        report_id,
+        value_factor,
+        group_id,
+        group_name,
     )
     db.session.add(new_competence_check)
     # - LOG ENTRY
     create_log_entry(current_user, request, json_data)
+    db.session.commit()
+    return pupil
+
+
+# - POST EMPTY COMPETENCE CHECK WITH FILE
+
+
+@competence_check_api.route(
+    "/<internal_id>/<competence_id>/<group_id>/new", methods=["POST"]
+)
+@competence_check_api.input(ApiFileSchema, location="files")
+@competence_check_api.output(pupil_schema)
+@competence_check_api.doc(
+    security="ApiKeyAuth",
+    tags=["Competence Checks"],
+    summary="Post group check with file for a competence from a given pupil",
+)
+@token_required
+def post_competence_check_with_file(
+    current_user, internal_id, competence_id, group_id, files_data
+):
+    pupil = get_pupil_by_id(internal_id)
+    if pupil == None:
+        abort(400, "Diese/r Schüler/in existiert nicht!")
+
+    competence = Competence.query.filter_by(competence_id=competence_id).first()
+    if competence == None:
+        abort(400, "Diese Kompetenz existiert nicht!")
+    check_id = str(uuid.uuid4().hex)
+    created_by = current_user.name
+    created_at = now_as_date()
+    competence_status = 0
+    comment = ""
+    value_factor = None
+    group_name = None
+
+    file_id = str(uuid.uuid4().hex)
+    if "file" not in files_data:
+        abort(400, "Keine Datei vorhanden!")
+
+    file = files_data["file"]
+    filename = file_id + ".jpg"
+    file_url = current_app.config["UPLOAD_FOLDER"] + "/chck/" + filename
+    file.save(file_url)
+    new_competence_check_file = CompetenceCheckFile(check_id, file_id, file_url)
+    db.session.add(new_competence_check_file)
+
+    new_competence_check = CompetenceCheck(
+        check_id,
+        created_by,
+        created_at,
+        competence_status,
+        comment,
+        internal_id,
+        competence_id,
+        value_factor,
+        group_id,
+        group_name,
+    )
+    db.session.add(new_competence_check)
+    # - LOG ENTRY
+    create_log_entry(current_user, request, {"file": file_id})
     db.session.commit()
     return pupil
 
@@ -96,8 +161,13 @@ def patch_competence_check(current_user, check_id, json_data):
                 competence_check.comment = data[key]
             case "created_at":
                 competence_check.created_at = data[key]
-            case "is_report":
-                competence_check.is_report = data[key]
+
+            case "value_factor":
+                competence_check.value_factor = data[key]
+            case "group_id":
+                competence_check.group_id = data[key]
+            case "group_name":
+                competence_check.group_name = data[key]
 
     # - LOG ENTRY
     create_log_entry(current_user, request, json_data)
@@ -200,8 +270,6 @@ def download_competence_image(current_user, file_id):
 )
 @token_required
 def delete_competence_check(current_user, check_id):
-    if not current_user.admin:
-        abort(401, "Keine Berechtigung!")
     competence_check = CompetenceCheck.query.filter_by(check_id=check_id).first()
     pupil = get_pupil_by_id(competence_check.pupil_id)
     if not competence_check:

@@ -19,10 +19,13 @@ class CompetenceCheck {
   final String createdBy;
   @JsonKey(name: 'pupil_id')
   final int pupilId;
-  @JsonKey(name: 'is_report')
-  final bool isReport;
-  @JsonKey(name: 'report_id')
-  final String? reportId;
+
+  @JsonKey(name: 'value_factor')
+  final double? valueFactor;
+  @JsonKey(name: 'group_name')
+  final String? groupName;
+  @JsonKey(name: 'group_id')
+  final String? groupId;
   @JsonKey(name: "competence_check_files")
   final List<CompetenceCheckFile>? competenceCheckFiles;
 
@@ -34,8 +37,9 @@ class CompetenceCheck {
       required this.createdAt,
       required this.createdBy,
       required this.pupilId,
-      required this.isReport,
-      required this.reportId,
+      required this.valueFactor,
+      required this.groupName,
+      required this.groupId,
       required this.competenceCheckFiles});
 
   factory CompetenceCheck.fromJson(Map<String, dynamic> json) =>

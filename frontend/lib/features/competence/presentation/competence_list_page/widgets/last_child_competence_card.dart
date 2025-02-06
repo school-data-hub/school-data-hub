@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gap/gap.dart';
-import 'package:schuldaten_hub/common/widgets/custom_expansion_tile/custom_expansion_tile_content.dart';
-import 'package:schuldaten_hub/common/widgets/custom_expansion_tile/custom_expansion_tile_switch.dart';
-import 'package:schuldaten_hub/common/widgets/custom_expansion_tile/custom_expasion_tile_hook.dart';
+import 'package:schuldaten_hub/common/widgets/grades_widget.dart';
 import 'package:schuldaten_hub/features/competence/domain/models/competence.dart';
-import 'package:schuldaten_hub/features/competence/presentation/competence_list_page/widgets/competence_filtered_pupils.dart';
 
-class LastChildCompetenceCard extends HookWidget {
+class LastChildCompetenceCard extends StatelessWidget {
   final Competence competence;
   final Function({int? competenceId, Competence? competence})
       navigateToNewOrPatchCompetencePage;
@@ -18,7 +14,6 @@ class LastChildCompetenceCard extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final pupilListController = useCustomExpansionTileController();
     return Card(
       color: Colors.white,
       shape: RoundedRectangleBorder(
@@ -33,8 +28,8 @@ class LastChildCompetenceCard extends HookWidget {
               children: [
                 Flexible(
                   child: InkWell(
-                    // onTap: () => navigateToNewOrPatchCompetencePage(
-                    //     competence: competence),
+                    onTap: () => navigateToNewOrPatchCompetencePage(
+                        competence: competence),
                     onLongPress: () => navigateToNewOrPatchCompetencePage(
                         competenceId: competence.competenceId),
                     child: Text(
@@ -81,60 +76,13 @@ class LastChildCompetenceCard extends HookWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Flexible(
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              if (competence.competenceLevel!
-                                  .contains('E1')) ...[
-                                Image.asset(
-                                  'assets/grade_1.png',
-                                  width: 22,
-                                ),
-                                const Gap(5)
-                              ],
-                              if (competence.competenceLevel!
-                                  .contains('E2')) ...[
-                                Image.asset(
-                                  'assets/grade_2.png',
-                                  width: 22,
-                                ),
-                                const Gap(5)
-                              ],
-                              if (competence.competenceLevel!
-                                  .contains('S3')) ...[
-                                Image.asset(
-                                  'assets/grade_3.png',
-                                  width: 22,
-                                ),
-                                const Gap(5)
-                              ],
-                              if (competence.competenceLevel!
-                                  .contains('S4')) ...[
-                                Image.asset(
-                                  'assets/grade_4.png',
-                                  width: 22,
-                                ),
-                                const Gap(5)
-                              ],
-                            ],
-                          ),
-                        ),
+                            child: GradesWidget(
+                                stringWithGrades: competence.competenceLevel!)),
                         const Gap(10),
-                        CustomExpansionTileSwitch(
-                          customExpansionTileController: pupilListController,
-                          expansionSwitchWidget: const Icon(
-                            Icons.add,
-                            color: Colors.black,
-                          ),
-                        ),
                       ],
                     ),
                   )
                 : const SizedBox.shrink(),
-            CustomExpansionTileContent(
-              tileController: pupilListController,
-              widgetList: competenceFilteredPupils(competence: competence),
-            ),
           ],
         ),
       ),

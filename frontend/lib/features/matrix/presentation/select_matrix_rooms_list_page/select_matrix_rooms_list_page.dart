@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:schuldaten_hub/common/theme/colors.dart';
+import 'package:schuldaten_hub/common/theme/app_colors.dart';
 import 'package:schuldaten_hub/common/theme/styles.dart';
 import 'package:schuldaten_hub/features/matrix/domain/models/matrix_room.dart';
 import 'package:schuldaten_hub/features/matrix/presentation/select_matrix_rooms_list_page/controller/select_matrix_rooms_list_controller.dart';
 import 'package:schuldaten_hub/features/matrix/presentation/select_matrix_rooms_list_page/widgets/select_matrix_room_card.dart';
 import 'package:schuldaten_hub/features/matrix/presentation/select_matrix_rooms_list_page/widgets/select_matrix_rooms_list_view_bottom_navbar.dart';
 import 'package:schuldaten_hub/features/matrix/presentation/select_matrix_rooms_list_page/widgets/select_room_list_searchbar.dart';
-
 import 'package:watch_it/watch_it.dart';
 
 class SelectMatrixRoomsListPage extends WatchingWidget {
@@ -26,7 +25,10 @@ class SelectMatrixRoomsListPage extends WatchingWidget {
                 onPressed: () {
                   controller.cancelSelect();
                 },
-                icon: const Icon(Icons.close))
+                icon: const Icon(
+                  Icons.close,
+                  color: Colors.white,
+                ))
             : null,
         automaticallyImplyLeading: false,
         centerTitle: true,

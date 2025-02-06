@@ -1,9 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
-import 'package:schuldaten_hub/features/matrix/domain/models/matrix_room.dart';
 import 'package:schuldaten_hub/features/matrix/domain/matrix_policy_manager.dart';
 import 'package:schuldaten_hub/features/matrix/domain/matrix_room_helpers.dart';
+import 'package:schuldaten_hub/features/matrix/domain/models/matrix_room.dart';
 
 part 'matrix_user.g.dart';
 
@@ -48,6 +48,7 @@ class MatrixUser extends ChangeNotifier {
   String get displayName => _displayName;
   List<String> get joinedRoomIds => _joinedRoomIds;
   List<MatrixRoom> get matrixRooms => _matrixRooms;
+  bool get isParent => _id!.contains('_e') ? true : false;
 
   // Setters
   set displayName(String value) {

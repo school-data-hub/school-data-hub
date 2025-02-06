@@ -12,9 +12,9 @@ import 'package:schuldaten_hub/features/pupil/domain/filters/pupil_filter_enums.
 import 'package:schuldaten_hub/features/pupil/domain/filters/pupil_filter_manager.dart';
 import 'package:schuldaten_hub/features/pupil/domain/filters/pupil_text_filter.dart';
 import 'package:schuldaten_hub/features/pupil/domain/filters/pupils_filter.dart';
+import 'package:schuldaten_hub/features/pupil/domain/models/pupil_proxy.dart';
 import 'package:schuldaten_hub/features/pupil/domain/pupil_helper_functions.dart';
 import 'package:schuldaten_hub/features/pupil/domain/pupil_manager.dart';
-import 'package:schuldaten_hub/features/pupil/domain/models/pupil_proxy.dart';
 import 'package:schuldaten_hub/features/schoolday_events/domain/filters/schoolday_event_filter_manager.dart';
 import 'package:schuldaten_hub/features/schoolday_events/domain/schoolday_event_helper_functions.dart';
 
@@ -64,6 +64,7 @@ class PupilsFilterImplementation with ChangeNotifier implements PupilsFilter {
   late List<Filter> allFilters = [
     ...schoolGradeFilters,
     ...groupFilters,
+    ...genderFilters,
     _textFilter,
   ];
 
@@ -140,6 +141,11 @@ class PupilsFilterImplementation with ChangeNotifier implements PupilsFilter {
     bool isAnySchoolGradeFilterActive =
         schoolGradeFilters.any((filter) => filter.isActive);
 
+    bool isAnyGenderFilterActive =
+        genderFilters.any((filter) => filter.isActive);
+
+    bool isTextFilterActive = _textFilter.isActive;
+
     for (final pupil in allPupils) {
       // matches if no group filter is active or if the group matches the pupil's group
 
@@ -163,6 +169,14 @@ class PupilsFilterImplementation with ChangeNotifier implements PupilsFilter {
         continue;
       }
 
+      bool isMatchedByGenderFilter = !isAnyGenderFilterActive ||
+          genderFilters
+              .any((filter) => filter.isActive && filter.matches(pupil));
+
+      if (!isMatchedByGenderFilter) {
+        filtersOn = true;
+        continue;
+      }
       // if the pupil is not matched by the text filter, skip the pupil
 
       if (_textFilter.isActive && !_textFilter.matches(pupil)) {
@@ -230,8 +244,8 @@ class PupilsFilterImplementation with ChangeNotifier implements PupilsFilter {
         thisFilteredPupils.map((e) => e.internalId).toList();
     if (filtersOn) {
       //- TODO: Do we need this if we already use FiltersStateManager?
-      // locator<FiltersStateManager>()
-      //     .setFilterState(filterState: FilterState.pupil, value: false);
+      locator<FiltersStateManager>()
+          .setFilterState(filterState: FilterState.pupil, value: true);
     }
     sortPupils();
   }
@@ -290,6 +304,9 @@ class PupilsFilterImplementation with ChangeNotifier implements PupilsFilter {
         thisFilteredPupils.sort((a, b) => AttendanceHelper.contactedSum(b)
             .compareTo(AttendanceHelper.contactedSum(a)));
 
+      case PupilSortMode.sortByGoneHome:
+        thisFilteredPupils.sort((a, b) => AttendanceHelper.goneHomeSum(b)
+            .compareTo(AttendanceHelper.goneHomeSum(a)));
       default:
         PupilSortMode.sortByName;
     }
@@ -317,4 +334,7 @@ class PupilsFilterImplementation with ChangeNotifier implements PupilsFilter {
 
   @override
   List<Filter> get schoolGradeFilters => PupilProxy.schoolGradeFilters;
+
+  @override
+  List<Filter> get genderFilters => PupilProxy.genderFilters;
 }

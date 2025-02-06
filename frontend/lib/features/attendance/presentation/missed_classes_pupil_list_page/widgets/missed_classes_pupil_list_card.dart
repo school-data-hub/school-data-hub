@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
+import 'package:schuldaten_hub/common/theme/app_colors.dart';
 import 'package:schuldaten_hub/common/widgets/avatar.dart';
 import 'package:schuldaten_hub/common/widgets/custom_expansion_tile/custom_expansion_tile.dart';
 import 'package:schuldaten_hub/common/widgets/custom_expansion_tile/custom_expansion_tile_content.dart';
-import 'package:schuldaten_hub/features/attendance/presentation/widgets/attendance_stats_pupil.dart';
+import 'package:schuldaten_hub/common/widgets/custom_expansion_tile/custom_expansion_tile_switch.dart';
 import 'package:schuldaten_hub/features/attendance/domain/attendance_manager.dart';
+import 'package:schuldaten_hub/features/attendance/presentation/widgets/attendance_stats_pupil.dart';
 import 'package:schuldaten_hub/features/main_menu/widgets/landing_bottom_nav_bar.dart';
 import 'package:schuldaten_hub/features/pupil/domain/models/pupil_proxy.dart';
 import 'package:schuldaten_hub/features/pupil/presentation/pupil_profile_page/pupil_profile_page.dart';
@@ -65,7 +67,7 @@ class _AttendanceRankingListCardState extends State<AttendanceRankingListCard> {
                                 scrollDirection: Axis.horizontal,
                                 child: InkWell(
                                   onTap: () {
-                                    locator<BottomNavManager>()
+                                    locator<MainMenuBottomNavManager>()
                                         .setPupilProfileNavPage(3);
                                     Navigator.of(context)
                                         .push(MaterialPageRoute(
@@ -114,16 +116,16 @@ class _AttendanceRankingListCardState extends State<AttendanceRankingListCard> {
                             Flexible(
                               child: SingleChildScrollView(
                                 scrollDirection: Axis.horizontal,
-                                child: InkWell(
-                                    onTap: () {
-                                      _tileController.isExpanded
-                                          ? _tileController.collapse()
-                                          : _tileController.expand();
-                                    },
-                                    child: attendanceStats(pupil)),
+                                child: CustomExpansionTileSwitch(
+                                    customExpansionTileController:
+                                        _tileController,
+                                    includeSwitch: true,
+                                    switchColor: AppColors.interactiveColor,
+                                    expansionSwitchWidget:
+                                        attendanceStats(pupil)),
                               ),
                             ),
-                            const Gap(20),
+                            const Gap(10),
                           ],
                         ),
                       ],

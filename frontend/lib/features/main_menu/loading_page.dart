@@ -4,7 +4,7 @@ import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/domain/env_manager.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_service.dart';
-import 'package:schuldaten_hub/common/theme/colors.dart';
+import 'package:schuldaten_hub/common/theme/app_colors.dart';
 import 'package:watch_it/watch_it.dart';
 
 class LoadingPage extends WatchingStatefulWidget {
@@ -38,7 +38,7 @@ class LoadingPageState extends State<LoadingPage> {
         ),
         child: Center(
           child: SizedBox(
-            height: 520,
+            height: 600,
             width: 600,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -60,9 +60,9 @@ class LoadingPageState extends State<LoadingPage> {
                   ),
                 ),
                 const Gap(15),
-                if (locator<EnvManager>().env.value.server != null)
+                if (locator<EnvManager>().env != null)
                   Text(
-                    locator<EnvManager>().env.value.server!,
+                    locator<EnvManager>().env!.server,
                     style: const TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
@@ -70,17 +70,25 @@ class LoadingPageState extends State<LoadingPage> {
                     ),
                   ),
                 const Spacer(),
-                Text(lastNotificationMessage,
-                    style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold)),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Text(lastNotificationMessage,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold)),
+                ),
                 const Gap(5),
-                Text(actualNotificationMessage,
-                    style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold)),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Text(actualNotificationMessage,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold)),
+                ),
                 const Gap(30),
                 const CircularProgressIndicator(
                   color: Colors.white,

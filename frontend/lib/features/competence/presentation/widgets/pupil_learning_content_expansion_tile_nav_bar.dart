@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:schuldaten_hub/common/theme/colors.dart';
-import 'package:schuldaten_hub/common/widgets/custom_expansion_tile/custom_expansion_tile_content.dart';
-import 'package:schuldaten_hub/common/widgets/custom_expansion_tile/custom_expasion_tile_hook.dart';
-import 'package:schuldaten_hub/features/competence/presentation/learning_pupil_list_page/widgets/pupil_learning_content/pupil_learning_content_books.dart';
-import 'package:schuldaten_hub/features/competence/presentation/learning_pupil_list_page/widgets/pupil_learning_content/pupil_learning_content_competence_goals.dart';
-import 'package:schuldaten_hub/features/competence/presentation/learning_pupil_list_page/widgets/pupil_learning_content/pupil_learning_content_competence_statuses.dart';
-import 'package:schuldaten_hub/features/competence/presentation/learning_pupil_list_page/widgets/pupil_learning_content/pupil_learning_content_workbooks.dart';
+import 'package:schuldaten_hub/common/services/locator.dart';
+import 'package:schuldaten_hub/common/theme/app_colors.dart';
+import 'package:schuldaten_hub/features/competence/presentation/pupil_competence_list_page/widgets/pupil_learning_content/pupil_learning_content_books.dart';
+import 'package:schuldaten_hub/features/competence/presentation/pupil_competence_list_page/widgets/pupil_learning_content/pupil_learning_content_competence_goals.dart';
+import 'package:schuldaten_hub/features/competence/presentation/pupil_competence_list_page/widgets/pupil_learning_content/pupil_learning_content_competence_statuses.dart';
+import 'package:schuldaten_hub/features/competence/presentation/pupil_competence_list_page/widgets/pupil_learning_content/pupil_learning_content_workbooks.dart';
 import 'package:schuldaten_hub/features/pupil/domain/models/pupil_proxy.dart';
+import 'package:watch_it/watch_it.dart';
 
 enum SelectedContent {
   competenceStatuses,
@@ -17,29 +16,69 @@ enum SelectedContent {
   none,
 }
 
-class SelectedContentNotifier extends StateNotifier<SelectedContent> {
-  SelectedContentNotifier() : super(SelectedContent.none);
+class SelectedLearningContentNotifier extends ChangeNotifier {
+  // Private constructor
+  SelectedLearningContentNotifier._privateConstructor();
+
+  // Static instance
+  static final SelectedLearningContentNotifier _instance =
+      SelectedLearningContentNotifier._privateConstructor();
+
+  // Factory constructor
+  factory SelectedLearningContentNotifier() {
+    return _instance;
+  }
+
+  SelectedContent _selectedContent = SelectedContent.competenceStatuses;
+
+  SelectedContent get selectedContent => _selectedContent;
 
   void select(SelectedContent content) {
-    state = content;
+    _selectedContent = content;
+    notifyListeners();
   }
 }
 
-final selectedContentProvider =
-    StateNotifierProvider.autoDispose<SelectedContentNotifier, SelectedContent>(
-  (ref) => SelectedContentNotifier(),
-);
-
-class PupilLearningContentExpansionTileNavBar extends HookConsumerWidget {
+class PupilLearningContentExpansionTileNavBar extends WatchingWidget {
   final PupilProxy pupil;
 
   const PupilLearningContentExpansionTileNavBar(
       {required this.pupil, super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final selectedContent = ref.watch(selectedContentProvider);
-    final tileController = useCustomExpansionTileController();
+  Widget build(BuildContext context) {
+    final selectedContentNotifier = locator<SelectedLearningContentNotifier>();
+    final selectedContent = watch(selectedContentNotifier).selectedContent;
+
+    return Column(
+      children: [
+        const PupilLearningContentNavBar(),
+        Padding(
+            padding: const EdgeInsets.only(top: 5),
+            child: (selectedContent == SelectedContent.competenceStatuses)
+                ? PupilLearningContentCompetenceStatuses(pupil: pupil)
+                : (selectedContent == SelectedContent.competenceGoals)
+                    ? PupilLearningContentCompetenceGoals(pupil: pupil)
+                    : (selectedContent == SelectedContent.workbooks)
+                        ? PupilLearningContentWorkbooks(pupil: pupil)
+                        :
+                        //  (selectedContent == SelectedContent.books):
+                        PupilLearningContentBooks(pupil: pupil))
+      ],
+    );
+  }
+}
+
+class PupilLearningContentNavBar extends WatchingWidget {
+  //final PupilProxy pupil;
+
+  const PupilLearningContentNavBar({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final selectedContentNotifier = locator<SelectedLearningContentNotifier>();
+    final selectedContent = watch(selectedContentNotifier).selectedContent;
+
     return Column(
       children: [
         Row(
@@ -57,24 +96,11 @@ class PupilLearningContentExpansionTileNavBar extends HookConsumerWidget {
               ),
               onPressed: () {
                 if (selectedContent != SelectedContent.competenceStatuses) {
-                  if (tileController.isExpanded) {
-                    tileController.collapse();
-                    ref
-                        .read(selectedContentProvider.notifier)
-                        .select(SelectedContent.competenceStatuses);
-                    tileController.expand();
-                    return;
-                  }
-                  ref
-                      .read(selectedContentProvider.notifier)
+                  selectedContentNotifier
                       .select(SelectedContent.competenceStatuses);
 
-                  tileController.expand();
                   return;
                 }
-                tileController.isExpanded
-                    ? tileController.collapse()
-                    : tileController.expand();
               },
             ),
             IconButton(
@@ -89,24 +115,11 @@ class PupilLearningContentExpansionTileNavBar extends HookConsumerWidget {
               ),
               onPressed: () {
                 if (selectedContent != SelectedContent.competenceGoals) {
-                  if (tileController.isExpanded) {
-                    tileController.collapse();
-                    ref
-                        .read(selectedContentProvider.notifier)
-                        .select(SelectedContent.competenceGoals);
-                    tileController.expand();
-                    return;
-                  }
-                  ref
-                      .read(selectedContentProvider.notifier)
+                  selectedContentNotifier
                       .select(SelectedContent.competenceGoals);
 
-                  tileController.expand();
                   return;
                 }
-                tileController.isExpanded
-                    ? tileController.collapse()
-                    : tileController.expand();
               },
             ),
             IconButton(
@@ -121,24 +134,10 @@ class PupilLearningContentExpansionTileNavBar extends HookConsumerWidget {
               ),
               onPressed: () {
                 if (selectedContent != SelectedContent.workbooks) {
-                  if (tileController.isExpanded) {
-                    tileController.collapse();
-                    ref
-                        .read(selectedContentProvider.notifier)
-                        .select(SelectedContent.workbooks);
-                    tileController.expand();
-                    return;
-                  }
-                  ref
-                      .read(selectedContentProvider.notifier)
-                      .select(SelectedContent.workbooks);
+                  selectedContentNotifier.select(SelectedContent.workbooks);
 
-                  tileController.expand();
                   return;
                 }
-                tileController.isExpanded
-                    ? tileController.collapse()
-                    : tileController.expand();
               },
             ),
             IconButton(
@@ -153,44 +152,14 @@ class PupilLearningContentExpansionTileNavBar extends HookConsumerWidget {
               ),
               onPressed: () {
                 if (selectedContent != SelectedContent.books) {
-                  if (tileController.isExpanded) {
-                    tileController.collapse();
-                    ref
-                        .read(selectedContentProvider.notifier)
-                        .select(SelectedContent.books);
-                    tileController.expand();
-                    return;
-                  }
-                  ref
-                      .read(selectedContentProvider.notifier)
-                      .select(SelectedContent.books);
+                  selectedContentNotifier.select(SelectedContent.books);
 
-                  tileController.expand();
                   return;
                 }
-                tileController.isExpanded
-                    ? tileController.collapse()
-                    : tileController.expand();
               },
             ),
           ],
         ),
-        Padding(
-          padding: const EdgeInsets.only(top: 5),
-          child: CustomExpansionTileContent(
-              title: null,
-              tileController: tileController,
-              widgetList: [
-                if (selectedContent == SelectedContent.competenceStatuses)
-                  PupilLearningContentCompetenceStatuses(pupil: pupil),
-                if (selectedContent == SelectedContent.competenceGoals)
-                  PupilLearningContentCompetenceGoals(pupil: pupil),
-                if (selectedContent == SelectedContent.workbooks)
-                  PupilLearningContentWorkbooks(pupil: pupil),
-                if (selectedContent == SelectedContent.books)
-                  PupilLearningContentBooks(pupil: pupil)
-              ]),
-        )
       ],
     );
   }

@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
-import 'package:schuldaten_hub/common/theme/colors.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
+import 'package:schuldaten_hub/common/theme/app_colors.dart';
 import 'package:schuldaten_hub/common/widgets/custom_expansion_tile/custom_expansion_tile.dart';
 import 'package:schuldaten_hub/common/widgets/custom_expansion_tile/custom_expansion_tile_content.dart';
+import 'package:schuldaten_hub/common/widgets/dialogs/confirmation_dialog.dart';
+import 'package:schuldaten_hub/features/matrix/domain/matrix_policy_manager.dart';
+import 'package:schuldaten_hub/features/matrix/domain/matrix_room_helpers.dart';
 import 'package:schuldaten_hub/features/matrix/domain/models/matrix_room.dart';
 import 'package:schuldaten_hub/features/matrix/domain/models/matrix_user.dart';
 import 'package:schuldaten_hub/features/matrix/presentation/matrix_room_page/matrix_room_page.dart';
 import 'package:schuldaten_hub/features/matrix/presentation/matrix_rooms_list_page/widgets/change_power_levels_dialog.dart';
 import 'package:schuldaten_hub/features/matrix/presentation/matrix_rooms_list_page/widgets/users_in_room_list.dart';
-import 'package:schuldaten_hub/features/matrix/domain/matrix_policy_manager.dart';
-import 'package:schuldaten_hub/features/matrix/domain/matrix_room_helpers.dart';
 import 'package:watch_it/watch_it.dart';
 
 class RoomListCard extends WatchingStatefulWidget {
@@ -32,11 +33,11 @@ class _RoomListCardState extends State<RoomListCard> {
 
   @override
   Widget build(BuildContext context) {
-    // PupilProxy pupil = watchValue((PupilFilterManager x) => x.filteredPupils)
-    //     .where((element) => element.internalId == widget.passedPupil.internalId)
-    //     .first;
+    final rooms = watchValue((MatrixPolicyManager x) => x.matrixRooms);
+    final room =
+        rooms.firstWhere((element) => element.id == widget.matrixRoom.id);
     final List<MatrixUser> matrixUsersInRoom =
-        MatrixRoomHelper.usersInRoom(widget.matrixRoom.id);
+        MatrixRoomHelper.usersInRoom(room.id);
     return Card(
       color: Colors.white,
       surfaceTintColor: Colors.white,
@@ -70,12 +71,12 @@ class _RoomListCardState extends State<RoomListCard> {
                                 //     .setPupilProfileNavPage(2);
                                 Navigator.of(context).push(MaterialPageRoute(
                                   builder: (ctx) => MatrixRoomPage(
-                                    matrixRoom: widget.matrixRoom,
+                                    matrixRoom: room,
                                   ),
                                 ));
                               },
                               child: Text(
-                                '${widget.matrixRoom.name}',
+                                '${room.name}',
                                 overflow: TextOverflow.fade,
                                 softWrap: false,
                                 textAlign: TextAlign.left,
@@ -90,9 +91,9 @@ class _RoomListCardState extends State<RoomListCard> {
                         ),
                       ],
                     ),
-                    const Gap(5),
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
                       children: [
                         Expanded(
                           child: SingleChildScrollView(
@@ -100,26 +101,25 @@ class _RoomListCardState extends State<RoomListCard> {
                             child: Row(
                               children: [
                                 SelectableText(
-                                  widget.matrixRoom.id,
+                                  room.id,
                                   style: const TextStyle(
                                     fontSize: 14,
                                   ),
                                 ),
-                                const Gap(10),
+                                IconButton(
+                                  icon: const Icon(Icons.copy),
+                                  onPressed: () {
+                                    Clipboard.setData(
+                                        ClipboardData(text: room.id));
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                          content: Text('Copied to clipboard')),
+                                    );
+                                  },
+                                ),
                               ],
                             ),
                           ),
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.copy),
-                          onPressed: () {
-                            Clipboard.setData(
-                                ClipboardData(text: widget.matrixRoom.id));
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                  content: Text('Copied to clipboard')),
-                            );
-                          },
                         ),
                       ],
                     ),
@@ -151,15 +151,13 @@ class _RoomListCardState extends State<RoomListCard> {
                                         newPowerLevel < 0) return;
                                     locator<MatrixPolicyManager>()
                                         .changeRoomPowerLevels(
-                                      roomId: widget.matrixRoom.id,
+                                      roomId: room.id,
                                       eventsDefault:
-                                          widget.matrixRoom.eventsDefault == 50
-                                              ? 0
-                                              : 50,
+                                          room.eventsDefault == 50 ? 0 : 50,
                                     );
                                   },
                                   child: Text(
-                                    widget.matrixRoom.eventsDefault.toString(),
+                                    room.eventsDefault.toString(),
                                     style: const TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold,
@@ -177,8 +175,7 @@ class _RoomListCardState extends State<RoomListCard> {
                                 const Gap(5),
                                 InkWell(
                                   child: Text(
-                                    widget.matrixRoom.powerLevelReactions
-                                        .toString(),
+                                    room.powerLevelReactions.toString(),
                                     style: const TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold,
@@ -205,13 +202,29 @@ class _RoomListCardState extends State<RoomListCard> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            for (final roomAdmin
-                                in widget.matrixRoom.roomAdmins!)
+                            for (final roomAdmin in room.roomAdmins!)
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    roomAdmin.id,
+                                  InkWell(
+                                    onLongPress: () async {
+                                      final bool? confirmation =
+                                          await confirmationDialog(
+                                              context: context,
+                                              message:
+                                                  'Moderationsrechte für ${roomAdmin.id} entziehen?',
+                                              title:
+                                                  'Moderationsrechte entziehen');
+                                      if (confirmation != true) return;
+                                      locator<MatrixPolicyManager>()
+                                          .changeRoomPowerLevels(
+                                        roomId: room.id,
+                                        removeAdminWithId: roomAdmin.id,
+                                      );
+                                    },
+                                    child: Text(
+                                      roomAdmin.id,
+                                    ),
                                   ),
                                   const Gap(5),
                                   Text(
@@ -260,8 +273,10 @@ class _RoomListCardState extends State<RoomListCard> {
           CustomExpansionTileContent(
               title: null,
               tileController: _tileController,
-              widgetList: usersInRoomList(
-                  matrixUsersInRoom, widget.matrixRoom.id, context))
+              widgetList: [
+                MatrixUsersInRoomList(
+                    matrixUsers: matrixUsersInRoom, roomId: room.id)
+              ])
         ],
       ),
     );

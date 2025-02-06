@@ -64,7 +64,7 @@ def add_missed_class(current_user, json_data):
         this_missed_pupil_id, this_missed_day_id
     )
     if existing_missed_class != None:
-        abort(403, "This missed class exists already - please update instead!")
+        abort(409, "This missed class exists already - please update instead!")
 
     missed_type = data["missed_type"]
     unexcused = data["unexcused"]
@@ -286,7 +286,7 @@ def update_missed_class(current_user, pupil_id, date, json_data):
     missed_pupil = db.session.query(Pupil).filter(Pupil.internal_id == pupil_id).first()
     missed_schoolday = get_schoolday_by_day(date)
     if missed_schoolday == None:
-        abort(401, "This schoolday does not exist!")
+        abort(404, "This schoolday does not exist!")
 
     missed_class = (
         db.session.query(MissedClass)
@@ -297,7 +297,7 @@ def update_missed_class(current_user, pupil_id, date, json_data):
         .first()
     )
     if missed_class == None:
-        abort(401, "This missed class does not exist!")
+        abort(404, "This missed class does not exist!")
 
     data = json_data
     for key in data:
@@ -363,7 +363,7 @@ def delete_missed_class_with_date(current_user, pupil_id, date):
         .first()
     )
     if missed_class == None:
-        abort(401, "Diese Fehlzeit existiert nicht!")
+        abort(404, "Diese Fehlzeit existiert nicht!")
     db.session.delete(missed_class)
     # - LOG ENTRY
     create_log_entry(current_user, request, {"data": "none"})

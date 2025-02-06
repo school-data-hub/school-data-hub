@@ -3,7 +3,7 @@ import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/domain/models/enums.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_service.dart';
-import 'package:schuldaten_hub/common/theme/colors.dart';
+import 'package:schuldaten_hub/common/theme/app_colors.dart';
 import 'package:schuldaten_hub/common/theme/styles.dart';
 import 'package:schuldaten_hub/features/users/domain/user_manager.dart';
 
@@ -98,7 +98,7 @@ class UserChangePasswordPageState extends State<UserChangePasswordPage> {
                 ),
                 const Gap(15),
                 ElevatedButton(
-                  style: AppStyles.actionButtonStyle,
+                  style: AppStyles.cancelButtonStyle,
                   onPressed: () {
                     Navigator.pop(context);
                   },

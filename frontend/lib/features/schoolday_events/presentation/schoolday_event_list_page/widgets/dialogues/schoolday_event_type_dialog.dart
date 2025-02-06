@@ -35,7 +35,6 @@ class SchooldayEventTypeDialog extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Use WidgetRef instead of BuildContext alone
     ref.invalidate(dropdownProvider); // Invalidate the provider
     final selectedEventType =
         ref.watch(dropdownProvider); // Access state using ref.watch

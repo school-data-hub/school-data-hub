@@ -46,7 +46,7 @@ class SpecialInfoCard extends WatchingWidget {
                                   scrollDirection: Axis.horizontal,
                                   child: InkWell(
                                     onTap: () {
-                                      locator<BottomNavManager>()
+                                      locator<MainMenuBottomNavManager>()
                                           .setPupilProfileNavPage(0);
                                       Navigator.of(context)
                                           .push(MaterialPageRoute(

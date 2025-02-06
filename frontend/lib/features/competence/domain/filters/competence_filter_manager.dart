@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
-import 'package:schuldaten_hub/common/domain/models/enums.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/utils/logger.dart';
 import 'package:schuldaten_hub/features/competence/domain/competence_manager.dart';
+import 'package:schuldaten_hub/features/competence/domain/filters/enums.dart';
 import 'package:schuldaten_hub/features/competence/domain/models/competence.dart';
 
 class CompetenceFilterManager {

@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:schuldaten_hub/common/domain/filters/filters_state_manager.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/features/pupil/domain/filters/pupil_filter_enums.dart';
 import 'package:schuldaten_hub/features/pupil/domain/filters/pupil_filter_manager.dart';
@@ -7,13 +8,14 @@ import 'package:schuldaten_hub/features/school_lists/domain/models/school_list.d
 import 'package:schuldaten_hub/features/school_lists/domain/school_list_manager.dart';
 
 class SchoolListFilterManager {
-  ValueListenable<bool> get filterState => _filterState;
+  final _filteredSchoolLists = ValueNotifier<List<SchoolList>>([]);
   ValueListenable<List<SchoolList>> get filteredSchoolLists =>
       _filteredSchoolLists;
-  final _filterState = ValueNotifier<bool>(false);
-  final _filteredSchoolLists = ValueNotifier<List<SchoolList>>([]);
 
-  SchoolListFilterManager();
+  ValueListenable<bool> get filterState => _filterState;
+  final _filterState = ValueNotifier<bool>(false);
+
+  // SchoolListFilterManager();
 
   void updateFilteredSchoolLists(List<SchoolList> schoolLists) {
     _filteredSchoolLists.value = schoolLists;
@@ -22,6 +24,8 @@ class SchoolListFilterManager {
   void resetFilters() {
     _filterState.value = false;
     _filteredSchoolLists.value = locator<SchoolListManager>().schoolLists.value;
+    locator<FiltersStateManager>()
+        .setFilterState(filterState: FilterState.schoolList, value: false);
   }
 
   void onSearchEnter(String text) {
@@ -31,10 +35,14 @@ class SchoolListFilterManager {
       return;
     }
     _filterState.value = true;
+    locator<FiltersStateManager>()
+        .setFilterState(filterState: FilterState.schoolList, value: true);
+    String lowerCaseText = text.toLowerCase();
     _filteredSchoolLists.value = locator<SchoolListManager>()
         .schoolLists
         .value
-        .where((element) => element.listName.contains(text))
+        .where(
+            (element) => element.listName.toLowerCase().contains(lowerCaseText))
         .toList();
   }
 

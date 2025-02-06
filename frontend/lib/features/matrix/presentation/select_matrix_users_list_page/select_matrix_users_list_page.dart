@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:schuldaten_hub/common/theme/colors.dart';
-import 'package:schuldaten_hub/common/theme/styles.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
+import 'package:schuldaten_hub/common/theme/app_colors.dart';
+import 'package:schuldaten_hub/common/theme/styles.dart';
 import 'package:schuldaten_hub/features/matrix/domain/models/matrix_user.dart';
 import 'package:schuldaten_hub/features/matrix/presentation/select_matrix_users_list_page/controller/select_matrix_users_list_controller.dart';
 import 'package:schuldaten_hub/features/matrix/presentation/select_matrix_users_list_page/widgets/select_matrix_user_list_card.dart';
 import 'package:schuldaten_hub/features/matrix/presentation/select_matrix_users_list_page/widgets/select_matrix_users_list_searchbar.dart';
 import 'package:schuldaten_hub/features/matrix/presentation/select_matrix_users_list_page/widgets/select_matrix_users_list_view_bottom_navbar.dart';
-
 import 'package:schuldaten_hub/features/pupil/domain/pupil_manager.dart';
 import 'package:watch_it/watch_it.dart';
 

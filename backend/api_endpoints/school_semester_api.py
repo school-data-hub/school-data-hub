@@ -1,7 +1,7 @@
 from datetime import datetime
 
-from apiflask import APIBlueprint
-from flask import jsonify, request
+from apiflask import APIBlueprint, abort
+from flask import request
 
 from auth_middleware import token_required
 from helpers.log_entries import create_log_entry
@@ -31,10 +31,8 @@ def add_school_semester(current_user, json_data):
 
     # Check for date overlap with existing school semesters
     if check_date_overlap(start_date, end_date):
-        return (
-            jsonify({"message": "Date range overlaps with an existing semester."}),
-            400,
-        )
+        abort(400, "Der Zeitbereich überlappt sich mit einem existierenden Semester.")
+
     # Retrieve Schoolday records for start and end dates
     start_date_schoolday = (
         db.session.query(Schoolday).filter(Schoolday.schoolday == start_date).first()
@@ -43,7 +41,8 @@ def add_school_semester(current_user, json_data):
         db.session.query(Schoolday).filter(Schoolday.schoolday == end_date).first()
     )
     if start_date_schoolday is None or end_date_schoolday is None:
-        return jsonify({"message": "One or both date values do not exist!"}), 404
+        abort(404, "Ein oder beide Tage existieren nicht in der Datenbank!")
+
     # Create a new school semester
     is_first = json_data["is_first"]
     new_school_semester = SchoolSemester(
@@ -85,6 +84,6 @@ def check_date_overlap(start_date, end_date):
 def get_school_semesters(current_user):
     all_semesters = db.session.query(SchoolSemester).all()
     if all_semesters == []:
-        return jsonify({"error": "No school semesters found!"})
-    result = school_semesters_schema.dump(all_semesters)
-    return jsonify(result)
+        abort(404, "Keine Schulsemester gefunden!")
+
+    return all_semesters

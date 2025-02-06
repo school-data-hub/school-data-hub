@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:schuldaten_hub/common/theme/colors.dart';
+import 'package:schuldaten_hub/common/theme/app_colors.dart';
+import 'package:schuldaten_hub/common/theme/paddings.dart';
 import 'package:schuldaten_hub/common/widgets/bottom_nav_bar_layouts.dart';
 import 'package:schuldaten_hub/features/school_lists/presentation/new_list_page/new_school_list_page.dart';
 
@@ -30,7 +31,7 @@ class SchoolListsBottomNavBar extends StatelessWidget {
                   Navigator.pop(context);
                 },
               ),
-              const Gap(15),
+              const Gap(AppPaddings.bottomNavBarButtonGap),
               IconButton(
                 tooltip: 'Neue Liste',
                 icon: const Icon(

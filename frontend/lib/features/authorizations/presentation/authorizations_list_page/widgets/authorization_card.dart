@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:schuldaten_hub/common/theme/colors.dart';
+import 'package:schuldaten_hub/common/services/locator.dart';
+import 'package:schuldaten_hub/common/theme/app_colors.dart';
+import 'package:schuldaten_hub/common/widgets/dialogs/confirmation_dialog.dart';
+import 'package:schuldaten_hub/features/authorizations/domain/authorization_manager.dart';
 import 'package:schuldaten_hub/features/authorizations/domain/models/authorization.dart';
 import 'package:schuldaten_hub/features/authorizations/presentation/authorization_pupils_page/authorization_pupils_page.dart';
 import 'package:schuldaten_hub/features/authorizations/presentation/authorizations_list_page/widgets/authorization_list_stats_row.dart';
@@ -24,6 +27,17 @@ class AuthorizationCard extends WatchingWidget {
                 authorization,
               ),
             ));
+          },
+          onLongPress: () async {
+            final confirm = await confirmationDialog(
+                context: context,
+                title: 'Nachweis-Liste löschen',
+                message: 'Möchten Sie diese Nachweis-Liste löschen?');
+            if (confirm != true) {
+              return;
+            }
+            locator<AuthorizationManager>()
+                .deleteAuthorization(authorization.authorizationId);
           },
           child: Row(
             children: [

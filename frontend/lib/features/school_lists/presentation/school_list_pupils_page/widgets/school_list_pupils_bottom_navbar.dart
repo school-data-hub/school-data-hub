@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/domain/session_manager.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
-import 'package:schuldaten_hub/common/theme/colors.dart';
+import 'package:schuldaten_hub/common/theme/app_colors.dart';
+import 'package:schuldaten_hub/common/theme/paddings.dart';
 import 'package:schuldaten_hub/common/widgets/bottom_nav_bar_layouts.dart';
 import 'package:schuldaten_hub/common/widgets/dialogs/short_textfield_dialog.dart';
 import 'package:schuldaten_hub/common/widgets/filter_button.dart';
-import 'package:schuldaten_hub/common/widgets/generic_filter_bottom_sheet.dart';
+import 'package:schuldaten_hub/common/widgets/list_view_components/generic_filter_bottom_sheet.dart';
 import 'package:schuldaten_hub/features/pupil/domain/pupil_manager.dart';
 import 'package:schuldaten_hub/features/pupil/presentation/select_pupils_list_page/select_pupils_list_page.dart';
 import 'package:schuldaten_hub/features/pupil/presentation/widgets/common_pupil_filters.dart';
@@ -71,7 +72,7 @@ class SchoolListPupilsPageBottomNavBar extends StatelessWidget {
                         )),
                   ],
                 ),
-              const Gap(30),
+              const Gap(AppPaddings.bottomNavBarButtonGap),
               IconButton(
                 tooltip: 'Kinder hinzufügen',
                 icon: const Icon(
@@ -94,7 +95,7 @@ class SchoolListPupilsPageBottomNavBar extends StatelessWidget {
                   }
                 },
               ),
-              const Gap(30),
+              const Gap(AppPaddings.bottomNavBarButtonGap),
               FilterButton(
                   isSearchBar: false,
                   showBottomSheetFunction: () => showGenericFilterBottomSheet(

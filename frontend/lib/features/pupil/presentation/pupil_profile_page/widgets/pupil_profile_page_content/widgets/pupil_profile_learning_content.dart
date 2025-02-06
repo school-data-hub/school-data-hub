@@ -1,10 +1,15 @@
+import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:schuldaten_hub/common/theme/colors.dart';
+import 'package:schuldaten_hub/common/services/locator.dart';
+import 'package:schuldaten_hub/common/theme/app_colors.dart';
 import 'package:schuldaten_hub/common/theme/paddings.dart';
 import 'package:schuldaten_hub/common/utils/extensions.dart';
+import 'package:schuldaten_hub/common/widgets/dialogs/confirmation_dialog.dart';
+import 'package:schuldaten_hub/features/competence/presentation/pupil_competence_list_page/widgets/pupil_competence_checks/competence_checks_badges.dart';
 import 'package:schuldaten_hub/features/competence/presentation/widgets/pupil_learning_content_expansion_tile_nav_bar.dart';
 import 'package:schuldaten_hub/features/pupil/domain/models/pupil_proxy.dart';
+import 'package:schuldaten_hub/features/pupil/domain/pupil_manager.dart';
 
 class PupilLearningContent extends StatelessWidget {
   final PupilProxy pupil;
@@ -19,7 +24,7 @@ class PupilLearningContent extends StatelessWidget {
       ),
       child: Padding(
         padding: AppPaddings.pupilProfileCardPadding,
-        child: Column(children: [
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           const Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
             Icon(
               Icons.lightbulb,
@@ -40,14 +45,58 @@ class PupilLearningContent extends StatelessWidget {
               const Gap(5),
               const Text('3 Jahre Eingangsphase?'),
               const Gap(5),
-              Text(
-                pupil.fiveYears != null
-                    ? pupil.fiveYears!.formatForUser()
-                    : 'nein',
+              InkWell(
+                onTap: () async {
+                  final date = await showCalendarDatePicker2Dialog(
+                    context: context,
+                    config: CalendarDatePicker2WithActionButtonsConfig(
+                      // selectableDayPredicate: (day) =>
+                      //     !schooldayDates.any((element) => element.isSameDate(day)),
+                      calendarType: CalendarDatePicker2Type.single,
+                    ),
+                    dialogSize: const Size(325, 400),
+                    value: [], //schooldayDates,
+                    borderRadius: BorderRadius.circular(15),
+                  );
+
+                  if (date != null && date.isNotEmpty) {
+                    locator<PupilManager>().patchOnePupilProperty(
+                        pupilId: pupil.internalId,
+                        jsonKey: 'five_years',
+                        value: date.first!.formatForJson());
+                  }
+                },
+                onLongPress: () async {
+                  if (pupil.fiveYears == null) return;
+                  final confirmation = await confirmationDialog(
+                      context: context,
+                      title: 'Eintrag löschen',
+                      message: 'Eintrag wirklich löschen?');
+                  if (confirmation != true) return;
+                  locator<PupilManager>().patchOnePupilProperty(
+                      pupilId: pupil.internalId,
+                      jsonKey: 'five_years',
+                      value: null);
+                },
+                child: Text(
+                  pupil.fiveYears != null
+                      ? 'Entscheidung vom ${pupil.fiveYears!.formatForUser()}'
+                      : 'nein',
+                  style: const TextStyle(
+                    color: AppColors.interactiveColor,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
             ],
           ),
           const Gap(10),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CompetenceChecksBadges(pupil: pupil),
+            ],
+          ),
           PupilLearningContentExpansionTileNavBar(
             pupil: pupil,
           ),

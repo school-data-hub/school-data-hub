@@ -15,8 +15,9 @@ CompetenceCheck _$CompetenceCheckFromJson(Map<String, dynamic> json) =>
       createdAt: DateTime.parse(json['created_at'] as String),
       createdBy: json['created_by'] as String,
       pupilId: (json['pupil_id'] as num).toInt(),
-      isReport: json['is_report'] as bool,
-      reportId: json['report_id'] as String?,
+      valueFactor: (json['value_factor'] as num?)?.toDouble(),
+      groupName: json['group_name'] as String?,
+      groupId: json['group_id'] as String?,
       competenceCheckFiles: (json['competence_check_files'] as List<dynamic>?)
           ?.map((e) => CompetenceCheckFile.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -31,8 +32,9 @@ Map<String, dynamic> _$CompetenceCheckToJson(CompetenceCheck instance) =>
       'created_at': instance.createdAt.toIso8601String(),
       'created_by': instance.createdBy,
       'pupil_id': instance.pupilId,
-      'is_report': instance.isReport,
-      'report_id': instance.reportId,
+      'value_factor': instance.valueFactor,
+      'group_name': instance.groupName,
+      'group_id': instance.groupId,
       'competence_check_files': instance.competenceCheckFiles,
     };
 

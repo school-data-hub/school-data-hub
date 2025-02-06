@@ -29,16 +29,22 @@ abstract class Filter<T extends Object> with ChangeNotifier {
 
   void toggle(bool isActive) {
     _isActive = isActive;
-    if (locator<PupilsFilter>().groupFilters.any((filter) => filter.isActive) ||
-        locator<PupilsFilter>()
-            .schoolGradeFilters
-            .any((filter) => filter.isActive)) {
+    if (isActive) {
       locator<FiltersStateManager>()
           .setFilterState(filterState: FilterState.pupil, value: true);
     } else {
-      locator<FiltersStateManager>()
-          .setFilterState(filterState: FilterState.pupil, value: false);
+      if (!(locator<PupilsFilter>()
+              .groupFilters
+              .any((filter) => filter.isActive) ||
+          locator<PupilsFilter>()
+              .schoolGradeFilters
+              .any((filter) => filter.isActive) ||
+          locator<PupilsFilter>().textFilter.isActive)) {
+        locator<FiltersStateManager>()
+            .setFilterState(filterState: FilterState.pupil, value: false);
+      }
     }
+
     notifyListeners();
     locator<PupilsFilter>().refreshs();
   }

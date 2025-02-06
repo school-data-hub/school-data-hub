@@ -44,6 +44,14 @@ class SupportLevel {
 class PupilData {
   @JsonKey(name: 'avatar_id')
   final String? avatarId;
+  @JsonKey(name: 'avatar_auth')
+  final bool avatarAuth;
+  @JsonKey(name: 'avatar_auth_id')
+  final String? avatarAuthId;
+  @JsonKey(name: 'public_media_auth')
+  final int publicMediaAuth;
+  @JsonKey(name: 'public_media_auth_id')
+  final String? publicMediaAuthId;
   @JsonKey(name: 'communication_pupil')
   final String? communicationPupil;
   @JsonKey(name: 'communication_tutor1')
@@ -70,6 +78,8 @@ class PupilData {
   final String? pickUpTime;
   @JsonKey(name: 'preschool_revision')
   int? preschoolRevision;
+  @JsonKey(name: 'preschool_attendance')
+  String? preschoolAttendance;
   @JsonKey(name: 'special_information')
   final String? specialInformation;
   @JsonKey(name: 'emergency_care')
@@ -104,10 +114,91 @@ class PupilData {
   factory PupilData.fromJson(Map<String, dynamic> json) =>
       _$PupilDataFromJson(json);
 
+  // - TODO: Implement the record approach with the rest of attributes like in avatarAuthId and publicMediaAuthId and should be revised
+  PupilData copyWith({
+    String? avatarId,
+    bool? avatarAuth,
+    ({String? value})? avatarAuthId,
+    int? publicMediaAuth,
+    ({String? value})? publicMediaAuthId,
+    String? communicationPupil,
+    String? communicationTutor1,
+    String? communicationTutor2,
+    String? contact,
+    String? parentsContact,
+    int? credit,
+    int? creditEarned,
+    DateTime? fiveYears,
+    int? latestSupportLevel,
+    int? internalId,
+    bool? ogs,
+    String? ogsInfo,
+    String? pickUpTime,
+    String? specialInformation,
+    int? preschoolRevision,
+    String? preschoolAttendance,
+    bool? emergencyCare,
+    List<SupportCategoryStatus>? supportCategoryStatuses,
+    List<SchooldayEvent>? schooldayEvents,
+    List<PupilBook>? pupilBooks,
+    List<SupportGoal>? supportGoals,
+    List<MissedClass>? pupilMissedClasses,
+    List<PupilWorkbook>? pupilWorkbooks,
+    List<CreditHistoryLog>? creditHistoryLogs,
+    List<CompetenceGoal>? competenceGoals,
+    List<CompetenceCheck>? competenceChecks,
+    List<SupportLevel>? supportLevelHistory,
+    List<CompetenceReport>? competenceReports,
+  }) {
+    return PupilData(
+      avatarId: avatarId ?? this.avatarId,
+      avatarAuth: avatarAuth ?? this.avatarAuth,
+      avatarAuthId:
+          avatarAuthId != null ? avatarAuthId.value : this.avatarAuthId,
+      publicMediaAuth: publicMediaAuth ?? this.publicMediaAuth,
+      publicMediaAuthId: publicMediaAuthId != null
+          ? publicMediaAuthId.value
+          : this.publicMediaAuthId,
+      communicationPupil: communicationPupil ?? this.communicationPupil,
+      communicationTutor1: communicationTutor1 ?? this.communicationTutor1,
+      communicationTutor2: communicationTutor2 ?? this.communicationTutor2,
+      contact: contact ?? this.contact,
+      parentsContact: parentsContact ?? this.parentsContact,
+      credit: credit ?? this.credit,
+      creditEarned: creditEarned ?? this.creditEarned,
+      fiveYears: fiveYears ?? this.fiveYears,
+      latestSupportLevel: latestSupportLevel ?? this.latestSupportLevel,
+      internalId: internalId ?? this.internalId,
+      ogs: ogs ?? this.ogs,
+      ogsInfo: ogsInfo ?? this.ogsInfo,
+      pickUpTime: pickUpTime ?? this.pickUpTime,
+      specialInformation: specialInformation ?? this.specialInformation,
+      preschoolRevision: preschoolRevision ?? this.preschoolRevision,
+      preschoolAttendance: preschoolAttendance ?? this.preschoolAttendance,
+      emergencyCare: emergencyCare ?? this.emergencyCare,
+      supportCategoryStatuses:
+          supportCategoryStatuses ?? this.supportCategoryStatuses,
+      schooldayEvents: schooldayEvents ?? this.schooldayEvents,
+      pupilBooks: pupilBooks ?? this.pupilBooks,
+      supportGoals: supportGoals ?? this.supportGoals,
+      pupilMissedClasses: pupilMissedClasses ?? this.pupilMissedClasses,
+      pupilWorkbooks: pupilWorkbooks ?? this.pupilWorkbooks,
+      creditHistoryLogs: creditHistoryLogs ?? this.creditHistoryLogs,
+      competenceGoals: competenceGoals ?? this.competenceGoals,
+      competenceChecks: competenceChecks ?? this.competenceChecks,
+      supportLevelHistory: supportLevelHistory ?? this.supportLevelHistory,
+      competenceReports: competenceReports ?? this.competenceReports,
+    );
+  }
+
   Map<String, dynamic> toJson() => _$PupilDataToJson(this);
 
   PupilData({
     required this.avatarId,
+    required this.avatarAuth,
+    required this.avatarAuthId,
+    required this.publicMediaAuth,
+    required this.publicMediaAuthId,
     required this.communicationPupil,
     required this.communicationTutor1,
     required this.communicationTutor2,
@@ -123,6 +214,7 @@ class PupilData {
     required this.pickUpTime,
     required this.specialInformation,
     required this.preschoolRevision,
+    required this.preschoolAttendance,
     required this.emergencyCare,
     required this.supportCategoryStatuses,
     required this.schooldayEvents,

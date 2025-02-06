@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:schuldaten_hub/common/theme/colors.dart';
+import 'package:schuldaten_hub/common/theme/app_colors.dart';
 
 class PupilProfileBottomNavBar extends StatelessWidget {
   const PupilProfileBottomNavBar({super.key});
@@ -16,7 +16,7 @@ class PupilProfileBottomNavBar extends StatelessWidget {
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 800),
           child: SizedBox(
-            height: 40,
+            height: 30,
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[

@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/domain/filters/filters_state_manager.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
-import 'package:schuldaten_hub/common/theme/colors.dart';
-import 'package:schuldaten_hub/common/widgets/generic_app_bar.dart';
-import 'package:schuldaten_hub/common/widgets/generic_sliver_list.dart';
-import 'package:schuldaten_hub/common/widgets/sliver_search_app_bar.dart';
+import 'package:schuldaten_hub/common/theme/app_colors.dart';
+import 'package:schuldaten_hub/common/widgets/list_view_components/generic_app_bar.dart';
+import 'package:schuldaten_hub/common/widgets/list_view_components/generic_sliver_list.dart';
+import 'package:schuldaten_hub/common/widgets/list_view_components/generic_sliver_search_app_bar.dart';
 import 'package:schuldaten_hub/features/learning_support/presentation/learning_support_list_page/widgets/learning_support_list_card.dart';
 import 'package:schuldaten_hub/features/learning_support/presentation/learning_support_list_page/widgets/learning_support_list_page_bottom_navbar.dart';
 import 'package:schuldaten_hub/features/learning_support/presentation/learning_support_list_page/widgets/learning_support_list_search_bar.dart';
@@ -35,7 +35,7 @@ class LearningSupportListPage extends WatchingWidget {
             child: CustomScrollView(
               slivers: [
                 const SliverGap(5),
-                SliverSearchAppBar(
+                GenericSliverSearchAppBar(
                   height: 110,
                   title: LearningSupportListSearchBar(
                       pupils: pupils, filtersOn: filtersOn),

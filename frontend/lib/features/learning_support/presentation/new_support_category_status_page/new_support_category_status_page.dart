@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
-import 'package:schuldaten_hub/common/theme/colors.dart';
+import 'package:schuldaten_hub/common/theme/app_colors.dart';
 import 'package:schuldaten_hub/common/theme/styles.dart';
 import 'package:schuldaten_hub/features/learning_support/domain/learning_support_manager.dart';
 import 'package:schuldaten_hub/features/learning_support/presentation/new_support_category_status_page/controller/new_support_category_status_controller.dart';
@@ -72,7 +72,7 @@ class NewSupportCategoryStatusPage extends StatelessWidget {
                                           builder: (ctx) =>
                                               SelectSupportCategory(
                                                   pupil: locator<PupilManager>()
-                                                      .findPupilById(controller
+                                                      .getPupilById(controller
                                                           .widget.pupilId)!,
                                                   elementType: controller
                                                       .widget.elementType)));
@@ -271,7 +271,7 @@ class NewSupportCategoryStatusPage extends StatelessWidget {
                           } else {
                             locator<LearningSupportManager>()
                                 .postSupportCategoryStatus(
-                                    locator<PupilManager>().findPupilById(
+                                    locator<PupilManager>().getPupilById(
                                         controller.widget.pupilId)!,
                                     controller.goalCategoryId!,
                                     controller.categoryStatusValue,

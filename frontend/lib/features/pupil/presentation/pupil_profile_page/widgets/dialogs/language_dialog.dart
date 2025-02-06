@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:schuldaten_hub/common/theme/colors.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
+import 'package:schuldaten_hub/common/theme/app_colors.dart';
 import 'package:schuldaten_hub/features/pupil/domain/models/pupil_proxy.dart';
 import 'package:schuldaten_hub/features/pupil/domain/pupil_manager.dart';
 
@@ -363,8 +363,10 @@ Future<void> languageDialog(
                     final String communicationValue = dropdownUnderstandValue +
                         dropdownSpeakValue +
                         dropdownReadValue;
-                    locator<PupilManager>()
-                        .patchPupil(pupil.internalId, type, communicationValue);
+                    locator<PupilManager>().patchOnePupilProperty(
+                        pupilId: pupil.internalId,
+                        jsonKey: type,
+                        value: communicationValue);
                     Navigator.of(context).pop();
                   },
                 ),

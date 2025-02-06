@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
-import 'package:schuldaten_hub/common/theme/colors.dart';
+import 'package:schuldaten_hub/common/theme/app_colors.dart';
 import 'package:schuldaten_hub/common/theme/styles.dart';
 import 'package:schuldaten_hub/features/competence/domain/competence_manager.dart';
 import 'package:schuldaten_hub/features/competence/presentation/widgets/competence_check_dropdown.dart';
@@ -90,12 +90,12 @@ Future newCompetenceCheckDialog(
                   onPressed: () {
                     if (_competenceStatusKey.currentState!.validate()) {
                       locator<CompetenceManager>().postCompetenceCheck(
-                          pupilId: pupil.internalId,
-                          competenceId: competenceId,
-                          competenceStatus: competenceCheckStatusValue,
-                          competenceComment: _textEditingController.text,
-                          isReport: isReport,
-                          reportId: null);
+                        pupilId: pupil.internalId,
+                        competenceId: competenceId,
+                        competenceStatus: competenceCheckStatusValue,
+                        competenceComment: _textEditingController.text,
+                        groupId: null,
+                      );
                       // reportId:
                       //     locator<SchooldayManager>().currentReportId);
 

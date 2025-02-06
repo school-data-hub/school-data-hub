@@ -2,7 +2,7 @@ class MatrixCredentials {
   final String url;
   final String matrixToken;
   final String policyToken;
-  final List<String>? compulsoryRooms;
+  List<String>? compulsoryRooms;
 
   MatrixCredentials({
     required this.url,
@@ -25,7 +25,7 @@ class MatrixCredentials {
       url: json['url'],
       matrixToken: json['matrixToken'],
       policyToken: json['policyToken'],
-      compulsoryRooms: List<String>.from(json['compulsoryRooms']),
+      compulsoryRooms: json['compulsoryRooms'],
     );
   }
 }

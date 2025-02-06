@@ -1,9 +1,11 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
-import 'package:schuldaten_hub/common/theme/colors.dart';
+import 'package:schuldaten_hub/common/theme/app_colors.dart';
 import 'package:schuldaten_hub/features/competence/domain/competence_manager.dart';
 import 'package:schuldaten_hub/features/competence/domain/models/competence.dart';
 import 'package:schuldaten_hub/features/competence/domain/models/competence_check.dart';
+import 'package:schuldaten_hub/features/competence/domain/models/enums.dart';
 import 'package:schuldaten_hub/features/pupil/domain/filters/pupil_filter_manager.dart';
 import 'package:schuldaten_hub/features/pupil/domain/models/pupil_proxy.dart';
 import 'package:schuldaten_hub/features/pupil/domain/pupil_manager.dart';
@@ -20,6 +22,18 @@ class CompetenceHelper {
             .reduce((a, b) => a.createdAt.isAfter(b.createdAt) ? a : b);
       }
     }
+    return null;
+  }
+
+  static CompetenceCheck? getGroupCompetenceCheckFromPupil(
+      {required PupilProxy pupil, required String groupId}) {
+    if (pupil.competenceChecks != null && pupil.competenceChecks!.isNotEmpty) {
+      final groupIdCheck = pupil.competenceChecks!
+          .firstWhereOrNull((element) => element.groupId == groupId);
+
+      return groupIdCheck;
+    }
+
     return null;
   }
 
@@ -56,30 +70,33 @@ class CompetenceHelper {
 
   static Color getCompetenceColor(int competenceId) {
     final Competence rootCcompetence =
-        locator<CompetenceManager>().findRootCompetence(competenceId);
-    return getRootCompetenceColor(rootCompetence: rootCcompetence);
+        locator<CompetenceManager>().findRootCompetenceById(competenceId);
+    return getRootCompetenceColor(
+        rootCompetenceType:
+            RootCompetenceType.stringToValue[rootCcompetence.competenceName]!);
   }
 
-  static Color getRootCompetenceColor({required Competence rootCompetence}) {
-    if (rootCompetence.competenceName == 'Sachunterricht') {
+  static Color getRootCompetenceColor(
+      {required RootCompetenceType rootCompetenceType}) {
+    if (rootCompetenceType == RootCompetenceType.science) {
       return AppColors.scienceColor;
-    } else if (rootCompetence.competenceName == 'Englisch') {
+    } else if (rootCompetenceType == RootCompetenceType.english) {
       return AppColors.englishColor;
-    } else if (rootCompetence.competenceName == 'Mathematik') {
+    } else if (rootCompetenceType == RootCompetenceType.math) {
       return AppColors.mathColor;
-    } else if (rootCompetence.competenceName == 'Musik') {
+    } else if (rootCompetenceType == RootCompetenceType.music) {
       return AppColors.musicColor;
-    } else if (rootCompetence.competenceName == 'Deutsch') {
+    } else if (rootCompetenceType == RootCompetenceType.german) {
       return AppColors.germanColor;
-    } else if (rootCompetence.competenceName == 'Kunst') {
+    } else if (rootCompetenceType == RootCompetenceType.art) {
       return AppColors.artColor;
-    } else if (rootCompetence.competenceName == 'Religion') {
+    } else if (rootCompetenceType == RootCompetenceType.religion) {
       return AppColors.religionColor;
-    } else if (rootCompetence.competenceName == 'Sport') {
+    } else if (rootCompetenceType == RootCompetenceType.sport) {
       return AppColors.sportColor;
-    } else if (rootCompetence.competenceName == 'Arbeitsverhalten') {
+    } else if (rootCompetenceType == RootCompetenceType.workBehavior) {
       return AppColors.workBehaviourColor;
-    } else if (rootCompetence.competenceName == 'Sozialverhalten') {
+    } else if (rootCompetenceType == RootCompetenceType.socialBehavior) {
       return AppColors.socialColor;
     }
     return const Color.fromARGB(255, 157, 36, 36);
@@ -132,11 +149,11 @@ class CompetenceHelper {
         width: 40, child: Icon(Icons.error, color: Colors.white));
   }
 
-  static Map<int, List<CompetenceCheck>> getCompetenceChecksMapOfPupil(
-      int pupilId) {
+  static Map<int, List<CompetenceCheck>>
+      getCompetenceChecksMappedToCompetenceIdsForThisPupil(int pupilId) {
     final Map<int, List<CompetenceCheck>> competenceChecksMap = {};
 
-    final PupilProxy pupil = locator<PupilManager>().findPupilById(pupilId)!;
+    final PupilProxy pupil = locator<PupilManager>().getPupilById(pupilId)!;
     if (pupil.competenceChecks == null || pupil.competenceChecks!.isEmpty) {
       return {};
     }
@@ -183,7 +200,7 @@ class CompetenceHelper {
   static ({int total, int checked}) competenceChecksStats(PupilProxy pupil) {
     final competences = getAllowedCompetencesForThisPupil(pupil);
     final Map<int, List<CompetenceCheck>> pupilCompetenceChecksMap =
-        getCompetenceChecksMapOfPupil(pupil.internalId);
+        getCompetenceChecksMappedToCompetenceIdsForThisPupil(pupil.internalId);
     int count = 0;
     int competencesWithCheck = 0;
     for (Competence competence in competences) {

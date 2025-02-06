@@ -7,7 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 
-Future<File?> uploadImage(context) async {
+Future<File?> uploadImageFile(context) async {
   XFile? image = await ImagePicker().pickImage(
       source: Platform.isWindows ? ImageSource.gallery : ImageSource.camera,
       preferredCameraDevice:
@@ -15,6 +15,17 @@ Future<File?> uploadImage(context) async {
   if (image == null) {
     return null;
   }
+
+  // final MemoryImage? image = await Navigator.push(
+  //   context,
+  //   MaterialPageRoute(builder: (context) => CropImagePage(image: xFile)),
+  // );
+  // if (image == null) {
+  //   return null;
+  // }
+  // final imageFile = memoryImageToFile(image);
+  // return imageFile;
+
   File imageFile = await Navigator.push(
     context,
     MaterialPageRoute(builder: (context) => CropAvatarView(image: image)),
@@ -32,7 +43,7 @@ class CropAvatarView extends StatefulWidget {
 class _CropAvatarState extends State<CropAvatarView> {
   final controller = CropController(
     aspectRatio: 21.0 / 29.7,
-    defaultCrop: const Rect.fromLTRB(0.1, 0.1, 0.9, 0.9),
+    defaultCrop: const Rect.fromLTRB(0, 0, 1, 1),
   );
 
   @override
@@ -124,8 +135,8 @@ class _CropAvatarState extends State<CropAvatarView> {
   Future<void> _finished() async {
     //final image = await controller.croppedImage();
     final bitmap = await controller.croppedBitmap(
-      maxSize: 600,
-      quality: FilterQuality.low,
+      maxSize: 800,
+      quality: FilterQuality.medium,
     );
     final imageBytes = await bitmap.toByteData(format: ImageByteFormat.png);
     final file = await imageToFile(bytes: imageBytes!);
@@ -164,4 +175,23 @@ class _CropAvatarState extends State<CropAvatarView> {
         bytes.buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes));
     return file;
   }
+}
+
+Future<File> memoryImageToFile(MemoryImage memoryImage) async {
+  // Get the bytes from the MemoryImage
+
+  Uint8List bytes = memoryImage.bytes;
+
+  // Get the temporary directory
+  Directory tempDir = await getTemporaryDirectory();
+
+  // Create a unique file path
+  String filePath =
+      '${tempDir.path}/image_${DateTime.now().millisecondsSinceEpoch}.png';
+
+  // Write the bytes to the file
+  File file = File(filePath);
+  await file.writeAsBytes(bytes);
+
+  return file;
 }

@@ -5,9 +5,8 @@ import 'package:schuldaten_hub/common/domain/env_manager.dart';
 import 'package:schuldaten_hub/common/domain/models/session.dart';
 import 'package:schuldaten_hub/common/domain/session_manager.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
-import 'package:schuldaten_hub/common/theme/colors.dart';
+import 'package:schuldaten_hub/common/theme/app_colors.dart';
 import 'package:schuldaten_hub/common/theme/styles.dart';
-import 'package:schuldaten_hub/features/logs/logs_page.dart';
 import 'package:schuldaten_hub/features/main_menu/settings_page/widgets/settings_admin_section.dart';
 import 'package:schuldaten_hub/features/main_menu/settings_page/widgets/settings_session_section.dart';
 import 'package:schuldaten_hub/features/main_menu/settings_page/widgets/settings_tools_section.dart';
@@ -62,14 +61,22 @@ class SettingsPage extends WatchingWidget {
                         'Build: ${locator<EnvManager>().packageInfo.value.buildNumber}'),
                   ),
                   SettingsTile.navigation(
-                    leading: const Icon(Icons.bug_report_rounded),
-                    title: const Text('Server Logs'),
-                    onPressed: (context) {
-                      Navigator.of(context).push(MaterialPageRoute(
-                        builder: (ctx) => const LogsPage(),
-                      ));
-                    },
-                  ),
+                    leading: const Icon(Icons.info_rounded),
+                    title: const Text('App Infos'),
+                    onPressed: (context) => showAboutDialog(
+                        context: context,
+                        applicationIcon: ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: Image.asset(
+                            'assets/schuldaten_hub_logo.png',
+                            scale: 8,
+                          ),
+                        ),
+                        applicationName: 'Schuldaten App',
+                        applicationVersion:
+                            locator<EnvManager>().packageInfo.value.version,
+                        applicationLegalese: '© 2024 Schuldaten Hub'),
+                  )
                 ],
               ),
             ],

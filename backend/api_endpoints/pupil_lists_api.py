@@ -54,13 +54,15 @@ def patch_pupil_list(current_user, pupil_id, list_id, json_data):
 def delete_pupil_list(current_user, list_id, json_data):
     data = json_data
     internal_id_list = data["pupils"]
+    if internal_id_list == []:
+        abort(404, message="Keine Schueler angegeben!")
     if (
         current_user.name
         != SchoolList.query.filter_by(list_id=list_id).first().created_by
+        or current_user.admin == False
     ):
-        abort(401, message="Keine Berechtigung!")
-    if internal_id_list == []:
-        abort(404, message="Keine Schueler angegeben!")
+        abort(403, message="Keine Berechtigung!")
+
     updated_pupils = []
     for item in internal_id_list:
         pupil = Pupil.query.filter_by(internal_id=item).first()

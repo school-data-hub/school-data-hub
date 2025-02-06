@@ -3,12 +3,11 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
-import 'package:schuldaten_hub/common/domain/env_manager.dart';
 import 'package:schuldaten_hub/common/domain/models/enums.dart';
 import 'package:schuldaten_hub/common/services/api/api_settings.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_service.dart';
-import 'package:schuldaten_hub/common/theme/colors.dart';
+import 'package:schuldaten_hub/common/theme/app_colors.dart';
 import 'package:schuldaten_hub/common/widgets/avatar.dart';
 import 'package:schuldaten_hub/common/widgets/dialogs/confirmation_dialog.dart';
 import 'package:schuldaten_hub/common/widgets/dialogs/long_textfield_dialog.dart';
@@ -32,7 +31,7 @@ class AuthorizationPupilCard extends StatelessWidget with WatchItMixin {
     final authorizationLocator = locator<AuthorizationManager>();
 
     final PupilProxy pupil =
-        watch(locator<PupilManager>().findPupilById(internalId)!);
+        watch(locator<PupilManager>().getPupilById(internalId)!);
     final thisAuthorization =
         watchValue((AuthorizationManager x) => x.authorizations).firstWhere(
             (authorization) =>
@@ -63,7 +62,7 @@ class AuthorizationPupilCard extends StatelessWidget with WatchItMixin {
                       children: [
                         InkWell(
                           onTap: () {
-                            locator<BottomNavManager>()
+                            locator<MainMenuBottomNavManager>()
                                 .setPupilProfileNavPage(7);
                             Navigator.of(context).push(MaterialPageRoute(
                               builder: (ctx) => PupilProfilePage(
@@ -179,14 +178,14 @@ class AuthorizationPupilCard extends StatelessWidget with WatchItMixin {
                     const Gap(15),
                     InkWell(
                       onTap: () async {
-                        final File? file = await uploadImage(context);
+                        final File? file = await uploadImageFile(context);
                         if (file == null) return;
                         await locator<AuthorizationManager>()
                             .postAuthorizationFile(file, pupil.internalId,
                                 authorization.authorizationId);
                         locator<NotificationService>().showSnackBar(
                             NotificationType.success,
-                            'Der Einwilligung wurde ein Dokument hinzugefügt!');
+                            'Dem Nachweis wurde ein Dokument hinzugefügt!');
                       },
                       onLongPress: (pupilAuthorization.fileId == null)
                           ? () {}
@@ -211,11 +210,13 @@ class AuthorizationPupilCard extends StatelessWidget with WatchItMixin {
                       child: pupilAuthorization.fileId != null
                           ? Provider<DocumentImageData>.value(
                               updateShouldNotify: (oldValue, newValue) =>
-                                  oldValue.documentUrl != newValue.documentUrl,
+                                  oldValue.documentTag != newValue.documentTag,
                               value: DocumentImageData(
                                   documentTag: pupilAuthorization.fileId!,
-                                  documentUrl:
-                                      '${locator<EnvManager>().env.value.serverUrl}${AuthorizationRepository().getPupilAuthorizationFile(pupil.internalId, authorization.authorizationId)}',
+                                  documentUrl: AuthorizationApiService()
+                                      .getPupilAuthorizationFile(
+                                          pupil.internalId,
+                                          authorization.authorizationId),
                                   size: 70),
                               child: const DocumentImage(),
                             )

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
-import 'package:schuldaten_hub/common/theme/colors.dart';
+import 'package:schuldaten_hub/common/theme/app_colors.dart';
 import 'package:schuldaten_hub/common/theme/styles.dart';
 import 'package:schuldaten_hub/features/learning_support/domain/learning_support_manager.dart';
 import 'package:schuldaten_hub/features/learning_support/presentation/new_support_category_status_page/controller/new_support_category_status_controller.dart';
@@ -63,7 +63,7 @@ class NewSupportGoalPage extends StatelessWidget {
                                   .push(MaterialPageRoute(
                                       builder: (ctx) => SelectSupportCategory(
                                           pupil: locator<PupilManager>()
-                                              .findPupilById(
+                                              .getPupilById(
                                                   controller.widget.pupilId)!,
                                           elementType:
                                               controller.widget.elementType)));
@@ -75,18 +75,6 @@ class NewSupportGoalPage extends StatelessWidget {
                             child: const Text('KATEGORIE AUSWÄHLEN'),
                           )
                         : InkWell(
-                            // onLongPress: () async {
-                            //   final int? categoryId = await Navigator.of(
-                            //           context)
-                            //       .push(MaterialPageRoute(
-                            //           builder: (ctx) => SelectableCategoryTree(
-                            //               findPupilById(
-                            //                   controller.widget.pupilId))));
-                            //   if (categoryId == null) {
-                            //     return;
-                            //   }
-                            //   controller.setGoalCategoryId(categoryId);
-                            // },
                             child: Container(
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(5.0),
@@ -231,8 +219,8 @@ class NewSupportGoalPage extends StatelessWidget {
                         } else {
                           locator<LearningSupportManager>()
                               .postSupportCategoryStatus(
-                                  locator<PupilManager>().findPupilById(
-                                      controller.widget.pupilId)!,
+                                  locator<PupilManager>()
+                                      .getPupilById(controller.widget.pupilId)!,
                                   controller.goalCategoryId!,
                                   controller.categoryStatusValue,
                                   controller

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:schuldaten_hub/common/domain/filters/filters_state_manager.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
-import 'package:schuldaten_hub/common/theme/colors.dart';
+import 'package:schuldaten_hub/common/theme/app_colors.dart';
 import 'package:schuldaten_hub/common/theme/styles.dart';
 import 'package:schuldaten_hub/common/widgets/themed_filter_chip.dart';
 import 'package:schuldaten_hub/features/pupil/domain/filters/pupils_filter.dart';
@@ -23,7 +24,7 @@ class FilterHeading extends StatelessWidget {
             iconSize: 35,
             color: AppColors.interactiveColor,
             onPressed: () {
-              locator<PupilsFilter>().resetFilters();
+              locator<FiltersStateManager>().resetFilters();
               //Navigator.pop(context);
             },
             icon: const Icon(Icons.restart_alt_rounded)),
@@ -39,6 +40,7 @@ class CommonPupilFiltersWidget extends WatchingWidget {
   Widget build(BuildContext context) {
     final schoolGradeFilters = locator<PupilsFilter>().schoolGradeFilters;
     final groupFilters = locator<PupilsFilter>().groupFilters;
+    final genderFilters = locator<PupilsFilter>().genderFilters;
 
     return Column(
       children: [
@@ -86,6 +88,22 @@ class CommonPupilFiltersWidget extends WatchingWidget {
                 selected: watch(groupFilter).isActive,
                 onSelected: (val) {
                   groupFilter.toggle(val);
+                },
+              ),
+          ],
+        ),
+        const Gap(5),
+        Wrap(
+          spacing: 5,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          alignment: WrapAlignment.center,
+          children: [
+            for (final genderFilter in genderFilters)
+              ThemedFilterChip(
+                label: genderFilter.name,
+                selected: watch(genderFilter).isActive,
+                onSelected: (val) {
+                  genderFilter.toggle(val);
                 },
               ),
           ],

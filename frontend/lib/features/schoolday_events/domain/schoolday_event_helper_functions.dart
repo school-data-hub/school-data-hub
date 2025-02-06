@@ -7,14 +7,14 @@ import 'package:schuldaten_hub/features/schoolday_events/domain/filters/schoolda
 import 'package:schuldaten_hub/features/schoolday_events/domain/models/schoolday_event.dart';
 import 'package:schuldaten_hub/features/schoolday_events/domain/models/schoolday_event_enums.dart';
 
-class SchooldayEventsCount {
+class SchooldayEventsCounts {
   final int totalSchooldayEvents;
   final int totalLessonSchooldayEvents;
   final int totalOgsSchooldayEvents;
   final int totalSentHomeSchooldayEvents;
   final int totalParentsMeetingSchooldayEvents;
 
-  SchooldayEventsCount(
+  SchooldayEventsCounts(
       {required this.totalSchooldayEvents,
       required this.totalLessonSchooldayEvents,
       required this.totalOgsSchooldayEvents,
@@ -85,7 +85,8 @@ class SchoolDayEventHelper {
     return false;
   }
 
-  static SchooldayEventsCount getSchooldayEventsCount(List<PupilProxy> pupils) {
+  static SchooldayEventsCounts getSchooldayEventsCounts(
+      List<PupilProxy> pupils) {
     int totalSchooldayEvents = 0;
     int teachingSchooldayEvents = 0;
     int ogsSchooldayEvents = 0;
@@ -123,7 +124,7 @@ class SchoolDayEventHelper {
               .length;
     }
 
-    return SchooldayEventsCount(
+    return SchooldayEventsCounts(
         totalSchooldayEvents: totalSchooldayEvents,
         totalLessonSchooldayEvents: teachingSchooldayEvents,
         totalOgsSchooldayEvents: ogsSchooldayEvents,

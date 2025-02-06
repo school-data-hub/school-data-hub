@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:schuldaten_hub/common/domain/filters/filters_state_manager.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
-import 'package:schuldaten_hub/common/theme/colors.dart';
+import 'package:schuldaten_hub/common/theme/app_colors.dart';
 import 'package:schuldaten_hub/common/widgets/bottom_nav_bar_layouts.dart';
-import 'package:schuldaten_hub/common/widgets/generic_filter_bottom_sheet.dart';
+import 'package:schuldaten_hub/common/widgets/list_view_components/generic_filter_bottom_sheet.dart';
 import 'package:schuldaten_hub/features/pupil/domain/filters/pupils_filter.dart';
 import 'package:schuldaten_hub/features/pupil/presentation/widgets/common_pupil_filters.dart';
+import 'package:watch_it/watch_it.dart';
 
-class SpecialInfoListPageBottomNavBar extends StatelessWidget {
-  final bool filtersOn;
-  const SpecialInfoListPageBottomNavBar({required this.filtersOn, super.key});
+class SpecialInfoListPageBottomNavBar extends WatchingWidget {
+  const SpecialInfoListPageBottomNavBar({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final filtersOn = watchValue((FiltersStateManager x) => x.filtersActive);
     return BottomNavBarLayout(
       bottomNavBar: BottomAppBar(
         height: 60,

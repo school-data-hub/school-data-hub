@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:schuldaten_hub/common/domain/models/enums.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/theme/styles.dart';
 import 'package:schuldaten_hub/common/widgets/themed_filter_chip.dart';
 import 'package:schuldaten_hub/features/competence/domain/filters/competence_filter_manager.dart';
+import 'package:schuldaten_hub/features/competence/domain/filters/enums.dart';
 import 'package:watch_it/watch_it.dart';
 
 class CompetenceFilters extends WatchingWidget {

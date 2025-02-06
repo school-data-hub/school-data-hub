@@ -1,24 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:schuldaten_hub/common/theme/app_colors.dart';
+import 'package:schuldaten_hub/common/theme/styles.dart';
 
 void informationDialog(context, title, text) => showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(title),
-        content: SingleChildScrollView(child: Text(text)),
+        icon: const Icon(
+          Icons.info,
+          color: AppColors.backgroundColor,
+          size: 50,
+        ),
+        title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
+        content: SizedBox(
+            height: 100,
+            width: 300,
+            child: Text(
+              text,
+              textAlign: TextAlign.center,
+            )),
         actions: [
-          TextButton(
-            child: const Padding(
-              padding: EdgeInsets.only(right: 10.0),
-              child: Text(
-                'OK',
-                style: TextStyle(
-                  color: Color.fromRGBO(74, 76, 161, 1),
-                ),
+          Padding(
+            padding: const EdgeInsets.all(5.0),
+            child: ElevatedButton(
+              style: AppStyles.successButtonStyle,
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              }, // Add onPressed
+              child: const Text(
+                "OK",
+                style: AppStyles.buttonTextStyle,
               ),
             ),
-            onPressed: () {
-              Navigator.pop(context);
-            },
           ),
         ],
       ),

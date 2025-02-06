@@ -3,16 +3,18 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_settings_ui/flutter_settings_ui.dart';
 import 'package:schuldaten_hub/common/domain/env_manager.dart';
+import 'package:schuldaten_hub/common/domain/models/enums.dart';
 import 'package:schuldaten_hub/common/domain/session_manager.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
-import 'package:schuldaten_hub/common/utils/secure_storage.dart';
+import 'package:schuldaten_hub/common/services/notification_service.dart';
 import 'package:schuldaten_hub/common/widgets/dialogs/confirmation_dialog.dart';
 import 'package:schuldaten_hub/common/widgets/qr/qr_utilites.dart';
 import 'package:schuldaten_hub/features/books/utils/book_ids_pdf_generator.dart';
 import 'package:schuldaten_hub/features/competence/utils/competence_report_pdf.dart';
+import 'package:schuldaten_hub/features/logs/logs_page.dart';
 import 'package:schuldaten_hub/features/matrix/domain/matrix_policy_manager.dart';
-import 'package:schuldaten_hub/features/matrix/presentation/pupil_matrix_contacts.dart';
-import 'package:schuldaten_hub/features/matrix/presentation/set_matrix_environment_page/set_matrix_environment_view_model.dart';
+import 'package:schuldaten_hub/features/matrix/presentation/pupil_matrix_contacts_list_page/pupils_matrix_contacts_list_page.dart';
+import 'package:schuldaten_hub/features/matrix/presentation/set_matrix_environment_page/set_matrix_environment_controller.dart';
 import 'package:schuldaten_hub/features/schooldays/presentation/schooldays_calendar_page.dart';
 import 'package:schuldaten_hub/features/users/domain/user_manager.dart';
 import 'package:schuldaten_hub/features/users/presentation/users_list_page/users_list_page.dart';
@@ -73,7 +75,7 @@ class SettingsAdminSection extends AbstractSettingsSection with WatchItMixin {
             title: const Text('Schulschlüssel zeigen'),
             onPressed: (context) {
               final Map<String, dynamic> json =
-                  locator<EnvManager>().env.value.toJson();
+                  locator<EnvManager>().env!.toJson();
 
               final String jsonString = jsonEncode(json);
 
@@ -90,18 +92,17 @@ class SettingsAdminSection extends AbstractSettingsSection with WatchItMixin {
                 ? const Text('Raumverwaltung initialisiert')
                 : const Text('Raumverwaltung initialisieren'),
             onPressed: (context) async {
-              if (!matrixPolicyManagerIsRegistered) {
-                bool matrixEnvValuesAvailable =
-                    await secureStorageContainsKey('matrix');
-                if (matrixEnvValuesAvailable) {
-                  await registerMatrixPolicyManager();
-                  return;
-                }
-                if (context.mounted) {
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (ctx) => const SetMatrixEnvironment(),
-                  ));
-                }
+              if (matrixPolicyManagerIsRegistered) {
+                locator<NotificationService>().showSnackBar(
+                    NotificationType.info,
+                    'Raumverwaltung ist bereits initialisiert');
+                return;
+              }
+              ;
+              if (context.mounted) {
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (ctx) => const SetMatrixEnvironment(),
+                ));
               }
             }),
         SettingsTile.navigation(
@@ -118,7 +119,7 @@ class SettingsAdminSection extends AbstractSettingsSection with WatchItMixin {
             title: const Text('Kontakte bearbeiten'),
             onPressed: (context) async {
               Navigator.of(context).push(MaterialPageRoute(
-                builder: (ctx) => const PupilsContactList(),
+                builder: (ctx) => const PupilsMatrixContactsListPage(),
               ));
             }),
         SettingsTile.navigation(
@@ -133,6 +134,15 @@ class SettingsAdminSection extends AbstractSettingsSection with WatchItMixin {
                 ),
               );
             }),
+        SettingsTile.navigation(
+          leading: const Icon(Icons.bug_report_rounded),
+          title: const Text('Server Logs'),
+          onPressed: (context) {
+            Navigator.of(context).push(MaterialPageRoute(
+              builder: (ctx) => const LogsPage(),
+            ));
+          },
+        ),
       ],
     );
   }

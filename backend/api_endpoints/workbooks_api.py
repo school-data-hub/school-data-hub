@@ -3,7 +3,7 @@ import uuid
 from datetime import datetime
 
 from apiflask import APIBlueprint, FileSchema, abort
-from flask import current_app, json, jsonify, request, send_file
+from flask import current_app, request, send_file
 
 from auth_middleware import token_required
 from helpers.db_helpers import get_workbook_by_isbn
@@ -29,13 +29,11 @@ workbook_api = APIBlueprint("workbooks_api", __name__, url_prefix="/api/workbook
 )
 @token_required
 def get_workbooks(current_user):
-    if not current_user:
-        abort(404, message="Bitte erneut einloggen!")
+
     all_workbooks = Workbook.query.all()
     if all_workbooks == []:
-        return jsonify({"error": "No workbooks found!"}), 404
-    result = workbooks_schema.dump(all_workbooks)
-    return jsonify(result)
+        abort(404, message="Keine Arbeitshefte gefunden!")
+    return all_workbooks
 
 
 # - GET WORKBOOKS FLAT
@@ -51,13 +49,11 @@ def get_workbooks(current_user):
 )
 @token_required
 def get_workbooks_flat(current_user):
-    if not current_user:
-        abort(404, message="Bitte erneut einloggen!")
+
     all_workbooks = Workbook.query.all()
     if all_workbooks == []:
-        return jsonify({"error": "No workbooks found!"}), 404
-    # result = workbooks_flat_schema.dump(all_workbooks)
-    # return jsonify(result)
+        abort(404, message="Keine Arbeitshefte gefunden!")
+
     return all_workbooks
 
 
@@ -70,11 +66,11 @@ def get_workbooks_flat(current_user):
 @workbook_api.doc(security="ApiKeyAuth", tags=["Workbooks"], summary="Get one workbook")
 @token_required
 def get_one_workbook(current_user, isbn):
-    if not current_user:
-        abort(404, message="Bitte erneut einloggen!")
+
     workbook = Workbook.query.filter_by(isbn=isbn).first()
     if workbook == None:
-        return jsonify({"error": "No workbook found!"}), 404
+        abort(404, message="Dieses Arbeitsheft existiert nicht!")
+
     return workbook
 
 
@@ -93,7 +89,7 @@ def create_workbook(current_user, json_data):
 
     data = json_data
     if db.session.query(Workbook).filter(Workbook.isbn == data["isbn"]).first():
-        return jsonify({"message": "Das Arbeitsheft existiert schon!"}), 400
+        abort(409, message="Das Arbeitsheft existiert schon!")
 
     isbn = data["isbn"]
     name = data["name"]
@@ -126,7 +122,8 @@ def create_workbook(current_user, json_data):
 def patch_workbook(current_user, isbn, json_data):
     workbook = db.session.query(Workbook).filter(Workbook.isbn == isbn).first()
     if workbook is None:
-        return jsonify({"message": "Das Arbeitsheft existiert nicht!"}), 404
+        abort(404, message="Das Arbeitsheft existiert nicht!")
+
     data = json_data
     for key in data:
         match key:
@@ -163,7 +160,8 @@ def patch_workbook(current_user, isbn, json_data):
 def patch_workbook_image(current_user, isbn, files_data):
     workbook = get_workbook_by_isbn(isbn)
     if workbook is None:
-        return jsonify({"message": "Das Arbeitsheft existiert nicht!"}), 404
+        abort(404, message="Das Arbeitsheft existiert nicht!")
+
     if "file" not in files_data:
         abort(400, message="Keine Datei angegeben!")
     file = files_data["file"]
@@ -193,9 +191,11 @@ def patch_workbook_image(current_user, isbn, files_data):
 def delete_workbook_image(current_user, isbn):
     workbook = get_workbook_by_isbn(isbn)
     if workbook is None:
-        return jsonify({"message": "Das Arbeitsheft existiert nicht!"}), 404
+        abort(404, message="Das Arbeitsheft existiert nicht!")
+
     if len(str(workbook.image_url)) < 5:
-        return jsonify({"message": "Keine Datei vorhanden!"}), 404
+        abort(404, message="Keine Datei vorhanden!")
+
     os.remove(str(workbook.image_url))
     workbook.image_url = None
     db.session.commit()
@@ -215,7 +215,8 @@ def delete_workbook_image(current_user, isbn):
 def get_workbook_image(current_user, isbn):
     workbook = get_workbook_by_isbn(isbn)
     if workbook is None:
-        return jsonify({"message": "Das Arbeitsheft existiert nicht!"}), 404
+        abort(404, message="Das Arbeitsheft existiert nicht!")
+
     if len(str(workbook.image_url)) < 5:
         abort(404, message="Keine Datei vorhanden!")
     return send_file(str(workbook.image_url), mimetype="image/jpg")
@@ -226,16 +227,19 @@ def get_workbook_image(current_user, isbn):
 
 
 @workbook_api.route("/<isbn>", methods=["DELETE"])
+@workbook_api.output(workbooks_flat_schema)
 @workbook_api.doc(
     security="ApiKeyAuth", tags=["Workbooks"], summary="Delete a workbook"
 )
 @token_required
 def delete_workbook(current_user, isbn):
-    if not current_user.admin:
-        return jsonify({"error": "Not authorized!"}), 401
     workbook = get_workbook_by_isbn(isbn)
     if workbook == None:
-        return jsonify({"message": "Dieses Arbeitsheft existiert nicht!"}), 404
+        abort(404, message="Dieses Arbeitsheft existiert nicht!")
+
+    if not current_user.admin or current_user.name != workbook.created_by:
+        abort(403, message="Keine Berechtigung!")
+
     if workbook.image_url is not None:
         os.remove(str(workbook.image_url))
     db.session.delete(workbook)
@@ -244,6 +248,6 @@ def delete_workbook(current_user, isbn):
     db.session.commit()
     all_workbooks = Workbook.query.all()
     if all_workbooks == []:
-        return jsonify({"error": "No workbooks found!"}), 404
-    result = workbooks_flat_schema.dump(all_workbooks)
-    return jsonify(result)
+        abort(404, message="Keine Arbeitshefte gefunden!")
+
+    return all_workbooks

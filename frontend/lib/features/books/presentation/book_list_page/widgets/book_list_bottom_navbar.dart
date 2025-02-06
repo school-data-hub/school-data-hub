@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:schuldaten_hub/common/theme/colors.dart';
+import 'package:schuldaten_hub/common/theme/app_colors.dart';
 import 'package:schuldaten_hub/common/widgets/bottom_nav_bar_layouts.dart';
-import 'package:schuldaten_hub/features/books/presentation/new_book_page/new_book_page_view_model.dart';
+import 'package:schuldaten_hub/features/books/presentation/new_book_page/new_book_controller.dart';
 import 'package:watch_it/watch_it.dart';
 
 class BookListBottomNavBar extends WatchingWidget {

@@ -2,7 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:schuldaten_hub/common/domain/session_manager.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
-import 'package:schuldaten_hub/common/theme/colors.dart';
+import 'package:schuldaten_hub/common/theme/app_colors.dart';
 import 'package:schuldaten_hub/features/learning_support/domain/models/support_category/support_category.dart';
 import 'package:schuldaten_hub/features/learning_support/domain/models/support_category/support_category_status.dart';
 import 'package:schuldaten_hub/features/learning_support/domain/models/support_goal/support_goal.dart';

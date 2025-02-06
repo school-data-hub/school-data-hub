@@ -40,7 +40,7 @@ def upload_pupils_txt(current_user, files_data):
 
     if "file" not in files_data:
         abort(400, message="Keine Datei angegeben!")
-        return jsonify({"error": "No file attached!"}), 400
+
     # open txt file and extract data as string
     # each line of text should have the internal id and the ogs value separated by a comma
     txt_file = TextIOWrapper(files_data["file"], encoding="utf-8-sig")
@@ -64,7 +64,7 @@ def upload_pupils_txt(current_user, files_data):
             else:
                 ogs_value = False
             # create new pupil with id and ogs and write default values
-            pupil = Pupil(
+            pupil: Pupil = Pupil(
                 internal_id=values[0],
                 contact=None,
                 parents_contact=None,
@@ -79,11 +79,19 @@ def upload_pupils_txt(current_user, files_data):
                 communication_tutor1=None,
                 communication_tutor2=None,
                 preschool_revision=None,
+                preschool_attendance=None,
                 avatar_url=None,
                 avatar_id=None,
                 special_information=None,
                 emergency_care=False,
+                avatar_auth=False,
+                avatar_auth_id=None,
+                avatar_auth_url=None,
+                public_media_auth=0,
+                public_media_auth_id=None,
+                public_media_auth_url=None,
             )
+
             new_pupils = new_pupils + 1
             db.session.add(pupil)
         else:
@@ -270,7 +278,7 @@ def upload_categories_csv(current_user, files_data):
                 new_categories.append(category)
                 db.session.add(category)
             if new_categories == []:
-                return jsonify({"message": "Keine neuen Kategorien gefunden!"}), 404
+                abort(404, "Keine neuen Kategorien gefunden!")
 
         db.session.commit()
         return new_categories
@@ -328,7 +336,7 @@ def upload_competences_csv(current_user, files_data):
                 )
                 new_competences.append(competence)
             if new_competences == []:
-                return jsonify({"message": "Keine neuen Kompetenzen gefunden!"}), 404
+                abort(404, "Keine neuen Kompetenzen gefunden!")
 
             db.session.add(competence)
 
@@ -340,6 +348,7 @@ def upload_competences_csv(current_user, files_data):
 #########################
 @import_file_api.route("/schooldays/csv", methods=["POST"])
 @import_file_api.input(ApiFileSchema, location="files")
+@import_file_api.output(schooldays_only_schema)
 @import_file_api.doc(
     security="ApiKeyAuth",
     tags=["File Imports"],
@@ -370,8 +379,8 @@ def upload_schooldays_csv(current_user, files_data):
                 new_schooldays.append(new_schoolday)
                 db.session.add(new_schoolday)
             if new_schooldays == []:
-                return jsonify({"message": "Keine neuen Schultage!"}), 404
+                abort(404, "Keine neuen Schultage gefunden!")
+
         db.session.commit()
-        # return schooldays_schema(new_schooldays)
-        result = schooldays_only_schema.dump(new_schooldays)
-        return jsonify(result)
+
+        return new_schooldays

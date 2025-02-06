@@ -4,7 +4,7 @@ import 'package:schuldaten_hub/common/domain/models/enums.dart';
 import 'package:schuldaten_hub/common/domain/session_manager.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_service.dart';
-import 'package:schuldaten_hub/common/theme/colors.dart';
+import 'package:schuldaten_hub/common/theme/app_colors.dart';
 import 'package:schuldaten_hub/common/widgets/avatar.dart';
 import 'package:schuldaten_hub/common/widgets/dialogs/confirmation_dialog.dart';
 import 'package:schuldaten_hub/common/widgets/dialogs/information_dialog.dart';
@@ -30,7 +30,7 @@ class SchoolListPupilCard extends WatchingWidget {
 
   @override
   Widget build(BuildContext context) {
-    final PupilProxy pupil = locator<PupilManager>().findPupilById(internalId)!;
+    final PupilProxy pupil = locator<PupilManager>().getPupilById(internalId)!;
 
     final thisSchoolList = watchValue((SchoolListManager x) => x.schoolLists)
         .firstWhere((element) => element.listId == originList.listId);
@@ -56,7 +56,8 @@ class SchoolListPupilCard extends WatchingWidget {
                   children: [
                     InkWell(
                       onTap: () {
-                        locator<BottomNavManager>().setPupilProfileNavPage(6);
+                        locator<MainMenuBottomNavManager>()
+                            .setPupilProfileNavPage(6);
                         Navigator.of(context).push(MaterialPageRoute(
                           builder: (ctx) => PupilProfilePage(
                             pupil: pupil,

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/utils/extensions.dart';
-import 'package:schuldaten_hub/common/widgets/date_picker.dart';
+import 'package:schuldaten_hub/common/widgets/dialogs/date_picker.dart';
 import 'package:schuldaten_hub/features/attendance/domain/attendance_manager.dart';
 import 'package:schuldaten_hub/features/pupil/domain/models/pupil_proxy.dart';
 import 'package:schuldaten_hub/features/pupil/domain/pupil_manager.dart';
@@ -31,7 +31,7 @@ class AttendanceValues {
 
 //- lookup functions
 class AttendanceHelper {
-  static int? findMissedClassIndex(PupilProxy pupil, DateTime date) {
+  static int? getMissedClassIndex(PupilProxy pupil, DateTime date) {
     final int? foundMissedClassIndex = pupil.missedClasses
         ?.indexWhere((datematch) => (datematch.missedDay.isSameDate(date)));
 
@@ -135,13 +135,15 @@ class AttendanceHelper {
     return 0;
   }
 
-  static int unexcusedPupilsSum(
+  static int missedAndUnexcusedPupilsSum(
       List<PupilProxy> filteredPupils, DateTime thisDate) {
     List<PupilProxy> unexcusedPupils = [];
 
     for (PupilProxy pupil in filteredPupils) {
       if (pupil.missedClasses!.any((missedClass) =>
-          missedClass.missedDay == thisDate && missedClass.unexcused == true)) {
+          missedClass.missedDay == thisDate &&
+          missedClass.missedType == MissedType.isMissed.value &&
+          missedClass.unexcused == true)) {
         unexcusedPupils.add(pupil);
       }
     }
@@ -186,7 +188,7 @@ class AttendanceHelper {
   static int pupilListPickedUpSum(List<PupilProxy> filteredPupils) {
     int pupilsListPickedUpSum = 0;
     for (PupilProxy pupil in filteredPupils) {
-      pupilsListPickedUpSum += pickedUpSum(pupil);
+      pupilsListPickedUpSum += goneHomeSum(pupil);
     }
     return pupilsListPickedUpSum;
   }
@@ -245,12 +247,12 @@ class AttendanceHelper {
     return contactedCount;
   }
 
-  static int pickedUpSum(PupilProxy pupil) {
-    int pickedUpCount = pupil.missedClasses!
+  static int goneHomeSum(PupilProxy pupil) {
+    int goneHomeCount = pupil.missedClasses!
         .where((element) => element.backHome == true)
         .length;
 
-    return pickedUpCount;
+    return goneHomeCount;
   }
 
 //- check condition functions
@@ -279,9 +281,9 @@ class AttendanceHelper {
 
     ContactedType contactedType;
 
-    final PupilProxy pupil = locator<PupilManager>().findPupilById(pupilId)!;
+    final PupilProxy pupil = locator<PupilManager>().getPupilById(pupilId)!;
 
-    final int? missedClass = findMissedClassIndex(pupil, date);
+    final int? missedClass = getMissedClassIndex(pupil, date);
 
     if (missedClass == -1 || missedClass == null) {
       return AttendanceValues(

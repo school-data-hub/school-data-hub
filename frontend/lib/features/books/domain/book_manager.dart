@@ -7,8 +7,8 @@ import 'package:schuldaten_hub/common/domain/models/enums.dart';
 import 'package:schuldaten_hub/common/domain/session_manager.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_service.dart';
-import 'package:schuldaten_hub/features/books/data/book_repository.dart';
-import 'package:schuldaten_hub/features/books/data/pupil_book_repository.dart';
+import 'package:schuldaten_hub/features/books/data/book_api_service.dart';
+import 'package:schuldaten_hub/features/books/data/pupil_book_api_service.dart';
 import 'package:schuldaten_hub/features/books/domain/models/book.dart';
 import 'package:schuldaten_hub/features/pupil/domain/pupil_manager.dart';
 
@@ -29,9 +29,9 @@ class BookManager {
 
   final session = locator.get<SessionManager>().credentials.value;
 
-  final pupilBookRepository = PupilBookRepository();
+  final pupilBookApiService = PupilBookApiService();
 
-  final bookRepository = BookRepository();
+  final bookApiService = BookApiService();
 
   final notificationService = locator<NotificationService>();
 
@@ -53,7 +53,7 @@ class BookManager {
 
   Future<void> getLocations() async {
     final List<String> responseLocations =
-        await bookRepository.getBookLocations();
+        await bookApiService.getBookLocations();
 
     _locations.value = responseLocations;
 
@@ -65,12 +65,12 @@ class BookManager {
   }
 
   Future<void> getBookTags() async {
-    final List<BookTag> responseTags = await bookRepository.getBookTags();
+    final List<BookTag> responseTags = await bookApiService.getBookTags();
     _bookTags.value = responseTags;
   }
 
   Future<void> addBookTag(String tag) async {
-    final List<BookTag> responseTags = await bookRepository.postBookTag(tag);
+    final List<BookTag> responseTags = await bookApiService.postBookTag(tag);
 
     _bookTags.value = responseTags;
 
@@ -78,7 +78,7 @@ class BookManager {
   }
 
   Future<void> deleteBookTag(String tag) async {
-    final List<BookTag> responseTags = await bookRepository.deleteBookTag(tag);
+    final List<BookTag> responseTags = await bookApiService.deleteBookTag(tag);
 
     _bookTags.value = responseTags;
 
@@ -87,7 +87,7 @@ class BookManager {
 
   Future<void> addLocation(String location) async {
     final List<String> responseLocations =
-        await bookRepository.postBookLocation(location);
+        await bookApiService.postBookLocation(location);
 
     _locations.value = responseLocations;
 
@@ -96,7 +96,7 @@ class BookManager {
 
   Future<void> deleteLocation(String location) async {
     final List<String> responseLocations =
-        await bookRepository.deleteBookLocation(location);
+        await bookApiService.deleteBookLocation(location);
 
     _locations.value = responseLocations;
 
@@ -108,7 +108,7 @@ class BookManager {
   }
 
   Future<void> getBooks() async {
-    final List<Book> responseBooks = await bookRepository.getBooks();
+    final List<Book> responseBooks = await bookApiService.getBooks();
 
     // sort books by name
     if (responseBooks.isNotEmpty) {
@@ -132,7 +132,7 @@ class BookManager {
     required String author,
     required List<BookTag> tags,
   }) async {
-    final Book responseBook = await bookRepository.postBook(
+    final Book responseBook = await bookApiService.postBook(
       isbn: isbn,
       bookId: bookId,
       description: description,
@@ -153,13 +153,13 @@ class BookManager {
 
   Future<void> updateBookProperty({
     required String bookId,
-    required String? title,
-    required String? description,
-    required String? location,
-    required String? readingLevel,
-    required String? author,
+    String? title,
+    String? description,
+    String? location,
+    String? readingLevel,
+    String? author,
   }) async {
-    final Book updatedbook = await bookRepository.updateBookProperty(
+    final Book updatedbook = await bookApiService.updateBookProperty(
       bookId: bookId,
       title: title,
       description: description,
@@ -183,7 +183,7 @@ class BookManager {
 
   Future<void> postBookFile(File imageFile, String bookId) async {
     final Book responsebook =
-        await bookRepository.postBookFile(imageFile, bookId);
+        await bookApiService.postBookFile(imageFile, bookId);
 
     updateBookStateWithResponse(responsebook);
 
@@ -204,7 +204,7 @@ class BookManager {
     required String author,
     required List<BookTag> tags,
   }) async {
-    final Book responseBook = await bookRepository.postBook(
+    final Book responseBook = await bookApiService.postBook(
       author: author,
       isbn: isbn,
       bookId: bookId,
@@ -217,7 +217,7 @@ class BookManager {
     final tempDir = await getTemporaryDirectory();
     final file =
         await File('${tempDir.path}/tempImage.png').writeAsBytes(imageBytes);
-    final Book responseBookWithImage = await bookRepository.postBookFile(
+    final Book responseBookWithImage = await bookApiService.postBookFile(
       file,
       responseBook.bookId,
     );
@@ -231,7 +231,7 @@ class BookManager {
   }
 
   Future<void> deleteBook(String bookId) async {
-    final bool success = await bookRepository.deleteBook(bookId);
+    final bool success = await bookApiService.deleteBook(bookId);
 
     if (success) {
       List<Book> books = List.from(_books.value);
@@ -248,7 +248,7 @@ class BookManager {
   }
 
   Future<void> deleteBookFile(String bookId) async {
-    final Book responsebook = await bookRepository.deleteBookFile(bookId);
+    final Book responsebook = await bookApiService.deleteBookFile(bookId);
 
     updateBookStateWithResponse(responsebook);
 

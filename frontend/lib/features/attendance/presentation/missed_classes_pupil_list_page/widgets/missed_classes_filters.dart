@@ -97,6 +97,20 @@ class MissedClassFilters extends WatchingWidget {
                     .setSortMode(PupilSortMode.sortByContacted);
               },
             ),
+            ThemedFilterChip(
+              label: 'abgeholt',
+              selected: sortMode == PupilSortMode.sortByGoneHome,
+              onSelected: (val) {
+                // if the filter is already selected, do nothing
+                if (locator<PupilsFilter>().sortMode.value ==
+                    PupilSortMode.sortByGoneHome) {
+                  return;
+                }
+                // set the filter
+                locator<PupilsFilter>()
+                    .setSortMode(PupilSortMode.sortByGoneHome);
+              },
+            ),
           ],
         ),
         const Gap(20),

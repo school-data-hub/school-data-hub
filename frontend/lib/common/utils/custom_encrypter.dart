@@ -12,10 +12,10 @@ final customEncrypter = CustomEncrypter();
 
 class CustomEncrypter {
   final encrypter = enc.Encrypter(enc.AES(
-      enc.Key.fromUtf8(locator<EnvManager>().env.value.key!),
+      enc.Key.fromUtf8(locator<EnvManager>().env!.key),
       mode: enc.AESMode.cbc));
 
-  final iv = enc.IV.fromUtf8(locator<EnvManager>().env.value.iv!);
+  final iv = enc.IV.fromUtf8(locator<EnvManager>().env!.iv);
 
   String encryptString(String nonEncryptedString) {
     final encryptedString =
@@ -64,8 +64,8 @@ class CustomEncrypter {
   }
 
   static void generateNewEncryptionKeys() async {
-    final oldKey = locator<EnvManager>().env.value.key!;
-    final oldIv = locator<EnvManager>().env.value.iv!;
+    final oldKey = locator<EnvManager>().env!.key;
+    final oldIv = locator<EnvManager>().env!.iv;
     final oldKeyBase64 = enc.Key.fromUtf8(oldKey).base64;
     final oldIvBase64 = enc.IV.fromUtf8(oldIv).base64;
     final key = enc.Key.fromSecureRandom(32);

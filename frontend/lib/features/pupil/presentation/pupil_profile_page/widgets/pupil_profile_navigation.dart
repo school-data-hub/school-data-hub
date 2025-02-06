@@ -1,8 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
-import 'package:schuldaten_hub/common/theme/colors.dart';
+import 'package:schuldaten_hub/common/theme/app_colors.dart';
 import 'package:schuldaten_hub/features/main_menu/widgets/landing_bottom_nav_bar.dart';
 import 'package:watch_it/watch_it.dart';
+
+enum ProfileNavigation {
+  info(0),
+  language(1),
+  credit(2),
+  attendance(3),
+  schooldayEvent(4),
+  ogs(5),
+  lists(6),
+  authorization(7),
+  learningSupport(8),
+  learning(9),
+  ;
+
+  final int value;
+  const ProfileNavigation(this.value);
+}
 
 class PupilProfileNavigation extends WatchingStatefulWidget {
   final double boxWidth;
@@ -13,29 +30,9 @@ class PupilProfileNavigation extends WatchingStatefulWidget {
 }
 
 class _PupilProfileNavigationState extends State<PupilProfileNavigation> {
-  // final CustomExpansionTileController infoTileController =
-  //     CustomExpansionTileController();
-  // final CustomExpansionTileController languageTileController =
-  //     CustomExpansionTileController();
-  // final CustomExpansionTileController creditTileController =
-  //     CustomExpansionTileController();
-  // final CustomExpansionTileController attendanceTileController =
-  //     CustomExpansionTileController();
-  // final CustomExpansionTileController schooldayEventTileController =
-  //     CustomExpansionTileController();
-  // final CustomExpansionTileController ogsTileController =
-  //     CustomExpansionTileController();
-  // final CustomExpansionTileController learningSupportTileController =
-  //     CustomExpansionTileController();
-  // final CustomExpansionTileController learningTileController =
-  //     CustomExpansionTileController();
-  // final CustomExpansionTileController pupilSchoolListTileController =
-  //     CustomExpansionTileController();
-  // final CustomExpansionTileController pupilAuthoritationTileController =
-  //     CustomExpansionTileController();
-
   Color navigationBackgroundColor(int page) {
-    return page == locator<BottomNavManager>().pupilProfileNavState.value
+    return page ==
+            locator<MainMenuBottomNavManager>().pupilProfileNavState.value
         ? Colors.white
         : AppColors.backgroundColor;
   }
@@ -44,42 +41,19 @@ class _PupilProfileNavigationState extends State<PupilProfileNavigation> {
   Color navigationIconInactive = Colors.white;
   Color navigationIconActive = Colors.white;
 
-  // void expandTile(int tile) {
-  //   List<CustomExpansionTileController> tileControllers = [
-  //     infoTileController,
-  //     languageTileController,
-  //     creditTileController,
-  //     attendanceTileController,
-  //     schooldayEventTileController,
-  //     ogsTileController,
-  //     learningSupportTileController,
-  //     learningTileController,
-  //     pupilSchoolListTileController,
-  //     pupilAuthoritationTileController
-  //   ];
-
-  //   for (int i = 0; i < tileControllers.length; i++) {
-  //     if (i == tile) {
-  //       tileControllers[i].isExpanded
-  //           ? tileControllers[i].collapse()
-  //           : tileControllers[i].expand();
-  //       continue;
-  //     }
-  //     tileControllers[i].collapse();
-  //   }
-  // }
-
   @override
   Widget build(BuildContext context) {
     final int pupilProfileNavState =
-        watchValue((BottomNavManager x) => x.pupilProfileNavState);
+        watchValue((MainMenuBottomNavManager x) => x.pupilProfileNavState);
     //double boxHeight = 35;
     return Theme(
       data: Theme.of(context).copyWith(
-          elevatedButtonTheme: ElevatedButtonThemeData(
-              style: ElevatedButton.styleFrom(
-        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-      ))),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          ),
+        ),
+      ),
       child: Center(
         child: SizedBox(
           height: 70,
@@ -103,15 +77,18 @@ class _PupilProfileNavigationState extends State<PupilProfileNavigation> {
                                 10.0), // Adjust the radius as needed
                           ),
                         ),
-                        backgroundColor: navigationBackgroundColor(0),
+                        backgroundColor: navigationBackgroundColor(
+                            ProfileNavigation.info.value),
                       ),
                       onPressed: () {
                         if (pupilProfileNavState == 0) return;
-                        locator<BottomNavManager>().setPupilProfileNavPage(0);
+                        locator<MainMenuBottomNavManager>()
+                            .setPupilProfileNavPage(
+                                ProfileNavigation.info.value);
                       },
                       child: Icon(
                         Icons.info_rounded,
-                        color: locator<BottomNavManager>()
+                        color: locator<MainMenuBottomNavManager>()
                                     .pupilProfileNavState
                                     .value ==
                                 0
@@ -129,15 +106,18 @@ class _PupilProfileNavigationState extends State<PupilProfileNavigation> {
                             side: BorderSide(
                                 color: AppColors.backgroundColor, width: 2.0),
                             borderRadius: BorderRadius.zero),
-                        backgroundColor: navigationBackgroundColor(1),
+                        backgroundColor: navigationBackgroundColor(
+                            ProfileNavigation.language.value),
                       ),
                       onPressed: () {
                         if (pupilProfileNavState == 1) return;
-                        locator<BottomNavManager>().setPupilProfileNavPage(1);
+                        locator<MainMenuBottomNavManager>()
+                            .setPupilProfileNavPage(
+                                ProfileNavigation.language.value);
                       },
                       child: Icon(
                         Icons.language_rounded,
-                        color: locator<BottomNavManager>()
+                        color: locator<MainMenuBottomNavManager>()
                                     .pupilProfileNavState
                                     .value ==
                                 1
@@ -155,15 +135,18 @@ class _PupilProfileNavigationState extends State<PupilProfileNavigation> {
                             side: BorderSide(
                                 color: AppColors.backgroundColor, width: 2.0),
                             borderRadius: BorderRadius.zero),
-                        backgroundColor: navigationBackgroundColor(2),
+                        backgroundColor: navigationBackgroundColor(
+                            ProfileNavigation.credit.value),
                       ),
                       onPressed: () {
                         if (pupilProfileNavState == 2) return;
-                        locator<BottomNavManager>().setPupilProfileNavPage(2);
+                        locator<MainMenuBottomNavManager>()
+                            .setPupilProfileNavPage(
+                                ProfileNavigation.credit.value);
                       },
                       child: Icon(
                         Icons.attach_money_rounded,
-                        color: locator<BottomNavManager>()
+                        color: locator<MainMenuBottomNavManager>()
                                     .pupilProfileNavState
                                     .value ==
                                 2
@@ -181,15 +164,18 @@ class _PupilProfileNavigationState extends State<PupilProfileNavigation> {
                             side: BorderSide(
                                 color: AppColors.backgroundColor, width: 2.0),
                             borderRadius: BorderRadius.zero),
-                        backgroundColor: navigationBackgroundColor(3),
+                        backgroundColor: navigationBackgroundColor(
+                            ProfileNavigation.attendance.value),
                       ),
                       onPressed: () {
                         if (pupilProfileNavState == 3) return;
-                        locator<BottomNavManager>().setPupilProfileNavPage(3);
+                        locator<MainMenuBottomNavManager>()
+                            .setPupilProfileNavPage(
+                                ProfileNavigation.attendance.value);
                       },
                       child: Icon(
                         Icons.calendar_month_rounded,
-                        color: locator<BottomNavManager>()
+                        color: locator<MainMenuBottomNavManager>()
                                     .pupilProfileNavState
                                     .value ==
                                 3
@@ -211,15 +197,18 @@ class _PupilProfileNavigationState extends State<PupilProfileNavigation> {
                                 10.0), // Adjust the radius as needed
                           ),
                         ),
-                        backgroundColor: navigationBackgroundColor(4),
+                        backgroundColor: navigationBackgroundColor(
+                            ProfileNavigation.schooldayEvent.value),
                       ),
                       onPressed: () {
                         if (pupilProfileNavState == 4) return;
-                        locator<BottomNavManager>().setPupilProfileNavPage(4);
+                        locator<MainMenuBottomNavManager>()
+                            .setPupilProfileNavPage(
+                                ProfileNavigation.schooldayEvent.value);
                       },
                       child: Icon(
                         Icons.warning_rounded,
-                        color: locator<BottomNavManager>()
+                        color: locator<MainMenuBottomNavManager>()
                                     .pupilProfileNavState
                                     .value ==
                                 4
@@ -242,16 +231,19 @@ class _PupilProfileNavigationState extends State<PupilProfileNavigation> {
                         elevation: 0,
                         shape: const RoundedRectangleBorder(
                             borderRadius: BorderRadius.zero),
-                        backgroundColor: navigationBackgroundColor(5),
+                        backgroundColor: navigationBackgroundColor(
+                            ProfileNavigation.ogs.value),
                       ),
                       onPressed: () {
                         if (pupilProfileNavState == 5) return;
-                        locator<BottomNavManager>().setPupilProfileNavPage(5);
+                        locator<MainMenuBottomNavManager>()
+                            .setPupilProfileNavPage(
+                                ProfileNavigation.ogs.value);
                       },
                       child: Text(
                         'OGS',
                         style: TextStyle(
-                            color: locator<BottomNavManager>()
+                            color: locator<MainMenuBottomNavManager>()
                                         .pupilProfileNavState
                                         .value ==
                                     5
@@ -269,14 +261,17 @@ class _PupilProfileNavigationState extends State<PupilProfileNavigation> {
                           elevation: 0,
                           shape: const RoundedRectangleBorder(
                               borderRadius: BorderRadius.zero),
-                          backgroundColor: navigationBackgroundColor(6)),
+                          backgroundColor: navigationBackgroundColor(
+                              ProfileNavigation.lists.value)),
                       onPressed: () {
                         if (pupilProfileNavState == 6) return;
-                        locator<BottomNavManager>().setPupilProfileNavPage(6);
+                        locator<MainMenuBottomNavManager>()
+                            .setPupilProfileNavPage(
+                                ProfileNavigation.lists.value);
                       },
                       child: Icon(
                         Icons.rule,
-                        color: locator<BottomNavManager>()
+                        color: locator<MainMenuBottomNavManager>()
                                     .pupilProfileNavState
                                     .value ==
                                 6
@@ -292,14 +287,17 @@ class _PupilProfileNavigationState extends State<PupilProfileNavigation> {
                           elevation: 0,
                           shape: const RoundedRectangleBorder(
                               borderRadius: BorderRadius.zero),
-                          backgroundColor: navigationBackgroundColor(7)),
+                          backgroundColor: navigationBackgroundColor(
+                              ProfileNavigation.authorization.value)),
                       onPressed: () {
                         if (pupilProfileNavState == 7) return;
-                        locator<BottomNavManager>().setPupilProfileNavPage(7);
+                        locator<MainMenuBottomNavManager>()
+                            .setPupilProfileNavPage(
+                                ProfileNavigation.authorization.value);
                       },
                       child: Icon(
                         Icons.fact_check_rounded,
-                        color: locator<BottomNavManager>()
+                        color: locator<MainMenuBottomNavManager>()
                                     .pupilProfileNavState
                                     .value ==
                                 7
@@ -315,14 +313,17 @@ class _PupilProfileNavigationState extends State<PupilProfileNavigation> {
                           elevation: 0,
                           shape: const RoundedRectangleBorder(
                               borderRadius: BorderRadius.zero),
-                          backgroundColor: navigationBackgroundColor(8)),
+                          backgroundColor: navigationBackgroundColor(
+                              ProfileNavigation.learningSupport.value)),
                       onPressed: () {
                         if (pupilProfileNavState == 8) return;
-                        locator<BottomNavManager>().setPupilProfileNavPage(8);
+                        locator<MainMenuBottomNavManager>()
+                            .setPupilProfileNavPage(
+                                ProfileNavigation.learningSupport.value);
                       },
                       child: Icon(
                         Icons.support_rounded,
-                        color: locator<BottomNavManager>()
+                        color: locator<MainMenuBottomNavManager>()
                                     .pupilProfileNavState
                                     .value ==
                                 8
@@ -338,14 +339,17 @@ class _PupilProfileNavigationState extends State<PupilProfileNavigation> {
                           elevation: 0,
                           shape: const RoundedRectangleBorder(
                               borderRadius: BorderRadius.zero),
-                          backgroundColor: navigationBackgroundColor(9)),
+                          backgroundColor: navigationBackgroundColor(
+                              ProfileNavigation.learning.value)),
                       onPressed: () {
                         if (pupilProfileNavState == 9) return;
-                        locator<BottomNavManager>().setPupilProfileNavPage(9);
+                        locator<MainMenuBottomNavManager>()
+                            .setPupilProfileNavPage(
+                                ProfileNavigation.learning.value);
                       },
                       child: Icon(
                         Icons.lightbulb,
-                        color: locator<BottomNavManager>()
+                        color: locator<MainMenuBottomNavManager>()
                                     .pupilProfileNavState
                                     .value ==
                                 9

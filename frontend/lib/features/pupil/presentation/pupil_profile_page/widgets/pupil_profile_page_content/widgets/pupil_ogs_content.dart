@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
-import 'package:schuldaten_hub/common/theme/colors.dart';
+import 'package:schuldaten_hub/common/theme/app_colors.dart';
 import 'package:schuldaten_hub/common/theme/paddings.dart';
 import 'package:schuldaten_hub/common/widgets/dialogs/confirmation_dialog.dart';
 import 'package:schuldaten_hub/common/widgets/dialogs/long_textfield_dialog.dart';
@@ -51,10 +51,10 @@ class PupilOgsContent extends StatelessWidget {
                       message:
                           'Notbetreuungsberechtigung für dieses Kind ändern?');
                   if (confirm == false || confirm == null) return;
-                  await locator<PupilManager>().patchPupil(
-                      pupil.internalId,
-                      'emergency_care',
-                      pupil.emergencyCare == true ? 'false' : 'true');
+                  await locator<PupilManager>().patchOnePupilProperty(
+                      pupilId: pupil.internalId,
+                      jsonKey: 'emergency_care',
+                      value: pupil.emergencyCare == true ? 'false' : 'true');
                 },
                 child: Text(
                   pupil.emergencyCare == true ? 'Ja' : 'Nein',
@@ -96,8 +96,10 @@ class PupilOgsContent extends StatelessWidget {
                               textinField: pupil.ogsInfo ?? '',
                               parentContext: context);
                           if (ogsInfo == null) return;
-                          await locator<PupilManager>().patchPupil(
-                              pupil.internalId, 'ogs_info', ogsInfo);
+                          await locator<PupilManager>().patchOnePupilProperty(
+                              pupilId: pupil.internalId,
+                              jsonKey: 'ogs_info',
+                              value: ogsInfo);
                         },
                         onLongPress: () async {
                           if (pupil.ogsInfo == null) return;
@@ -107,8 +109,10 @@ class PupilOgsContent extends StatelessWidget {
                               message:
                                   'OGS Informationen für dieses Kind löschen?');
                           if (confirm == false || confirm == null) return;
-                          await locator<PupilManager>()
-                              .patchPupil(pupil.internalId, 'ogs_info', null);
+                          await locator<PupilManager>().patchOnePupilProperty(
+                              pupilId: pupil.internalId,
+                              jsonKey: 'ogs_info',
+                              value: null);
                         },
                         child: Text(
                           pupil.ogsInfo == null || pupil.ogsInfo!.isEmpty

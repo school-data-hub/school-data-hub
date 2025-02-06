@@ -6,33 +6,37 @@ import 'package:schuldaten_hub/common/domain/env_manager.dart';
 import 'package:schuldaten_hub/common/domain/models/enums.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_service.dart';
-import 'package:schuldaten_hub/common/theme/colors.dart';
+import 'package:schuldaten_hub/common/theme/app_colors.dart';
 import 'package:schuldaten_hub/common/widgets/bottom_nav_bar_layouts.dart';
 import 'package:schuldaten_hub/common/widgets/dialogs/information_dialog.dart';
 import 'package:schuldaten_hub/common/widgets/snackbars.dart';
-import 'package:schuldaten_hub/features/main_menu/learn_resources_menu_page.dart';
-import 'package:schuldaten_hub/features/main_menu/pupil_lists_menu_page.dart';
+import 'package:schuldaten_hub/features/main_menu/main_menu_pages/learn_resources_menu_page.dart';
+import 'package:schuldaten_hub/features/main_menu/main_menu_pages/pupil_lists_menu_page.dart';
+import 'package:schuldaten_hub/features/main_menu/main_menu_pages/school_lists_page.dart';
 import 'package:schuldaten_hub/features/main_menu/scan_tools_page.dart';
-import 'package:schuldaten_hub/features/main_menu/school_lists_page.dart';
 import 'package:schuldaten_hub/features/main_menu/settings_page/settings_page.dart';
 import 'package:watch_it/watch_it.dart';
 
-class BottomNavManager {
-  ValueListenable<int> get bottomNavState => _bottomNavState;
-  ValueListenable<int> get pupilProfileNavState => _pupilProfileNavState;
-  ValueListenable<PageController> get pageViewController => _pageViewController;
+class MainMenuBottomNavManager {
   final _bottomNavState = ValueNotifier<int>(0);
+  ValueListenable<int> get bottomNavState => _bottomNavState;
+
   final _pageViewController = ValueNotifier<PageController>(PageController());
+  ValueListenable<PageController> get pageViewController => _pageViewController;
+
   final _pupilProfileNavState = ValueNotifier<int>(0);
-  BottomNavManager() {
+  ValueListenable<int> get pupilProfileNavState => _pupilProfileNavState;
+
+  MainMenuBottomNavManager() {
     _bottomNavState.value = 0;
     _pageViewController.value = PageController();
   }
-  setBottomNavPage(index) {
+
+  setBottomNavPage(int index) {
     _bottomNavState.value = index;
   }
 
-  setPupilProfileNavPage(index) {
+  setPupilProfileNavPage(int index) {
     _pupilProfileNavState.value = index;
   }
 
@@ -41,8 +45,8 @@ class BottomNavManager {
   }
 }
 
-class BottomNavigation extends WatchingWidget {
-  BottomNavigation({super.key});
+class MainMenuBottomNavigation extends WatchingWidget {
+  MainMenuBottomNavigation({super.key});
 
   final List pages = [
     const PupilListsMenuPage(),
@@ -55,10 +59,12 @@ class BottomNavigation extends WatchingWidget {
   @override
   Widget build(BuildContext context) {
     final locale = AppLocalizations.of(context)!;
-    final manager = locator<BottomNavManager>();
-    final tab = watchValue((BottomNavManager x) => x.bottomNavState);
+    final manager = locator<MainMenuBottomNavManager>();
+    final tab = watchValue((MainMenuBottomNavManager x) => x.bottomNavState);
     final pageViewController =
-        watchValue((BottomNavManager x) => x.pageViewController);
+        watchValue((MainMenuBottomNavManager x) => x.pageViewController);
+
+    // with these handlers we control the overlays of the notification service
     registerHandler(
         select: (NotificationService x) => x.notification,
         handler: (context, value, cancel) {
@@ -68,9 +74,15 @@ class BottomNavigation extends WatchingWidget {
         });
 
     registerHandler(
+        select: (NotificationService x) => x.loadingNewInstance,
+        handler: (context, value, cancel) {
+          value ? showInstanceLoadingOverlay(context) : hideLoadingOverlay();
+        });
+
+    registerHandler(
         select: (NotificationService x) => x.heavyLoading,
         handler: (context, value, cancel) {
-          value ? showLoadingOverlay(context) : hideLoadingOverlay();
+          value ? showHeavyLoadingOverlay(context) : hideLoadingOverlay();
         });
 
     return Scaffold(
@@ -131,7 +143,7 @@ class BottomNavigation extends WatchingWidget {
 
 OverlayEntry? overlayEntry;
 
-void showLoadingOverlay(BuildContext context) {
+void showInstanceLoadingOverlay(BuildContext context) {
   final locale = AppLocalizations.of(context)!;
   overlayEntry = OverlayEntry(
     builder: (context) => Stack(
@@ -163,9 +175,9 @@ void showLoadingOverlay(BuildContext context) {
                   ),
                 ),
                 const Gap(15),
-                if (locator<EnvManager>().env.value.server != null)
+                if (locator<EnvManager>().env != null)
                   Text(
-                    locator<EnvManager>().env.value.server!,
+                    locator<EnvManager>().env!.server,
                     style: const TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
@@ -190,6 +202,42 @@ void showLoadingOverlay(BuildContext context) {
                 const SizedBox(height: 16),
                 const CircularProgressIndicator(
                   color: AppColors.accentColor,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+
+  Overlay.of(context).insert(overlayEntry!);
+}
+
+void showHeavyLoadingOverlay(BuildContext context) {
+  overlayEntry = OverlayEntry(
+    builder: (context) => const Stack(
+      fit: StackFit.expand,
+      children: [
+        ModalBarrier(
+          dismissible: false,
+          color: Color.fromARGB(108, 0, 0, 0), // Colors.black.withOpacity(0.3)
+        ), // Background color
+        Material(
+          color: Colors.transparent,
+          child: Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text('Bitte warten...', // Your text here
+                    style: TextStyle(
+                        color: Colors.white, // Text color
+                        fontSize: 20, // Text size
+                        fontWeight: FontWeight.bold)),
+                SizedBox(height: 16),
+                CircularProgressIndicator(
+                  color: AppColors.interactiveColor,
                 ),
               ],
             ),

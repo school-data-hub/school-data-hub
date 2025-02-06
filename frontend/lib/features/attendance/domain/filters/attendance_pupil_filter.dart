@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:schuldaten_hub/common/domain/filters/filters_state_manager.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/utils/extensions.dart';
+import 'package:schuldaten_hub/features/attendance/domain/attendance_manager.dart';
 import 'package:schuldaten_hub/features/attendance/domain/models/missed_class.dart';
 import 'package:schuldaten_hub/features/pupil/domain/filters/pupils_filter.dart';
 import 'package:schuldaten_hub/features/pupil/domain/models/pupil_proxy.dart';
@@ -65,7 +66,7 @@ class AttendancePupilFilterManager {
     locator<PupilsFilter>().refreshs();
   }
 
-  void resetAttendanceFilters() {
+  void resetFilters() {
     _attendancePupilFilterState.value = {...initialAttendancePupilFilterValues};
     locator<FiltersStateManager>()
         .setFilterState(filterState: FilterState.attendance, value: false);
@@ -98,11 +99,12 @@ class AttendancePupilFilterManager {
       isMatched = false;
     }
 
-    //- Filter unexcused pupils
+    //- Filter pupils not present AND unexcused
 
     if (attendanceActiveFilters[AttendancePupilFilter.unexcused]! &&
         !(attendanceEventThisDate != null &&
-            attendanceEventThisDate.unexcused == true)) {
+            attendanceEventThisDate.unexcused == true &&
+            attendanceEventThisDate.missedType == MissedType.isMissed.value)) {
       isMatched = false;
     }
 

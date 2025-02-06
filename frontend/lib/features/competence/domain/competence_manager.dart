@@ -6,7 +6,7 @@ import 'package:schuldaten_hub/common/domain/models/enums.dart';
 import 'package:schuldaten_hub/common/services/api/api_settings.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_service.dart';
-import 'package:schuldaten_hub/features/competence/data/competence_check_repository.dart';
+import 'package:schuldaten_hub/features/competence/data/competence_check_api_service.dart';
 import 'package:schuldaten_hub/features/competence/domain/competence_helper.dart';
 import 'package:schuldaten_hub/features/competence/domain/filters/competence_filter_manager.dart';
 import 'package:schuldaten_hub/features/competence/domain/models/competence.dart';
@@ -21,6 +21,7 @@ class CompetenceManager {
   ValueListenable<bool> get isRunning => _isRunning;
 
   Map<int, int> _rootCompetencesMap = {};
+  Map<int, int> get rootCompetencesMap => _rootCompetencesMap;
 
   CompetenceManager();
   Future<CompetenceManager> init() async {
@@ -31,9 +32,9 @@ class CompetenceManager {
 
   final notificationService = locator<NotificationService>();
 
-  final _competenceRepository = CompetenceRepository();
+  final _competenceApiService = CompetenceApiService();
 
-  final _competenceCheckRepository = CompetenceCheckRepository();
+  final _competenceCheckApiService = CompetenceCheckApiService();
 
   void clearData() {
     _competences.value = [];
@@ -45,7 +46,7 @@ class CompetenceManager {
 
   Future<void> firstFetchCompetences() async {
     final List<Competence> competences =
-        await _competenceRepository.fetchCompetences();
+        await _competenceApiService.fetchCompetences();
 
     competences.sort((a, b) => a.competenceId.compareTo(b.competenceId));
 
@@ -64,7 +65,7 @@ class CompetenceManager {
 
   Future<void> fetchCompetences() async {
     final List<Competence> competences =
-        await _competenceRepository.fetchCompetences();
+        await _competenceApiService.fetchCompetences();
 
     competences.sort((a, b) => a.competenceId.compareTo(b.competenceId));
 
@@ -90,7 +91,7 @@ class CompetenceManager {
     required indicators,
   }) async {
     final Competence newCompetence =
-        await _competenceRepository.postNewCompetence(
+        await _competenceApiService.postNewCompetence(
       parentCompetence: parentCompetence,
       competenceName: competenceName,
       competenceLevel: competenceLevel,
@@ -100,7 +101,8 @@ class CompetenceManager {
     _competences.value = [..._competences.value, newCompetence];
     locator<CompetenceFilterManager>()
         .refreshFilteredCompetences(_competences.value);
-
+    _rootCompetencesMap =
+        CompetenceHelper.generateRootCompetencesMap(_competences.value);
     notificationService.showSnackBar(
         NotificationType.success, 'Kompetenz erstellt');
 
@@ -114,7 +116,7 @@ class CompetenceManager {
     required String? indicators,
   }) async {
     final Competence updatedCompetence =
-        await _competenceRepository.updateCompetenceProperty(
+        await _competenceApiService.updateCompetenceProperty(
             competenceId, competenceName, competenceLevel, indicators);
 
     final List<Competence> competences = List.from(_competences.value);
@@ -137,7 +139,7 @@ class CompetenceManager {
 
   Future<void> deleteCompetence(int competenceId) async {
     final bool success =
-        await _competenceRepository.deleteCompetence(competenceId);
+        await _competenceApiService.deleteCompetence(competenceId);
 
     if (success) {
       final List<Competence> competences = List.from(_competences.value);
@@ -163,17 +165,38 @@ class CompetenceManager {
     required int competenceId,
     required int competenceStatus,
     required String competenceComment,
-    required bool isReport,
-    required String? reportId,
+    required String? groupId,
   }) async {
     final PupilData updatedPupilData =
-        await _competenceCheckRepository.postCompetenceCheck(
+        await _competenceCheckApiService.postCompetenceCheck(
       pupilId: pupilId,
       competenceId: competenceId,
       competenceStatus: competenceStatus,
       comment: competenceComment,
-      isReport: isReport,
-      reportId: reportId,
+      groupId: groupId,
+    );
+    locator<PupilManager>().updatePupilProxyWithPupilData(updatedPupilData);
+
+    notificationService.showSnackBar(
+        NotificationType.success, 'Kompetenzcheck erstellt');
+
+    return;
+  }
+
+  Future<void> postCompetenceCheckWithFile({
+    required int pupilId,
+    required int competenceId,
+    required int competenceStatus,
+    required String competenceComment,
+    required String? groupId,
+    required File file,
+  }) async {
+    final PupilData updatedPupilData =
+        await _competenceCheckApiService.postCompetenceCheckWithFile(
+      pupilId: pupilId,
+      competenceId: competenceId,
+      groupId: groupId,
+      file: file,
     );
     locator<PupilManager>().updatePupilProxyWithPupilData(updatedPupilData);
 
@@ -192,7 +215,7 @@ class CompetenceManager {
     bool? isReport,
   }) async {
     final PupilData updatedPupilData =
-        await _competenceCheckRepository.patchCompetenceCheck(
+        await _competenceCheckApiService.patchCompetenceCheck(
       competenceCheckId: competenceCheckId,
       competenceStatus: competenceStatus,
       createdAt: createdAt,
@@ -208,7 +231,7 @@ class CompetenceManager {
   }
 
   Future<void> deleteCompetenceCheck(String competenceCheckId) async {
-    final PupilData pupilData = await _competenceCheckRepository
+    final PupilData pupilData = await _competenceCheckApiService
         .deleteCompetenceCheck(competenceCheckId);
 
     notificationService.showSnackBar(
@@ -224,7 +247,7 @@ class CompetenceManager {
     required File file,
   }) async {
     final PupilData updatedPupilData =
-        await _competenceCheckRepository.postCompetenceCheckFile(
+        await _competenceCheckApiService.postCompetenceCheckFile(
       competenceCheckId: competenceCheckId,
       file: file,
     );
@@ -240,7 +263,7 @@ class CompetenceManager {
   Future<void> deleteCompetenceCheckFile(
       {required String competenceCheckId, required String fileId}) async {
     final PupilData updatedPupilData =
-        await _competenceCheckRepository.deleteCompetenceCheckFile(fileId);
+        await _competenceCheckApiService.deleteCompetenceCheckFile(fileId);
 
     locator<PupilManager>().updatePupilProxyWithPupilData(updatedPupilData);
 
@@ -250,15 +273,19 @@ class CompetenceManager {
     return;
   }
 
-  Competence findCompetence(int competenceId) {
+  Competence findCompetenceById(int competenceId) {
     final Competence competence = _competences.value
         .firstWhere((element) => element.competenceId == competenceId);
 
     return competence;
   }
 
-  Competence findRootCompetence(int competenceId) {
-    return findCompetence(_rootCompetencesMap[competenceId]!);
+  Competence findRootCompetence(Competence competence) {
+    return findCompetenceById(_rootCompetencesMap[competence.competenceId]!);
+  }
+
+  Competence findRootCompetenceById(int competenceId) {
+    return findCompetenceById(_rootCompetencesMap[competenceId]!);
   }
 
   bool isCompetenceWithChildren(Competence competence) {

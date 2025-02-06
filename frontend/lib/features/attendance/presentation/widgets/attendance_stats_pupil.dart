@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:schuldaten_hub/features/attendance/presentation/widgets/attendance_badges.dart';
 import 'package:schuldaten_hub/features/attendance/domain/attendance_helper_functions.dart';
+import 'package:schuldaten_hub/features/attendance/presentation/widgets/attendance_badges.dart';
 import 'package:schuldaten_hub/features/pupil/domain/models/pupil_proxy.dart';
 
 Widget attendanceStats(PupilProxy pupil) {
@@ -54,7 +54,7 @@ Widget attendanceStats(PupilProxy pupil) {
       returnedBadge(true),
       const Gap(3),
       Text(
-        AttendanceHelper.pickedUpSum(pupil).toString(),
+        AttendanceHelper.goneHomeSum(pupil).toString(),
         style: const TextStyle(
           color: Colors.black,
           fontWeight: FontWeight.bold,

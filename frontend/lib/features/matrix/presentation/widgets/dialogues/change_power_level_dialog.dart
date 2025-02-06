@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:schuldaten_hub/common/domain/session_manager.dart';
+import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/theme/styles.dart';
 import 'package:schuldaten_hub/features/pupil/domain/models/pupil_proxy.dart';
-import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/features/pupil/domain/pupil_manager.dart';
-import 'package:schuldaten_hub/common/domain/session_manager.dart';
 
 final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 final TextEditingController _textEditingController = TextEditingController();
 
 // based on https://mobikul.com/creating-stateful-dialog-form-in-flutter/
 
-Future<void> changeCreditDialog(BuildContext context, PupilProxy pupil) async {
+Future<void> changePowerLevelsDialog(
+    BuildContext context, PupilProxy pupil) async {
   return await showDialog(
       context: context,
       builder: (context) {
@@ -64,8 +65,10 @@ Future<void> changeCreditDialog(BuildContext context, PupilProxy pupil) async {
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
                       int amount = -int.parse(_textEditingController.text);
-                      locator<PupilManager>()
-                          .patchPupil(pupil.internalId, 'credit', amount);
+                      locator<PupilManager>().patchOnePupilProperty(
+                          pupilId: pupil.internalId,
+                          jsonKey: 'credit',
+                          value: amount);
                       // Do something like updating SharedPreferences or User Settings etc.
                       _textEditingController.clear();
                       Navigator.of(context).pop();
@@ -83,8 +86,10 @@ Future<void> changeCreditDialog(BuildContext context, PupilProxy pupil) async {
                   if (_formKey.currentState!.validate()) {
                     int amount = int.parse(_textEditingController.text);
                     locator<SessionManager>().changeSessionCredit(-amount);
-                    locator<PupilManager>()
-                        .patchPupil(pupil.internalId, 'credit', amount);
+                    locator<PupilManager>().patchOnePupilProperty(
+                        pupilId: pupil.internalId,
+                        jsonKey: 'credit',
+                        value: amount);
                     // Do something like updating SharedPreferences or User Settings etc.
                     _textEditingController.clear();
                     Navigator.of(context).pop();

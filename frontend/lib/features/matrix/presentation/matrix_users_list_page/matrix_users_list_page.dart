@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:schuldaten_hub/common/theme/colors.dart';
+import 'package:schuldaten_hub/common/theme/app_colors.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
-import 'package:schuldaten_hub/common/widgets/generic_app_bar.dart';
-import 'package:schuldaten_hub/common/widgets/sliver_search_app_bar.dart';
+import 'package:schuldaten_hub/common/widgets/list_view_components/generic_app_bar.dart';
+import 'package:schuldaten_hub/common/widgets/list_view_components/generic_sliver_search_app_bar.dart';
 import 'package:schuldaten_hub/features/matrix/domain/filters/matrix_policy_filter_manager.dart';
 import 'package:schuldaten_hub/features/matrix/domain/models/matrix_user.dart';
 import 'package:schuldaten_hub/features/matrix/presentation/matrix_users_list_page/widgets/matrix_user_list_card.dart';
@@ -33,7 +33,7 @@ class MatrixUsersListPage extends WatchingWidget {
             child: CustomScrollView(
               slivers: [
                 const SliverGap(5),
-                SliverSearchAppBar(
+                GenericSliverSearchAppBar(
                     title: MatrixUsersListSearchBar(matrixUsers: matrixUsers),
                     height: 110),
                 matrixUsers.isEmpty

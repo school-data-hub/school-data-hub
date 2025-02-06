@@ -42,8 +42,7 @@ class SchoolListManager {
   }
 
   final notificationService = locator<NotificationService>();
-  final SchoolListApiRepository apiSchoolListService =
-      SchoolListApiRepository();
+  final SchoolListApiService apiSchoolListService = SchoolListApiService();
   final SchoolListFilterManager schoolListFilterManager =
       locator<SchoolListFilterManager>();
   //- Helper functions

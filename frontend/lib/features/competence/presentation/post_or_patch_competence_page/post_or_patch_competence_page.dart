@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/theme/styles.dart';
-import 'package:schuldaten_hub/common/widgets/generic_app_bar.dart';
+import 'package:schuldaten_hub/common/widgets/list_view_components/generic_app_bar.dart';
 import 'package:schuldaten_hub/common/widgets/themed_filter_chip.dart';
 import 'package:schuldaten_hub/features/competence/domain/competence_manager.dart';
 import 'package:schuldaten_hub/features/competence/domain/models/competence.dart';
@@ -88,7 +88,7 @@ class PostOrPatchCompetencePageState extends State<PostOrPatchCompetencePage> {
               children: <Widget>[
                 if (widget.parentCompetence != null)
                   Text(
-                    'Übergeordnete Kompetenz: ${locator<CompetenceManager>().findCompetence(widget.parentCompetence!).competenceName}',
+                    'Übergeordnete Kompetenz: ${locator<CompetenceManager>().findCompetenceById(widget.parentCompetence!).competenceName}',
                     style: const TextStyle(
                         fontSize: 18, fontWeight: FontWeight.bold),
                   ),

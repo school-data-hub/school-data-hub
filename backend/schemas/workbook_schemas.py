@@ -1,60 +1,96 @@
 from apiflask import Schema, fields
 
 ########################
-#- PUPIL WORKBOOK SCHEMA
+# - PUPIL WORKBOOK SCHEMA
 ########################
+
 
 class PupilWorkbookSchema(Schema):
     workbook_isbn = fields.Integer()
-    state = fields.String(allow_none = True)
+    comment = fields.String(allow_none=True)
+    status = fields.Integer(allow_none=True)
     created_by = fields.String()
     created_at = fields.Date()
-    finished_at = fields.Date(allow_none = True)
+    finished_at = fields.Date(allow_none=True)
+
     class Meta:
-        fields = ('workbook_isbn', 'state', 'created_by', 'created_at', 'finished_at' )
+        fields = (
+            "workbook_isbn",
+            "comment",
+            "status",
+            "created_by",
+            "created_at",
+            "finished_at",
+        )
+
 
 pupil_workbook_schema = PupilWorkbookSchema()
 pupil_workbooks_schema = PupilWorkbookSchema(many=True)
 
+
 class PupilWorkbookListSchema(Schema):
     pupil_id = fields.Integer()
-    state = fields.String()
+    comment = fields.String(allow_none=True)
+    status = fields.Integer(allow_none=True)
     created_by = fields.String()
     created_at = fields.Date()
-    finished_at = fields.Date(allow_none = True)
+    finished_at = fields.Date(allow_none=True)
+
     class Meta:
-        fields = ('pupil_id', 'state', 'created_by', 'created_at', 'finished_at' )
+        fields = (
+            "pupil_id",
+            "comment",
+            "status",
+            "created_by",
+            "created_at",
+            "finished_at",
+        )
+
 
 pupil_workbook_list_schema = PupilWorkbookListSchema()
 pupil_workbooks_list_schema = PupilWorkbookListSchema(many=True)
 
 ###################
-#- WORKBOOK SCHEMA
+# - WORKBOOK SCHEMA
 ###################
+
 
 class WorkbookSchema(Schema):
     isbn = fields.Integer()
     name = fields.String()
-    subject = fields.String(allow_none = True)
-    level = fields.String(allow_none = True)
+    subject = fields.String(allow_none=True)
+    level = fields.String(allow_none=True)
     amount = fields.Integer()
-    image_url = fields.String(allow_none = True)
+    image_url = fields.String(allow_none=True)
     working_pupils = fields.List(fields.Nested(PupilWorkbookListSchema))
+
     class Meta:
-        fields = ('isbn', 'name', 'subject', 'level', 'amount','image_url','working_pupils')
+        fields = (
+            "isbn",
+            "name",
+            "subject",
+            "level",
+            "amount",
+            "image_url",
+            "working_pupils",
+        )
+
 
 workbook_schema = WorkbookSchema()
 workbooks_schema = WorkbookSchema(many=True)
 
+
 class WorkbookFlatSchema(Schema):
     isbn = fields.Integer()
     name = fields.String()
-    subject = fields.String(allow_none = True)
-    level = fields.String(allow_none = True)
+    subject = fields.String(allow_none=True)
+    level = fields.String(allow_none=True)
     amount = fields.Integer()
-    image_url = fields.String(allow_none = True)
+    image_url = fields.String(allow_none=True)
+
     class Meta:
-        fields = ('isbn', 'name', 'subject', 'level', 'amount', 'image_url')
+        fields = ("isbn", "name", "subject", "level", "amount", "image_url")
+
 
 workbook_flat_schema = WorkbookFlatSchema()
 workbooks_flat_schema = WorkbookFlatSchema(many=True)

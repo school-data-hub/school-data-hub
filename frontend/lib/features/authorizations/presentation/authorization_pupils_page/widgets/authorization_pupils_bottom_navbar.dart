@@ -3,7 +3,8 @@ import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/domain/filters/filters_state_manager.dart';
 import 'package:schuldaten_hub/common/domain/session_manager.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
-import 'package:schuldaten_hub/common/theme/colors.dart';
+import 'package:schuldaten_hub/common/theme/app_colors.dart';
+import 'package:schuldaten_hub/common/theme/paddings.dart';
 import 'package:schuldaten_hub/common/widgets/bottom_nav_bar_layouts.dart';
 import 'package:schuldaten_hub/features/authorizations/domain/authorization_manager.dart';
 import 'package:schuldaten_hub/features/authorizations/domain/models/authorization.dart';
@@ -47,31 +48,30 @@ class AuthorizationPupilsBottomNavBar extends WatchingWidget {
                   Navigator.pop(context);
                 },
               ),
-              const Gap(30),
-              locator<SessionManager>().credentials.value.username ==
-                      authorization.createdBy
-                  ? IconButton(
-                      tooltip: 'Kinder hinzufügen',
-                      icon:
-                          const Icon(Icons.add, color: Colors.white, size: 30),
-                      onPressed: () async {
-                        final List<int>? selectedPupilIds =
-                            await Navigator.of(context).push(MaterialPageRoute(
-                          builder: (ctx) => SelectPupilsListPage(
-                              selectablePupils: locator<PupilManager>()
-                                  .pupilsNotListed(pupilsInAuthorization)),
-                        ));
-                        if (selectedPupilIds == null) {
-                          return;
-                        }
-                        if (selectedPupilIds.isNotEmpty) {
-                          locator<AuthorizationManager>()
-                              .postPupilAuthorizations(selectedPupilIds,
-                                  authorization.authorizationId);
-                        }
-                      })
-                  : const SizedBox.shrink(),
-              const Gap(30),
+              if (locator<SessionManager>().credentials.value.username ==
+                      authorization.createdBy ||
+                  locator<SessionManager>().isAdmin.value) ...[
+                const Gap(AppPaddings.bottomNavBarButtonGap),
+                IconButton(
+                    tooltip: 'Kinder hinzufügen',
+                    icon: const Icon(Icons.add, color: Colors.white, size: 30),
+                    onPressed: () async {
+                      final List<int>? selectedPupilIds =
+                          await Navigator.of(context).push(MaterialPageRoute(
+                        builder: (ctx) => SelectPupilsListPage(
+                            selectablePupils: locator<PupilManager>()
+                                .pupilsNotListed(pupilsInAuthorization)),
+                      ));
+                      if (selectedPupilIds == null) {
+                        return;
+                      }
+                      if (selectedPupilIds.isNotEmpty) {
+                        locator<AuthorizationManager>().postPupilAuthorizations(
+                            selectedPupilIds, authorization.authorizationId);
+                      }
+                    })
+              ],
+              const Gap(AppPaddings.bottomNavBarButtonGap),
               InkWell(
                 onTap: () => showAuthorizationPupilsFilterBottomSheet(context),
                 onLongPress: () {

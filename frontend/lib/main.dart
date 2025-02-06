@@ -11,7 +11,8 @@ import 'package:schuldaten_hub/common/domain/env_manager.dart';
 import 'package:schuldaten_hub/common/domain/session_manager.dart';
 import 'package:schuldaten_hub/common/routes/app_routes.dart';
 import 'package:schuldaten_hub/common/services/connection_manager.dart';
-import 'package:schuldaten_hub/common/theme/colors.dart';
+import 'package:schuldaten_hub/common/theme/app_colors.dart';
+import 'package:schuldaten_hub/features/main_menu/error_page.dart';
 import 'package:schuldaten_hub/features/main_menu/loading_page.dart';
 import 'package:schuldaten_hub/features/main_menu/login_page/login_controller.dart';
 import 'package:schuldaten_hub/features/main_menu/no_connection_page.dart';
@@ -48,11 +49,6 @@ void main() async {
 
   registerBaseManagers();
   await locator.allReady();
-
-  // await locator.isReady<EnvManager>();
-  // await locator.isReady<ConnectionManager>();
-  // await locator.isReady<SessionManager>();
-  // await locator.isReady<PupilIdentityManager>();
 
   runApp(const MyApp());
   // TODO: INFO - This is a hack to avoid calls to firebase from the mobile_scanner package every 15 minutes
@@ -92,8 +88,8 @@ class MyApp extends WatchingWidget {
           GlobalCupertinoLocalizations.delegate,
         ],
         supportedLocales: const [
-          Locale('de', 'DE'), // Set the default locale to German
-          // Locale('en', 'EN'), // Set the default locale to German
+          Locale('de', 'DE'), // Set the default locale
+          // Locale('en', 'EN'),
         ],
         debugShowCheckedModeBanner: false,
         title: 'Schuldaten Hub',
@@ -105,9 +101,17 @@ class MyApp extends WatchingWidget {
             : envIsReady && isAuthenticated
                 ? FutureBuilder(
                     future: locator.allReady(),
+                    //  locator.allReady(timeout: const Duration(seconds: 30)),
                     builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        return BottomNavigation();
+                      if (snapshot.hasError) {
+                        debugPrint(snapshot.error.toString());
+                        return ErrorPage(error: snapshot.error.toString());
+                      } else if (snapshot.hasData) {
+                        if (isAuthenticated) {
+                          return MainMenuBottomNavigation();
+                        } else {
+                          return const Login();
+                        }
                       } else {
                         return const LoadingPage();
                       }

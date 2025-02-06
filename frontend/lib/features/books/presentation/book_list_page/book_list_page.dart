@@ -3,9 +3,9 @@ import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/domain/filters/filters_state_manager.dart';
 import 'package:schuldaten_hub/common/domain/models/enums.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
-import 'package:schuldaten_hub/common/theme/colors.dart';
+import 'package:schuldaten_hub/common/theme/app_colors.dart';
 import 'package:schuldaten_hub/common/theme/styles.dart';
-import 'package:schuldaten_hub/common/widgets/search_text_field.dart';
+import 'package:schuldaten_hub/features/pupil/presentation/widgets/pupil_search_text_field.dart';
 import 'package:schuldaten_hub/features/books/domain/book_manager.dart';
 import 'package:schuldaten_hub/features/books/domain/models/book.dart';
 import 'package:schuldaten_hub/features/books/presentation/book_list_page/view_model/book_list_view_model.dart';
@@ -54,7 +54,7 @@ class BookListPage extends WatchingWidget {
                 child: Padding(
                   padding: EdgeInsets.all(30.0),
                   child: Text(
-                    'Es wurden noch keine Bücher angelegt angelegt!',
+                    'Es wurden noch keine Bücher angelegt!',
                     textAlign: TextAlign.center,
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                   ),
@@ -93,7 +93,7 @@ class BookListPage extends WatchingWidget {
                         child: Row(
                           children: [
                             Expanded(
-                              child: SearchTextField(
+                              child: PupilSearchTextField(
                                   searchType: SearchType.workbook,
                                   hintText: 'Buch suchen',
                                   refreshFunction:

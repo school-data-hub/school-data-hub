@@ -9,14 +9,14 @@ import 'package:schuldaten_hub/common/domain/session_helper_functions.dart';
 import 'package:schuldaten_hub/common/domain/session_manager.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_service.dart';
-import 'package:schuldaten_hub/common/theme/colors.dart';
+import 'package:schuldaten_hub/common/theme/app_colors.dart';
 import 'package:schuldaten_hub/common/utils/extensions.dart';
-import 'package:schuldaten_hub/common/widgets/date_picker.dart';
+import 'package:schuldaten_hub/common/widgets/dialogs/date_picker.dart';
 import 'package:schuldaten_hub/common/widgets/dialogs/confirmation_dialog.dart';
 import 'package:schuldaten_hub/common/widgets/dialogs/short_textfield_dialog.dart';
 import 'package:schuldaten_hub/common/widgets/document_image.dart';
 import 'package:schuldaten_hub/common/widgets/upload_image.dart';
-import 'package:schuldaten_hub/features/schoolday_events/data/schoolday_event_repository.dart';
+import 'package:schuldaten_hub/features/schoolday_events/data/schoolday_event_api_service.dart';
 import 'package:schuldaten_hub/features/schoolday_events/domain/models/schoolday_event.dart';
 import 'package:schuldaten_hub/features/schoolday_events/domain/schoolday_event_manager.dart';
 import 'package:schuldaten_hub/features/schoolday_events/presentation/schoolday_event_list_page/widgets/dialogues/schoolday_event_type_dialog.dart';
@@ -201,7 +201,7 @@ class PupilSchooldayEventCard extends WatchingWidget {
                       children: [
                         InkWell(
                           onTap: () async {
-                            final File? file = await uploadImage(context);
+                            final File? file = await uploadImageFile(context);
                             if (file == null) return;
                             await locator<SchooldayEventManager>()
                                 .patchSchooldayEventWithFile(file,
@@ -234,7 +234,7 @@ class PupilSchooldayEventCard extends WatchingWidget {
                                       documentTag:
                                           '${schooldayEvent.processedFileId}',
                                       documentUrl:
-                                          '${locator<EnvManager>().env.value.serverUrl}${SchooldayEventRepository().getSchooldayEventProcessedFileUrl(schooldayEvent.schooldayEventId)}',
+                                          '${locator<EnvManager>().env!.serverUrl}${SchooldayEventApiService().getSchooldayEventProcessedFileUrl(schooldayEvent.schooldayEventId)}',
                                       size: 70),
                                   child: const DocumentImage(),
                                 )
@@ -256,7 +256,7 @@ class PupilSchooldayEventCard extends WatchingWidget {
                     children: [
                       InkWell(
                         onTap: () async {
-                          final File? file = await uploadImage(context);
+                          final File? file = await uploadImageFile(context);
                           if (file == null) return;
                           await locator<SchooldayEventManager>()
                               .patchSchooldayEventWithFile(
@@ -296,7 +296,7 @@ class PupilSchooldayEventCard extends WatchingWidget {
                                 value: DocumentImageData(
                                     documentTag: '${schooldayEvent.fileId}',
                                     documentUrl:
-                                        '${locator<EnvManager>().env.value.serverUrl}${SchooldayEventRepository().getSchooldayEventFileUrl(schooldayEvent.schooldayEventId)}',
+                                        '${locator<EnvManager>().env!.serverUrl}${SchooldayEventApiService().getSchooldayEventFileUrl(schooldayEvent.schooldayEventId)}',
                                     size: 70),
                                 child: const DocumentImage(),
                               )

@@ -2,6 +2,19 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'user.g.dart';
 
+enum UserRole {
+  teacher('teacher'),
+  ogs('ogs');
+
+  static const stringToValue = {
+    'teacher': UserRole.teacher,
+    'ogs': UserRole.ogs,
+  };
+
+  final String value;
+  const UserRole(this.value);
+}
+
 @JsonSerializable()
 class User {
   final bool admin;

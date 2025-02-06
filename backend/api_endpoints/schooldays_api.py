@@ -2,7 +2,7 @@ import os
 from datetime import datetime
 
 from apiflask import APIBlueprint, abort
-from flask import jsonify, request
+from flask import request
 
 from auth_middleware import token_required
 from helpers.db_helpers import date_string_to_date, get_schoolday_by_day
@@ -141,8 +141,6 @@ def get_schooday(current_user, date):
 )
 @token_required
 def delete_schoolday(current_user, date):
-    if not current_user.admin:
-        abort(401, "Keine Berechtigung!")
 
     this_schoolday = get_schoolday_by_day(date)
     if this_schoolday == None:
@@ -159,7 +157,7 @@ def delete_schoolday(current_user, date):
     # - LOG ENTRY
     create_log_entry(current_user, request, {"data": "none"})
     db.session.commit()
-    return jsonify({"message": "The schoolday was deleted!"}), 200
+    abort(200, "Der Schultag wurde gelöscht!")
 
 
 # - DELETE LIST OF SCHOOLDAYS
@@ -172,8 +170,7 @@ def delete_schoolday(current_user, date):
 )
 @token_required
 def delete_schooldays(current_user, json_data):
-    if not current_user.admin:
-        return jsonify({"message": "Not authorized!"}), 401
+
     schooldays = json_data["schooldays"]
     for schoolday in schooldays:
         date_as_datetime = date_string_to_date(schoolday)
@@ -190,4 +187,4 @@ def delete_schooldays(current_user, json_data):
     # - LOG ENTRY
     create_log_entry(current_user, request, json_data)
     db.session.commit()
-    return jsonify({"message": "The schooldays were deleted!"}), 200
+    abort(200, "Die Schultage wurden gelöscht!")

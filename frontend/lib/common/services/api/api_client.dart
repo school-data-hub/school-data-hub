@@ -1,28 +1,32 @@
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
-import 'package:schuldaten_hub/common/domain/env_manager.dart';
 import 'package:schuldaten_hub/common/domain/session_manager.dart';
 import 'package:schuldaten_hub/common/services/api/api_settings.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 
+enum Token {
+  hub,
+  matrix,
+  corporal,
+}
+
 class ApiClient {
   // dio instance
   late final Dio _dio;
-  String baseUrl;
 
   // injecting dio instance
-  ApiClient(this._dio, {required this.baseUrl}) {
+  ApiClient(this._dio) {
     _dio
-      ..options.baseUrl = baseUrl
+      //..options.baseUrl = baseUrl
       ..options.connectTimeout = ApiSettings.connectionTimeout
       //..options.headers['content-Type'] = 'application/json'
       ..options.validateStatus = (status) {
         return status! < 500;
       }
-      ..options.receiveTimeout = ApiSettings.receiveTimeout
-      ..options.responseType = ResponseType.json;
-    //   ..interceptors.add(DioInterceptor());
+      ..options.receiveTimeout = ApiSettings.receiveTimeout;
+    //..options.responseType = ResponseType.json
+    // ..interceptors.add(DioInterceptor())
     // ..interceptors.add(LogInterceptor(
     //   request: true,
     //   requestHeader: true,
@@ -33,33 +37,58 @@ class ApiClient {
     log('ApiClient initialized');
   }
 
-  setCustomDioClientOptions(
-      {String? baseUrl, String? tokenKey, String? token, bool? isFile}) {
-    if (baseUrl != null) _dio.options.baseUrl = baseUrl;
-    if (tokenKey != null && token != null) {
-      _dio.options.headers.clear();
-      _dio.options.headers[tokenKey] = token;
+  Options _hubOptions = Options();
+  Options get hubOptions => _hubOptions;
+  Options _matrixOptions = Options();
+  Options get matrixOptions => _matrixOptions;
+
+  Options _corporalOptions = Options();
+  Options get corporalOptions => _corporalOptions;
+
+  void setApiOptions({required Token tokenKey, required String token}) {
+    switch (tokenKey) {
+      case Token.hub:
+        _hubOptions = Options(headers: {});
+        _hubOptions.headers!['x-access-token'] = token;
+        _hubOptions.responseType = ResponseType.json;
+
+        break;
+      case Token.matrix:
+        _matrixOptions = Options(headers: {});
+        _matrixOptions.headers!['Authorization'] = token;
+        _matrixOptions.responseType = ResponseType.json;
+
+        break;
+      case Token.corporal:
+        _corporalOptions = Options(headers: {});
+        _corporalOptions.headers!['Authorization'] = token;
+        _corporalOptions.responseType = ResponseType.json;
+
+        break;
+    }
+  }
+
+  Options apiOptions({
+    required Token tokenKey,
+    bool? isFile,
+  }) {
+    Options options;
+    switch (tokenKey) {
+      case Token.hub:
+        options = _hubOptions;
+        break;
+      case Token.matrix:
+        options = _matrixOptions;
+        break;
+      case Token.corporal:
+        options = _corporalOptions;
+        break;
     }
     if (isFile != null) {
-      _dio.options.contentType =
-          isFile ? 'multipart/form-data' : 'application/json';
+      options.contentType = isFile ? 'multipart/form-data' : 'application/json';
     }
-  }
 
-  setDefaultDioClientOptions() {
-    _dio.options.baseUrl = locator<EnvManager>().env.value.serverUrl!;
-    _dio.options.headers.clear();
-    _dio.options.headers['x-access-token'] =
-        locator<SessionManager>().credentials.value.jwt!;
-  }
-
-  setHeaders({required String tokenKey, required String token}) {
-    _dio.options.headers[tokenKey] = token;
-  }
-
-  setBaseUrl(String baseUrl) {
-    _dio.options.baseUrl = baseUrl;
-    log('Base URL set to: $baseUrl');
+    return options;
   }
 
   //- GET:
@@ -79,6 +108,10 @@ class ApiClient {
       onReceiveProgress: onReceiveProgress,
     );
     log("Response[GET] ${response.statusCode} => PATH: $uri");
+    if (response.statusCode == 401) {
+      locator<SessionManager>().logout();
+    }
+
     return response;
   }
 
@@ -101,6 +134,12 @@ class ApiClient {
       onReceiveProgress: onReceiveProgress,
     );
     log("Response[PATCH] ${response.statusCode} => PATH: $uri");
+    if (response.statusCode == 401) {
+      if (response.data['message'] == 'Token nicht (mehr) gültig!') {
+        locator<SessionManager>().logout();
+      }
+    }
+
     return response;
   }
 
@@ -124,7 +163,15 @@ class ApiClient {
       onSendProgress: onSendProgress,
       onReceiveProgress: onReceiveProgress,
     );
-    log("Response[POST] ${response.statusCode} => PATH: $uri");
+    log(
+      "Response[POST] ${response.statusCode} => PATH: $uri",
+    );
+    if (response.statusCode == 401) {
+      if (response.data['message'] == 'Token nicht (mehr) gültig!') {
+        locator<SessionManager>().logout();
+      }
+    }
+
     return response;
   }
 
@@ -148,6 +195,14 @@ class ApiClient {
       onSendProgress: onSendProgress,
       onReceiveProgress: onReceiveProgress,
     );
+    log(
+      "Response[PUT] ${response.statusCode} => PATH: $uri",
+    );
+    if (response.statusCode == 401) {
+      if (response.data['message'] == 'Token nicht (mehr) gültig!') {
+        locator<SessionManager>().logout();
+      }
+    }
     return response;
   }
 
@@ -170,6 +225,11 @@ class ApiClient {
       cancelToken: cancelToken,
     );
     log("Response[DELETE] ${response.statusCode} => PATH: $uri");
+    if (response.statusCode == 401) {
+      if (response.data['message'] == 'Token nicht (mehr) gültig!') {
+        locator<SessionManager>().logout();
+      }
+    }
     return response;
   }
 }

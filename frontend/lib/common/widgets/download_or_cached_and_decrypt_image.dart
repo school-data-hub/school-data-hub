@@ -23,8 +23,9 @@ Future<Image> cachedOrDownloadAndDecryptImage(
   }
 
   final ApiClient client = locator<ApiClient>();
-  final Response response = await client.get(imageUrl,
-      options: Options(responseType: ResponseType.bytes));
+  final options = client.hubOptions.copyWith(responseType: ResponseType.bytes);
+
+  final Response response = await client.get(imageUrl, options: options);
 
   if (response.statusCode != 200) {
     locator<NotificationService>()

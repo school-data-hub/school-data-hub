@@ -2,7 +2,7 @@ import uuid
 from datetime import datetime
 
 from apiflask import APIBlueprint, abort
-from flask import jsonify, request
+from flask import request
 
 from auth_middleware import token_required
 from helpers.db_helpers import (
@@ -87,7 +87,8 @@ def add_goal(current_user, internal_id, json_data):
 def put_goal(current_user, goal_id, json_data):
     goal = get_support_goal_by_id(goal_id)
     if goal == None:
-        return jsonify({"error": "This goal does not exist!"})
+        abort(404, message="Dieses Ziel existiert nicht!")
+
     data = json_data
     for key in data:
         match key:
@@ -179,7 +180,8 @@ def add_goalcheck(current_user, goal_id, json_data):
 def patch_goalcheck(current_user, check_id, json_data):
     goal_check = SupportGoalCheck.query.filter_by(check_id=check_id).first()
     if goal_check == None:
-        return jsonify({"error": "This goal check does not exist!"})
+        abort(404, message="Diese Zielüberprüfung existiert nicht!")
+
     data = json_data
     for key in data:
         match key:

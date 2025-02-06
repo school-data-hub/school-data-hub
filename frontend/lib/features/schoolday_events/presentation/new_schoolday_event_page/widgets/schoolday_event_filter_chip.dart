@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:schuldaten_hub/common/theme/colors.dart';
+import 'package:schuldaten_hub/common/theme/app_colors.dart';
 import 'package:schuldaten_hub/common/theme/styles.dart';
 
 class SchooldayEventReasonFilterChip extends StatelessWidget {
@@ -17,32 +17,44 @@ class SchooldayEventReasonFilterChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FilterChip(
-      padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
-      labelPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
-      shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(30))),
-      selectedColor: AppColors.schooldayEventReasonChipSelectedColor,
-      checkmarkColor: AppColors.schooldayEventReasonChipSelectedCheckColor,
-      backgroundColor: AppColors.schooldayEventReasonChipUnselectedColor,
-      label: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            emojis,
-            style: const TextStyle(
-              fontSize: 25,
+    return Padding(
+      padding: const EdgeInsets.all(5),
+      child: FilterChip(
+        padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+        avatar: const Padding(
+          padding: EdgeInsets.all(8.0),
+          child: CircleAvatar(
+            backgroundColor: Color.fromARGB(244, 255, 221, 170),
+            child: SizedBox(
+              width: 5,
             ),
           ),
-          const Gap(5),
-          Text(
-            text,
-            style: AppStyles.filterItemsTextStyle,
-          ),
-        ],
+        ),
+        labelPadding: const EdgeInsets.only(right: 15, top: 5, bottom: 5),
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(30))),
+        selectedColor: AppColors.schooldayEventReasonChipSelectedColor,
+        checkmarkColor: AppColors.schooldayEventReasonChipSelectedCheckColor,
+        backgroundColor: AppColors.schooldayEventReasonChipUnselectedColor,
+        label: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              emojis,
+              style: const TextStyle(
+                fontSize: 25,
+              ),
+            ),
+            const Gap(5),
+            Text(
+              text,
+              style: AppStyles.filterItemsTextStyle,
+            ),
+          ],
+        ),
+        selected: isReason,
+        onSelected: onSelected,
       ),
-      selected: isReason,
-      onSelected: onSelected,
     );
   }
 }

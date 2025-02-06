@@ -39,7 +39,7 @@ class AttendanceManager {
   final schooldayManager = locator<SchooldayManager>();
   final notificationService = locator<NotificationService>();
 
-  final apiAttendanceService = AttendanceRepository();
+  final apiAttendanceService = AttendanceApiService();
 
   ValueListenable<List<MissedClass>> get missedClasses => _missedClasses;
   final ValueNotifier<List<MissedClass>> _missedClasses = ValueNotifier([]);
@@ -184,8 +184,8 @@ class AttendanceManager {
 
   Future<void> changeExcusedValue(
       int pupilId, DateTime date, bool newValue) async {
-    final PupilProxy pupil = pupilManager.findPupilById(pupilId)!;
-    final int? missedClass = AttendanceHelper.findMissedClassIndex(pupil, date);
+    final PupilProxy pupil = pupilManager.getPupilById(pupilId)!;
+    final int? missedClass = AttendanceHelper.getMissedClassIndex(pupil, date);
     if (missedClass == null || missedClass == -1) {
       return;
     }
@@ -217,8 +217,8 @@ class AttendanceManager {
 
   Future<void> changeReturnedValue(
       int pupilId, bool newValue, DateTime date, String? time) async {
-    final PupilProxy pupil = pupilManager.findPupilById(pupilId)!;
-    final int? missedClass = AttendanceHelper.findMissedClassIndex(pupil, date);
+    final PupilProxy pupil = pupilManager.getPupilById(pupilId)!;
+    final int? missedClass = AttendanceHelper.getMissedClassIndex(pupil, date);
 
     // pupils gone home during class for whatever reason
     //are marked as returned with a time stamp
@@ -294,8 +294,8 @@ class AttendanceManager {
       DateTime date, int minutesLate) async {
     // Let's look for an existing missed class - if pupil and date match, there is one
 
-    final PupilProxy pupil = pupilManager.findPupilById(pupilId)!;
-    final int? missedClass = AttendanceHelper.findMissedClassIndex(pupil, date);
+    final PupilProxy pupil = pupilManager.getPupilById(pupilId)!;
+    final int? missedClass = AttendanceHelper.getMissedClassIndex(pupil, date);
     if (missedClass == -1) {
       // The missed class does not exist - let's create one
 
@@ -333,8 +333,8 @@ class AttendanceManager {
 
   Future<void> changeCommentValue(
       int pupilId, String? comment, DateTime date) async {
-    final PupilProxy pupil = pupilManager.findPupilById(pupilId)!;
-    final int? missedClass = AttendanceHelper.findMissedClassIndex(pupil, date);
+    final PupilProxy pupil = pupilManager.getPupilById(pupilId)!;
+    final int? missedClass = AttendanceHelper.getMissedClassIndex(pupil, date);
     if (missedClass == null || missedClass == -1) {
       return;
     }
@@ -405,8 +405,8 @@ class AttendanceManager {
 
     // Let's look for an existing missed class - if pupil and date match, there is one
 
-    final PupilProxy pupil = pupilManager.findPupilById(pupilId)!;
-    final int? missedClass = AttendanceHelper.findMissedClassIndex(pupil, date);
+    final PupilProxy pupil = pupilManager.getPupilById(pupilId)!;
+    final int? missedClass = AttendanceHelper.getMissedClassIndex(pupil, date);
     if (missedClass == -1) {
       // The missed class does not exist - let's create one
 

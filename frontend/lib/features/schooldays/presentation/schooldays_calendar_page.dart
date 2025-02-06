@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
-import 'package:schuldaten_hub/common/theme/colors.dart';
+import 'package:schuldaten_hub/common/theme/app_colors.dart';
 import 'package:schuldaten_hub/common/theme/styles.dart';
 import 'package:schuldaten_hub/common/utils/extensions.dart';
 import 'package:schuldaten_hub/common/widgets/dialogs/confirmation_dialog.dart';
@@ -251,7 +251,7 @@ class SchooldaysCalendarState extends State<SchooldaysCalendar> {
                   (BuildContext context, int index) {
                     return AttendanceCard(
                         locator<PupilManager>()
-                            .findPupilById(missedClasses[index].missedPupilId)!,
+                            .getPupilById(missedClasses[index].missedPupilId)!,
                         _selectedDay!);
                   },
                   childCount: missedClasses.length,

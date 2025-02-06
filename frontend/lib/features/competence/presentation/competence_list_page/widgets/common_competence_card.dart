@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gap/gap.dart';
+import 'package:schuldaten_hub/common/widgets/custom_expansion_tile/custom_expansion_tile.dart';
 import 'package:schuldaten_hub/common/widgets/custom_expansion_tile/custom_expansion_tile_content.dart';
 import 'package:schuldaten_hub/common/widgets/custom_expansion_tile/custom_expansion_tile_switch.dart';
-import 'package:schuldaten_hub/common/widgets/custom_expansion_tile/custom_expasion_tile_hook.dart';
-import 'package:schuldaten_hub/features/competence/domain/competence_helper.dart';
 import 'package:schuldaten_hub/features/competence/domain/models/competence.dart';
-import 'package:schuldaten_hub/features/competence/presentation/competence_list_page/widgets/competence_filtered_pupils.dart';
+import 'package:watch_it/watch_it.dart';
 
-class CommonCompetenceCard extends HookWidget {
+class CommonCompetenceCard extends WatchingWidget {
   final Color competenceBackgroundColor;
   final Function({int? competenceId, Competence? competence})
       navigateToNewOrPatchCompetencePage;
@@ -23,10 +21,10 @@ class CommonCompetenceCard extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final competenceFilteredPupils =
-        CompetenceHelper.getFilteredPupilsByCompetence(competence: competence);
-    final childrenController = useCustomExpansionTileController();
-    final pupilListController = useCustomExpansionTileController();
+    final childrenController = createOnce<CustomExpansionTileController>(
+        () => CustomExpansionTileController());
+    // final childrenController = useCustomExpansionTileController();
+
     return Padding(
       padding: EdgeInsets.symmetric(
           vertical: competence.parentCompetence == null ? 3 : 0),
@@ -71,13 +69,13 @@ class CommonCompetenceCard extends HookWidget {
                     ),
                     const Gap(10),
                   ],
-                  CustomExpansionTileSwitch(
-                    customExpansionTileController: pupilListController,
-                    expansionSwitchWidget: const Icon(
-                      Icons.add,
-                      color: Colors.white,
-                    ),
-                  ),
+                  // CustomExpansionTileSwitch(
+                  //   customExpansionTileController: pupilListController,
+                  //   expansionSwitchWidget: const Icon(
+                  //     Icons.add,
+                  //     color: Colors.white,
+                  //   ),
+                  // ),
                 ],
               ),
             ),
@@ -85,23 +83,23 @@ class CommonCompetenceCard extends HookWidget {
               tileController: childrenController,
               widgetList: children,
             ),
-            Padding(
-              padding: const EdgeInsets.only(
-                  left: 5.0, right: 5.0, bottom: 2.5, top: 2.5),
-              child: CustomExpansionTileContent(
-                  tileController: pupilListController,
-                  widgetList: [
-                    ListView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: competenceFilteredPupils.length,
-                      itemBuilder: (context, index) {
-                        final pupil = competenceFilteredPupils[index];
-                        return PupilCompetenceCheckCard(pupil: pupil);
-                      },
-                    ),
-                  ]),
-            ),
+            // Padding(
+            //   padding: const EdgeInsets.only(
+            //       left: 5.0, right: 5.0, bottom: 2.5, top: 2.5),
+            //   child: CustomExpansionTileContent(
+            //       tileController: pupilListController,
+            //       widgetList: [
+            //         ListView.builder(
+            //           shrinkWrap: true,
+            //           physics: const NeverScrollableScrollPhysics(),
+            //           itemCount: competenceFilteredPupils.length,
+            //           itemBuilder: (context, index) {
+            //             final pupil = competenceFilteredPupils[index];
+            //             return MultiPupilCompetenceCheckCard(pupil: pupil);
+            //           },
+            //         ),
+            //       ]),
+            // ),
           ],
         ),
       ),

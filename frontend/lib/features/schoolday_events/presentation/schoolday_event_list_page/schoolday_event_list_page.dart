@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
-import 'package:schuldaten_hub/common/theme/colors.dart';
-import 'package:schuldaten_hub/common/widgets/generic_app_bar.dart';
-import 'package:schuldaten_hub/common/widgets/generic_bottom_nav_bar.dart';
-import 'package:schuldaten_hub/common/widgets/generic_sliver_list.dart';
-import 'package:schuldaten_hub/common/widgets/sliver_search_app_bar.dart';
+import 'package:schuldaten_hub/common/theme/app_colors.dart';
+import 'package:schuldaten_hub/common/widgets/list_view_components/generic_app_bar.dart';
+import 'package:schuldaten_hub/common/widgets/list_view_components/generic_bottom_nav_bar.dart';
+import 'package:schuldaten_hub/common/widgets/list_view_components/generic_sliver_list.dart';
+import 'package:schuldaten_hub/common/widgets/list_view_components/generic_sliver_search_app_bar.dart';
 import 'package:schuldaten_hub/features/pupil/domain/filters/pupils_filter.dart';
 import 'package:schuldaten_hub/features/pupil/domain/models/pupil_proxy.dart';
 import 'package:schuldaten_hub/features/pupil/domain/pupil_manager.dart';
 import 'package:schuldaten_hub/features/schoolday_events/presentation/schoolday_event_list_page/widgets/schoolday_event_filter_bottom_sheet.dart';
-import 'package:schuldaten_hub/features/schoolday_events/presentation/schoolday_event_list_page/widgets/schoolday_event_pupil_list_card.dart';
-import 'package:schuldaten_hub/features/schoolday_events/presentation/schoolday_event_list_page/widgets/searchbar/schoolday_event_list_page_search_bar.dart';
+import 'package:schuldaten_hub/features/schoolday_events/presentation/schoolday_event_list_page/widgets/schoolday_event_pupil_list_card/schoolday_event_pupil_list_card.dart';
+import 'package:schuldaten_hub/features/schoolday_events/presentation/schoolday_event_list_page/widgets/searchbar/schoolday_event_list_search_bar.dart';
 import 'package:watch_it/watch_it.dart';
 
 class SchooldayEventListPage extends WatchingWidget {
@@ -39,7 +39,7 @@ class SchooldayEventListPage extends WatchingWidget {
             child: CustomScrollView(
               slivers: [
                 const SliverGap(5),
-                const SliverSearchAppBar(
+                const GenericSliverSearchAppBar(
                   height: 110,
                   title: SchooldayEventListSearchBar(),
                 ),

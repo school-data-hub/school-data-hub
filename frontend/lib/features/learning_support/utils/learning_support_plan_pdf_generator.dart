@@ -9,7 +9,7 @@ import 'package:schuldaten_hub/features/pupil/domain/pupil_manager.dart';
 final pupilManager = locator<PupilManager>();
 Future generatePdf(int pupilId) async {
   final pdf = pw.Document();
-  final pupil = pupilManager.findPupilById(pupilId)!;
+  final pupil = pupilManager.getPupilById(pupilId)!;
   pdf.addPage(
     pw.Page(
       build: (pw.Context context) => pw.Column(children: [

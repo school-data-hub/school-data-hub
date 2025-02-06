@@ -15,13 +15,16 @@ class NotificationService {
 
   final _apiRunning = ValueNotifier<bool>(false);
   ValueListenable<bool> get isRunning => _apiRunning;
+  final _loadingNewInstance = ValueNotifier<bool>(false);
+  ValueListenable<bool> get loadingNewInstance => _loadingNewInstance;
+
   final _heavyLoading = ValueNotifier<bool>(false);
   ValueListenable<bool> get heavyLoading => _heavyLoading;
 
   NotificationService();
 
   void showSnackBar(NotificationType type, String message) {
-    if (_heavyLoading.value) {
+    if (_loadingNewInstance.value) {
       return;
     }
     _snackBar.value = NotificationData(type, message);
@@ -35,7 +38,11 @@ class NotificationService {
     _apiRunning.value = value;
   }
 
-  void heavyLoadingValue(bool value) {
+  void setNewInstanceLoadingValue(bool value) {
+    _loadingNewInstance.value = value;
+  }
+
+  void setHeavyLoadingValue(bool value) {
     _heavyLoading.value = value;
   }
 }

@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/domain/session_manager.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
-import 'package:schuldaten_hub/common/theme/colors.dart';
+import 'package:schuldaten_hub/common/theme/app_colors.dart';
 import 'package:schuldaten_hub/common/theme/styles.dart';
 import 'package:schuldaten_hub/common/utils/extensions.dart';
+import 'package:schuldaten_hub/common/widgets/dialogs/confirmation_dialog.dart';
 import 'package:schuldaten_hub/features/learning_support/presentation/learning_support_list_page/widgets/support_goals_list.dart';
 import 'package:schuldaten_hub/features/learning_support/presentation/new_support_category_status_page/controller/new_support_category_status_controller.dart';
-import 'package:schuldaten_hub/features/learning_support/presentation/widgets/dialogs/support_level_dialog.dart';
 import 'package:schuldaten_hub/features/learning_support/presentation/widgets/dialogs/preschool_revision_dialog.dart';
+import 'package:schuldaten_hub/features/learning_support/presentation/widgets/dialogs/support_level_dialog.dart';
 import 'package:schuldaten_hub/features/learning_support/presentation/widgets/support_catagory_status/support_category_statuses_list.dart';
 import 'package:schuldaten_hub/features/pupil/domain/models/pupil_data.dart';
 import 'package:schuldaten_hub/features/pupil/domain/models/pupil_proxy.dart';
@@ -195,7 +196,12 @@ class _IndividualDevelopmentPlanExpansionTileState
                     return Padding(
                       padding: const EdgeInsets.symmetric(vertical: 4.0),
                       child: GestureDetector(
-                        onLongPress: () {
+                        onLongPress: () async {
+                          final confirmation = await confirmationDialog(
+                              context: context,
+                              title: 'Eintrag löschen',
+                              message: 'Eintrag wirklich löschen?');
+                          if (confirmation != true) return;
                           if (locator<SessionManager>().isAdmin.value) {
                             locator<PupilManager>()
                                 .deleteSupportLevelHistoryItem(

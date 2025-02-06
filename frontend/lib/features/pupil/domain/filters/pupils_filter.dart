@@ -93,6 +93,7 @@ abstract class PupilsFilter implements Listenable {
 
   List<Filter> get groupFilters;
   List<Filter> get schoolGradeFilters;
+  List<Filter> get genderFilters;
   PupilTextFilter get textFilter;
 
   ValueListenable<PupilSortMode> get sortMode;

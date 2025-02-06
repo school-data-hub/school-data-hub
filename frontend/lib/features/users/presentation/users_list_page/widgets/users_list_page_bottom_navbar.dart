@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:schuldaten_hub/common/theme/colors.dart';
+import 'package:schuldaten_hub/common/theme/app_colors.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/widgets/bottom_nav_bar_layouts.dart';
-import 'package:schuldaten_hub/features/credit/credit_list_page/widgets/credit_filter_bottom_sheet.dart';
+import 'package:schuldaten_hub/features/pupil/presentation/credit/credit_list_page/widgets/credit_filter_bottom_sheet.dart';
 import 'package:schuldaten_hub/features/users/presentation/new_user_page/new_user_page.dart';
 
 import '../../../../pupil/domain/filters/pupil_filter_manager.dart';

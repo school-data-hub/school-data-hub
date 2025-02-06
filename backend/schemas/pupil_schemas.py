@@ -52,6 +52,8 @@ support_levels_in_schema = SupportLevelInSchema(many=True)
 
 class PupilSchema(Schema):
     avatar_id = fields.String(metadata={"nullable": True})
+    avatar_auth = fields.Boolean()
+    avatar_auth_id = fields.String(metadata={"nullable": True})
     internal_id = fields.Integer(metadata={"required": True})
     name = fields.String(required=True)
     contact = fields.String(metadata={"nullable": True})
@@ -67,6 +69,9 @@ class PupilSchema(Schema):
     communication_tutor1 = fields.String(allow_none=True)
     communication_tutor2 = fields.String(allow_none=True)
     preschool_revision = fields.Integer()
+    preschool_attendance = fields.String(allow_none=True)
+    public_media_auth = fields.Integer()
+    public_media_auth_id = fields.String(metadata={"nullable": True})
     support_level_history = fields.List(fields.Nested(SupportLevelOutSchema))
     pupil_missed_classes = fields.List(fields.Nested(MissedClassSchema))
     pupil_schoolday_events = fields.List(fields.Nested(SchooldayEventSchema))
@@ -86,6 +91,8 @@ class PupilSchema(Schema):
     class Meta:
         fields = (
             "avatar_id",
+            "avatar_auth",
+            "avatar_auth_id",
             "internal_id",
             "name",
             "contact",
@@ -101,6 +108,7 @@ class PupilSchema(Schema):
             "communication_tutor1",
             "communication_tutor2",
             "preschool_revision",
+            "preschool_attendance",
             "support_level_history",
             "pupil_missed_classes",
             "pupil_schoolday_events",
@@ -116,6 +124,8 @@ class PupilSchema(Schema):
             "credit_history_logs",
             "special_information",
             "emergency_care",
+            "public_media_auth",
+            "public_media_auth_id",
         )
 
     @post_dump(pass_many=False)
@@ -181,11 +191,7 @@ class PupilSchema(Schema):
                 )
             ]
 
-            data["competence_checks"] = [
-                check
-                for check in data["competence_checks"]
-                if (check["is_report"] == False)
-            ]
+            data["competence_checks"] = [check for check in data["competence_checks"]]
 
         return data
 
@@ -209,7 +215,12 @@ class PupilFlatSchema(Schema):
     communication_tutor1 = fields.String(allow_none=True)
     communication_tutor2 = fields.String(allow_none=True)
     preschool_revision = fields.Integer(allow_none=True)
+    preschool_attendance = fields.String(allow_none=True)
     avatar_id = fields.String(allow_none=True)
+    avatar_auth = fields.Boolean()
+    avatar_auth_id = fields.String(allow_none=True)
+    public_media_auth = fields.Integer()
+    public_media_auth_id = fields.String(allow_none=True)
     special_information = fields.String(allow_none=True)
     emergency_care = fields.Boolean(allow_none=True)
 
@@ -229,7 +240,12 @@ class PupilFlatSchema(Schema):
             "communication_tutor1",
             "communication_tutor2",
             "preschool_revision",
+            "preschool_attendance",
             "avatar_id",
+            "avatar_auth",
+            "avatar_auth_id",
+            "public_media_auth",
+            "public_media_auth_id",
             "special_information",
             "emergency_care",
         )
@@ -280,6 +296,7 @@ class ProspectivePupilSchema(Schema):
     communication_tutor1 = fields.String(allow_none=True)
     communication_tutor2 = fields.String(allow_none=True)
     preschool_revision = fields.Integer()
+    preschool_attendance = fields.String(allow_none=True)
     avatar_id = fields.String(allow_none=True)
     avatar_url = fields.String(allow_none=True)
     special_information = fields.String(allow_none=True)

@@ -3,10 +3,10 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/domain/filters/filters_state_manager.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
-import 'package:schuldaten_hub/common/theme/colors.dart';
-import 'package:schuldaten_hub/common/widgets/generic_app_bar.dart';
-import 'package:schuldaten_hub/common/widgets/generic_sliver_list.dart';
-import 'package:schuldaten_hub/common/widgets/sliver_search_app_bar.dart';
+import 'package:schuldaten_hub/common/theme/app_colors.dart';
+import 'package:schuldaten_hub/common/widgets/list_view_components/generic_app_bar.dart';
+import 'package:schuldaten_hub/common/widgets/list_view_components/generic_sliver_list.dart';
+import 'package:schuldaten_hub/common/widgets/list_view_components/generic_sliver_search_app_bar.dart';
 import 'package:schuldaten_hub/features/pupil/domain/filters/pupil_filter_enums.dart';
 import 'package:schuldaten_hub/features/pupil/domain/filters/pupil_filter_manager.dart';
 import 'package:schuldaten_hub/features/pupil/domain/filters/pupils_filter.dart';
@@ -117,7 +117,7 @@ class _SelectPupilsListPageState extends State<SelectPupilsListPage> {
             child: CustomScrollView(
               slivers: [
                 const SliverGap(5),
-                SliverSearchAppBar(
+                GenericSliverSearchAppBar(
                   height: 110,
                   title: SelectPupilsSearchBar(
                     selectablePupils: selectablePupils,
