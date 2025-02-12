@@ -4,7 +4,7 @@ from datetime import datetime
 from typing import List, Optional
 
 from apiflask import APIBlueprint, FileSchema, abort
-from flask import current_app, request, send_file
+from flask import current_app, jsonify, request, send_file
 
 from helpers.db_helpers import date_string_to_date, get_pupil_by_id
 from helpers.error_message_helpers import pupil_not_found
@@ -331,8 +331,7 @@ def delete_pupil(current_user, internal_id):
     create_log_entry(current_user, request, {"data": "none"})
 
     db.session.commit()
-
-    abort(200, message="Schüler/Schülerin gelöscht!")
+    return jsonify({"message": "Schüler:in gelöscht!"}), 200
 
 
 # - PATCH IMAGE PUPIL AVATAR
@@ -555,7 +554,7 @@ def delete_avatar(current_user, internal_id):
     create_log_entry(current_user, request, {"data": "none"})
 
     db.session.commit()
-    abort(200, message="Avatar gelöscht!")
+    return jsonify({"message": "Avatar gelöscht!"}), 200
 
 
 # - DELETE IMAGE PUPIL AVATAR AUTH
@@ -584,7 +583,7 @@ def delete_avatar_auth(current_user, internal_id):
     # - LOG ENTRY
     create_log_entry(current_user, request, {"data": "none"})
     db.session.commit()
-    abort(200, message="Avatar Auth gelöscht!")
+    return jsonify({"message": "Avatar auth gelöscht!"}), 200
 
 
 # - DELETE IMAGE PUPIL PUBLIC MEDIA AUTH
@@ -611,7 +610,7 @@ def delete_public_media_auth(current_user, internal_id):
     # - LOG ENTRY
     create_log_entry(current_user, request, {"data": "none"})
     db.session.commit()
-    abort(200, message="Public Media Auth gelöscht!")
+    return jsonify({"message": "Public media auth gelöscht!"}), 200
 
 
 # - UPDATE SUPPORT LEVEL

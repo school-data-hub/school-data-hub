@@ -94,15 +94,17 @@ class CompetenceApiService {
 
   Future<Competence> updateCompetenceProperty(
       int competenceId,
-      String competenceName,
+      String? competenceName,
       String? competenceLevel,
-      String? indicators) async {
+      String? indicators,
+      int? order) async {
     _notificationService.apiRunning(true);
 
     final data = jsonEncode({
-      "competence_name": competenceName,
-      "competence_level": competenceLevel,
-      "indicators": indicators
+      if (competenceName != null) "competence_name": competenceName,
+      if (competenceLevel != null) "competence_level": competenceLevel,
+      if (indicators != null) "indicators": indicators,
+      if (order != null) "order": order
     });
 
     final Response response = await _client.patch(

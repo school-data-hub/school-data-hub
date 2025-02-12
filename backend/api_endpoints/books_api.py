@@ -3,7 +3,7 @@ import uuid
 from typing import List
 
 from apiflask import APIBlueprint, abort
-from flask import current_app, request, send_file
+from flask import current_app, jsonify, request, send_file
 
 from auth_middleware import token_required
 from helpers.db_helpers import get_book_by_id, get_workbook_by_isbn
@@ -332,8 +332,7 @@ def delete_book(current_user, book_id):
     # - Log entry
     create_log_entry(current_user, request, {"data": "none"})
     db.session.commit()
-
-    abort(200, "Buch gelöscht!")
+    return jsonify({"message": "Buch gelöscht!"}), 200
 
 
 ## - BOOK TAGS - ##

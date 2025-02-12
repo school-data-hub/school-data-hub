@@ -23,6 +23,11 @@ class CompetenceManager {
   Map<int, int> _rootCompetencesMap = {};
   Map<int, int> get rootCompetencesMap => _rootCompetencesMap;
 
+  Competence getCompetenceById(int competenceId) {
+    return _competences.value
+        .firstWhere((element) => element.competenceId == competenceId);
+  }
+
   CompetenceManager();
   Future<CompetenceManager> init() async {
     await firstFetchCompetences();
@@ -67,9 +72,8 @@ class CompetenceManager {
     final List<Competence> competences =
         await _competenceApiService.fetchCompetences();
 
-    competences.sort((a, b) => a.competenceId.compareTo(b.competenceId));
-
-    _competences.value = competences;
+    final sortedCompetences = CompetenceHelper.sortCompetences(competences);
+    _competences.value = sortedCompetences;
 
     _rootCompetencesMap.clear();
 
@@ -87,8 +91,8 @@ class CompetenceManager {
   Future<void> postNewCompetence({
     int? parentCompetence,
     required String competenceName,
-    required competenceLevel,
-    required indicators,
+    required String competenceLevel,
+    required String indicators,
   }) async {
     final Competence newCompetence =
         await _competenceApiService.postNewCompetence(
@@ -98,7 +102,8 @@ class CompetenceManager {
       indicators: indicators,
     );
 
-    _competences.value = [..._competences.value, newCompetence];
+    _competences.value = CompetenceHelper.sortCompetences(
+        [..._competences.value, newCompetence]);
     locator<CompetenceFilterManager>()
         .refreshFilteredCompetences(_competences.value);
     _rootCompetencesMap =
@@ -111,13 +116,14 @@ class CompetenceManager {
 
   Future<void> updateCompetenceProperty({
     required int competenceId,
-    required String competenceName,
-    required String? competenceLevel,
-    required String? indicators,
+    String? competenceName,
+    String? competenceLevel,
+    String? indicators,
+    int? order,
   }) async {
     final Competence updatedCompetence =
         await _competenceApiService.updateCompetenceProperty(
-            competenceId, competenceName, competenceLevel, indicators);
+            competenceId, competenceName, competenceLevel, indicators, order);
 
     final List<Competence> competences = List.from(_competences.value);
 

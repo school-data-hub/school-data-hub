@@ -7,6 +7,7 @@ import 'package:schuldaten_hub/common/domain/models/enums.dart';
 import 'package:schuldaten_hub/common/domain/session_manager.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_service.dart';
+import 'package:schuldaten_hub/common/utils/custom_encrypter.dart';
 import 'package:schuldaten_hub/common/widgets/dialogs/confirmation_dialog.dart';
 import 'package:schuldaten_hub/common/widgets/qr/qr_utilites.dart';
 import 'package:schuldaten_hub/features/books/utils/book_ids_pdf_generator.dart';
@@ -55,6 +56,12 @@ class SettingsAdminSection extends AbstractSettingsSection with WatchItMixin {
             leading: const Icon(Icons.qr_code_rounded),
             onPressed: (context) {
               generateCompetenceReportPdf(reportLevel: ReportLevel.E1);
+            }),
+        SettingsTile.navigation(
+            title: const Text('Neuen Schlüssel generieren'),
+            leading: const Icon(Icons.key_rounded),
+            onPressed: (context) {
+              customEncrypter.generateNewEncryptionKeys();
             }),
         SettingsTile.navigation(
           leading: const Icon(Icons.attach_money_rounded),

@@ -332,6 +332,7 @@ class CompetenceSchema(Schema):
     indicators = fields.String(allow_none=True)
     competence_goals = fields.List(fields.Nested(CompetenceGoalSchema))
     competence_checks = fields.List(fields.Nested(CompetenceCheckSchema))
+    order = fields.Integer(allow_none=True)
 
     class Meta:
         fields = (
@@ -342,6 +343,7 @@ class CompetenceSchema(Schema):
             "indicators",
             "competence_goals",
             "competence_checks",
+            "order",
         )
 
 
@@ -354,10 +356,11 @@ competences_schema = CompetenceSchema(many=True)
 
 class CompetenceFlatSchema(Schema):
     competence_id = fields.Integer()
-    competence_name = fields.String()
+    competence_name = fields.String(allow_none=True)
     competence_level = fields.String(allow_none=True)
     parent_competence = fields.Integer(allow_none=True)
     indicators = fields.String(allow_none=True)
+    order = fields.Integer(allow_none=True)
 
     class Meta:
         fields = (
@@ -366,6 +369,7 @@ class CompetenceFlatSchema(Schema):
             "competence_name",
             "competence_level",
             "indicators",
+            "order",
         )
 
 

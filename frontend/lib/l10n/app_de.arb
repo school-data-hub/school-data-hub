@@ -38,8 +38,8 @@
     "shown": "Angezeigt:",
     "selected": "Ausgewählt:",
     "checkLists":"Eintragelisten",
-    "lists":"listen",
-    "authorizations":"Einwilligungen",
+    "lists":"Eintragelisten",
+    "authorizations":"Nachweis-Listen",
     "noResults":"keine Ergebnisse"
     
 }

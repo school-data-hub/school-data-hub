@@ -6,23 +6,23 @@ enum RootCompetenceType {
   art('Kunst'),
   religion('Religion'),
   sport('Sport'),
-  workBehavior('Arbeitsverhalten'),
-  socialBehavior('Sozialverhalten'),
+  socialAndWorkSkills('Arbeits- und Sozialverhalten'),
+  motherLanguage('Herkunftsprachlicher Unterricht'),
   german('Deutsch');
 
   final String value;
 
   static const stringToValue = {
+    'Deutsch': RootCompetenceType.german,
+    'Mathematik': RootCompetenceType.math,
     'Sachunterricht': RootCompetenceType.science,
     'Englisch': RootCompetenceType.english,
-    'Mathematik': RootCompetenceType.math,
-    'Musik': RootCompetenceType.music,
     'Kunst': RootCompetenceType.art,
-    'Religion': RootCompetenceType.religion,
+    'Musik': RootCompetenceType.music,
     'Sport': RootCompetenceType.sport,
-    'Arbeitsverhalten': RootCompetenceType.workBehavior,
-    'Sozialverhalten': RootCompetenceType.socialBehavior,
-    'Deutsch': RootCompetenceType.german,
+    'Religion': RootCompetenceType.religion,
+    'Arbeits- und Sozialverhalten': RootCompetenceType.socialAndWorkSkills,
+    'Herkunftsprachlicher Unterricht': RootCompetenceType.motherLanguage,
   };
 
   const RootCompetenceType(this.value);

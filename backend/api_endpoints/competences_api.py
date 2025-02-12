@@ -1,5 +1,5 @@
 from apiflask import APIBlueprint, abort
-from flask import request
+from flask import jsonify, request
 from sqlalchemy import func
 
 from auth_middleware import token_required
@@ -82,16 +82,18 @@ def post_new_competence(current_user, json_data):
     parent_competence = data["parent_competence"]
     competence_level = data["competence_level"]
     indicators = data["indicators"]
+    # order = data["order"]
     max_id = db.session.query(func.max(Competence.competence_id)).scalar()
     print("max_id: " + str(max_id))
     if max_id == None:
         max_id = 0
-    new_competence = Competence(
+    new_competence: Competence = Competence(
         competence_id=max_id + 1,
         parent_competence=parent_competence,
         competence_name=competence_name,
         competence_level=competence_level,
         indicators=indicators,
+        order=None,
     )
     db.session.add(new_competence)
     # - Log entry
@@ -125,6 +127,8 @@ def patch_competence(current_user, competence_id, json_data):
                 competence.competence_level = data[key]
             case "indicators":
                 competence.indicators = data[key]
+            case "order":
+                competence.order = data[key]
     # - Log entry
     create_log_entry(current_user, request, json_data)
     db.session.commit()
@@ -146,4 +150,4 @@ def delete_competence(current_user, competence_id):
     # - Log entry
     create_log_entry(current_user, request, {"data": "none"})
     db.session.commit()
-    abort(200, "Die Kompetenz wurde gelöscht!")
+    return jsonify({"message": "Die Kompetenz wurde gelöscht!"}), 200

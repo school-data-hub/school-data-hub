@@ -52,6 +52,16 @@ class CompetenceListPage extends WatchingWidget {
                       context: context),
                 ]),
               ),
+              // child: Column(children: [
+              //   ...buildCommonCompetenceTree(
+              //       navigateToNewOrPatchCompetencePage:
+              //           navigateToNewOrPatchCompetencePage,
+              //       parentId: null,
+              //       indentation: 0,
+              //       backgroundColor: null,
+              //       competences: competences,
+              //       context: context),
+              // ]),
             ),
           ),
         ),

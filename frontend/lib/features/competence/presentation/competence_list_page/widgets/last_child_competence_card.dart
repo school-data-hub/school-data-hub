@@ -46,7 +46,8 @@ class LastChildCompetenceCard extends StatelessWidget {
               ],
             ),
             const Gap(10),
-            if (competence.indicators != null) ...[
+            if (competence.indicators != null &&
+                competence.indicators!.isNotEmpty) ...[
               const Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

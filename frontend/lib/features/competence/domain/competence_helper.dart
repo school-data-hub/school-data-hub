@@ -11,6 +11,36 @@ import 'package:schuldaten_hub/features/pupil/domain/models/pupil_proxy.dart';
 import 'package:schuldaten_hub/features/pupil/domain/pupil_manager.dart';
 
 class CompetenceHelper {
+  static List<Competence> sortCompetences(List<Competence> competences) {
+    List<Competence> rootCompetences = [];
+    List<Competence> childCompetences = [];
+
+    for (var competence in competences) {
+      if (competence.parentCompetence == null) {
+        rootCompetences.add(competence);
+      } else {
+        childCompetences.add(competence);
+      }
+    }
+    // Sort the child competences list based on parentCompetence and order values
+    childCompetences.sort((a, b) {
+      if (a.parentCompetence == b.parentCompetence) {
+        if (a.order == null && b.order == null) return 0;
+        if (a.order == null) return 1;
+        if (b.order == null) return -1;
+        return a.order!.compareTo(b.order!);
+      }
+      return (a.parentCompetence ?? 0).compareTo(b.parentCompetence ?? 0);
+    });
+
+    // Combine the root competences and sorted child competences
+    List<Competence> sortedCompetences = [
+      ...rootCompetences,
+      ...childCompetences
+    ];
+    return sortedCompetences;
+  }
+
   static CompetenceCheck? getLastCompetenceCheckOfCompetence(
       PupilProxy pupil, int competenceId) {
     if (pupil.competenceChecks != null && pupil.competenceChecks!.isNotEmpty) {
@@ -94,9 +124,9 @@ class CompetenceHelper {
       return AppColors.religionColor;
     } else if (rootCompetenceType == RootCompetenceType.sport) {
       return AppColors.sportColor;
-    } else if (rootCompetenceType == RootCompetenceType.workBehavior) {
+    } else if (rootCompetenceType == RootCompetenceType.socialAndWorkSkills) {
       return AppColors.workBehaviourColor;
-    } else if (rootCompetenceType == RootCompetenceType.socialBehavior) {
+    } else if (rootCompetenceType == RootCompetenceType.motherLanguage) {
       return AppColors.socialColor;
     }
     return const Color.fromARGB(255, 157, 36, 36);

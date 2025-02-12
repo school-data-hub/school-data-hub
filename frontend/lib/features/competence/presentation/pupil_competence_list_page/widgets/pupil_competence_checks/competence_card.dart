@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
@@ -33,13 +34,31 @@ class CompetenceCard extends WatchingWidget {
     required this.competenceChecks,
     required this.checksAverageValue,
   });
+
+  void disposeControllerValueNotifier(ValueNotifier<bool> notifier) {
+    notifier.dispose();
+  }
+
+  void disposeControllerValueListener(ValueListenable<bool> notifier) {
+    notifier.removeListener(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
+    final isExpandedValue = createOnce<ValueNotifier<bool>>(
+        () => ValueNotifier(false),
+        dispose: disposeControllerValueNotifier);
+    final isExpanded = createOnce<ValueListenable<bool>>(
+        () => ValueNotifier(isExpandedValue.value),
+        dispose: disposeControllerValueListener);
+
     final competenceAreaController = createOnce<CustomExpansionTileController>(
         () => CustomExpansionTileController());
     final checksController = createOnce<CustomExpansionTileController>(
         () => CustomExpansionTileController());
-
+    if (isExpanded.value) {
+      checksController.expand();
+    }
     final competenceColor =
         CompetenceHelper.getCompetenceColor(competence.competenceId);
     return Padding(
@@ -127,9 +146,10 @@ class CompetenceCard extends WatchingWidget {
                           competenceComment: '',
                           groupId: null,
                         );
-                        if (!checksController.isExpanded) {
-                          checksController.expand();
-                        }
+                        isExpandedValue.value = true;
+                        // if (!checksController.isExpanded) {
+                        //   checksController.expand();
+                        // }
                       },
                       child: Icon(Icons.edit_note_rounded,
                           color: isReport

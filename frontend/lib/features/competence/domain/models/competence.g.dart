@@ -12,6 +12,7 @@ Competence _$CompetenceFromJson(Map<String, dynamic> json) => Competence(
       competenceName: json['competence_name'] as String,
       parentCompetence: (json['parent_competence'] as num?)?.toInt(),
       indicators: json['indicators'] as String?,
+      order: (json['order'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$CompetenceToJson(Competence instance) =>
@@ -21,4 +22,5 @@ Map<String, dynamic> _$CompetenceToJson(Competence instance) =>
       'competence_name': instance.competenceName,
       'parent_competence': instance.parentCompetence,
       'indicators': instance.indicators,
+      'order': instance.order,
     };

@@ -16,39 +16,10 @@ List<Widget> buildCommonCompetenceTree({
   required List<Competence> competences,
   required BuildContext context,
 }) {
-  // Separate competences into two lists: one for those without a parent competence and one for those with a parent competence
-  List<Competence> rootCompetences = [];
-  List<Competence> childCompetences = [];
-
-  for (var competence in competences) {
-    if (competence.parentCompetence == null) {
-      rootCompetences.add(competence);
-    } else {
-      childCompetences.add(competence);
-    }
-  }
-
-  // Sort the child competences list based on parentCompetence and order values
-  childCompetences.sort((a, b) {
-    if (a.parentCompetence == b.parentCompetence) {
-      if (a.order == null && b.order == null) return 0;
-      if (a.order == null) return 1;
-      if (b.order == null) return -1;
-      return a.order!.compareTo(b.order!);
-    }
-    return (a.parentCompetence ?? 0).compareTo(b.parentCompetence ?? 0);
-  });
-
-  // Combine the root competences and sorted child competences
-  List<Competence> sortedCompetences = [
-    ...rootCompetences,
-    ...childCompetences
-  ];
-
   List<Widget> competenceWidgets = [];
 
   late Color competenceBackgroundColor;
-  for (var competence in sortedCompetences) {
+  for (var competence in competences) {
     if (backgroundColor == null) {
       competenceBackgroundColor =
           CompetenceHelper.getCompetenceColor(competence.competenceId);
@@ -56,20 +27,19 @@ List<Widget> buildCommonCompetenceTree({
       competenceBackgroundColor = backgroundColor;
     }
     if (competence.parentCompetence == parentId) {
-      // Get the children of the current competence and sort them by the 'order' field
-
       final children = buildCommonCompetenceTree(
           navigateToNewOrPatchCompetencePage:
               navigateToNewOrPatchCompetencePage,
           parentId: competence.competenceId,
           indentation: indentation + 1,
           backgroundColor: competenceBackgroundColor,
-          competences: sortedCompetences,
+          competences: competences,
           context: context);
 
       competenceWidgets.add(
         children.isNotEmpty
             ? Wrap(
+                key: ValueKey(competence.competenceId),
                 children: [
                   CommonCompetenceCard(
                       competence: competence,
@@ -80,6 +50,7 @@ List<Widget> buildCommonCompetenceTree({
                 ],
               )
             : Padding(
+                key: ValueKey(competence.competenceId),
                 padding: const EdgeInsets.symmetric(horizontal: 5.0),
                 child: InkWell(
                   onLongPress: () async {

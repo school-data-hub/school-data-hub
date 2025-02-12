@@ -1,19 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:schuldaten_hub/common/theme/app_colors.dart';
-import 'package:schuldaten_hub/common/widgets/custom_expansion_tile/custom_expansion_tile.dart';
-import 'package:schuldaten_hub/common/widgets/custom_expansion_tile/custom_expansion_tile_content.dart';
-import 'package:schuldaten_hub/common/widgets/custom_expansion_tile/custom_expansion_tile_switch.dart';
+import 'package:schuldaten_hub/common/services/locator.dart';
+import 'package:schuldaten_hub/features/competence/domain/competence_manager.dart';
 import 'package:schuldaten_hub/features/competence/domain/models/competence.dart';
 import 'package:watch_it/watch_it.dart';
 
-class CommonCompetenceCard extends WatchingStatefulWidget {
+class CommonCompetenceCardSortable extends WatchingStatefulWidget {
   final Color competenceBackgroundColor;
   final Function({int? competenceId, Competence? competence})
       navigateToNewOrPatchCompetencePage;
   final Competence competence;
   final List<Widget> children;
-  const CommonCompetenceCard(
+  const CommonCompetenceCardSortable(
       {required this.competence,
       required this.competenceBackgroundColor,
       required this.navigateToNewOrPatchCompetencePage,
@@ -21,10 +19,11 @@ class CommonCompetenceCard extends WatchingStatefulWidget {
       super.key});
 
   @override
-  State<CommonCompetenceCard> createState() => _CommonCompetenceCardState();
+  State<CommonCompetenceCardSortable> createState() =>
+      _CommonCompetenceCardState();
 }
 
-class _CommonCompetenceCardState extends State<CommonCompetenceCard> {
+class _CommonCompetenceCardState extends State<CommonCompetenceCardSortable> {
   void _onReorder(int oldIndex, int newIndex) {
     setState(() {
       if (newIndex > oldIndex) {
@@ -32,13 +31,18 @@ class _CommonCompetenceCardState extends State<CommonCompetenceCard> {
       }
       final item = widget.children.removeAt(oldIndex);
       widget.children.insert(newIndex, item);
+      for (final competenceId in widget.children) {
+        final competence = locator<CompetenceManager>()
+            .getCompetenceById((competenceId.key as ValueKey<int>).value);
+        locator<CompetenceManager>().updateCompetenceProperty(
+            competenceId: competence.competenceId,
+            order: widget.children.indexOf(competenceId));
+      }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final childrenController = createOnce<CustomExpansionTileController>(
-        () => CustomExpansionTileController());
     // final childrenController = useCustomExpansionTileController();
 
     return Padding(
@@ -72,8 +76,7 @@ class _CommonCompetenceCardState extends State<CommonCompetenceCard> {
                         softWrap: true,
                         textAlign: TextAlign.start,
                         style: TextStyle(
-                          color: AppColors.bestContrastCompetenceFontColor(
-                              widget.competenceBackgroundColor),
+                          color: Colors.white,
                           fontWeight: FontWeight.bold,
                           fontSize: widget.competence.parentCompetence == null
                               ? 20
@@ -82,12 +85,7 @@ class _CommonCompetenceCardState extends State<CommonCompetenceCard> {
                       ),
                     ),
                   ),
-                  if (widget.children.isNotEmpty) ...<Widget>[
-                    CustomExpansionTileSwitch(
-                      customExpansionTileController: childrenController,
-                    ),
-                    const Gap(10),
-                  ],
+
                   // CustomExpansionTileSwitch(
                   //   customExpansionTileController: pupilListController,
                   //   expansionSwitchWidget: const Icon(
@@ -98,10 +96,13 @@ class _CommonCompetenceCardState extends State<CommonCompetenceCard> {
                 ],
               ),
             ),
-            CustomExpansionTileContent(
-              tileController: childrenController,
-              widgetList: widget.children,
-            ),
+            if (widget.children.isNotEmpty)
+              ReorderableListView(
+                shrinkWrap: true,
+                onReorder: _onReorder,
+                children: widget.children,
+              ),
+
             // Padding(
             //   padding: const EdgeInsets.only(
             //       left: 5.0, right: 5.0, bottom: 2.5, top: 2.5),

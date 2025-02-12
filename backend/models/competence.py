@@ -8,6 +8,7 @@ class Competence(db.Model):
     competence_name = db.Column(db.String(100), nullable=False)
     competence_level = db.Column(db.String(10), nullable=True)
     indicators = db.Column(db.String(200), nullable=True)
+    order = db.Column(db.Integer, nullable=True)
 
     # - RELATIONSHIP TO CHECKS ONE-TO-MANY
     competence_checks = db.relationship(
@@ -23,12 +24,14 @@ class Competence(db.Model):
         competence_name,
         competence_level,
         indicators,
+        order,
     ):
         self.competence_id = competence_id
         self.parent_competence = parent_competence
         self.competence_name = competence_name
         self.competence_level = competence_level
         self.indicators = indicators
+        self.order = order
 
 
 class CompetenceGoal(db.Model):

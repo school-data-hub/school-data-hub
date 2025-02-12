@@ -29,9 +29,9 @@ String getRootCompetenceShortName(int competenceId) {
       return 'SP';
     case RootCompetenceType.religion:
       return 'RE';
-    case RootCompetenceType.workBehavior:
+    case RootCompetenceType.socialAndWorkSkills:
       return 'AV';
-    case RootCompetenceType.socialBehavior:
+    case RootCompetenceType.motherLanguage:
       return 'SV';
     case null:
       return competence.competenceName;

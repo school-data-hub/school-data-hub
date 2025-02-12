@@ -276,4 +276,4 @@ def delete_user(current_user, public_id):
     create_log_entry(current_user, request, {"data": "none"})
 
     db.session.commit()
-    abort(200, "Benutzer/Benutzerin gelöscht!")
+    return jsonify({"message": "Benutzer:in gelöscht!"}), 200

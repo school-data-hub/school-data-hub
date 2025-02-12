@@ -16,13 +16,16 @@ class Competence {
   final int? parentCompetence;
   @JsonKey(name: 'indicators')
   final String? indicators;
+  @JsonKey(name: 'order')
+  final int? order;
 
   Competence(
       {required this.competenceId,
       required this.competenceLevel,
       required this.competenceName,
       required this.parentCompetence,
-      required this.indicators});
+      required this.indicators,
+      required this.order});
 
   factory Competence.fromJson(Map<String, dynamic> json) =>
       _$CompetenceFromJson(json);

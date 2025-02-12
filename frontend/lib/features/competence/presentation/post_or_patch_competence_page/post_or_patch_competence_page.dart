@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/theme/styles.dart';
+import 'package:schuldaten_hub/common/widgets/dialogs/information_dialog.dart';
 import 'package:schuldaten_hub/common/widgets/list_view_components/generic_app_bar.dart';
 import 'package:schuldaten_hub/common/widgets/themed_filter_chip.dart';
 import 'package:schuldaten_hub/features/competence/domain/competence_manager.dart';
@@ -25,7 +26,13 @@ class PostOrPatchCompetencePageState extends State<PostOrPatchCompetencePage> {
 
   final TextEditingController indicatorsFieldController =
       TextEditingController();
+
   void postNewCompetence() async {
+    if (competenceLevel.isEmpty) {
+      informationDialog(context, 'Kompetenzstufe auswählen',
+          'Bitte mindestens eine Kompetenzstufe auswählen!');
+      return;
+    }
     Navigator.pop(context);
 
     await locator<CompetenceManager>().postNewCompetence(
@@ -36,6 +43,11 @@ class PostOrPatchCompetencePageState extends State<PostOrPatchCompetencePage> {
   }
 
   void patchCompetence() async {
+    if (competenceLevel.isEmpty) {
+      informationDialog(context, 'Kompetenzstufe auswählen',
+          'Bitte mindestens eine Kompetenzstufe auswählen!');
+      return;
+    }
     String competenceName = nameFieldController.text;
     String newCompetenceLevel = competenceLevel;
     String text3 = indicatorsFieldController.text;

@@ -6,6 +6,7 @@ import 'package:schuldaten_hub/common/widgets/bottom_nav_bar_layouts.dart';
 import 'package:schuldaten_hub/common/widgets/list_view_components/generic_filter_bottom_sheet.dart';
 import 'package:schuldaten_hub/features/competence/domain/filters/competence_filter_manager.dart';
 import 'package:schuldaten_hub/features/competence/domain/models/competence.dart';
+import 'package:schuldaten_hub/features/competence/presentation/competence_list_sortable_page/competence_list_sortable_page.dart';
 import 'package:schuldaten_hub/features/competence/presentation/competence_list_page/widgets/competence_filters_widget.dart';
 
 class CompetenceListPageBottomNavBar extends StatelessWidget {
@@ -33,6 +34,16 @@ class CompetenceListPageBottomNavBar extends StatelessWidget {
                 ),
                 onPressed: () {
                   Navigator.pop(context);
+                },
+              ),
+              const Gap(30),
+              IconButton(
+                tooltip: 'Reihenfolge ändern',
+                icon: const Icon(Icons.sort_rounded),
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (ctx) => const CompetenceListSortablePage(),
+                  ));
                 },
               ),
               const Gap(30),

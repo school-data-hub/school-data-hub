@@ -2,7 +2,7 @@ import uuid
 from typing import List, Optional
 
 from apiflask import APIBlueprint, abort
-from flask import request
+from flask import jsonify, request
 
 from auth_middleware import token_required
 from helpers.db_helpers import (
@@ -197,8 +197,7 @@ def delete_authorization(current_user, auth_id):
     # - Log entry
     create_log_entry(current_user, request, {"data": "none"})
     db.session.commit()
-
-    abort(200, "The authorization was deleted!")
+    return jsonify({"message": "The authorization was deleted!"}), 200
 
 
 # - PATCH AUTHORIZATION
