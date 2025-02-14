@@ -1,8 +1,22 @@
 from apiflask import Schema, fields
-from apiflask.fields import File
 
 # - PUPIL BOOK SCHEMA
 ####################
+
+
+class PupilBookOutFileSchema(Schema):
+    file_id = fields.String()
+    extension = fields.String()
+    uploaded_at = fields.Date()
+    uploaded_by = fields.String()
+
+    class Meta:
+        fields = (
+            "file_id",
+            "extension",
+            "uploaded_at",
+            "uploaded_by",
+        )
 
 
 class PupilBookInSchema(Schema):
@@ -19,7 +33,6 @@ class PupilBookInSchema(Schema):
         fields = (
             "pupil_id",
             "book_id",
-            "lending_id",
             "state",
             "rating",
             "lent_at",
@@ -29,7 +42,7 @@ class PupilBookInSchema(Schema):
         )
 
 
-class PupilBookSchema(Schema):
+class PupilBookOutSchema(Schema):
     pupil_id = fields.Integer()
     book_id = fields.String()
     lending_id = fields.String()
@@ -39,6 +52,8 @@ class PupilBookSchema(Schema):
     lent_by = fields.String()
     returned_at = fields.Date()
     received_by = fields.String()
+    pupil_book_files = fields.List(fields.Nested(PupilBookOutFileSchema))
+    book = fields.Nested("BookSchema", attribute="library_book.book")
 
     class Meta:
         fields = (
@@ -51,11 +66,76 @@ class PupilBookSchema(Schema):
             "lent_by",
             "returned_at",
             "received_by",
+            "pupil_book_files",
         )
 
 
-pupil_book_schema = PupilBookSchema()
-pupil_books_schema = PupilBookSchema(many=True)
+class TagsInBookSchema(Schema):
+    name = fields.String()
+
+    class Meta:
+        fields = ("name",)
+
+
+class BookSchema(Schema):
+    book_id = fields.String()
+    isbn = fields.Integer()
+    title = fields.String()
+    author = fields.String()
+    description = fields.String()
+    available = fields.Boolean()
+    location = fields.String()
+    reading_level = fields.String()
+    image_id = fields.String(allow_none=True)
+    reading_pupils = fields.List(fields.Nested(PupilBookOutSchema))
+    book_tags = fields.List(fields.Nested(TagsInBookSchema))
+
+    class Meta:
+        fields = (
+            "book_id",
+            "isbn",
+            "title",
+            "author",
+            "description",
+            "available",
+            "location",
+            "reading_level",
+            "image_id",
+            "reading_pupils",
+            "book_tags",
+        )
+
+
+class PupilBookOutSchema(Schema):
+    pupil_id = fields.Integer()
+    book_id = fields.String()
+    lending_id = fields.String()
+    state = fields.String()
+    rating = fields.Integer()
+    lent_at = fields.Date()
+    lent_by = fields.String()
+    returned_at = fields.Date()
+    received_by = fields.String()
+    pupil_book_files = fields.List(fields.Nested(PupilBookOutFileSchema))
+    book = fields.Nested(BookSchema, attribute="library_book.book")
+
+    class Meta:
+        fields = (
+            "pupil_id",
+            "book_id",
+            "lending_id",
+            "state",
+            "rating",
+            "lent_at",
+            "lent_by",
+            "returned_at",
+            "received_by",
+            "pupil_book_files",
+        )
+
+
+pupil_book_out_schema = PupilBookOutSchema()
+pupil_books_out_schema = PupilBookOutSchema(many=True)
 
 
 class BookLocationSchema(Schema):
@@ -74,7 +154,10 @@ class BookTagSchema(Schema):
     created_by = fields.String()
 
     class Meta:
-        fields = ("name", "created_by")
+        fields = (
+            "name",
+            "created_by",
+        )
 
 
 book_tag_schema = BookTagSchema()
@@ -96,7 +179,7 @@ tags_in_books_schema = TagsInBookSchema(many=True)
 ##############
 
 
-class NewBookSchema(Schema):
+class NewLibraryBookSchema(Schema):
     book_id = fields.String()
     isbn = fields.Integer()
     title = fields.String()
@@ -121,8 +204,8 @@ class NewBookSchema(Schema):
         )
 
 
-new_book_schema = NewBookSchema()
-new_book_schemas = NewBookSchema(many=True)
+new_book_schema = NewLibraryBookSchema()
+new_book_schemas = NewLibraryBookSchema(many=True)
 
 
 class BookPatchSchema(Schema):
@@ -159,7 +242,7 @@ class BookSchema(Schema):
     location = fields.String()
     reading_level = fields.String()
     image_id = fields.String(allow_none=True)
-    reading_pupils = fields.List(fields.Nested(PupilBookSchema))
+    reading_pupils = fields.List(fields.Nested(PupilBookOutSchema))
     book_tags = fields.List(fields.Nested(TagsInBookSchema))
 
     class Meta:
@@ -214,5 +297,5 @@ books_flat_schema = BookFlatSchema(many=True)
 
 
 class NewBookWithFileSchema(Schema):
-    book = fields.Nested(NewBookSchema)
-    file = File()
+    book = fields.Nested(NewLibraryBookSchema)
+    file = fields.File()

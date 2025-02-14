@@ -6,7 +6,7 @@ from marshmallow import post_dump
 
 from models.schoolday import SchoolSemester
 from schemas.authorization_schemas import PupilAuthorizationSchema
-from schemas.book_schemas import PupilBookSchema
+from schemas.book_schemas import PupilBookOutSchema
 from schemas.competence_schemas import (
     CompetenceCheckSchema,
     CompetenceGoalSchema,
@@ -79,7 +79,7 @@ class PupilSchema(Schema):
     competence_goals = fields.List(fields.Nested(CompetenceGoalSchema))
     support_category_statuses = fields.List(fields.Nested(SupportCategoryStatusSchema))
     pupil_workbooks = fields.List(fields.Nested(PupilWorkbookSchema))
-    pupil_books = fields.List(fields.Nested(PupilBookSchema))
+    pupil_books = fields.List(fields.Nested(PupilBookOutSchema))
     pupil_lists = fields.List(fields.Nested(PupilProfileListSchema))
     competence_checks = fields.List(fields.Nested(CompetenceCheckSchema))
     competence_reports = fields.List(fields.Nested(CompetenceReportSchema))

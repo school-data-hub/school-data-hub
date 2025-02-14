@@ -81,8 +81,6 @@ def get_schooldays(current_user):
     if not current_user:
         abort(404, "Bitte erneut einloggen!")
     all_schooldays = db.session.query(Schoolday).all()
-    if all_schooldays == []:
-        abort(404, "No schooldays found!")
 
     return all_schooldays
 
@@ -102,8 +100,6 @@ def get_schooldays_only(current_user):
     if not current_user:
         abort(404, "Bitte erneut einloggen!")
     all_schooldays = db.session.query(Schoolday).all()
-    if all_schooldays == []:
-        abort(404, "No schooldays found!")
 
     return all_schooldays
 

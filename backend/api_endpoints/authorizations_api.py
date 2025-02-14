@@ -137,8 +137,7 @@ def add_authorization_group(current_user, json_data):
 @token_required
 def get_authorizations(current_user):
     all_authorizations = Authorization.query.all()
-    if all_authorizations == []:
-        abort(404, "There are no authorizations!")
+
     return all_authorizations
 
 
@@ -170,8 +169,6 @@ def get_authorization(current_user, auth_id):
 @token_required
 def get_authorizations_flat(current_user):
     all_authorizations = Authorization.query.all()
-    if all_authorizations == []:
-        abort(404, "There are no authorizations!")
 
     return all_authorizations
 

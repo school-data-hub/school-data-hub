@@ -75,7 +75,7 @@ def add_book_to_pupil(current_user: User, internal_id, book_id):
 # - PATCH PUPIL BOOK
 ###################
 @pupil_book_api.route("/<lending_id>", methods=["PATCH"])
-@pupil_book_api.input(pupil_book_schema)
+@pupil_book_api.input(pupil_book_out_schema)
 @pupil_book_api.output(pupil_schema)
 @pupil_book_api.doc(
     security="ApiKeyAuth", tags=["Pupil Books"], summary="Patch a pupil book"

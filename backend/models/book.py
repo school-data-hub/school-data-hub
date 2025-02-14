@@ -21,30 +21,23 @@ class BookTag(db.Model):
 
 book_tags = db.Table(
     "book_tags",
-    db.Column("book_id", db.Integer, db.ForeignKey("book.id"), primary_key=True),
+    db.Column("book_isbn", db.Integer, db.ForeignKey("book.isbn"), primary_key=True),
     db.Column(
         "book_tag_id", db.Integer, db.ForeignKey("book_tag.id"), primary_key=True
     ),
 )
 
+## many to many & association proxy: https://youtu.be/IlkVu_LWGys
+
 
 class Book(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    book_id = db.Column(db.String(50), nullable=False, unique=True)
-    isbn = db.Column(db.Integer, nullable=False)
+    isbn = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(50))
     author = db.Column(db.String(20))
     description = db.Column(db.String(800), nullable=True)
-    available = db.Column(db.Boolean, default=True)
-    location = db.Column(db.String(20))
     reading_level = db.Column(db.String(10))
-    image_url = db.Column(db.String(50), nullable=True)
     image_id = db.Column(db.String(50), nullable=True)
-
-    # - RELATIONSHIP TO PUPIL BOOKS ONE-TO-MANY
-    reading_pupils = db.relationship(
-        "PupilBook", back_populates="book", cascade="all, delete-orphan"
-    )
+    image_url = db.Column(db.String(50), nullable=True)
 
     # - RELATIONSHIP TO TAGS MANY-TO-MANY
     book_tags = db.relationship(
@@ -54,32 +47,51 @@ class Book(db.Model):
         backref=db.backref("books", lazy=True),
     )
 
+    # - RELATIONSHIP TO LIBRARY BOOKS ONE-TO-MANY
+
+    library_books = db.relationship(
+        "LibraryBook", back_populates="book", cascade="all, delete-orphan"
+    )
+
     def __init__(
         self,
-        book_id,
         isbn,
         title,
         author,
         description,
-        available,
-        location,
         reading_level,
         image_url,
         image_id,
     ):
-        self.book_id = book_id
         self.isbn = isbn
         self.title = title
         self.author = author
         self.description = description
-        self.available = available
-        self.location = location
         self.reading_level = reading_level
         self.image_url = image_url
         self.image_id = image_id
 
 
-## many to many & association proxy: https://youtu.be/IlkVu_LWGys
+class LibraryBook(db.Model):
+    book_id = db.Column(db.String(20), primary_key=True)
+    available = db.Column(db.Boolean, default=True)
+    location = db.Column(db.String(20))
+
+    # - RELATIONSHIP TO PUPIL BOOKS ONE-TO-MANY
+    reading_pupils = db.relationship(
+        "PupilBook", back_populates="library_book", cascade="all, delete-orphan"
+    )
+
+    # - RELATIONSHIP TO BOOK MANY-TO-ONE
+
+    book_isbn = db.Column("book_isbn", db.Integer, db.ForeignKey("book.isbn"))
+    book = db.relationship("Book", back_populates="library_books")
+
+    def __init__(self, book_id, available, location, book_isbn):
+        self.book_id = book_id
+        self.available = available
+        self.location = location
+        self.book_isbn = book_isbn
 
 
 class PupilBook(db.Model):
@@ -96,9 +108,14 @@ class PupilBook(db.Model):
     pupil_id = db.Column("pupil_id", db.Integer, db.ForeignKey("pupil.internal_id"))
     pupil = db.relationship("Pupil", back_populates="pupil_books")
 
-    # - RELATIONSHIP TO BOOK MANY-TO-ONE
-    book_id = db.Column("book_id", db.String(50), db.ForeignKey("book.book_id"))
-    book = db.relationship("Book", back_populates="reading_pupils")
+    # - RELATIONSHIP TO LIBRARYBOOK MANY-TO-ONE
+    book_id = db.Column("book_id", db.String(50), db.ForeignKey("library_book.book_id"))
+    library_book = db.relationship("LibraryBook", back_populates="reading_pupils")
+
+    # - RELATIONSHIP TO PUPIL BOOK FILES ONE-TO-MANY
+    pupil_book_files = db.relationship(
+        "PupilBookFile", back_populates="pupil_book", cascade="all, delete-orphan"
+    )
 
     def __init__(
         self,
@@ -121,3 +138,28 @@ class PupilBook(db.Model):
         self.lent_by = lent_by
         self.returned_at = returned_at
         self.received_by = received_by
+
+
+class PupilBookFile(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    file_id = db.Column(db.String(50), nullable=False)
+    file_url = db.Column(db.String(50), nullable=False)
+    extension = db.Column(db.String(4), nullable=False)
+    uploaded_at = db.Column(db.Date, nullable=False)
+    uploaded_by = db.Column(db.String(20), nullable=False)
+
+    # - RELATIONSHIP TO PUPIL BOOK MANY-TO-ONE
+    lending_id = db.Column(
+        "lending_id", db.String(50), db.ForeignKey("pupil_book.lending_id")
+    )
+    pupil_book = db.relationship("PupilBook", back_populates="pupil_book_files")
+
+    def __init__(
+        self, file_id, file_url, extension, uploaded_at, uploaded_by, lending_id
+    ):
+        self.file_id = file_id
+        self.file_url = file_url
+        self.extension = extension
+        self.uploaded_at = uploaded_at
+        self.uploaded_by = uploaded_by
+        self.lending_id = lending_id

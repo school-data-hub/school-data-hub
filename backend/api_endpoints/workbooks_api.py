@@ -31,8 +31,6 @@ workbook_api = APIBlueprint("workbooks_api", __name__, url_prefix="/api/workbook
 def get_workbooks(current_user):
 
     all_workbooks = Workbook.query.all()
-    if all_workbooks == []:
-        abort(404, message="Keine Arbeitshefte gefunden!")
     return all_workbooks
 
 

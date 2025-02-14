@@ -108,7 +108,7 @@ class Pupil(db.Model):
     ogs = db.Column(db.Boolean)
     pick_up_time = db.Column(db.String(5), nullable=True)
     ogs_info = db.Column(db.String(50), nullable=True)
-    # - individual_development_plan is the last value of a list of objects with date, reason and created_by
+    # - latest_support_level is the last value of a list of SupportLevel objects
     latest_support_level = db.Column(db.Integer, default=0)
     five_years = db.Column(db.Date, nullable=True)
     communication_pupil = db.Column(db.String(8), nullable=True)
