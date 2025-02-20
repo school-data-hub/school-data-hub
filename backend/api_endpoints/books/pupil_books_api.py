@@ -13,6 +13,7 @@ from models.pupil import Pupil
 from models.shared import db
 from models.user import User
 from schemas.book_schemas import *
+from schemas.pupil_book_schemas import pupil_book_out_schema
 from schemas.pupil_schemas import pupil_schema
 
 pupil_book_api = APIBlueprint("pupil_book_api", __name__, url_prefix="/api/pupil_book")

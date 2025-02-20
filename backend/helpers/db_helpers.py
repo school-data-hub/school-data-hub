@@ -4,7 +4,7 @@ from typing import List, Optional
 from sqlalchemy import or_
 
 from models.authorization import Authorization
-from models.book import Book
+from models.book import Book, LibraryBook
 from models.pupil import Pupil
 from models.school_list import SchoolList
 from models.schoolday import MissedClass, Schoolday, SchooldayEvent
@@ -120,5 +120,9 @@ def get_workbook_by_isbn(isbn: int) -> Optional[Workbook]:
 ## Books
 
 
-def get_book_by_id(book_id: str) -> Optional[Book]:
-    return db.session.query(Book).filter_by(book_id=book_id).scalar()
+def get_book_by_isbn(isbn: int) -> Optional[Book]:
+    return db.session.query(Book).filter_by(isbn=isbn).scalar()
+
+
+def get_library_book_by_id(book_id: str) -> Optional[LibraryBook]:
+    return db.session.query(LibraryBook).filter_by(book_id=book_id).scalar()

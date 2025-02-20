@@ -1,7 +1,7 @@
 from models.shared import db
 
 
-class BookLocation(db.Model):
+class LibraryBookLocation(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     location = db.Column(db.String(20), nullable=False, unique=True)
 

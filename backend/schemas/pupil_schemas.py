@@ -6,7 +6,6 @@ from marshmallow import post_dump
 
 from models.schoolday import SchoolSemester
 from schemas.authorization_schemas import PupilAuthorizationSchema
-from schemas.book_schemas import PupilBookOutSchema
 from schemas.competence_schemas import (
     CompetenceCheckSchema,
     CompetenceGoalSchema,
@@ -14,6 +13,7 @@ from schemas.competence_schemas import (
 )
 from schemas.credit_schema import CreditHistoryLogSchema
 from schemas.missed_class_schemas import MissedClassSchema
+from schemas.pupil_book_schemas import PupilBookOutSchema
 from schemas.school_list_schemas import PupilProfileListSchema
 from schemas.schoolday_event_schemas import SchooldayEventSchema
 from schemas.support_schemas import SupportCategoryStatusSchema, SupportGoalSchema
