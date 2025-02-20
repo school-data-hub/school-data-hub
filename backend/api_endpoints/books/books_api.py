@@ -42,6 +42,7 @@ book_api = APIBlueprint("book_api", __name__, url_prefix="/api/books")
 )
 @token_required
 def get_book(current_user, isbn):
+    isbn = isbn.replace("-", "")
     book = get_book_by_isbn(isbn)
     if book is not None:
         return book

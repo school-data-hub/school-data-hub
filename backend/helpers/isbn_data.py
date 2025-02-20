@@ -22,8 +22,8 @@ class IsbnApiData:
         self.description: str = description
 
 
-def get_isbn_api_data(isbn) -> Optional[IsbnApiData]:
-    clean_isbn = isbn.replace("-", "")
+def get_isbn_api_data(clean_isbn) -> Optional[IsbnApiData]:
+
     image_url = f"https://buch.isbn.de/cover/{clean_isbn}.jpg"
     url = f"https://www.isbn.de/buch/{clean_isbn}"
     response = requests.get(url)
