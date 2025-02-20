@@ -7,8 +7,14 @@ open_api_config = {
         "basicAuth": {"type": "http", "scheme": "basic"},
     },
     "TAGS": [
-        {"name": "Auth", "description": "Basic Auth"},
-        {"name": "User", "description": "User endpoints"},
+        {
+            "name": "Auth",
+            "description": "Basic Auth",
+        },
+        {
+            "name": "User",
+            "description": "User endpoints",
+        },
         {"name": "File Imports", "description": "File imports"},
         {"name": "Pupil", "description": "Pupil endpoints"},
         {"name": "Schooldays", "description": "Schoolday endpoints"},
@@ -40,6 +46,7 @@ open_api_config = {
         {"name": "Workbooks", "description": "Workbook catalogue endpoints"},
         {"name": "Pupil Workbooks", "description": "Pupil workbooks endpoints"},
         {"name": "Books", "description": "Book catalogue endpoints"},
+        {"name": "Library Books", "description": "Library book catalogue endpoints"},
         {"name": "Pupil Books", "description": "Pupil books endpoints"},
     ],
     "CONTACT": {

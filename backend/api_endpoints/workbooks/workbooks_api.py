@@ -49,8 +49,6 @@ def get_workbooks(current_user):
 def get_workbooks_flat(current_user):
 
     all_workbooks = Workbook.query.all()
-    if all_workbooks == []:
-        abort(404, message="Keine Arbeitshefte gefunden!")
 
     return all_workbooks
 
@@ -245,7 +243,5 @@ def delete_workbook(current_user, isbn):
     create_log_entry(current_user, request, {"data": "none"})
     db.session.commit()
     all_workbooks = Workbook.query.all()
-    if all_workbooks == []:
-        abort(404, message="Keine Arbeitshefte gefunden!")
 
     return all_workbooks

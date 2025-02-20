@@ -83,7 +83,5 @@ def check_date_overlap(start_date, end_date):
 @token_required
 def get_school_semesters(current_user):
     all_semesters = db.session.query(SchoolSemester).all()
-    if all_semesters == []:
-        abort(404, "Keine Schulsemester gefunden!")
 
     return all_semesters

@@ -104,8 +104,6 @@ def add_schoolday_event(current_user, json_data):
 @token_required
 def get_schoolday_events(current_user):
     all_schoolday_events = SchooldayEvent.query.all()
-    if all_schoolday_events == []:
-        abort(404, "Keine Ereignisse gefunden!")
 
     return all_schoolday_events
 

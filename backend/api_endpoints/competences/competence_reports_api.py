@@ -1,6 +1,7 @@
 import uuid
 from datetime import datetime
 from operator import and_
+from typing import List
 
 from apiflask import APIBlueprint, abort
 
@@ -85,8 +86,6 @@ def post_competence_report(current_user, json_data):
 def get_competence_reports(current_user):
 
     all_reports = CompetenceReport.query.all()
-    if all_reports == []:
-        abort(404, "Keine Berichte gefunden!")
 
     return all_reports
 
@@ -94,18 +93,18 @@ def get_competence_reports(current_user):
 # - GET ALL COMPETENCE REPORTS FROM ONE PUPIL
 ############################################
 @competence_report_api.route("/<internal_id>/all", methods=["GET"])
-@competence_report_api.output(competence_report_schema)
+@competence_report_api.output(competence_reports_schema)
 @competence_report_api.doc(
     security="ApiKeyAuth",
     tags=["Competence Report"],
-    summary="Get all competence reports",
+    summary="Get all competence reports from one pupil",
 )
 @token_required
 def get_pupil_competence_reports(current_user, internal_id):
 
-    pupil_reports = CompetenceReport.query.filter_by(pupil_id=internal_id).all()
-    if pupil_reports == []:
-        abort(404, "Keine Berichte gefunden!")
+    pupil_reports: List[CompetenceReport] = CompetenceReport.query.filter_by(
+        pupil_id=internal_id
+    ).all()
 
     # result = competence_report_schema.dump(pupil_reports)
     return pupil_reports

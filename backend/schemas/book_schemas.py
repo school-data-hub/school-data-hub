@@ -1,6 +1,5 @@
 from apiflask import Schema, fields
 
-
 # - BOOK TAGS SCHEMAS
 ####################
 
@@ -106,6 +105,7 @@ class BookPatchSchema(Schema):
     author = fields.String(allow_none=True)
     description = fields.String(allow_none=True)
     reading_level = fields.String(allow_none=True)
+    book_tags = fields.List(fields.Nested(TagInBookSchema), allow_none=True)
 
     class Meta:
         fields = (
@@ -113,6 +113,7 @@ class BookPatchSchema(Schema):
             "author",
             "description",
             "reading_level",
+            "book_tags",
         )
 
 

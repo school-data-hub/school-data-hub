@@ -215,7 +215,8 @@ def add_missed_class_list(current_user, json_data):
 
 
 # - GET ALL MISSED CLASSES
-#########################
+
+
 @missed_class_api.route("/all", methods=["GET"])
 @missed_class_api.output(missed_classes_schema, 200)
 @missed_class_api.doc(
@@ -224,8 +225,7 @@ def add_missed_class_list(current_user, json_data):
 @token_required
 def get_missed_classes(current_user):
     all_missed_classes = MissedClass.query.all()
-    if all_missed_classes == []:
-        abort(404, "There are no missed classes!")
+
     return all_missed_classes
 
 

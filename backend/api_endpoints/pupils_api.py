@@ -109,7 +109,6 @@ from schemas.pupil_schemas import *
 
 
 # - PATCH PUPIL
-###############
 
 
 @pupil_api.route("/<internal_id>", methods=["PATCH"])
@@ -187,7 +186,6 @@ def update_pupil(current_user: User, internal_id, json_data):
 
 
 # - PATCH SIBLING PUPILS
-#######################
 
 
 @pupil_api.route("/patch_siblings", methods=["PATCH"])
@@ -231,7 +229,6 @@ def update_siblings(current_user: User, json_data):
 
 
 # - GET ALL PUPILS
-#################
 
 
 @pupil_api.route("/all", methods=["GET"])
@@ -241,14 +238,11 @@ def update_siblings(current_user: User, json_data):
 def get_pupils(current_user):
 
     all_pupils = Pupil.query.all()
-    if all_pupils == []:
-        abort(404, message="Keine Schüler:innen gefunden!")
 
     return all_pupils
 
 
 # - GET ALL PUPILS FLAT
-######################
 
 
 @pupil_api.route("/all/flat", methods=["GET"])
@@ -262,14 +256,11 @@ def get_pupils(current_user):
 def get_pupils_only(current_user):
 
     all_pupils = Pupil.query.all()
-    if all_pupils == []:
-        abort(404, message="Keine Schüler:innen gefunden!")
 
     return all_pupils
 
 
 # - GET PUPILS GIVEN IN ARRAY
-############################
 
 
 @pupil_api.route("/list", methods=["POST"])
@@ -293,7 +284,6 @@ def get_given_pupils(current_user, json_data):
 
 
 # - GET ONE PUPIL
-################
 
 
 @pupil_api.route("/<internal_id>", methods=["GET"])
@@ -310,7 +300,6 @@ def get_pupil(current_user, internal_id):
 
 
 # - DELETE PUPIL
-###############
 
 
 @pupil_api.route("/<internal_id>", methods=["DELETE"])
@@ -587,7 +576,8 @@ def delete_avatar_auth(current_user, internal_id):
 
 
 # - DELETE IMAGE PUPIL PUBLIC MEDIA AUTH
-#######################################
+
+
 @pupil_api.route("/<internal_id>/public_media_auth", methods=["DELETE"])
 @pupil_api.doc(
     security="ApiKeyAuth",
@@ -614,7 +604,6 @@ def delete_public_media_auth(current_user, internal_id):
 
 
 # - UPDATE SUPPORT LEVEL
-########################
 
 
 @pupil_api.route("/<internal_id>/support_level", methods=["PATCH"])

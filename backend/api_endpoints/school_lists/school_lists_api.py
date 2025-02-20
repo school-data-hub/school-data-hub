@@ -163,8 +163,7 @@ def get_lists(current_user):
         abort(404, message="Bitte erneut einloggen!")
     # get all school lists where the user is authorized or the creator
     all_lists = get_authorized_school_lists(current_user.name)
-    if all_lists == []:
-        abort(404, message="Keine Listen vorhanden!")
+
     return all_lists
 
 
@@ -183,8 +182,7 @@ def get_lists_flat(current_user):
         abort(404, message="Bitte erneut einloggen!")
     # get all school lists where the user is authorized or the creator
     all_lists = get_authorized_school_lists(current_user.name)
-    if all_lists == []:
-        abort(404, message="Keine Listen vorhanden!")
+
     return all_lists
 
 
