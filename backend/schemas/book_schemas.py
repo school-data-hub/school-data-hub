@@ -17,17 +17,25 @@ tags_in_books_schema = TagInBookSchema(many=True)
 
 class BookTagSchema(Schema):
     name = fields.String()
-    created_by = fields.String()
 
     class Meta:
-        fields = (
-            "name",
-            "created_by",
-        )
+        fields = ("name",)
 
 
 book_tag_schema = BookTagSchema()
 book_tags_schema = BookTagSchema(many=True)
+
+
+class BookTagOutSchema(Schema):
+    name = fields.String()
+
+    class Meta:
+        fields = ("name",)
+
+
+book_tag_out_schema = BookTagOutSchema()
+book_tags_out_schema = BookTagOutSchema(many=True)
+
 
 # - BOOK LOCATION SCHEMAS
 #########################

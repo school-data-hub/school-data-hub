@@ -141,8 +141,8 @@ def patch_book(current_user, isbn, json_data):
     return book
 
 
-# - PATCH BOOK WITH FILE
-########################
+# - PATCH BOOK WITH IMAGE
+#########################
 
 
 @book_api.route("/<isbn>/file", methods=["PATCH"])
@@ -152,7 +152,7 @@ def patch_book(current_user, isbn, json_data):
     security="ApiKeyAuth", tags=["Books"], summary="PATCH-POST a file for a given book"
 )
 @token_required
-def upload_book_file(current_user, isbn, files_data):
+def upload_book_image(current_user, isbn: int, files_data):
     book: Book = db.session.query(Book).filter_by(isbn=isbn).scalar()
     if book is None:
         abort(404, "Das Buch existiert nicht!")
@@ -198,11 +198,11 @@ def get_book_image(current_user: User, isbn: int):
 #####################
 
 
-@book_api.route("/<book_id>", methods=["DELETE"])
+@book_api.route("/<isbn>", methods=["DELETE"])
 @book_api.doc(security="ApiKeyAuth", tags=["Books"])
 @token_required
-def delete_book(current_user, book_id):
-    this_book = Book.query.filter_by(book_id=book_id).first()
+def delete_book(current_user, isbn):
+    this_book: Book = Book.query.filter_by(isbn=isbn).first()
     if this_book == None:
         abort(404, "This book does not exist!")
 
@@ -224,7 +224,7 @@ def delete_book(current_user, book_id):
 
 
 @book_api.route("/tags", methods=["GET"])
-@book_api.output(book_tags_schema)
+@book_api.output(book_tags_out_schema)
 @book_api.doc(security="ApiKeyAuth", tags=["Book Tags"], summary="Get all book tags")
 @token_required
 def get_book_tags(current_user):
@@ -237,7 +237,7 @@ def get_book_tags(current_user):
 
 @book_api.route("/tags/new", methods=["POST"])
 @book_api.input(book_tag_schema)
-@book_api.output(book_tags_schema)
+@book_api.output(book_tags_out_schema)
 @book_api.doc(security="ApiKeyAuth", tags=["Book Tags"], summary="Add a new book tag")
 @token_required
 def add_book_tag(current_user, json_data):
@@ -256,7 +256,7 @@ def add_book_tag(current_user, json_data):
 
 @book_api.route("/tags/<tag_name>", methods=["PATCH"])
 @book_api.input(book_tag_schema)
-@book_api.output(book_tags_schema)
+@book_api.output(book_tags_out_schema)
 @book_api.doc(security="ApiKeyAuth", tags=["Book Tags"], summary="Patch a book tag")
 @token_required
 def patch_book_tag(current_user, tag_name, json_data):
@@ -278,7 +278,7 @@ def patch_book_tag(current_user, tag_name, json_data):
 
 
 @book_api.route("/tags/<tag_name>", methods=["DELETE"])
-@book_api.output(book_tags_schema)
+@book_api.output(book_tags_out_schema)
 @book_api.doc(security="ApiKeyAuth", tags=["Book Tags"], summary="Delete a book tag")
 @token_required
 def delete_book_tag(current_user, tag_name):

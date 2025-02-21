@@ -99,6 +99,26 @@ def get_library_books(current_user):
     return all_books
 
 
+# - GET LIBRARY BOOK BY ID
+
+
+@library_book_api.route("/<book_id>", methods=["GET"])
+@library_book_api.output(library_book_out_schema)
+@library_book_api.doc(
+    security="ApiKeyAuth",
+    tags=["Library Books"],
+    summary="Get a library book by id",
+)
+@token_required
+def get_library_book_by_id(current_user, book_id):
+
+    this_book = LibraryBook.query.filter_by(book_id=book_id).first()
+    if this_book == None:
+        abort(404, "This book does not exist!")
+
+    return this_book
+
+
 # - POST LIBRARY BOOK
 
 
@@ -158,3 +178,28 @@ def patch_library_book(current_user, book_id, json_data):
 
     db.session.commit()
     return this_book
+
+
+# - DELETE LIBRARY BOOK
+
+
+@library_book_api.route("/<book_id>", methods=["DELETE"])
+@library_book_api.output(library_books_out_schema)
+@library_book_api.doc(
+    security="ApiKeyAuth",
+    tags=["Library Books"],
+    summary="Delete a library book",
+)
+@token_required
+def delete_library_book(current_user, book_id):
+
+    this_book = LibraryBook.query.filter_by(book_id=book_id).first()
+    if this_book == None:
+        abort(404, "This book does not exist!")
+
+    db.session.delete(this_book)
+    # - Log entry
+    create_log_entry(current_user, request, request.json)
+    db.session.commit()
+
+    return LibraryBook.query.all()
