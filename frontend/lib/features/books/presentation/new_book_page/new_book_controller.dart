@@ -6,7 +6,6 @@ import 'package:isbn/isbn.dart';
 import 'package:schuldaten_hub/common/domain/models/enums.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_service.dart';
-import 'package:schuldaten_hub/common/utils/isbn_book_data_scraper.dart';
 import 'package:schuldaten_hub/common/widgets/dialogs/short_textfield_dialog.dart';
 import 'package:schuldaten_hub/common/widgets/qr/scanner.dart';
 import 'package:schuldaten_hub/features/books/data/book_api_service.dart';
@@ -45,7 +44,7 @@ enum ReadingLevel {
 
 class NewBook extends WatchingStatefulWidget {
   final String? bookTitle;
-  final int? bookIsbn;
+  final int? isbn;
   final String? bookId;
   final String? bookAuthor;
   final String? bookDescription;
@@ -58,7 +57,7 @@ class NewBook extends WatchingStatefulWidget {
   const NewBook(
       {required this.isEdit,
       this.bookTitle,
-      this.bookIsbn,
+      this.isbn,
       this.bookId,
       this.bookAuthor,
       this.bookDescription,
@@ -139,10 +138,10 @@ class NewBookController extends State<NewBook> {
   String readingLevel = ReadingLevel.notSet.value;
 
   @override
-  void initState() {
+  void initState() async {
     super.initState();
     if (widget.isEdit) {
-      isbnTextFieldController.text = widget.bookIsbn?.toString() ?? '';
+      isbnTextFieldController.text = widget.isbn?.toString() ?? '';
       bookIdTextFieldController.text = widget.bookId ?? '';
       bookTitleTextFieldController.text = widget.bookTitle ?? '';
       authorTextFieldController.text = widget.bookAuthor ?? '';
@@ -178,7 +177,6 @@ class NewBookController extends State<NewBook> {
     if (isbn.isIsbn13(text.replaceAll('-', ''))
         // &&        bookTitleTextFieldController.text.isEmpty
         ) {
-      getIsbnData();
       return;
     }
     final String formattedText = _formatISBN(text);
@@ -206,22 +204,6 @@ class NewBookController extends State<NewBook> {
     return buffer.toString();
   }
 
-  Future<void> getIsbnData() async {
-    final IsbnApiData isbnData =
-        await getIsbnApiData(isbnTextFieldController.text);
-
-    if (isbnData.image != null) {
-      setState(() {
-        bookImage = Image.memory(isbnData.image!);
-        bookImageBytes = isbnData.image;
-        bookTitleTextFieldController.text = isbnData.title;
-        authorTextFieldController.text =
-            isbnData.author == '?' ? 'unbekannt' : isbnData.author;
-        bookDescriptionTextFieldController.text = isbnData.description;
-      });
-    }
-  }
-
   Future<void> scanIsbn() async {
     final String? scannedIsbn = await scanner(context, 'Isbn code scannen');
 
@@ -232,7 +214,6 @@ class NewBookController extends State<NewBook> {
     }
 
     isbnTextFieldController.text = scannedIsbn;
-    getIsbnData();
   }
 
   Future<void> scanBookId() async {
@@ -281,29 +262,34 @@ class NewBookController extends State<NewBook> {
     if (widget.isEdit) {
       // Update the book
       locator<BookManager>().updateBookProperty(
-        bookId: widget.bookId!,
+        isbn: widget.isbn!,
         title: bookTitleTextFieldController.text,
         description: bookDescriptionTextFieldController.text,
-        location: lastLocationValue,
         readingLevel: readingLevel,
         author: authorTextFieldController.text,
       );
     } else {
       // Create a new book
-      locator<BookManager>().postBookAndImageBytes(
-        author: authorTextFieldController.text,
-        bookId: bookIdTextFieldController.text,
-        imageBytes: bookImageBytes!,
+      locator<BookManager>().postLibraryBook(
         isbn: int.parse(isbnTextFieldController.text.replaceAll('-', '')),
-        title: bookTitleTextFieldController.text,
-        description: bookDescriptionTextFieldController.text,
+        bookId: bookIdTextFieldController.text,
         location: lastLocationValue,
-        level: readingLevel,
-        tags: bookTagSelection.entries
-            .where((element) => element.value)
-            .map((e) => e.key)
-            .toList(),
       );
+
+      // postBookAndImageBytes(
+      //   author: authorTextFieldController.text,
+      //   bookId: bookIdTextFieldController.text,
+      //   imageBytes: bookImageBytes!,
+      //   isbn: int.parse(isbnTextFieldController.text.replaceAll('-', '')),
+      //   title: bookTitleTextFieldController.text,
+      //   description: bookDescriptionTextFieldController.text,
+      //   location: lastLocationValue,
+      //   level: readingLevel,
+      //   tags: bookTagSelection.entries
+      //       .where((element) => element.value)
+      //       .map((e) => e.key)
+      //       .toList(),
+      // );
     }
     Navigator.pop(context);
   }

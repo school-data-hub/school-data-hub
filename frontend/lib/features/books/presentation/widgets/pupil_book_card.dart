@@ -29,7 +29,8 @@ class PupilBookCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Book book = locator<BookManager>().getBookByBookId(pupilBook.bookId)!;
+    final Book book =
+        locator<BookManager>().getLibraryBookByBookId(pupilBook.bookId)!;
     updatepupilBookRating(int rating) {
       locator<PupilManager>()
           .patchPupilBook(lendingId: pupilBook.lendingId, rating: rating);
@@ -89,20 +90,20 @@ class PupilBookCard extends StatelessWidget {
                           final File? file = await uploadImageFile(context);
                           if (file == null) return;
                           await locator<BookManager>()
-                              .postBookFile(file, book.bookId);
+                              .patchBookImage(file, book.isbn);
                         },
-                        onLongPress: () async {
-                          if (book.imageId == null) {
-                            return;
-                          }
-                          final bool? result = await confirmationDialog(
-                              context: context,
-                              title: 'Bild löschen',
-                              message: 'Bild löschen?');
-                          if (result != true) return;
-                          await locator<BookManager>()
-                              .deleteBookFile(book.imageId!);
-                        },
+                        // onLongPress: () async {
+                        //   if (book.imageId == null) {
+                        //     return;
+                        //   }
+                        //   final bool? result = await confirmationDialog(
+                        //       context: context,
+                        //       title: 'Bild löschen',
+                        //       message: 'Bild löschen?');
+                        //   if (result != true) return;
+                        //   await locator<BookManager>()
+                        //       .deleteBookFile(book.imageId!);
+                        // },
                         child: book.imageId != null
                             ? Provider<DocumentImageData>.value(
                                 updateShouldNotify: (oldValue, newValue) =>

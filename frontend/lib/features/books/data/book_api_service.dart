@@ -12,6 +12,7 @@ import 'package:schuldaten_hub/common/services/notification_service.dart';
 import 'package:schuldaten_hub/common/utils/custom_encrypter.dart';
 import 'package:schuldaten_hub/common/utils/logger.dart';
 import 'package:schuldaten_hub/features/books/domain/models/book.dart';
+// import 'package:schuldaten_hub/features/books/domain/models/book_dto.dart';
 
 class BookApiService {
   final ApiClient _client = locator<ApiClient>();
@@ -21,6 +22,7 @@ class BookApiService {
   String _baseUrl() {
     return locator<EnvManager>().env!.serverUrl;
   }
+
   // - BOOK TAGS - //
 
   final _bookTagsUrl = '/books/tags';
@@ -218,25 +220,15 @@ class BookApiService {
 
   static const _postBookUrl = '/books/new';
 
-  Future<Book> postBook({
-    String? author,
+  Future<Book> postLibraryBook({
     required int isbn,
     required String bookId,
-    required String? description,
     required String location,
-    String? readingLevel,
-    required String title,
-    required List<BookTag> tags,
   }) async {
     final data = jsonEncode({
-      "author": author,
       "book_id": bookId,
-      "description": description,
       "isbn": isbn,
       "location": location,
-      "reading_level": readingLevel,
-      "title": title,
-      "book_tags": tags.map((e) => e.toJson()).toList(),
     });
 
     _notificationService.apiRunning(true);
@@ -264,22 +256,22 @@ class BookApiService {
     return '/books/$bookId';
   }
 
-  Future<Book> updateBookProperty({
-    required String bookId,
+  Future<Book> patchBookData({
+    required int isbn,
+    String? title,
     String? author,
     String? description,
     String? location,
     String? readingLevel,
-    String? imageId,
-    String? title,
+    List<BookTag>? bookTags,
   }) async {
     final data = jsonEncode({
       if (author != null) "author": author,
       if (description != null) "description": description,
       if (location != null) "location": location,
       if (readingLevel != null) "reading_level": readingLevel,
-      if (imageId != null) "image_id": imageId,
-      if (imageId != null) "title": title
+      if (title != null) "title": title,
+      if (bookTags != null) "book_tags": bookTags,
     });
 
     _notificationService.apiRunning(true);
@@ -306,59 +298,11 @@ class BookApiService {
 
   //- post book image
 
-  String _patchBookWithImageUrl(String bookId) {
-    return '/books/$bookId/file';
+  String _patchBookWithImageUrl(int isbn) {
+    return '/books/$isbn/file';
   }
 
-  // Future<Book> postBookWithImageBytes(
-  //     {required Uint8List imageBytes,
-  //     required String bookId,
-  //     required String author,
-  //     required String? description,
-  //     required int isbn,
-  //     required String location,
-  //     required String readingLevel,
-  //     required String title}) async {
-  //   final encryptedBytes = customEncrypter.encryptTheseBytes(imageBytes);
-
-  //   var formData = FormData.fromMap({
-  //     'file': MultipartFile.fromBytes(
-  //       encryptedBytes,
-  //       filename: bookId,
-  //     ),
-  //     'json': jsonEncode({
-  //       "author": author,
-  //       "book_id": bookId,
-  //       "description": description,
-  //       "isbn": isbn,
-  //       "location": location,
-  //       "level": readingLevel,
-  //       "image_url": null,
-  //       "title": title
-  //     }),
-  //   });
-  //   notificationService.apiRunningValue(true);
-  //   final Response response = await _client.patch(
-  //     '${_baseUrl()}_patchBookWithImageUrl(bookId)',
-  //     data: formData,
-  //   );
-  //   notificationService.apiRunningValue(false);
-
-  //   // Handle errors.
-  //   if (response.statusCode != 200) {
-  //     notificationService.showSnackBar(
-  //         NotificationType.error, 'Fehler beim Hochladen des Bildes');
-
-  //     throw ApiException(
-  //         'Failed to upload workbook image', response.statusCode);
-  //   }
-
-  //   final Book workbook = Book.fromJson(response.data);
-
-  //   return workbook;
-  // }
-
-  Future<Book> postBookFile(File imageFile, String bookId) async {
+  Future<Book> patchBookImage(File imageFile, int isbn) async {
     final encryptedFile = await customEncrypter.encryptFile(imageFile);
 
     String fileName = encryptedFile.path.split('/').last;
@@ -428,35 +372,16 @@ class BookApiService {
   }
 
   //- delete book
-  static String deleteBookUrl(String bookId) {
-    return '/books/$bookId';
+
+  static String deleteLibraryBookUrl(String bookId) {
+    return '/library_books/$bookId';
   }
 
-  Future<Book> deleteBookFile(String bookId) async {
-    _notificationService.apiRunning(true);
-    final Response response = await _client.delete(
-      '${_baseUrl()}${bookImageUrl(bookId)}',
-      options: _client.hubOptions,
-    );
-    _notificationService.apiRunning(false);
-
-    if (response.statusCode != 200) {
-      _notificationService.showSnackBar(
-          NotificationType.error, 'Fehler beim Löschen des Bildes');
-
-      throw ApiException('Failed to delete book image', response.statusCode);
-    }
-
-    final Book book = Book.fromJson(response.data);
-
-    return book;
-  }
-
-  Future<bool> deleteBook(String bookId) async {
+  Future<bool> deleteLibraryBook(String bookId) async {
     _notificationService.apiRunning(true);
 
     final Response response = await _client.delete(
-      '${_baseUrl()}${BookApiService.deleteBookUrl(bookId)}',
+      '${_baseUrl()}${BookApiService.deleteLibraryBookUrl(bookId)}',
       options: _client.hubOptions,
     );
     _notificationService.apiRunning(false);
@@ -471,10 +396,30 @@ class BookApiService {
     return true;
   }
 
-  //- these are not being used
-  static const getBooksWithPupils = '/books/all';
+  //- get library book by id
 
-  String _getBook(int bookId) {
+  String _getLibraryBookById(String bookId) {
     return '/books/$bookId';
+  }
+
+  Future<Book> getLibraryBookById(String bookId) async {
+    _notificationService.apiRunning(true);
+
+    final Response response = await _client.get(
+      '${_baseUrl()}${_getLibraryBookById(bookId)}',
+      options: _client.hubOptions,
+    );
+    _notificationService.apiRunning(false);
+
+    if (response.statusCode != 200) {
+      _notificationService.showSnackBar(
+          NotificationType.error, 'Fehler beim Laden des Buches');
+
+      throw ApiException('Failed to fetch a book', response.statusCode);
+    }
+
+    final Book book = Book.fromJson(response.data);
+
+    return book;
   }
 }

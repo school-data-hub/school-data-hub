@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:schuldaten_hub/common/domain/models/enums.dart';
 import 'package:schuldaten_hub/common/domain/session_manager.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
@@ -22,8 +21,8 @@ class BookManager {
   final _bookTags = ValueNotifier<List<BookTag>>([]);
   ValueListenable<List<BookTag>> get bookTags => _bookTags;
 
-  final _lastLocationValue = ValueNotifier<String>('Bitte auswählen');
-  ValueListenable<String> get lastLocationValue => _lastLocationValue;
+  final _lastSelectedLocation = ValueNotifier<String>('Bitte auswählen');
+  ValueListenable<String> get lastLocationValue => _lastSelectedLocation;
 
   BookManager();
 
@@ -38,7 +37,7 @@ class BookManager {
   final pupilManager = locator<PupilManager>();
 
   Future<BookManager> init() async {
-    await getBooks();
+    // await getLibraryBooks();
     await getLocations();
     await getBookTags();
 
@@ -47,22 +46,13 @@ class BookManager {
 
   void clearData() {
     _books.value = [];
+
     _locations.value = [];
     _bookTags.value = [];
+    _lastSelectedLocation.value = 'Bitte auswählen';
   }
 
-  Future<void> getLocations() async {
-    final List<String> responseLocations =
-        await bookApiService.getBookLocations();
-
-    _locations.value = responseLocations;
-
-    // if (_lastLocationValue.value.isEmpty && responseLocations.isNotEmpty) {
-    //   _lastLocationValue.value = responseLocations.first;
-    // }
-
-    return;
-  }
+  //- BOOK TAGS
 
   Future<void> getBookTags() async {
     final List<BookTag> responseTags = await bookApiService.getBookTags();
@@ -81,6 +71,17 @@ class BookManager {
     final List<BookTag> responseTags = await bookApiService.deleteBookTag(tag);
 
     _bookTags.value = responseTags;
+
+    return;
+  }
+
+  //- BOOK LOCATIONS
+
+  Future<void> getLocations() async {
+    final List<String> responseLocations =
+        await bookApiService.getBookLocations();
+
+    _locations.value = responseLocations;
 
     return;
   }
@@ -104,10 +105,12 @@ class BookManager {
   }
 
   void setLastLocationValue(String location) {
-    _lastLocationValue.value = location;
+    _lastSelectedLocation.value = location;
   }
 
-  Future<void> getBooks() async {
+  //- LIBRARY BOOKS
+
+  Future<void> getLibraryBooks() async {
     final List<Book> responseBooks = await bookApiService.getBooks();
 
     // sort books by name
@@ -117,30 +120,20 @@ class BookManager {
     notificationService.showSnackBar(
         NotificationType.success, 'Bücher erfolgreich geladen');
 
-    _books.value = responseBooks;
+    //  _libraryBooks.value = responseBooks;
 
     return;
   }
 
-  Future<void> postBook({
-    required String title,
+  Future<void> postLibraryBook({
     required int isbn,
     required String bookId,
-    String? description,
     required String location,
-    String? level,
-    required String author,
-    required List<BookTag> tags,
   }) async {
-    final Book responseBook = await bookApiService.postBook(
+    final Book responseBook = await bookApiService.postLibraryBook(
       isbn: isbn,
       bookId: bookId,
-      description: description,
       location: location,
-      readingLevel: level,
-      title: title,
-      author: author,
-      tags: tags,
     );
 
     _books.value = [..._books.value, responseBook];
@@ -152,20 +145,20 @@ class BookManager {
   }
 
   Future<void> updateBookProperty({
-    required String bookId,
+    required int isbn,
     String? title,
-    String? description,
-    String? location,
-    String? readingLevel,
     String? author,
+    String? description,
+    String? readingLevel,
+    List<BookTag>? tags,
   }) async {
-    final Book updatedbook = await bookApiService.updateBookProperty(
-      bookId: bookId,
+    final Book updatedbook = await bookApiService.patchBookData(
+      isbn: isbn,
       title: title,
-      description: description,
-      location: location,
-      readingLevel: readingLevel,
       author: author,
+      description: description,
+      readingLevel: readingLevel,
+      bookTags: tags,
     );
 
     List<Book> books = List.from(_books.value);
@@ -181,9 +174,9 @@ class BookManager {
     return;
   }
 
-  Future<void> postBookFile(File imageFile, String bookId) async {
+  Future<void> patchBookImage(File imageFile, int isbn) async {
     final Book responsebook =
-        await bookApiService.postBookFile(imageFile, bookId);
+        await bookApiService.patchBookImage(imageFile, isbn);
 
     updateBookStateWithResponse(responsebook);
 
@@ -193,45 +186,8 @@ class BookManager {
     return;
   }
 
-  Future<void> postBookAndImageBytes({
-    required String title,
-    required int isbn,
-    required String bookId,
-    String? description,
-    required String location,
-    String? level,
-    required Uint8List imageBytes,
-    required String author,
-    required List<BookTag> tags,
-  }) async {
-    final Book responseBook = await bookApiService.postBook(
-      author: author,
-      isbn: isbn,
-      bookId: bookId,
-      description: description,
-      location: location,
-      readingLevel: level,
-      title: title,
-      tags: tags,
-    );
-    final tempDir = await getTemporaryDirectory();
-    final file =
-        await File('${tempDir.path}/tempImage.png').writeAsBytes(imageBytes);
-    final Book responseBookWithImage = await bookApiService.postBookFile(
-      file,
-      responseBook.bookId,
-    );
-
-    _books.value = [..._books.value, responseBookWithImage];
-
-    notificationService.showSnackBar(
-        NotificationType.success, 'Arbeitsheft erfolgreich erstellt');
-
-    return;
-  }
-
-  Future<void> deleteBook(String bookId) async {
-    final bool success = await bookApiService.deleteBook(bookId);
+  Future<void> deleteLibraryBook(String bookId) async {
+    final bool success = await bookApiService.deleteLibraryBook(bookId);
 
     if (success) {
       List<Book> books = List.from(_books.value);
@@ -247,43 +203,9 @@ class BookManager {
     return;
   }
 
-  Future<void> deleteBookFile(String bookId) async {
-    final Book responsebook = await bookApiService.deleteBookFile(bookId);
-
-    updateBookStateWithResponse(responsebook);
-
-    notificationService.showSnackBar(
-        NotificationType.success, 'Bild erfolgreich gelöscht');
-
-    return;
-  }
   //- PUPIL bookS
 
-  // Future<void> newPupilbook(int pupilId, int isbn) async {
-  //   final PupilData responsePupil =
-  //       await apiPupilbookService.postNewPupilbook(pupilId, isbn);
-
-  //   pupilManager.updatePupilProxyWithPupilData(responsePupil);
-
-  //   notificationService.showSnackBar(
-  //       NotificationType.success, 'Arbeitsheft erstellt');
-
-  //   return;
-  // }
-
-  // Future<void> deletePupilbook(int pupilId, int isbn) async {
-  //   final PupilData responsePupil =
-  //       await apiPupilbookService.deletePupilbook(pupilId, isbn);
-
-  //   pupilManager.updatePupilProxyWithPupilData(responsePupil);
-
-  //   notificationService.showSnackBar(
-  //       NotificationType.success, 'Arbeitsheft gelöscht');
-
-  //   return;
-  // }
-
-  List<Book> getBooksByIsbn(int isbn) {
+  List<Book> getLibraryBooksByIsbn(int isbn) {
     List<Book> books = [];
     for (Book book in _books.value) {
       if (book.isbn == isbn) {
@@ -294,7 +216,7 @@ class BookManager {
   }
 
   //- helper function
-  Book? getBookByBookId(String? bookId) {
+  Book? getLibraryBookByBookId(String? bookId) {
     if (bookId == null) return null;
     final Book? book =
         _books.value.firstWhereOrNull((element) => element.bookId == bookId);

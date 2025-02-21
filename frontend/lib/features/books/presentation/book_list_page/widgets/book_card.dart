@@ -68,7 +68,7 @@ class BookCard extends WatchingWidget {
                   message:
                       'Buch "${book.title}" wirklich löschen? ACHTUNG: Alle Ausleihen dieses Buchs werden werden ebenfalls gelöscht!');
               if (result == true) {
-                await locator<BookManager>().deleteBook(book.bookId);
+                await locator<BookManager>().deleteLibraryBook(book.bookId);
               }
             },
             child: Padding(
@@ -87,7 +87,7 @@ class BookCard extends WatchingWidget {
                                   isEdit: true,
                                   bookAuthor: book.author,
                                   bookId: book.bookId,
-                                  bookIsbn: book.isbn,
+                                  isbn: book.isbn,
                                   bookReadingLevel: book.readingLevel,
                                   bookTitle: book.title,
                                   bookDescription: book.description,
@@ -133,7 +133,7 @@ class BookCard extends WatchingWidget {
                               final File? file = await uploadImageFile(context);
                               if (file == null) return;
                               await locator<BookManager>()
-                                  .postBookFile(file, book.bookId);
+                                  .patchBookImage(file, book.isbn);
                             },
                             onLongPress: () async {
                               if (book.imageId == null) {
@@ -295,7 +295,7 @@ class BookCard extends WatchingWidget {
                               textinField: book.description ?? '',
                               parentContext: context);
                           locator<BookManager>().updateBookProperty(
-                            bookId: book.bookId,
+                            isbn: book.isbn,
                             description: description,
                           );
                         },

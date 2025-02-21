@@ -100,13 +100,15 @@ class MyApp extends WatchingWidget {
             ? const NoConnectionPage()
             : envIsReady && isAuthenticated
                 ? FutureBuilder(
-                    future: locator.allReady(),
+                    future:
+                        locator.allReady(timeout: const Duration(seconds: 30)),
                     //  locator.allReady(timeout: const Duration(seconds: 30)),
                     builder: (context, snapshot) {
                       if (snapshot.hasError) {
-                        debugPrint(snapshot.error.toString());
+                        debugPrint('Error: ${snapshot.error}');
                         return ErrorPage(error: snapshot.error.toString());
-                      } else if (snapshot.hasData) {
+                      } else if (snapshot.connectionState ==
+                          ConnectionState.done) {
                         if (isAuthenticated) {
                           return MainMenuBottomNavigation();
                         } else {

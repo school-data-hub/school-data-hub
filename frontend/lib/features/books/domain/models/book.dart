@@ -1,51 +1,55 @@
-// ignore_for_file: invalid_annotation_target
+class Book {
+  final int isbn;
+  final String bookId;
+  final String title;
+  final String author;
+  final String description;
+  final String readingLevel;
+  final String imageId;
+  final bool available;
+  final String location;
+  final List<BookTag> bookTags;
 
-import 'package:json_annotation/json_annotation.dart';
+  Book(
+      {required this.isbn,
+      required this.bookId,
+      required this.title,
+      required this.author,
+      required this.description,
+      required this.readingLevel,
+      required this.imageId,
+      required this.available,
+      required this.location,
+      required this.bookTags});
 
-part 'book.g.dart';
+  factory Book.fromJson(Map<String, dynamic> json) {
+    var bookJson = json['book'];
+    return Book(
+      isbn: bookJson['isbn'],
+      bookId: json['book_id'],
+      title: bookJson['title'],
+      author: bookJson['author'],
+      description: bookJson['description'],
+      readingLevel: bookJson['reading_level'],
+      imageId: bookJson['image_id'],
+      available: json['available'],
+      location: json['location'],
+      bookTags: (bookJson['book_tags'] as List)
+          .map((tag) => BookTag.fromJson(tag))
+          .toList(),
+    );
+  }
+}
 
-@JsonSerializable()
 class BookTag {
   final String name;
 
-  factory BookTag.fromJson(Map<String, dynamic> json) =>
-      _$BookTagFromJson(json);
-
-  Map<String, dynamic> toJson() => _$BookTagToJson(this);
-
   BookTag({required this.name});
-}
+  factory BookTag.fromJson(Map<String, dynamic> json) {
+    return BookTag(name: json['name']);
+  }
 
-@JsonSerializable()
-class Book {
-  final String author;
-  final String? description;
-  final bool available;
-  @JsonKey(name: "book_id")
-  final String bookId;
-  @JsonKey(name: "image_id")
-  final String? imageId;
-  final int isbn;
-  final String location;
-  @JsonKey(name: "reading_level")
-  final String readingLevel;
-  final String title;
-  @JsonKey(name: "book_tags")
-  final List<BookTag>? bookTags;
-
-  factory Book.fromJson(Map<String, dynamic> json) => _$BookFromJson(json);
-
-  Map<String, dynamic> toJson() => _$BookToJson(this);
-
-  Book(
-      {required this.author,
-      required this.description,
-      required this.available,
-      required this.bookId,
-      required this.imageId,
-      required this.isbn,
-      required this.location,
-      required this.readingLevel,
-      required this.title,
-      required this.bookTags});
+  Map<String, dynamic> toJson() {
+    return {'name': name};
+  }
 }

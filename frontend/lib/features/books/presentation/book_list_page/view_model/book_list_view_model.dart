@@ -15,7 +15,7 @@ class BookList extends StatefulWidget {
 class BookListViewModel extends State<BookList> {
   @override
   void initState() {
-    locator<BookManager>().getBooks();
+    locator<BookManager>().getLibraryBooks();
     super.initState();
   }
 

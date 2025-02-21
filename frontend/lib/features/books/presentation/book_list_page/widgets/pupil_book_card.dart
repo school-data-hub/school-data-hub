@@ -26,7 +26,8 @@ class PupilBookCard extends WatchingWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Book book = locator<BookManager>().getBookByBookId(pupilBook.bookId)!;
+    final Book book =
+        locator<BookManager>().getLibraryBookByBookId(pupilBook.bookId)!;
     return ClipRRect(
       borderRadius: BorderRadius.circular(20),
       child: Card(

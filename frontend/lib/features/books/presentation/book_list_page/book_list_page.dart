@@ -5,12 +5,12 @@ import 'package:schuldaten_hub/common/domain/models/enums.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/theme/app_colors.dart';
 import 'package:schuldaten_hub/common/theme/styles.dart';
-import 'package:schuldaten_hub/features/pupil/presentation/widgets/pupil_search_text_field.dart';
 import 'package:schuldaten_hub/features/books/domain/book_manager.dart';
 import 'package:schuldaten_hub/features/books/domain/models/book.dart';
 import 'package:schuldaten_hub/features/books/presentation/book_list_page/view_model/book_list_view_model.dart';
 import 'package:schuldaten_hub/features/books/presentation/book_list_page/widgets/book_card.dart';
 import 'package:schuldaten_hub/features/books/presentation/book_list_page/widgets/book_list_bottom_navbar.dart';
+import 'package:schuldaten_hub/features/pupil/presentation/widgets/pupil_search_text_field.dart';
 import 'package:schuldaten_hub/features/workbooks/domain/workbook_manager.dart';
 import 'package:watch_it/watch_it.dart';
 
@@ -48,7 +48,7 @@ class BookListPage extends WatchingWidget {
         ),
       ),
       body: RefreshIndicator(
-        onRefresh: () async => locator<BookManager>().getBooks(),
+        onRefresh: () async => locator<BookManager>().getLibraryBooks(),
         child: books.isEmpty
             ? const Center(
                 child: Padding(

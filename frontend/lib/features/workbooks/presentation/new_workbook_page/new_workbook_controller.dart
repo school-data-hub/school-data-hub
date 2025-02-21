@@ -5,7 +5,6 @@ import 'package:isbn/isbn.dart';
 import 'package:schuldaten_hub/common/domain/models/enums.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_service.dart';
-import 'package:schuldaten_hub/common/utils/isbn_book_data_scraper.dart';
 import 'package:schuldaten_hub/common/utils/logger.dart';
 import 'package:schuldaten_hub/common/widgets/qr/scanner.dart';
 import 'package:schuldaten_hub/features/workbooks/domain/workbook_manager.dart';
@@ -122,23 +121,23 @@ class NewWorkbookController extends State<NewWorkbook> {
     return;
   }
 
-  Future<void> getIsbnData() async {
-    final IsbnApiData isbnData =
-        await getIsbnApiData(isbnTextFieldController.text);
+  // Future<void> getIsbnData() async {
+  //   final IsbnApiData isbnData =
+  //       await getIsbnApiData(isbnTextFieldController.text);
 
-    if (isbnData.image != null) {
-      setState(() {
-        workbookImage = Image.memory(isbnData.image!);
-        bookImageBytes = isbnData.image;
-        workbookNameTextFieldController.text = isbnData.title;
-      });
-    }
-  }
+  //   if (isbnData.image != null) {
+  //     setState(() {
+  //       workbookImage = Image.memory(isbnData.image!);
+  //       bookImageBytes = isbnData.image;
+  //       workbookNameTextFieldController.text = isbnData.title;
+  //     });
+  //   }
+  // }
 
   void _listenToIsbn() {
     final String text = isbnTextFieldController.text;
     if (isbn.isIsbn13(text.replaceAll('-', ''))) {
-      getIsbnData();
+      //  getIsbnData();
       return;
     }
     final String formattedText = _formatISBN(text);

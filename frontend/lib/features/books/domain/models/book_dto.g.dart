@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'book.dart';
+part of 'book_dto.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
@@ -14,14 +14,11 @@ Map<String, dynamic> _$BookTagToJson(BookTag instance) => <String, dynamic>{
       'name': instance.name,
     };
 
-Book _$BookFromJson(Map<String, dynamic> json) => Book(
+BookDTO _$BookFromJson(Map<String, dynamic> json) => BookDTO(
       author: json['author'] as String,
       description: json['description'] as String?,
-      available: json['available'] as bool,
-      bookId: json['book_id'] as String,
       imageId: json['image_id'] as String?,
       isbn: (json['isbn'] as num).toInt(),
-      location: json['location'] as String,
       readingLevel: json['reading_level'] as String,
       title: json['title'] as String,
       bookTags: (json['book_tags'] as List<dynamic>?)
@@ -29,14 +26,11 @@ Book _$BookFromJson(Map<String, dynamic> json) => Book(
           .toList(),
     );
 
-Map<String, dynamic> _$BookToJson(Book instance) => <String, dynamic>{
+Map<String, dynamic> _$BookToJson(BookDTO instance) => <String, dynamic>{
       'author': instance.author,
       'description': instance.description,
-      'available': instance.available,
-      'book_id': instance.bookId,
       'image_id': instance.imageId,
       'isbn': instance.isbn,
-      'location': instance.location,
       'reading_level': instance.readingLevel,
       'title': instance.title,
       'book_tags': instance.bookTags,

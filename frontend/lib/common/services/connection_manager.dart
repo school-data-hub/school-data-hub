@@ -10,7 +10,7 @@ class ConnectionManager {
 
   ConnectionManager();
 
-  Future checkConnectivity() async {
+  Future<List<ConnectivityResult>> checkConnectivity() async {
     final connection = await (Connectivity().checkConnectivity());
     return connection;
     // //_connectivity.value = connection;
