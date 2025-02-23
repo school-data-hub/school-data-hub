@@ -31,6 +31,7 @@ class SchooldayApiService {
       '${_baseUrl()}$_getSchooldays',
       options: _client.hubOptions,
     );
+    _notificationService.apiRunning(false);
 
     if (response.statusCode != 200) {
       _notificationService.showSnackBar(
@@ -43,8 +44,6 @@ class SchooldayApiService {
 
     final List<Schoolday> schooldays = List<Schoolday>.from(
         (response.data as List).map((e) => Schoolday.fromJson(e)));
-
-    _notificationService.apiRunning(false);
 
     return schooldays;
   }

@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:schuldaten_hub/common/domain/env_manager.dart';
+import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/theme/app_colors.dart';
 import 'package:schuldaten_hub/common/theme/styles.dart';
+import 'package:schuldaten_hub/common/widgets/document_image.dart';
 import 'package:schuldaten_hub/common/widgets/themed_filter_chip.dart';
+import 'package:schuldaten_hub/common/widgets/unencrypted_image_in_card.dart';
+import 'package:schuldaten_hub/features/books/data/book_api_service.dart';
 import 'package:schuldaten_hub/features/books/presentation/new_book_page/new_book_controller.dart';
 
 class NewBookPage extends StatelessWidget {
@@ -40,14 +45,20 @@ class NewBookPage extends StatelessWidget {
                 children: <Widget>[
                   Row(
                     children: [
-                      if (controller.bookImage != null) ...<Widget>[
+                      if (controller.bookImageId != null) ...<Widget>[
                         Expanded(
                           flex: 1,
                           child: Column(
                             children: [
                               ClipRRect(
                                   borderRadius: BorderRadius.circular(10.0),
-                                  child: controller.bookImage!),
+                                  child: UnencryptedImageInCard(
+                                    documentImageData: DocumentImageData(
+                                        documentTag: controller.bookImageId!,
+                                        documentUrl:
+                                            '${locator<EnvManager>().env!.serverUrl}${BookApiService.getBookImageUrl(controller.widget.isbn)}',
+                                        size: 140),
+                                  )),
                               const Gap(20),
                             ],
                           ),
@@ -59,15 +70,17 @@ class NewBookPage extends StatelessWidget {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            TextField(
-                              style: const TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold),
-                              minLines: 1,
-                              maxLines: 1,
-                              controller: controller.isbnTextFieldController,
-                              decoration: AppStyles.textFieldDecoration(
-                                  labelText: 'ISBN'),
+                            Row(
+                              children: [
+                                const Text(
+                                  'ISBN:',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                const Gap(5),
+                                Text(
+                                  controller.widget.isbn.toString(),
+                                ),
+                              ],
                             ),
                             const Gap(20),
                             TextField(
@@ -149,24 +162,6 @@ class NewBookPage extends StatelessWidget {
                   ),
                   const Gap(30),
                   ...<Widget>[
-                    ElevatedButton(
-                      style: AppStyles.actionButtonStyle,
-                      onPressed: () async => controller.scanIsbn(),
-                      child: const Text(
-                        'ISBN SCANNEN',
-                        style: AppStyles.buttonTextStyle,
-                      ),
-                    ),
-                    // const Gap(15),
-                    // ElevatedButton(
-                    //   style: AppStyles.actionButtonStyle,
-                    //   onPressed: () => viewModel.getIsbnData(),
-                    //   child: const Text(
-                    //     'DATEN AUS ISBN API HOLEN',
-                    //     style: AppStyles.buttonTextStyle,
-                    //   ),
-                    // ),
-                    const Gap(15),
                     if (!controller.widget.isEdit) ...<Widget>[
                       ElevatedButton(
                         style: AppStyles.actionButtonStyle,

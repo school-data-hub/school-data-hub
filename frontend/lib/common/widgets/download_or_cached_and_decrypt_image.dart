@@ -8,15 +8,21 @@ import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_service.dart';
 import 'package:schuldaten_hub/common/utils/custom_encrypter.dart';
 
-Future<Image> cachedOrDownloadAndDecryptImage(
-    {required String imageUrl, required String cacheKey}) async {
+Future<Image> cachedOrDownloadImage(
+    {required String imageUrl,
+    required String cacheKey,
+    required bool decrypt}) async {
   final cacheManager = locator<DefaultCacheManager>();
   final key = cacheKey;
 
   final fileInfo = await cacheManager.getFileFromCache(key);
 
   if (fileInfo != null && await fileInfo.file.exists()) {
-    // File is already cached, decrypt it before using
+    // File is already cached, if necessary, decrypt it before using
+    if (!decrypt) {
+      final fileBytes = await fileInfo.file.readAsBytes();
+      return Image.memory(fileBytes);
+    }
     final decryptedImage =
         await customEncrypter.decryptEncryptedImage(fileInfo.file);
     return decryptedImage;
@@ -31,13 +37,19 @@ Future<Image> cachedOrDownloadAndDecryptImage(
     locator<NotificationService>()
         .showSnackBar(NotificationType.error, 'Fehler beim Laden des Bildes');
   }
-  final encryptedBytes = Uint8List.fromList(response.data!);
-  // Cache the encrypted bytes
-  await cacheManager.putFile(key, encryptedBytes);
-  // Decrypt the bytes before returning
-  //- This is because isolate performance is horrible in debug mode
-  final decryptedBytes = (kReleaseMode || kProfileMode)
-      ? await compute(customEncrypter.decryptTheseBytes, encryptedBytes)
-      : customEncrypter.decryptTheseBytes(encryptedBytes);
-  return Image.memory(decryptedBytes);
+  if (decrypt) {
+    final encryptedBytes = Uint8List.fromList(response.data!);
+    // Cache the encrypted bytes
+    await cacheManager.putFile(key, encryptedBytes);
+    // Decrypt the bytes before returning
+    //- This is because isolate performance is horrible in debug mode
+    final decryptedBytes = (kReleaseMode || kProfileMode)
+        ? await compute(customEncrypter.decryptTheseBytes, encryptedBytes)
+        : customEncrypter.decryptTheseBytes(encryptedBytes);
+    return Image.memory(decryptedBytes);
+  }
+  final imageBytes = Uint8List.fromList(response.data!);
+  // Cache the image bytes
+  await cacheManager.putFile(key, imageBytes);
+  return Image.memory(imageBytes);
 }

@@ -46,9 +46,10 @@ class AvatarImage extends StatelessWidget {
             ? WidgetZoom(
                 heroAnimationTag: '$avatarId$random',
                 zoomWidget: FutureBuilder<Widget>(
-                  future: cachedOrDownloadAndDecryptImage(
+                  future: cachedOrDownloadImage(
                     imageUrl: PupilDataApiService.getPupilAvatar(internalId),
                     cacheKey: avatarId,
+                    decrypt: true,
                   ),
                   builder: (context, snapshot) {
                     Widget child;

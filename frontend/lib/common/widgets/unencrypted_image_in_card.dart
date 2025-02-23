@@ -1,38 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:schuldaten_hub/common/theme/app_colors.dart';
+import 'package:schuldaten_hub/common/widgets/document_image.dart';
 import 'package:schuldaten_hub/common/widgets/download_or_cached_and_decrypt_image.dart';
 import 'package:widget_zoom/widget_zoom.dart';
 
-class DocumentImageData {
-  final String documentUrl;
-  final String documentTag;
-  final double size;
-
-  DocumentImageData(
-      {required this.documentUrl,
-      required this.documentTag,
-      required this.size});
-}
-
-class DocumentImage extends StatelessWidget {
-  const DocumentImage({super.key});
+class UnencryptedImageInCard extends StatelessWidget {
+  final DocumentImageData documentImageData;
+  const UnencryptedImageInCard({required this.documentImageData, super.key});
 
   @override
   Widget build(BuildContext context) {
-    final documentUrl = Provider.of<DocumentImageData>(context).documentUrl;
-    final documentTag = Provider.of<DocumentImageData>(context).documentTag;
-    final size = Provider.of<DocumentImageData>(context).size;
-
     return SizedBox(
-      height: size,
-      width: (21 / 30) * size,
+      height: documentImageData.size,
+      width: (21 / 30) * documentImageData.size,
       child: Center(
         child: WidgetZoom(
-          heroAnimationTag: documentTag,
+          heroAnimationTag: documentImageData.documentTag,
           zoomWidget: FutureBuilder<Image>(
             future: cachedOrDownloadImage(
-                imageUrl: documentUrl, cacheKey: documentTag, decrypt: true),
+                imageUrl: documentImageData.documentUrl,
+                cacheKey: documentImageData.documentTag,
+                decrypt: false),
             builder: (context, snapshot) {
               Widget child;
               if (snapshot.connectionState == ConnectionState.waiting) {

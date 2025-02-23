@@ -1,16 +1,14 @@
-import 'dart:io';
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
-import 'package:isbn/isbn.dart';
 import 'package:schuldaten_hub/common/domain/models/enums.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_service.dart';
+import 'package:schuldaten_hub/common/utils/scanner.dart';
 import 'package:schuldaten_hub/common/widgets/dialogs/short_textfield_dialog.dart';
-import 'package:schuldaten_hub/common/widgets/qr/scanner.dart';
 import 'package:schuldaten_hub/features/books/data/book_api_service.dart';
 import 'package:schuldaten_hub/features/books/domain/book_manager.dart';
 import 'package:schuldaten_hub/features/books/domain/models/book.dart';
+import 'package:schuldaten_hub/features/books/domain/models/book_dto.dart'
+    as dto;
 import 'package:schuldaten_hub/features/books/presentation/new_book_page/new_book_page.dart';
 import 'package:watch_it/watch_it.dart';
 
@@ -44,7 +42,7 @@ enum ReadingLevel {
 
 class NewBook extends WatchingStatefulWidget {
   final String? bookTitle;
-  final int? isbn;
+  final int isbn;
   final String? bookId;
   final String? bookAuthor;
   final String? bookDescription;
@@ -57,7 +55,7 @@ class NewBook extends WatchingStatefulWidget {
   const NewBook(
       {required this.isEdit,
       this.bookTitle,
-      this.isbn,
+      required this.isbn,
       this.bookId,
       this.bookAuthor,
       this.bookDescription,
@@ -73,8 +71,6 @@ class NewBook extends WatchingStatefulWidget {
 }
 
 class NewBookController extends State<NewBook> {
-  final TextEditingController isbnTextFieldController = TextEditingController();
-
   final TextEditingController bookIdTextFieldController =
       TextEditingController();
 
@@ -117,46 +113,50 @@ class NewBookController extends State<NewBook> {
   final TextEditingController bookDescriptionTextFieldController =
       TextEditingController();
 
-  final isbn = Isbn();
-
-  Image? bookImage;
-  Uint8List? bookImageBytes;
-
   void switchBookTagSelection(BookTag tag) {
     setState(() {
       bookTagSelection[tag] = !bookTagSelection[tag]!;
     });
   }
 
-  Future<void> getExistingBookImage() async {
-    final File result = await BookApiService().getBookImage(widget.bookId!);
-    setState(() {
-      bookImage = Image.file(result);
-    });
-  }
-
   String readingLevel = ReadingLevel.notSet.value;
 
+  String? bookImageId;
+
+  Future<void> fetchBookData() async {
+    final dto.BookDTO? bookData =
+        await BookApiService().getBookData(widget.isbn);
+
+    if (bookData != null) {
+      bookTitleTextFieldController.text = bookData.title;
+      authorTextFieldController.text = bookData.author;
+      bookDescriptionTextFieldController.text = bookData.description ?? '';
+
+      setState(() {
+        readingLevel = bookData.readingLevel;
+        bookImageId = bookData.imageId!;
+      });
+    }
+  }
+
   @override
-  void initState() async {
+  void initState() {
     super.initState();
+    fetchBookData();
     if (widget.isEdit) {
-      isbnTextFieldController.text = widget.isbn?.toString() ?? '';
       bookIdTextFieldController.text = widget.bookId ?? '';
       bookTitleTextFieldController.text = widget.bookTitle ?? '';
       authorTextFieldController.text = widget.bookAuthor ?? '';
       lastLocationValue =
           widget.location ?? locator<BookManager>().lastLocationValue.value;
       readingLevel = widget.bookReadingLevel ?? ReadingLevel.notSet.value;
-      if (widget.bookImageId != null) {
-        getExistingBookImage();
-      }
+
       bookDescriptionTextFieldController.text = widget.bookDescription ?? '';
     }
+
     for (var tag in locator<BookManager>().bookTags.value) {
       bookTagSelection[tag] = false;
     }
-    isbnTextFieldController.addListener(_listenToIsbn);
   }
 
   void onChangedReadingLevelDropDown(ReadingLevel? value) {
@@ -170,50 +170,6 @@ class NewBookController extends State<NewBook> {
       lastLocationValue = value;
       locator<BookManager>().setLastLocationValue(value);
     });
-  }
-
-  void _listenToIsbn() async {
-    final String text = isbnTextFieldController.text;
-    if (isbn.isIsbn13(text.replaceAll('-', ''))
-        // &&        bookTitleTextFieldController.text.isEmpty
-        ) {
-      return;
-    }
-    final String formattedText = _formatISBN(text);
-
-    if (text != formattedText) {
-      isbnTextFieldController.value = isbnTextFieldController.value.copyWith(
-        text: formattedText,
-        selection: TextSelection.collapsed(offset: formattedText.length),
-      );
-    }
-  }
-
-  String _formatISBN(String text) {
-    // Remove all existing dashes
-    text = text.replaceAll('-', '');
-
-    final buffer = StringBuffer();
-    for (int i = 0; i < text.length; i++) {
-      if (i == 3 || i == 4 || i == 6 || i == 12) {
-        buffer.write('-');
-      }
-      buffer.write(text[i]);
-    }
-
-    return buffer.toString();
-  }
-
-  Future<void> scanIsbn() async {
-    final String? scannedIsbn = await scanner(context, 'Isbn code scannen');
-
-    if (scannedIsbn == null) {
-      locator<NotificationService>()
-          .showSnackBar(NotificationType.error, 'Fehler beim Scannen');
-      return;
-    }
-
-    isbnTextFieldController.text = scannedIsbn;
   }
 
   Future<void> scanBookId() async {
@@ -262,7 +218,7 @@ class NewBookController extends State<NewBook> {
     if (widget.isEdit) {
       // Update the book
       locator<BookManager>().updateBookProperty(
-        isbn: widget.isbn!,
+        isbn: widget.isbn,
         title: bookTitleTextFieldController.text,
         description: bookDescriptionTextFieldController.text,
         readingLevel: readingLevel,
@@ -271,36 +227,15 @@ class NewBookController extends State<NewBook> {
     } else {
       // Create a new book
       locator<BookManager>().postLibraryBook(
-        isbn: int.parse(isbnTextFieldController.text.replaceAll('-', '')),
+        isbn: widget.isbn,
         bookId: bookIdTextFieldController.text,
         location: lastLocationValue,
       );
-
-      // postBookAndImageBytes(
-      //   author: authorTextFieldController.text,
-      //   bookId: bookIdTextFieldController.text,
-      //   imageBytes: bookImageBytes!,
-      //   isbn: int.parse(isbnTextFieldController.text.replaceAll('-', '')),
-      //   title: bookTitleTextFieldController.text,
-      //   description: bookDescriptionTextFieldController.text,
-      //   location: lastLocationValue,
-      //   level: readingLevel,
-      //   tags: bookTagSelection.entries
-      //       .where((element) => element.value)
-      //       .map((e) => e.key)
-      //       .toList(),
-      // );
     }
     Navigator.pop(context);
   }
 
   bool validateRequestDataPayload() {
-    if (isbnTextFieldController.text.isEmpty) {
-      locator<NotificationService>().showSnackBar(
-          NotificationType.error, 'Bitte geben Sie die ISBN ein!');
-
-      return false;
-    }
     if (bookIdTextFieldController.text.isEmpty) {
       locator<NotificationService>().showSnackBar(NotificationType.error,
           'Bitte scannen Sie die Bücherei-Id oder tippen Sie sie ein!');
@@ -330,9 +265,6 @@ class NewBookController extends State<NewBook> {
   @override
   void dispose() {
     // Clean up the controllers when the widget is removed from the tree
-
-    isbnTextFieldController.removeListener(_listenToIsbn);
-    isbnTextFieldController.dispose();
 
     bookIdTextFieldController.dispose();
 

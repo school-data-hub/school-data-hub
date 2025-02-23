@@ -175,7 +175,7 @@ class WorkbookApiService {
   }
 
   String _deleteWorkbookImage(int isbn) {
-    return '/workbooks/$isbn/image';
+    return '/library_book/$isbn/image';
   }
 
   Future<Workbook> deleteWorkbookFile(int isbn) async {

@@ -48,6 +48,9 @@ def get_isbn_api_data(clean_isbn) -> Optional[IsbnApiData]:
         description = book_desc_element.decode_contents()
         description = (
             description.replace("<br>", "")
+            .replace("<br/>", "")
+            .replace("<strong>", "")
+            .replace("</strong>", "")
             .replace("\n", "")
             .replace("<p>", "")
             .replace("</p>", "")

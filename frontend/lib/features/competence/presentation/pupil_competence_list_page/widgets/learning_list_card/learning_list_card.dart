@@ -23,9 +23,11 @@ import 'package:watch_it/watch_it.dart';
 class LearningListCard extends WatchingWidget {
   final PupilProxy pupil;
   const LearningListCard(this.pupil, {super.key});
+
   @override
   Widget build(BuildContext context) {
     watch(pupil);
+
     final expansionTileController = createOnce<CustomExpansionTileController>(
         () => CustomExpansionTileController());
     final selectedContentNotifier = SelectedLearningContentNotifier();
@@ -34,6 +36,7 @@ class LearningListCard extends WatchingWidget {
     final competenceCheckstats = CompetenceHelper.competenceChecksStats(pupil);
     final totalCompetencesToReport = competenceCheckstats.total;
     final totalCompetencesChecked = competenceCheckstats.checked;
+
     return Card(
       color: Colors.white,
       surfaceTintColor: Colors.white,

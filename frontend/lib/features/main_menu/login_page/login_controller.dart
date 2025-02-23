@@ -10,7 +10,7 @@ import 'package:schuldaten_hub/common/domain/models/env.dart';
 import 'package:schuldaten_hub/common/domain/session_manager.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_service.dart';
-import 'package:schuldaten_hub/common/widgets/qr/scanner.dart';
+import 'package:schuldaten_hub/common/utils/scanner.dart';
 import 'package:schuldaten_hub/features/main_menu/loading_page.dart';
 import 'package:schuldaten_hub/features/main_menu/login_page/login_page.dart';
 import 'package:watch_it/watch_it.dart';

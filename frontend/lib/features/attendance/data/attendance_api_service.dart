@@ -23,13 +23,13 @@ class AttendanceApiService {
 
   //- not implemented
 
-  String _getMissedClasses(String baseUrl) {
-    return '$baseUrl/missed_classes/all';
-  }
+  // String _getMissedClasses(String baseUrl) {
+  //   return '$baseUrl/missed_classes/all';
+  // }
 
-  String _fetchOneMissedClass(int id) {
-    return '${_baseUrl()}/missed_classes/$id';
-  }
+  // String _fetchOneMissedClass(int id) {
+  //   return '${_baseUrl()}/missed_classes/$id';
+  // }
 
   //- fetch missed classes for a date -//
 

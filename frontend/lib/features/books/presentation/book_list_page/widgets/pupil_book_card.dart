@@ -89,24 +89,16 @@ class PupilBookCard extends WatchingWidget {
                             //   pupilAuthorization.fileId!,
                             // );
                           },
-                    child: book.imageId != null
-                        ? Provider<DocumentImageData>.value(
-                            updateShouldNotify: (oldValue, newValue) =>
-                                oldValue.documentUrl != newValue.documentUrl,
-                            value: DocumentImageData(
-                                documentTag: book.imageId!,
-                                documentUrl:
-                                    '${locator<EnvManager>().env!.serverUrl}${WorkbookApiService().getWorkbookImage(book.isbn)}',
-                                size: 100),
-                            child: const DocumentImage(),
-                          )
-                        : SizedBox(
-                            height: 100,
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(5),
-                              child: Image.asset('assets/document_camera.png'),
-                            ),
-                          ),
+                    child: Provider<DocumentImageData>.value(
+                      updateShouldNotify: (oldValue, newValue) =>
+                          oldValue.documentUrl != newValue.documentUrl,
+                      value: DocumentImageData(
+                          documentTag: book.imageId,
+                          documentUrl:
+                              '${locator<EnvManager>().env!.serverUrl}${WorkbookApiService().getWorkbookImage(book.isbn)}',
+                          size: 100),
+                      child: const DocumentImage(),
+                    ),
                   ),
                   const Gap(10),
                 ],

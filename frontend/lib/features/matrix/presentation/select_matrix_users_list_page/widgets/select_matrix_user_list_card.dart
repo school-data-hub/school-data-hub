@@ -92,7 +92,7 @@ class SelectMatrixUserCard extends WatchingWidget {
                   if (pupil != null) {
                     Navigator.of(context).push(MaterialPageRoute(
                       builder: (ctx) => PupilProfilePage(
-                        pupil: pupil!,
+                        pupil: pupil,
                       ),
                     ));
                   }

@@ -28,8 +28,6 @@ class SchooldayEventTypeDialog extends HookConsumerWidget {
         return 'Elterngespräch';
       case SchooldayEventType.otherEvent:
         return 'sonstiges';
-      default:
-        return '';
     }
   }
 

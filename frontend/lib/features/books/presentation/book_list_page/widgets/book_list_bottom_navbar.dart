@@ -1,7 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/theme/app_colors.dart';
+import 'package:schuldaten_hub/common/utils/scanner.dart';
 import 'package:schuldaten_hub/common/widgets/bottom_nav_bar_layouts.dart';
+import 'package:schuldaten_hub/common/widgets/dialogs/short_textfield_dialog.dart';
 import 'package:schuldaten_hub/features/books/presentation/new_book_page/new_book_controller.dart';
 import 'package:watch_it/watch_it.dart';
 
@@ -38,10 +42,35 @@ class BookListBottomNavBar extends WatchingWidget {
                   Icons.add,
                   size: 35,
                 ),
-                onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (ctx) => const NewBook(isEdit: false),
-                  ));
+                onPressed: () async {
+                  if (Platform.isWindows) {
+                    final isbn = await shortTextfieldDialog(
+                        context: context,
+                        title: 'ISBN eingeben',
+                        labelText: 'ISBN',
+                        hintText: 'Bitte geben Sie die ISBN ein');
+                    if (isbn != null && isbn.isNotEmpty) {
+                      final cleanIsbn = isbn.replaceAll('-', '');
+                      Navigator.of(context).push(MaterialPageRoute(
+                        builder: (ctx) => NewBook(
+                          isEdit: false,
+                          isbn: int.parse(cleanIsbn),
+                        ),
+                      ));
+                    } else {
+                      final String? isbn =
+                          await scanner(context, 'ISBN scannen');
+                      if (isbn != null && isbn.isNotEmpty) {
+                        final cleanIsbn = isbn.replaceAll('-', '');
+                        Navigator.of(context).push(MaterialPageRoute(
+                          builder: (ctx) => NewBook(
+                            isEdit: false,
+                            isbn: int.parse(isbn),
+                          ),
+                        ));
+                      }
+                    }
+                  }
                 },
               ),
               const Gap(15)

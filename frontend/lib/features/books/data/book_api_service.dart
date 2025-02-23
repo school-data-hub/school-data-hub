@@ -12,7 +12,8 @@ import 'package:schuldaten_hub/common/services/notification_service.dart';
 import 'package:schuldaten_hub/common/utils/custom_encrypter.dart';
 import 'package:schuldaten_hub/common/utils/logger.dart';
 import 'package:schuldaten_hub/features/books/domain/models/book.dart';
-// import 'package:schuldaten_hub/features/books/domain/models/book_dto.dart';
+import 'package:schuldaten_hub/features/books/domain/models/book_dto.dart'
+    as book_dto;
 
 class BookApiService {
   final ApiClient _client = locator<ApiClient>();
@@ -111,7 +112,7 @@ class BookApiService {
 
   // - BOOK LOCATIONS - //
 
-  final _bookLocationsUrl = '/books/locations';
+  final _bookLocationsUrl = '/library_books/locations';
 
   Future<List<String>> getBookLocations() async {
     _notificationService.apiRunning(true);
@@ -191,9 +192,9 @@ class BookApiService {
 
   // - BOOKS - //
 
-  final _getBooksUrl = '/books/all/flat';
+  final _getBooksUrl = '/library_books/all';
 
-  Future<List<Book>> getBooks() async {
+  Future<List<Book>> getLibraryBooks() async {
     _notificationService.apiRunning(true);
 
     final Response response = await _client.get(
@@ -218,7 +219,31 @@ class BookApiService {
     return books;
   }
 
-  static const _postBookUrl = '/books/new';
+  String _getBookData(int isbn) => '/books/$isbn';
+
+  Future<book_dto.BookDTO> getBookData(int isbn) async {
+    _notificationService.apiRunning(true);
+
+    final Response response = await _client.get(
+      '${_baseUrl()}${_getBookData(isbn)}',
+      options: _client.hubOptions,
+    );
+
+    _notificationService.apiRunning(false);
+
+    if (response.statusCode != 200) {
+      _notificationService.showSnackBar(
+          NotificationType.error, 'Fehler beim Laden des Buches');
+
+      throw ApiException('Failed to fetch a book', response.statusCode);
+    }
+
+    final book_dto.BookDTO book = book_dto.BookDTO.fromJson(response.data);
+
+    return book;
+  }
+
+  static const _postLibraryBookUrl = '/library_books/new';
 
   Future<Book> postLibraryBook({
     required int isbn,
@@ -227,13 +252,13 @@ class BookApiService {
   }) async {
     final data = jsonEncode({
       "book_id": bookId,
-      "isbn": isbn,
+      "book_isbn": isbn,
       "location": location,
     });
 
     _notificationService.apiRunning(true);
     final Response response = await _client.post(
-      '${_baseUrl()}$_postBookUrl',
+      '${_baseUrl()}$_postLibraryBookUrl',
       data: data,
       options: _client.hubOptions,
     );
@@ -335,23 +360,18 @@ class BookApiService {
     return book;
   }
 
-  static String getBookImageUrl(String imageId) {
-    return '/books/$imageId/file';
+  static String getBookImageUrl(int isbn) {
+    return '/books/$isbn/file';
   }
 
-  //- get workbook image
-  static String bookImageUrl(String bookId) {
-    return '/books/$bookId/file';
-  }
-
-  Future<File> getBookImage(String bookId) async {
+  Future<File> getBookImage(int isbn) async {
     final options =
         _client.hubOptions.copyWith(responseType: ResponseType.bytes);
 
     _notificationService.apiRunning(true);
 
     final Response response = await _client
-        .get('${_baseUrl()}${bookImageUrl(bookId)}', options: options);
+        .get('${_baseUrl()}${getBookImageUrl(isbn)}', options: options);
     _notificationService.apiRunning(false);
 
     if (response.statusCode != 200) {
@@ -365,13 +385,13 @@ class BookApiService {
     final decryptedBytes = customEncrypter.decryptTheseBytes(encryptedBytes);
 
     final tempDir = await Directory.systemTemp.createTemp();
-    final file = File('${tempDir.path}/$bookId.png');
+    final file = File('${tempDir.path}/$isbn.png');
     await file.writeAsBytes(decryptedBytes);
 
     return file;
   }
 
-  //- delete book
+  //- delete library book
 
   static String deleteLibraryBookUrl(String bookId) {
     return '/library_books/$bookId';

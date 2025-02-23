@@ -94,7 +94,7 @@ class AttendanceManager {
     // in the last semester for the school year (for grades 1 and 2)
 
     // if no missed classes, we return 0, 0
-    if (pupil.missedClasses == null) {
+    if (pupil.missedClasses == null || pupil.missedClasses!.isEmpty) {
       return [0, 0];
     }
     final List<MissedClass> missedClasses = pupil.missedClasses!;

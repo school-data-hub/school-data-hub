@@ -6,7 +6,7 @@ import 'package:schuldaten_hub/common/domain/models/enums.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_service.dart';
 import 'package:schuldaten_hub/common/utils/logger.dart';
-import 'package:schuldaten_hub/common/widgets/qr/scanner.dart';
+import 'package:schuldaten_hub/common/utils/scanner.dart';
 import 'package:schuldaten_hub/features/workbooks/domain/workbook_manager.dart';
 import 'package:schuldaten_hub/features/workbooks/presentation/new_workbook_page/new_workbook_page.dart';
 import 'package:watch_it/watch_it.dart';

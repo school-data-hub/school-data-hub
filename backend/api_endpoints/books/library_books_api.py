@@ -5,7 +5,7 @@ from flask import current_app, jsonify, request, send_file
 
 from auth_middleware import token_required
 from helpers.log_entries import create_log_entry
-from models.book import LibraryBook, LibraryBookLocation
+from models.book import Book, LibraryBook, LibraryBookLocation
 from models.shared import db
 from schemas.book_schemas import *
 from schemas.log_entry_schemas import ApiFileSchema
@@ -193,11 +193,18 @@ def patch_library_book(current_user, book_id, json_data):
 @token_required
 def delete_library_book(current_user, book_id):
 
-    this_book = LibraryBook.query.filter_by(book_id=book_id).first()
+    this_book: LibraryBook = LibraryBook.query.filter_by(book_id=book_id).first()
     if this_book == None:
         abort(404, "This book does not exist!")
 
+    isbn = this_book.book_isbn
+
     db.session.delete(this_book)
+    # if this was the last library book of this book, delete the book
+    if db.session.query(LibraryBook).filter_by(book_isbn=isbn).scalar() is None:
+        orphan_book = db.session.query(Book).filter_by(isbn=isbn).first()
+        db.session.delete(orphan_book)
+
     # - Log entry
     create_log_entry(current_user, request, request.json)
     db.session.commit()

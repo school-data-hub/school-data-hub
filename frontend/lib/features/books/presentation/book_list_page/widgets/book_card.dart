@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:provider/provider.dart';
 import 'package:schuldaten_hub/common/domain/env_manager.dart';
 import 'package:schuldaten_hub/common/domain/session_manager.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
@@ -16,6 +15,7 @@ import 'package:schuldaten_hub/common/widgets/dialogs/confirmation_dialog.dart';
 import 'package:schuldaten_hub/common/widgets/dialogs/information_dialog.dart';
 import 'package:schuldaten_hub/common/widgets/dialogs/long_textfield_dialog.dart';
 import 'package:schuldaten_hub/common/widgets/document_image.dart';
+import 'package:schuldaten_hub/common/widgets/unencrypted_image_in_card.dart';
 import 'package:schuldaten_hub/common/widgets/upload_image.dart';
 import 'package:schuldaten_hub/features/books/data/book_api_service.dart';
 import 'package:schuldaten_hub/features/books/domain/book_helper.dart';
@@ -23,7 +23,6 @@ import 'package:schuldaten_hub/features/books/domain/book_manager.dart';
 import 'package:schuldaten_hub/features/books/domain/models/book.dart';
 import 'package:schuldaten_hub/features/books/presentation/book_list_page/widgets/book_pupil_card.dart';
 import 'package:schuldaten_hub/features/books/presentation/new_book_page/new_book_controller.dart';
-import 'package:schuldaten_hub/features/workbooks/domain/workbook_manager.dart';
 import 'package:watch_it/watch_it.dart';
 
 class BookCard extends WatchingWidget {
@@ -135,38 +134,13 @@ class BookCard extends WatchingWidget {
                               await locator<BookManager>()
                                   .patchBookImage(file, book.isbn);
                             },
-                            onLongPress: () async {
-                              if (book.imageId == null) {
-                                return;
-                              }
-                              final bool? result = await confirmationDialog(
-                                  context: context,
-                                  title: 'Bild löschen',
-                                  message: 'Bild löschen?');
-                              if (result != true) return;
-                              await locator<WorkbookManager>()
-                                  .deleteWorkbookFile(book.isbn);
-                            },
-                            child: book.imageId != null
-                                ? Provider<DocumentImageData>.value(
-                                    updateShouldNotify: (oldValue, newValue) =>
-                                        oldValue.documentTag !=
-                                        newValue.documentTag,
-                                    value: DocumentImageData(
-                                        documentTag: book.imageId!,
-                                        documentUrl:
-                                            '${locator<EnvManager>().env!.serverUrl}${BookApiService.getBookImageUrl(book.bookId)}',
-                                        size: 140),
-                                    child: const DocumentImage(),
-                                  )
-                                : SizedBox(
-                                    height: 100,
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(5),
-                                      child: Image.asset(
-                                          'assets/document_camera.png'),
-                                    ),
-                                  ),
+                            child: UnencryptedImageInCard(
+                              documentImageData: DocumentImageData(
+                                  documentTag: book.imageId,
+                                  documentUrl:
+                                      '${locator<EnvManager>().env!.serverUrl}${BookApiService.getBookImageUrl(book.isbn)}',
+                                  size: 140),
+                            ),
                           ),
                           const Gap(10),
                         ],

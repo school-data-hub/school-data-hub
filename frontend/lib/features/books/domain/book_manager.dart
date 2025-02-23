@@ -111,11 +111,12 @@ class BookManager {
   //- LIBRARY BOOKS
 
   Future<void> getLibraryBooks() async {
-    final List<Book> responseBooks = await bookApiService.getBooks();
+    final List<Book> responseBooks = await bookApiService.getLibraryBooks();
 
     // sort books by name
     if (responseBooks.isNotEmpty) {
       responseBooks.sort((a, b) => a.title.compareTo(b.title));
+      _books.value = responseBooks;
     }
     notificationService.showSnackBar(
         NotificationType.success, 'Bücher erfolgreich geladen');

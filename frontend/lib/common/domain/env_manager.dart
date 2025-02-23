@@ -195,7 +195,7 @@ class EnvManager {
 
       _defaultEnv = _environments.keys.last;
 
-      logger.i('Env $deletedEnvironment New defaultEnv: ${_defaultEnv}');
+      logger.i('Env $deletedEnvironment New defaultEnv: $_defaultEnv');
 
       //  locator<ApiClient>().setBaseUrl(_activeEnv!.serverUrl);
     } else {

@@ -7,7 +7,6 @@ import 'package:schuldaten_hub/common/theme/app_colors.dart';
 import 'package:schuldaten_hub/common/theme/styles.dart';
 import 'package:schuldaten_hub/features/books/domain/book_manager.dart';
 import 'package:schuldaten_hub/features/books/domain/models/book.dart';
-import 'package:schuldaten_hub/features/books/presentation/book_list_page/view_model/book_list_view_model.dart';
 import 'package:schuldaten_hub/features/books/presentation/book_list_page/widgets/book_card.dart';
 import 'package:schuldaten_hub/features/books/presentation/book_list_page/widgets/book_list_bottom_navbar.dart';
 import 'package:schuldaten_hub/features/pupil/presentation/widgets/pupil_search_text_field.dart';
@@ -15,8 +14,7 @@ import 'package:schuldaten_hub/features/workbooks/domain/workbook_manager.dart';
 import 'package:watch_it/watch_it.dart';
 
 class BookListPage extends WatchingWidget {
-  final BookListViewModel controller;
-  const BookListPage(this.controller, {super.key});
+  const BookListPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +22,7 @@ class BookListPage extends WatchingWidget {
 
     //Session session = watchValue((SessionManager x) => x.credentials);
     List<Book> books = watchValue((BookManager x) => x.books);
-
+    callOnce((context) => locator<BookManager>().getLibraryBooks());
     return Scaffold(
       backgroundColor: AppColors.canvasColor,
       appBar: AppBar(

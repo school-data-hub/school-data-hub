@@ -328,16 +328,16 @@ class AuthorizationApiService {
   }
 
   //- diese Endpoints sind noch nicht implementiert
-  String _patchAuthorization(int id) {
-    return '${_baseUrl()}/authorizations/$id';
-  }
+  // String _patchAuthorization(int id) {
+  //   return '${_baseUrl()}/authorizations/$id';
+  // }
 
   String postAuthorizationWithAllPupils = '/authorizations/new/all';
 
   //- diese Endpunkte werden nicht verwendet
-  String _postAuthorization(int id) {
-    return '${_baseUrl()}/pupil/$id/authorization';
-  }
+  // String _postAuthorization(int id) {
+  //   return '${_baseUrl()}/pupil/$id/authorization';
+  // }
 
   String getAuthorizationsFlatUrl(String baseUrl) {
     return '$baseUrl/authorizations/all/flat';

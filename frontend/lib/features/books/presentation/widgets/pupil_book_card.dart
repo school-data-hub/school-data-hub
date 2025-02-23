@@ -1,8 +1,5 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:provider/provider.dart';
 import 'package:schuldaten_hub/common/domain/env_manager.dart';
 import 'package:schuldaten_hub/common/domain/session_manager.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
@@ -13,7 +10,7 @@ import 'package:schuldaten_hub/common/widgets/dialogs/confirmation_dialog.dart';
 import 'package:schuldaten_hub/common/widgets/dialogs/information_dialog.dart';
 import 'package:schuldaten_hub/common/widgets/dialogs/long_textfield_dialog.dart';
 import 'package:schuldaten_hub/common/widgets/document_image.dart';
-import 'package:schuldaten_hub/common/widgets/upload_image.dart';
+import 'package:schuldaten_hub/common/widgets/unencrypted_image_in_card.dart';
 import 'package:schuldaten_hub/features/books/data/book_api_service.dart';
 import 'package:schuldaten_hub/features/books/domain/book_manager.dart';
 import 'package:schuldaten_hub/features/books/domain/models/book.dart';
@@ -78,6 +75,7 @@ class PupilBookCard extends StatelessWidget {
                   const Gap(10),
                 ],
               ),
+              const Gap(10),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -85,45 +83,12 @@ class PupilBookCard extends StatelessWidget {
                   Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      InkWell(
-                        onTap: () async {
-                          final File? file = await uploadImageFile(context);
-                          if (file == null) return;
-                          await locator<BookManager>()
-                              .patchBookImage(file, book.isbn);
-                        },
-                        // onLongPress: () async {
-                        //   if (book.imageId == null) {
-                        //     return;
-                        //   }
-                        //   final bool? result = await confirmationDialog(
-                        //       context: context,
-                        //       title: 'Bild löschen',
-                        //       message: 'Bild löschen?');
-                        //   if (result != true) return;
-                        //   await locator<BookManager>()
-                        //       .deleteBookFile(book.imageId!);
-                        // },
-                        child: book.imageId != null
-                            ? Provider<DocumentImageData>.value(
-                                updateShouldNotify: (oldValue, newValue) =>
-                                    oldValue.documentTag !=
-                                    newValue.documentTag,
-                                value: DocumentImageData(
-                                    documentTag: book.imageId!,
-                                    documentUrl:
-                                        '${locator<EnvManager>().env!.serverUrl}${BookApiService.bookImageUrl(book.bookId)}',
-                                    size: 100),
-                                child: const DocumentImage(),
-                              )
-                            : SizedBox(
-                                height: 100,
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(5),
-                                  child:
-                                      Image.asset('assets/document_camera.png'),
-                                ),
-                              ),
+                      UnencryptedImageInCard(
+                        documentImageData: DocumentImageData(
+                            documentTag: book.imageId,
+                            documentUrl:
+                                '${locator<EnvManager>().env!.serverUrl}${BookApiService.getBookImageUrl(book.isbn)}',
+                            size: 140),
                       ),
                     ],
                   ),

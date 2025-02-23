@@ -94,6 +94,19 @@ The export of reports in a printable format (pdf) is  on top of the list.
 
 There are also a couple of models in the backend that are not implemented in the client yet, like a digital library management.
 
+
+## Setup
+
+Format for the keys is:
+
+```
+{
+"server": "{Name of your server}",
+"key": "{your encryption key}",
+"iv": "{your initialization vector}",
+"server_url": "{for instance: http://127.0.0.1:5000/api}"
+}
+```
 ### TO-DO:
 
 #### Code quality / architecture

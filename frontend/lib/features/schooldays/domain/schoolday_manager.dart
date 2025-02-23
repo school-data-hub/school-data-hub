@@ -58,11 +58,17 @@ class SchooldayManager {
     final List<Schoolday> responseSchooldays =
         await apiSchooldayService.getSchooldaysFromServer();
 
-    locator<NotificationService>().showSnackBar(NotificationType.success,
-        '${responseSchooldays.length} Schultage geladen!');
+    if (responseSchooldays.isNotEmpty) {
+      locator<NotificationService>()
+          .showSnackBar(NotificationType.success, 'Schultage geladen');
+      _schooldays.value = responseSchooldays;
 
-    _schooldays.value = responseSchooldays;
-    setAvailableDates();
+      setAvailableDates();
+      return;
+    }
+
+    locator<NotificationService>().showSnackBar(NotificationType.warning,
+        '${responseSchooldays.length} Keine Schultage gefunden!');
 
     return;
   }
