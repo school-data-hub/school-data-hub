@@ -118,25 +118,25 @@ def listen():
 migrate = Migrate(app, db)
 db.init_app(app)
 with app.app_context():
-    # db.drop_all()
     db.create_all()
     # - if the database exists, check if there is a user "admin" - if not, create one
     # - this will create an admin user "ADM" with the password "admin"
-    if User.query.filter_by(role="admin").first() is None:
-        password = generate_password_hash("admin", method="scrypt")
-        user = User(
-            public_id=str(uuid.uuid4().hex),
-            name="ADM",
-            password=password,
-            admin=True,
-            role="admin",
-            credit=50,
-            time_units=0,
-            tutoring=None,
-            contact=None,
-        )
-        db.session.add(user)
-        db.session.commit()
+    # - USE ONLY FOR TESTING!
+    # if User.query.filter_by(role="admin").first() is None:
+    #     password = generate_password_hash("admin", method="scrypt")
+    #     user = User(
+    #         public_id=str(uuid.uuid4().hex),
+    #         name="ADM",
+    #         password=password,
+    #         admin=True,
+    #         role="admin",
+    #         credit=50,
+    #         time_units=0,
+    #         tutoring=None,
+    #         contact=None,
+    #     )
+    #     db.session.add(user)
+    #     db.session.commit()
 if __name__ == "__main__":
     app.run(host="192.168.178.107")
     # app.run(host='0.0.0.0')

@@ -277,8 +277,6 @@ def get_given_pupils(current_user, json_data):
     pupils: List[Pupil] = Pupil.query.filter(
         Pupil.internal_id.in_(internal_id_list)
     ).all()
-    if not pupils:
-        abort(404, "Keine/n dieser Schüler:innen gefunden!")
 
     return pupils
 
