@@ -7,6 +7,8 @@ In this folder you can find the file `fake_pupil_identities.txt`. These identiti
 
 You can use this file to populate an environment. To do that, start the windows version of the app and import the pupils using the button "Daten aus SchiLD importieren" in the "Scan-tools" main menu page.
 
+You will also have to create schooldays in order to get the app to work properly. You can find the UI in the admin section of the settings page.
+
 #### In production
 
 If your school is in NRW (Germany), you can use `schuldaten_hub_schild_vorlage.txt` as a template with the official school administrative software "SchiLD" to export the pupil identities.
