@@ -1,0 +1,12 @@
+SCHILD-NRW-TEXTEXPORTVORLAGE
+Schuldaten_Hub
+Schueler
+,
+
+Ja
+Nein
+FALSE
+FALSE
+
+Interne ID-Nummer;Vorname;Nachname;Klasse;Jahrgang;Förderschwerpunkt 1;Förderschwerpunkt 2;Geschlecht;Verkehrssprache in der Familie;Externe ID-Nummer;Geburtsdatum;Ende der Eingliederungsphase;Aufnahmedatum;bes. Merkmal;Entlassdatum;
+3
