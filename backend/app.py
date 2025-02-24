@@ -1,3 +1,4 @@
+import os
 import sys
 import uuid
 
@@ -118,6 +119,19 @@ def listen():
 migrate = Migrate(app, db)
 db.init_app(app)
 with app.app_context():
+    # we need to check if the media_upload folder exists, if not, create it
+    upload_folder = app.config["UPLOAD_FOLDER"]
+    subfolders = ["admn", "auth", "avtr", "book", "catg", "chck", "wrk"]
+
+    if not os.path.exists(upload_folder):
+        os.makedirs(upload_folder)
+
+    # Check and create subfolders
+    for subfolder in subfolders:
+        subfolder_path = os.path.join(upload_folder, subfolder)
+        if not os.path.exists(subfolder_path):
+            os.makedirs(subfolder_path)
+
     db.create_all()
     # - if the database exists, check if there is a user "admin" - if not, create one
     # - this will create an admin user "ADM" with the password "admin"

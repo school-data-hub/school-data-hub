@@ -64,8 +64,7 @@ def login():
 def get_all_users(current_user):
 
     users = User.query.all()
-    if users == []:
-        abort(404, message="Keine Benutzer/Benutzerin gefunden!")
+
     return users
 
 

@@ -61,8 +61,6 @@ competence_api = APIBlueprint("competence_api", __name__, url_prefix="/api/compe
 def get_flat_competences(current_user):
 
     all_competences = Competence.query.all()
-    if all_competences == None:
-        abort(404, message="Keine Kompetenzen gefunden!")
 
     return all_competences
 
