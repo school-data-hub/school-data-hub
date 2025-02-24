@@ -1,7 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
+import 'dart:math' as math;
 
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:schuldaten_hub/common/domain/models/enums.dart';
@@ -267,5 +270,36 @@ class EnvManager {
     locator<NotificationService>().setNewInstanceLoadingValue(false);
     locator<NotificationService>().showInformationDialog(
         'Instanz "${_activeEnv!.server}" erfolgreich geladen!');
+  }
+
+  Future<void> generateNewKeys(
+      {required String serverUrl, required String serverName}) async {
+    String generateUtf8String(int length) {
+      const chars =
+          'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+      final random = math.Random.secure();
+      return List.generate(
+          length, (index) => chars[random.nextInt(chars.length)]).join();
+    }
+
+    final key = generateUtf8String(32);
+
+    final iv = generateUtf8String(16);
+
+    final String schoolKey = jsonEncode(
+        {"server": serverName, "key": key, "iv": iv, "server_url": serverUrl});
+
+    String? selectedDirectory = await FilePicker.platform.getDirectoryPath();
+
+    if (selectedDirectory != null) {
+      // Save the file in the selected directory
+      final schoolKeyFile =
+          File('$selectedDirectory/school_key_$serverName.txt');
+      await schoolKeyFile.writeAsString(schoolKey);
+    } else {
+      locator<NotificationService>()
+          .showSnackBar(NotificationType.error, 'Aktion abgebrochen');
+    }
+    return;
   }
 }

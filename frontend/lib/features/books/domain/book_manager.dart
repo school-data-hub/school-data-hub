@@ -15,6 +15,9 @@ class BookManager {
   final _books = ValueNotifier<List<Book>>([]);
   ValueListenable<List<Book>> get books => _books;
 
+  final _isbnBooks = Map<int, List<Book>>.from({});
+  Map<int, List<Book>> get isbnBooks => _isbnBooks;
+
   final _locations = ValueNotifier<List<String>>([]);
   ValueListenable<List<String>> get locations => _locations;
 
@@ -50,6 +53,21 @@ class BookManager {
     _locations.value = [];
     _bookTags.value = [];
     _lastSelectedLocation.value = 'Bitte auswählen';
+  }
+
+  void _refreshIsbnBooksMap() {
+    final Map<int, List<Book>> isbnBooks = Map<int, List<Book>>.from({});
+
+    for (final book in _books.value) {
+      if (isbnBooks.containsKey(book.isbn)) {
+        isbnBooks[book.isbn]!.add(book);
+      } else {
+        isbnBooks[book.isbn] = [book];
+      }
+    }
+
+    _isbnBooks.clear();
+    _isbnBooks.addAll(isbnBooks);
   }
 
   //- BOOK TAGS
@@ -113,6 +131,7 @@ class BookManager {
   Future<void> getLibraryBooks() async {
     final List<Book> responseBooks = await bookApiService.getLibraryBooks();
 
+    _refreshIsbnBooksMap();
     // sort books by name
     if (responseBooks.isNotEmpty) {
       responseBooks.sort((a, b) => a.title.compareTo(b.title));

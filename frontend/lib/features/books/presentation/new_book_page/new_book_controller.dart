@@ -80,6 +80,9 @@ class NewBookController extends State<NewBook> {
   final TextEditingController authorTextFieldController =
       TextEditingController();
 
+  final TextEditingController bookDescriptionTextFieldController =
+      TextEditingController();
+
   final List<DropdownMenuItem<ReadingLevel>> readingLevelDropdownItems = [
     DropdownMenuItem(
       value: ReadingLevel.beginner,
@@ -104,14 +107,12 @@ class NewBookController extends State<NewBook> {
   ];
 
   final List<BookTag> bookTags = locator<BookManager>().bookTags.value;
+
   Map<BookTag, bool> bookTagSelection = {};
 
   final List<String> locations = locator<BookManager>().locations.value;
 
   String lastLocationValue = locator<BookManager>().lastLocationValue.value;
-
-  final TextEditingController bookDescriptionTextFieldController =
-      TextEditingController();
 
   void switchBookTagSelection(BookTag tag) {
     setState(() {

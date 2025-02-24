@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:encrypt/encrypt.dart' as enc;
@@ -62,29 +61,5 @@ class CustomEncrypter {
 
   Uint8List encryptTheseBytes(Uint8List bytes) {
     return encrypter.encryptBytes(bytes, iv: iv).bytes;
-  }
-
-  void generateNewEncryptionKeys() async {
-    final oldKey = locator<EnvManager>().env!.key;
-    final oldIv = locator<EnvManager>().env!.iv;
-    final oldKeyBase64 = enc.Key.fromUtf8(oldKey).base64;
-
-    final oldIvBase64 = enc.IV.fromUtf8(oldIv).base64;
-    final oldKeyUtf8 = utf8.decode(base64.decode(oldKeyBase64));
-    final oldIvUtf8 = utf8.decode(base64.decode(oldIvBase64));
-    final key = enc.Key.fromSecureRandom(32);
-    // Generate a 16-byte (128-bit) IV
-    final iv = enc.IV.fromSecureRandom(16);
-
-    // Convert to base64 strings
-    final keyBase64 = key.base64;
-    final ivBase64 = iv.base64;
-
-    final keyUtf8 = base64.encode(key.bytes);
-    final ivUtf8 = base64.encode(iv.bytes);
-    // Save to a text file
-    final file = File('encryption_keys.txt');
-    await file.writeAsString(
-        'Old Key: $oldKey\nOld IV: $oldIv\n Key: $keyUtf8\nIV: $ivUtf8');
   }
 }

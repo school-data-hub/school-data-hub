@@ -19,7 +19,7 @@ dependencies:
   encrypt: ^5.0.3
   eventflux: ^2.2.1
   #extended_image: ^8.3.1
-  file_picker: ^8.1.7
+  file_picker: ^9.0.1
   flutter:
     sdk: flutter
   flutter_cache_manager: ^3.4.1

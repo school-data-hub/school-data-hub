@@ -244,6 +244,21 @@ class LoginPage extends WatchingWidget {
                                     )),
                         ),
                       ),
+                      const Gap(10),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                          //margin: const EdgeInsets.only(bottom: 16),
+                          child: ElevatedButton(
+                              style: AppStyles.actionButtonStyle,
+                              onPressed: () async {
+                                controller.generateSchoolKeys(context);
+                              },
+                              child: const Text('SCHULSCHLÜSSEL ERSTELLEN',
+                                  style: AppStyles.buttonTextStyle)),
+                        ),
+                      ),
                     ],
                   ),
                 ),

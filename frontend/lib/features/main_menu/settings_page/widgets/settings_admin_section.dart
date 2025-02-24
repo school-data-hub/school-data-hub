@@ -7,8 +7,8 @@ import 'package:schuldaten_hub/common/domain/models/enums.dart';
 import 'package:schuldaten_hub/common/domain/session_manager.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_service.dart';
-import 'package:schuldaten_hub/common/utils/custom_encrypter.dart';
 import 'package:schuldaten_hub/common/widgets/dialogs/confirmation_dialog.dart';
+import 'package:schuldaten_hub/common/widgets/dialogs/short_textfield_dialog.dart';
 import 'package:schuldaten_hub/common/widgets/qr/qr_utilites.dart';
 import 'package:schuldaten_hub/features/books/utils/book_ids_pdf_generator.dart';
 import 'package:schuldaten_hub/features/competence/utils/competence_report_pdf.dart';
@@ -60,8 +60,25 @@ class SettingsAdminSection extends AbstractSettingsSection with WatchItMixin {
         SettingsTile.navigation(
             title: const Text('Neuen Schlüssel generieren'),
             leading: const Icon(Icons.key_rounded),
-            onPressed: (context) {
-              customEncrypter.generateNewEncryptionKeys();
+            onPressed: (context) async {
+              final serverName = await shortTextfieldDialog(
+                  context: context,
+                  title: 'Servername',
+                  labelText: 'Servername',
+                  hintText: 'Geben Sie dem Server einen Namen');
+              if (serverName == null || serverName.isEmpty) {
+                return;
+              }
+              final serverUrl = await shortTextfieldDialog(
+                  context: context,
+                  title: 'Server URL',
+                  labelText: 'Server URL',
+                  hintText: 'Geben Sie die URL des Servers ein');
+              if (serverUrl == null || serverUrl.isEmpty) {
+                return;
+              }
+              locator<EnvManager>().generateNewKeys(
+                  serverUrl: serverUrl, serverName: serverName);
             }),
         SettingsTile.navigation(
           leading: const Icon(Icons.attach_money_rounded),
