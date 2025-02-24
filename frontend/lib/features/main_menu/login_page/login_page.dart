@@ -5,7 +5,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/domain/env_manager.dart';
 import 'package:schuldaten_hub/common/domain/session_manager.dart';
-import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_service.dart';
 import 'package:schuldaten_hub/common/theme/app_colors.dart';
 import 'package:schuldaten_hub/common/theme/styles.dart';
@@ -181,7 +180,7 @@ class LoginPage extends WatchingWidget {
                                     title: locale.deleteKeyPrompt,
                                     message: locale
                                         .areYouSureYouWantToDeleteSchoolKey);
-                                locator<EnvManager>().deleteEnv();
+                                controller.deleteEnv();
                               },
                               child: Text(
                                 locale.deleteKeyButtonText,
@@ -219,31 +218,22 @@ class LoginPage extends WatchingWidget {
                                   ),
                           ),
                         ),
-                      ],
-                      const Gap(5),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 12),
-                          //margin: const EdgeInsets.only(bottom: 16),
-                          child: ElevatedButton(
-                              style: AppStyles.actionButtonStyle,
-                              onPressed: () async {
-                                envReady
-                                    ? controller.scanCredentials(context)
-                                    : Platform.isWindows
-                                        ? controller.importEnvFromTxt()
-                                        : controller.scanEnv(context);
-                              },
-                              child: Platform.isWindows
-                                  ? Text(locale.chooseFileButton,
-                                      style: AppStyles.buttonTextStyle)
-                                  : Text(
-                                      locale.scanButton,
-                                      style: AppStyles.buttonTextStyle,
-                                    )),
+                        const Gap(10),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                            //margin: const EdgeInsets.only(bottom: 16),
+                            child: ElevatedButton(
+                                style: AppStyles.actionButtonStyle,
+                                onPressed: () async {
+                                  controller.generateSchoolKeys(context);
+                                },
+                                child: const Text('SCHULSCHLÜSSEL ERSTELLEN',
+                                    style: AppStyles.buttonTextStyle)),
+                          ),
                         ),
-                      ),
+                      ],
                       const Gap(10),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 10.0),
@@ -253,10 +243,17 @@ class LoginPage extends WatchingWidget {
                           child: ElevatedButton(
                               style: AppStyles.actionButtonStyle,
                               onPressed: () async {
-                                controller.generateSchoolKeys(context);
+                                Platform.isWindows
+                                    ? controller.importEnvFromTxt()
+                                    : controller.scanEnv(context);
                               },
-                              child: const Text('SCHULSCHLÜSSEL ERSTELLEN',
-                                  style: AppStyles.buttonTextStyle)),
+                              child: Platform.isWindows
+                                  ? const Text('SCHULSCHLÜSSEL IMPORTIEREN',
+                                      style: AppStyles.buttonTextStyle)
+                                  : Text(
+                                      locale.scanButton,
+                                      style: AppStyles.buttonTextStyle,
+                                    )),
                         ),
                       ),
                     ],

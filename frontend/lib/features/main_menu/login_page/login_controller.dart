@@ -44,6 +44,16 @@ class LoginController extends State<Login> {
     }
   }
 
+  void deleteEnv() {
+    locator<EnvManager>().deleteEnv();
+    setState(() {
+      envs = locator<EnvManager>().envs;
+      activeEnv = locator<EnvManager>().env!;
+      selectedEnv = activeEnv!.server;
+    });
+    return;
+  }
+
   void changeEnv(String? envName) {
     setState(() {
       selectedEnv = envName!;
@@ -73,7 +83,11 @@ class LoginController extends State<Login> {
     final String? scanResponse = await scanner(context, locale.scanSchoolId);
     if (scanResponse != null) {
       locator<EnvManager>().importNewEnv(scanResponse);
-
+      setState(() {
+        envs = locator<EnvManager>().envs;
+        activeEnv = locator<EnvManager>().env!;
+        selectedEnv = activeEnv!.server;
+      });
       return;
     } else {
       locator<NotificationService>()
@@ -109,6 +123,11 @@ class LoginController extends State<Login> {
       File file = File(result.files.single.path!);
       String rawTextResult = await file.readAsString();
       locator<EnvManager>().importNewEnv(rawTextResult);
+      setState(() {
+        envs = locator<EnvManager>().envs;
+        activeEnv = locator<EnvManager>().env!;
+        selectedEnv = activeEnv!.server;
+      });
       return;
     }
   }
