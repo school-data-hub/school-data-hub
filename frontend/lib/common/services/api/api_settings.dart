@@ -1,5 +1,6 @@
 export '../../../features/attendance/data/attendance_api_service.dart';
 export '../../../features/authorizations/data/authorization_api_service.dart';
+export '../../../features/books/data/book_api_service.dart';
 export '../../../features/competence/data/competence_api_service.dart';
 export '../../../features/learning_support/data/learning_support_api_service.dart';
 export '../../../features/pupil/data/pupil_data_api_service.dart';

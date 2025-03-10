@@ -90,13 +90,13 @@ class RadioButtonFilter extends Filter<PupilProxy> {
 abstract class PupilsFilter implements Listenable {
   ValueListenable<List<PupilProxy>> get filteredPupils;
   ValueListenable<List<int>> get filteredPupilIds;
-
   List<Filter> get groupFilters;
+  ValueListenable<PupilSortMode> get sortMode;
+
+  //List<Filter> get groupFilters;
   List<Filter> get schoolGradeFilters;
   List<Filter> get genderFilters;
   PupilTextFilter get textFilter;
-
-  ValueListenable<PupilSortMode> get sortMode;
 
   /// must be called when this object is no longer needed
   void dispose();
@@ -117,4 +117,5 @@ abstract class PupilsFilter implements Listenable {
   void setSortMode(PupilSortMode sortMode);
   void sortPupils();
   void setTextFilter(String? text, {bool refresh = true});
+  void populateGroupFilters(List<String> groupIds);
 }

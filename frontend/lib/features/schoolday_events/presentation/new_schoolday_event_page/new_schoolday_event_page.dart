@@ -6,7 +6,7 @@ import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/theme/app_colors.dart';
 import 'package:schuldaten_hub/common/theme/styles.dart';
 import 'package:schuldaten_hub/common/utils/extensions.dart';
-import 'package:schuldaten_hub/common/widgets/dialogs/date_picker.dart';
+import 'package:schuldaten_hub/common/widgets/dialogs/schoolday_date_picker.dart';
 import 'package:schuldaten_hub/common/widgets/dialogs/information_dialog.dart';
 import 'package:schuldaten_hub/features/schoolday_events/domain/models/schoolday_event_enums.dart';
 import 'package:schuldaten_hub/features/schoolday_events/domain/schoolday_event_manager.dart';

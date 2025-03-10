@@ -21,12 +21,12 @@ import 'package:watch_it/watch_it.dart';
 class PupilBookCard extends WatchingWidget {
   const PupilBookCard(
       {required this.pupilBook, required this.pupilId, super.key});
-  final PupilBook pupilBook;
+  final PupilBorrowedBook pupilBook;
   final int pupilId;
 
   @override
   Widget build(BuildContext context) {
-    final Book book =
+    final BookProxy book =
         locator<BookManager>().getLibraryBookByBookId(pupilBook.bookId)!;
     return ClipRRect(
       borderRadius: BorderRadius.circular(20),

@@ -44,15 +44,45 @@ class EnvManager {
   final _envReady = ValueNotifier<bool>(false);
   ValueListenable<bool> get envReady => _envReady;
 
-  final _packageInfo = ValueNotifier<PackageInfo>(PackageInfo(
+  PackageInfo _packageInfo = PackageInfo(
     appName: '',
     packageName: '',
     version: '',
     buildNumber: '',
     buildSignature: '',
-  ));
+  );
 
-  ValueListenable<PackageInfo> get packageInfo => _packageInfo;
+  PackageInfo get packageInfo => _packageInfo;
+
+  PopulatedEnvServerData _populatedEnvServerData = PopulatedEnvServerData(
+      schoolSemester: false,
+      schooldays: false,
+      competences: false,
+      supportCategories: false);
+
+  PopulatedEnvServerData get populatedEnvServerData => _populatedEnvServerData;
+
+  void setPopulatedEnvServerData(
+      {bool? schoolSemester,
+      bool? schooldays,
+      bool? competences,
+      bool? supportCategories}) {
+    final data = _populatedEnvServerData.copyWith(
+        schoolSemester:
+            schoolSemester ?? _populatedEnvServerData.schoolSemester,
+        schooldays: schooldays ?? _populatedEnvServerData.schooldays,
+        competences: competences ?? _populatedEnvServerData.competences,
+        supportCategories:
+            supportCategories ?? _populatedEnvServerData.supportCategories);
+    _populatedEnvServerData = data;
+  }
+
+  bool anyPopulatedEnvServerDataIsFalse() {
+    return _populatedEnvServerData.schoolSemester == false ||
+        _populatedEnvServerData.schooldays == false ||
+        _populatedEnvServerData.competences == false ||
+        _populatedEnvServerData.supportCategories == false;
+  }
 
   Future<EnvManager> init() async {
     await firstRun();
@@ -66,7 +96,7 @@ class EnvManager {
 
   Future<void> firstRun() async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    _packageInfo.value = packageInfo;
+    _packageInfo = packageInfo;
 
     final EnvsInStorage? environmentsObject = await environmentsInStorage();
 
@@ -75,7 +105,7 @@ class EnvManager {
       return;
     }
 
-    _defaultEnv = environmentsObject.defalutEnv;
+    _defaultEnv = environmentsObject.defaultEnv;
 
     _environments = environmentsObject.environmentsMap;
 
@@ -220,7 +250,7 @@ class EnvManager {
     _activeEnv = _environments[envName]!;
 
     final updatedEnvsForStorage = EnvsInStorage(
-        defalutEnv: _activeEnv!.server, environmentsMap: _environments);
+        defaultEnv: _activeEnv!.server, environmentsMap: _environments);
 
     final String jsonEnvs = jsonEncode(updatedEnvsForStorage);
 

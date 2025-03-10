@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:schuldaten_hub/common/domain/env_manager.dart';
 import 'package:schuldaten_hub/common/domain/models/enums.dart';
 import 'package:schuldaten_hub/common/services/api/api_settings.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
@@ -39,14 +40,18 @@ class LearningSupportManager {
   Future<void> fetchSupportCategories() async {
     final List<SupportCategory> supportCategories =
         await _learningSupportApiService.fetchSupportCategories();
-    // let's sort the categories by their category id to make sure they are in the right order
-    supportCategories.sort((a, b) => a.categoryId.compareTo(b.categoryId));
-    _supportCategories.value = supportCategories;
-    _rootCategoriesMap.clear();
-    _rootCategoriesMap =
-        LearningSupportHelper.generateRootCategoryMap(supportCategories);
-    notificationService.showSnackBar(NotificationType.success,
-        '${supportCategories.length} Förderkategorien aktualisiert!');
+
+    if (supportCategories.isNotEmpty) {
+// let's sort the categories by their category id to make sure they are in the right order
+      supportCategories.sort((a, b) => a.categoryId.compareTo(b.categoryId));
+      _supportCategories.value = supportCategories;
+      locator<EnvManager>().setPopulatedEnvServerData(supportCategories: true);
+      _rootCategoriesMap.clear();
+      _rootCategoriesMap =
+          LearningSupportHelper.generateRootCategoryMap(supportCategories);
+      notificationService.showSnackBar(NotificationType.success,
+          '${supportCategories.length} Förderkategorien aktualisiert!');
+    }
 
     return;
   }

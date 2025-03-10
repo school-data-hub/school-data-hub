@@ -11,7 +11,7 @@ import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_service.dart';
 import 'package:schuldaten_hub/common/theme/app_colors.dart';
 import 'package:schuldaten_hub/common/utils/extensions.dart';
-import 'package:schuldaten_hub/common/widgets/dialogs/date_picker.dart';
+import 'package:schuldaten_hub/common/widgets/dialogs/schoolday_date_picker.dart';
 import 'package:schuldaten_hub/common/widgets/dialogs/confirmation_dialog.dart';
 import 'package:schuldaten_hub/common/widgets/dialogs/short_textfield_dialog.dart';
 import 'package:schuldaten_hub/common/widgets/document_image.dart';

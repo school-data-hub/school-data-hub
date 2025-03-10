@@ -9,12 +9,13 @@ import 'package:schuldaten_hub/common/domain/models/enums.dart';
 import 'package:schuldaten_hub/common/domain/models/session.dart';
 import 'package:schuldaten_hub/common/domain/session_helper_functions.dart';
 import 'package:schuldaten_hub/common/services/api/api_client.dart';
-import 'package:schuldaten_hub/common/services/api/api_settings.dart';
+//import 'package:schuldaten_hub/common/services/api/api_settings.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_service.dart';
 import 'package:schuldaten_hub/common/utils/logger.dart';
 import 'package:schuldaten_hub/common/utils/secure_storage.dart';
 import 'package:schuldaten_hub/features/main_menu/widgets/landing_bottom_nav_bar.dart';
+import 'package:schuldaten_hub/features/users/data/user_api_service.dart';
 import 'package:schuldaten_hub/features/users/domain/models/user.dart';
 
 class SessionManager {
@@ -29,6 +30,20 @@ class SessionManager {
 
   final _isAdmin = ValueNotifier<bool>(false);
   ValueListenable<bool> get isAdmin => _isAdmin;
+
+  bool _isCalendarPopulated = false;
+  bool get isCalendarPopulated => _isCalendarPopulated;
+
+  bool _isSchoolSemesterPopulated = false;
+  bool get isSchoolSemesterPopulated => _isSchoolSemesterPopulated;
+
+  void setCalendarPopulated(bool value) {
+    _isCalendarPopulated = value;
+  }
+
+  void setSchoolSemesterPopulated(bool value) {
+    _isSchoolSemesterPopulated = value;
+  }
 
   final _matrixPolicyManagerRegistrationStatus = ValueNotifier<bool>(false);
   ValueListenable<bool> get matrixPolicyManagerRegistrationStatus =>

@@ -10,10 +10,12 @@ import 'package:schuldaten_hub/features/attendance/domain/filters/attendance_pup
 import 'package:schuldaten_hub/features/learning_support/domain/filters/learning_support_filter_manager.dart';
 import 'package:schuldaten_hub/features/pupil/domain/filters/pupil_filter_enums.dart';
 import 'package:schuldaten_hub/features/pupil/domain/filters/pupil_filter_manager.dart';
+import 'package:schuldaten_hub/features/pupil/domain/filters/pupil_selector_filters.dart';
 import 'package:schuldaten_hub/features/pupil/domain/filters/pupil_text_filter.dart';
 import 'package:schuldaten_hub/features/pupil/domain/filters/pupils_filter.dart';
 import 'package:schuldaten_hub/features/pupil/domain/models/pupil_proxy.dart';
 import 'package:schuldaten_hub/features/pupil/domain/pupil_helper_functions.dart';
+import 'package:schuldaten_hub/features/pupil/domain/pupil_identity_manager.dart';
 import 'package:schuldaten_hub/features/pupil/domain/pupil_manager.dart';
 import 'package:schuldaten_hub/features/schoolday_events/domain/filters/schoolday_event_filter_manager.dart';
 import 'package:schuldaten_hub/features/schoolday_events/domain/schoolday_event_helper_functions.dart';
@@ -26,6 +28,8 @@ class PupilsFilterImplementation with ChangeNotifier implements PupilsFilter {
     // }
   ) : _pupilsManager = pupilsManager {
     log('PupilsFilterImplementation created');
+    final availableGroups = locator<PupilIdentityManager>().groups.value;
+    populateGroupFilters(availableGroups.toList());
     refreshs();
     _pupilsManager.addListener(refreshs);
   }
@@ -54,6 +58,11 @@ class PupilsFilterImplementation with ChangeNotifier implements PupilsFilter {
   @override
   ValueListenable<List<int>> get filteredPupilIds => _filteredPupilIds;
   final ValueNotifier<List<int>> _filteredPupilIds = ValueNotifier([]);
+
+  @override
+  List<Filter> get groupFilters => _groupFilters;
+  final List<Filter> _groupFilters = [];
+
   @override
   ValueListenable<PupilSortMode> get sortMode => _sortMode;
   final _sortMode = ValueNotifier<PupilSortMode>(PupilSortMode.sortByName);
@@ -63,7 +72,7 @@ class PupilsFilterImplementation with ChangeNotifier implements PupilsFilter {
 
   late List<Filter> allFilters = [
     ...schoolGradeFilters,
-    ...groupFilters,
+    ..._groupFilters,
     ...genderFilters,
     _textFilter,
   ];
@@ -307,8 +316,6 @@ class PupilsFilterImplementation with ChangeNotifier implements PupilsFilter {
       case PupilSortMode.sortByGoneHome:
         thisFilteredPupils.sort((a, b) => AttendanceHelper.goneHomeSum(b)
             .compareTo(AttendanceHelper.goneHomeSum(a)));
-      default:
-        PupilSortMode.sortByName;
     }
     _filteredPupils.value = thisFilteredPupils;
     _filteredPupilIds.value =
@@ -330,11 +337,22 @@ class PupilsFilterImplementation with ChangeNotifier implements PupilsFilter {
   }
 
   @override
-  List<Filter> get groupFilters => PupilProxy.groupFilters;
+  // List<Filter> get groupFilters => PupilProxy.groupFilters;
 
   @override
   List<Filter> get schoolGradeFilters => PupilProxy.schoolGradeFilters;
 
   @override
   List<Filter> get genderFilters => PupilProxy.genderFilters;
+
+  @override
+  void populateGroupFilters(List<String> groupIds) {
+    final groupFilters = groupIds
+        .map((groupId) => GroupFilter(groupId))
+        .toList()
+      ..sort((a, b) => a.name.compareTo(b.name));
+
+    _groupFilters.clear();
+    _groupFilters.addAll(groupFilters);
+  }
 }

@@ -2,11 +2,13 @@ import 'dart:async';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
+import 'package:schuldaten_hub/common/domain/env_manager.dart';
 import 'package:schuldaten_hub/common/domain/models/enums.dart';
 import 'package:schuldaten_hub/common/domain/session_manager.dart';
 import 'package:schuldaten_hub/common/services/api/api_settings.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_service.dart';
+import 'package:schuldaten_hub/features/schooldays/domain/models/school_semester.dart';
 import 'package:schuldaten_hub/features/schooldays/domain/models/schoolday.dart';
 
 class SchooldayManager {
@@ -62,6 +64,7 @@ class SchooldayManager {
       locator<NotificationService>()
           .showSnackBar(NotificationType.success, 'Schultage geladen');
       _schooldays.value = responseSchooldays;
+      locator<EnvManager>().setPopulatedEnvServerData(schooldays: true);
 
       setAvailableDates();
       return;
@@ -133,6 +136,9 @@ class SchooldayManager {
 
     _schoolSemesters.value = responseSchoolSemesters;
 
+    if (responseSchoolSemesters.isNotEmpty) {
+      locator<EnvManager>().setPopulatedEnvServerData(schoolSemester: true);
+    }
     return;
   }
 

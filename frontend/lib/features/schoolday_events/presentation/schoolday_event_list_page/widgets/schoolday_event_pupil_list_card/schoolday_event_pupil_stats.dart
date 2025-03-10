@@ -53,7 +53,6 @@ class SchooldayEventPupilStats extends WatchingWidget {
       mainAxisAlignment: MainAxisAlignment.end,
       mainAxisSize: MainAxisSize.min,
       children: [
-        const Gap(10),
         const Icon(
           Icons.school_rounded,
           color: Colors.red,

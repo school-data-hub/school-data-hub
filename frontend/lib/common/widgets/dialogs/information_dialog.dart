@@ -11,13 +11,13 @@ void informationDialog(context, title, text) => showDialog(
           size: 50,
         ),
         title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
-        content: SizedBox(
-            height: 100,
-            width: 300,
-            child: Text(
-              text,
-              textAlign: TextAlign.center,
-            )),
+        content: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 300),
+          child: Text(
+            text,
+            textAlign: TextAlign.center,
+          ),
+        ),
         actions: [
           Padding(
             padding: const EdgeInsets.all(5.0),

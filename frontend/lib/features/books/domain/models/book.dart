@@ -1,4 +1,4 @@
-class Book {
+class BookProxy {
   final int isbn;
   final String bookId;
   final String title;
@@ -10,7 +10,7 @@ class Book {
   final String location;
   final List<BookTag> bookTags;
 
-  Book(
+  BookProxy(
       {required this.isbn,
       required this.bookId,
       required this.title,
@@ -22,9 +22,9 @@ class Book {
       required this.location,
       required this.bookTags});
 
-  factory Book.fromJson(Map<String, dynamic> json) {
+  factory BookProxy.fromJson(Map<String, dynamic> json) {
     var bookJson = json['book'];
-    return Book(
+    return BookProxy(
       isbn: bookJson['isbn'],
       bookId: json['book_id'],
       title: bookJson['title'],

@@ -71,7 +71,7 @@ class PupilLearningContentBooks extends StatelessWidget {
             physics: const NeverScrollableScrollPhysics(),
             itemCount: pupil.pupilBooks!.length,
             itemBuilder: (context, int index) {
-              List<PupilBook> pupilBooks = pupil.pupilBooks!;
+              List<PupilBorrowedBook> pupilBooks = pupil.pupilBooks!;
 
               return ClipRRect(
                 borderRadius: BorderRadius.circular(25.0),

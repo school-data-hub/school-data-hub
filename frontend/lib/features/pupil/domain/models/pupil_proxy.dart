@@ -9,6 +9,8 @@ import 'package:schuldaten_hub/features/competence/domain/models/competence_chec
 import 'package:schuldaten_hub/features/competence/domain/models/competence_goal.dart';
 import 'package:schuldaten_hub/features/learning_support/domain/models/support_category/support_category_status.dart';
 import 'package:schuldaten_hub/features/learning_support/domain/models/support_goal/support_goal.dart';
+import 'package:schuldaten_hub/features/pupil/domain/filters/pupil_selector_filters.dart';
+import 'package:schuldaten_hub/features/pupil/domain/filters/pupils_filter.dart';
 import 'package:schuldaten_hub/features/pupil/domain/models/credit_history_log.dart';
 import 'package:schuldaten_hub/features/pupil/domain/models/pupil_data.dart';
 import 'package:schuldaten_hub/features/pupil/domain/models/pupil_identity.dart';
@@ -48,67 +50,34 @@ enum Gender {
   const Gender(this.value);
 }
 
-enum GroupId {
-  A1('A1'),
-  A2('A2'),
-  A3('A3'),
-  B1('B1'),
-  B2('B2'),
-  B3('B3'),
-  B4('B4'),
-  C1('C1'),
-  C2('C2'),
-  C3('C3');
+// enum GroupId {
+//   A1('A1'),
+//   A2('A2'),
+//   A3('A3'),
+//   B1('B1'),
+//   B2('B2'),
+//   B3('B3'),
+//   B4('B4'),
+//   C1('C1'),
+//   C2('C2'),
+//   C3('C3');
 
-  static const stringToValue = {
-    'A1': GroupId.A1,
-    'A2': GroupId.A2,
-    'A3': GroupId.A3,
-    'B1': GroupId.B1,
-    'B2': GroupId.B2,
-    'B3': GroupId.B3,
-    'B4': GroupId.B4,
-    'C1': GroupId.C1,
-    'C2': GroupId.C2,
-    'C3': GroupId.C3,
-  };
+//   static const stringToValue = {
+//     'A1': GroupId.A1,
+//     'A2': GroupId.A2,
+//     'A3': GroupId.A3,
+//     'B1': GroupId.B1,
+//     'B2': GroupId.B2,
+//     'B3': GroupId.B3,
+//     'B4': GroupId.B4,
+//     'C1': GroupId.C1,
+//     'C2': GroupId.C2,
+//     'C3': GroupId.C3,
+//   };
 
-  final String value;
-  const GroupId(this.value);
-}
-
-class SchoolGradeFilter extends SelectorFilter<PupilProxy, SchoolGrade> {
-  SchoolGradeFilter(SchoolGrade schoolGrade)
-      : super(name: schoolGrade.value, selector: (proxy) => proxy.schoolGrade);
-
-  @override
-  bool matches(PupilProxy item) {
-    return selector(item).value == name;
-  }
-}
-
-class GroupFilter extends SelectorFilter<PupilProxy, GroupId> {
-  GroupFilter(GroupId group)
-      : super(name: group.value, selector: (proxy) => proxy.groupId);
-
-  @override
-  bool matches(PupilProxy item) {
-    //debugger();
-    return selector(item).value == name;
-  }
-}
-
-class GenderFilter extends SelectorFilter<PupilProxy, Gender> {
-  GenderFilter(Gender gender)
-      : super(
-            name: gender.value == 'm' ? '♂️' : '♀️',
-            selector: (proxy) => Gender.stringToValue[proxy.gender]!);
-
-  @override
-  bool matches(PupilProxy item) {
-    return selector(item).value == (name == '♂️' ? 'm' : 'w');
-  }
-}
+//   final String value;
+//   const GroupId(this.value);
+// }
 
 class PupilProxy with ChangeNotifier {
   PupilProxy(
@@ -117,18 +86,8 @@ class PupilProxy with ChangeNotifier {
     updatePupil(pupilData);
   }
 
-  static List<GroupFilter> groupFilters = [
-    GroupFilter(GroupId.A1),
-    GroupFilter(GroupId.A2),
-    GroupFilter(GroupId.A3),
-    GroupFilter(GroupId.B1),
-    GroupFilter(GroupId.B2),
-    GroupFilter(GroupId.B3),
-    GroupFilter(GroupId.B4),
-    GroupFilter(GroupId.C1),
-    GroupFilter(GroupId.C2),
-    GroupFilter(GroupId.C3),
-  ];
+  static List<Filter<Object>> groupFilters =
+      locator<PupilsFilter>().groupFilters;
 
   static List<SchoolGradeFilter> schoolGradeFilters = [
     SchoolGradeFilter(SchoolGrade.E1),
@@ -234,7 +193,7 @@ class PupilProxy with ChangeNotifier {
   String get lastName => _pupilIdentity.lastName;
 
   String get group => _pupilIdentity.group;
-  GroupId get groupId => GroupId.stringToValue[_pupilIdentity.group]!;
+  String get groupId => _pupilIdentity.group;
 
   SchoolGrade get schoolGrade =>
       SchoolGrade.stringToValue[_pupilIdentity.schoolGrade]!;
@@ -288,7 +247,7 @@ class PupilProxy with ChangeNotifier {
   List<SupportCategoryStatus>? get supportCategoryStatuses =>
       _pupilData.supportCategoryStatuses;
   List<SchooldayEvent>? get schooldayEvents => _pupilData.schooldayEvents;
-  List<PupilBook>? get pupilBooks => _pupilData.pupilBooks;
+  List<PupilBorrowedBook>? get pupilBooks => _pupilData.pupilBooks;
   List<SupportGoal>? get supportGoals => _pupilData.supportGoals;
 
   List<MissedClass>? get missedClasses => _missedClasses.values.toList();

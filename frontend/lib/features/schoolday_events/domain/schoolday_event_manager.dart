@@ -12,8 +12,6 @@ class SchooldayEventManager {
   final pupilManager = locator<PupilManager>();
   final schooldayManager = locator<SchooldayManager>();
 
-  final endpoints = ApiSettings();
-
   final apiSchooldayEventService = SchooldayEventApiService();
   final notificationService = locator<NotificationService>();
 

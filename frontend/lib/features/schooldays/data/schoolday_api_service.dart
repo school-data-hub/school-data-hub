@@ -9,6 +9,7 @@ import 'package:schuldaten_hub/common/services/api/api_settings.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/services/notification_service.dart';
 import 'package:schuldaten_hub/common/utils/extensions.dart';
+import 'package:schuldaten_hub/features/schooldays/domain/models/school_semester.dart';
 import 'package:schuldaten_hub/features/schooldays/domain/models/schoolday.dart';
 
 class SchooldayApiService {

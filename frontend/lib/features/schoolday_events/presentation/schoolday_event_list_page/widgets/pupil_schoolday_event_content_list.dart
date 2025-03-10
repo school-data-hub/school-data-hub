@@ -23,7 +23,7 @@ class SchooldayEventsContentList extends WatchingWidget {
         locator<SchooldayEventFilterManager>().filteredSchooldayEvents(pupil);
     return Column(children: [
       Padding(
-        padding: const EdgeInsets.only(top: 10.0, bottom: 10),
+        padding: const EdgeInsets.only(top: 10.0),
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 12),
           //margin: const EdgeInsets.only(bottom: 16),

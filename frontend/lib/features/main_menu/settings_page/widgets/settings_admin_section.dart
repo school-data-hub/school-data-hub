@@ -16,6 +16,7 @@ import 'package:schuldaten_hub/features/logs/logs_page.dart';
 import 'package:schuldaten_hub/features/matrix/domain/matrix_policy_manager.dart';
 import 'package:schuldaten_hub/features/matrix/presentation/pupil_matrix_contacts_list_page/pupils_matrix_contacts_list_page.dart';
 import 'package:schuldaten_hub/features/matrix/presentation/set_matrix_environment_page/set_matrix_environment_controller.dart';
+import 'package:schuldaten_hub/features/schooldays/presentation/new_school_semester_page/new_school_semester_page.dart';
 import 'package:schuldaten_hub/features/schooldays/presentation/schooldays_calendar_page.dart';
 import 'package:schuldaten_hub/features/users/domain/user_manager.dart';
 import 'package:schuldaten_hub/features/users/presentation/users_list_page/users_list_page.dart';
@@ -155,6 +156,18 @@ class SettingsAdminSection extends AbstractSettingsSection with WatchItMixin {
               Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (ctx) => const SchooldaysCalendar(),
+                ),
+              );
+            }),
+        SettingsTile.navigation(
+            leading: const Icon(
+              Icons.calendar_month_rounded,
+            ),
+            title: const Text('Schulsemester hinzufügen'),
+            onPressed: (context) {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (ctx) => const NewSchoolSemesterPage(),
                 ),
               );
             }),

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:schuldaten_hub/common/domain/env_manager.dart';
 import 'package:schuldaten_hub/common/domain/models/enums.dart';
 import 'package:schuldaten_hub/common/services/api/api_settings.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
@@ -53,14 +54,18 @@ class CompetenceManager {
     final List<Competence> competences =
         await _competenceApiService.fetchCompetences();
 
-    competences.sort((a, b) => a.competenceId.compareTo(b.competenceId));
+    if (competences.isNotEmpty) {
+      competences.sort((a, b) => a.competenceId.compareTo(b.competenceId));
 
-    _competences.value = competences;
+      _competences.value = competences;
 
-    _rootCompetencesMap.clear();
+      locator<EnvManager>().setPopulatedEnvServerData(competences: true);
 
-    _rootCompetencesMap =
-        CompetenceHelper.generateRootCompetencesMap(competences);
+      _rootCompetencesMap.clear();
+
+      _rootCompetencesMap =
+          CompetenceHelper.generateRootCompetencesMap(competences);
+    }
 
     notificationService.showSnackBar(
         NotificationType.success, 'Kompetenzen aktualisiert!');

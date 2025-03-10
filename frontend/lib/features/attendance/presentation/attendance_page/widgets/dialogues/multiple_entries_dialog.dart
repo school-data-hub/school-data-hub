@@ -4,7 +4,7 @@ import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/theme/app_colors.dart';
 import 'package:schuldaten_hub/common/theme/styles.dart';
 import 'package:schuldaten_hub/common/utils/extensions.dart';
-import 'package:schuldaten_hub/common/widgets/dialogs/date_picker.dart';
+import 'package:schuldaten_hub/common/widgets/dialogs/schoolday_date_picker.dart';
 import 'package:schuldaten_hub/features/attendance/domain/attendance_manager.dart';
 import 'package:schuldaten_hub/features/pupil/domain/models/pupil_proxy.dart';
 import 'package:schuldaten_hub/features/schooldays/domain/schoolday_manager.dart';

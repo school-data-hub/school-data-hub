@@ -12,11 +12,11 @@ import 'package:schuldaten_hub/features/books/domain/models/book.dart';
 import 'package:schuldaten_hub/features/pupil/domain/pupil_manager.dart';
 
 class BookManager {
-  final _books = ValueNotifier<List<Book>>([]);
-  ValueListenable<List<Book>> get books => _books;
+  final _books = ValueNotifier<List<BookProxy>>([]);
+  ValueListenable<List<BookProxy>> get books => _books;
 
-  final _isbnBooks = Map<int, List<Book>>.from({});
-  Map<int, List<Book>> get isbnBooks => _isbnBooks;
+  final _isbnBooks = ValueNotifier<Map<int, List<BookProxy>>>({});
+  ValueListenable<Map<int, List<BookProxy>>> get booksByIsbn => _isbnBooks;
 
   final _locations = ValueNotifier<List<String>>([]);
   ValueListenable<List<String>> get locations => _locations;
@@ -56,7 +56,8 @@ class BookManager {
   }
 
   void _refreshIsbnBooksMap() {
-    final Map<int, List<Book>> isbnBooks = Map<int, List<Book>>.from({});
+    final Map<int, List<BookProxy>> isbnBooks =
+        Map<int, List<BookProxy>>.from({});
 
     for (final book in _books.value) {
       if (isbnBooks.containsKey(book.isbn)) {
@@ -65,9 +66,8 @@ class BookManager {
         isbnBooks[book.isbn] = [book];
       }
     }
-
-    _isbnBooks.clear();
-    _isbnBooks.addAll(isbnBooks);
+    _isbnBooks.value = isbnBooks;
+    return;
   }
 
   //- BOOK TAGS
@@ -129,14 +129,15 @@ class BookManager {
   //- LIBRARY BOOKS
 
   Future<void> getLibraryBooks() async {
-    final List<Book> responseBooks = await bookApiService.getLibraryBooks();
+    final List<BookProxy> responseBooks =
+        await bookApiService.getLibraryBooks();
 
-    _refreshIsbnBooksMap();
     // sort books by name
     if (responseBooks.isNotEmpty) {
       responseBooks.sort((a, b) => a.title.compareTo(b.title));
       _books.value = responseBooks;
     }
+    _refreshIsbnBooksMap();
     notificationService.showSnackBar(
         NotificationType.success, 'Bücher erfolgreich geladen');
 
@@ -150,7 +151,7 @@ class BookManager {
     required String bookId,
     required String location,
   }) async {
-    final Book responseBook = await bookApiService.postLibraryBook(
+    final BookProxy responseBook = await bookApiService.postLibraryBook(
       isbn: isbn,
       bookId: bookId,
       location: location,
@@ -172,7 +173,7 @@ class BookManager {
     String? readingLevel,
     List<BookTag>? tags,
   }) async {
-    final Book updatedbook = await bookApiService.patchBookData(
+    final BookProxy updatedbook = await bookApiService.patchBookData(
       isbn: isbn,
       title: title,
       author: author,
@@ -181,7 +182,7 @@ class BookManager {
       bookTags: tags,
     );
 
-    List<Book> books = List.from(_books.value);
+    List<BookProxy> books = List.from(_books.value);
     int index = books.indexWhere((item) => item.bookId == updatedbook.bookId);
 
     books[index] = updatedbook;
@@ -195,7 +196,7 @@ class BookManager {
   }
 
   Future<void> patchBookImage(File imageFile, int isbn) async {
-    final Book responsebook =
+    final BookProxy responsebook =
         await bookApiService.patchBookImage(imageFile, isbn);
 
     updateBookStateWithResponse(responsebook);
@@ -210,7 +211,7 @@ class BookManager {
     final bool success = await bookApiService.deleteLibraryBook(bookId);
 
     if (success) {
-      List<Book> books = List.from(_books.value);
+      List<BookProxy> books = List.from(_books.value);
       books.removeWhere((item) => item.bookId == bookId);
 
       _books.value = books;
@@ -225,9 +226,9 @@ class BookManager {
 
   //- PUPIL bookS
 
-  List<Book> getLibraryBooksByIsbn(int isbn) {
-    List<Book> books = [];
-    for (Book book in _books.value) {
+  List<BookProxy> getLibraryBooksByIsbn(int isbn) {
+    List<BookProxy> books = [];
+    for (BookProxy book in _books.value) {
       if (book.isbn == isbn) {
         books.add(book);
       }
@@ -236,16 +237,16 @@ class BookManager {
   }
 
   //- helper function
-  Book? getLibraryBookByBookId(String? bookId) {
+  BookProxy? getLibraryBookByBookId(String? bookId) {
     if (bookId == null) return null;
-    final Book? book =
+    final BookProxy? book =
         _books.value.firstWhereOrNull((element) => element.bookId == bookId);
     return book;
   }
 
   //- helper function
-  void updateBookStateWithResponse(Book book) {
-    List<Book> books = List.from(_books.value);
+  void updateBookStateWithResponse(BookProxy book) {
+    List<BookProxy> books = List.from(_books.value);
     int index = books.indexWhere((item) => item.bookId == book.bookId);
     books[index] = book;
     _books.value = books;

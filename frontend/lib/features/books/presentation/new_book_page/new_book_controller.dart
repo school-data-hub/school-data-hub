@@ -114,15 +114,15 @@ class NewBookController extends State<NewBook> {
 
   String lastLocationValue = locator<BookManager>().lastLocationValue.value;
 
+  String readingLevel = ReadingLevel.notSet.value;
+
+  String? bookImageId;
+
   void switchBookTagSelection(BookTag tag) {
     setState(() {
       bookTagSelection[tag] = !bookTagSelection[tag]!;
     });
   }
-
-  String readingLevel = ReadingLevel.notSet.value;
-
-  String? bookImageId;
 
   Future<void> fetchBookData() async {
     final dto.BookDTO? bookData =
@@ -144,6 +144,7 @@ class NewBookController extends State<NewBook> {
   void initState() {
     super.initState();
     fetchBookData();
+    _createDropdownItems();
     if (widget.isEdit) {
       bookIdTextFieldController.text = widget.bookId ?? '';
       bookTitleTextFieldController.text = widget.bookTitle ?? '';
@@ -185,21 +186,26 @@ class NewBookController extends State<NewBook> {
     bookIdTextFieldController.text = bookId;
   }
 
-  final List<DropdownMenuItem<String>> locationDropdownItems = [
-    for (final location in locator<BookManager>().locations.value)
-      DropdownMenuItem(
+  final List<DropdownMenuItem<String>> locationDropdownItems = [];
+
+  void _createDropdownItems() {
+    for (final location in locator<BookManager>().locations.value) {
+      locationDropdownItems.add(DropdownMenuItem(
         value: location,
         child: Text(location),
-      ),
-    if (locator<BookManager>().lastLocationValue.value == 'Bitte auswählen')
-      DropdownMenuItem(
+      ));
+    }
+    if (locator<BookManager>().lastLocationValue.value == 'Bitte auswählen') {
+      locationDropdownItems.add(DropdownMenuItem(
         value: locator<BookManager>().lastLocationValue.value,
         child: Text(
           locator<BookManager>().lastLocationValue.value,
           style: const TextStyle(color: Colors.red),
         ),
-      ),
-  ];
+      ));
+    }
+  }
+
   void addLocation() async {
     final String? newLocation = await shortTextfieldDialog(
         context: context,
@@ -209,6 +215,12 @@ class NewBookController extends State<NewBook> {
     if (newLocation != null) {
       await locator<BookManager>().addLocation(newLocation);
     }
+    setState(() {
+      locations.clear();
+      locations.addAll(locator<BookManager>().locations.value);
+      locationDropdownItems.clear();
+      _createDropdownItems();
+    });
   }
 
   void submitBook() {

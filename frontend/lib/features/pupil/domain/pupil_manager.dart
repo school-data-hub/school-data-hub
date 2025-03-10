@@ -197,7 +197,7 @@ class PupilManager extends ChangeNotifier {
     final proxy = _pupils[pupilData.internalId];
     if (proxy != null) {
       proxy.updatePupil(pupilData);
-      // No need to call notifyListeners here, because the proxy will notify the listeners itself
+      //- TODO: Is this true: No need to call notifyListeners here, because the proxy will notify the listeners itself
       notifyListeners();
     }
   }

@@ -14,7 +14,7 @@ import 'package:schuldaten_hub/features/pupil/presentation/pupil_profile_page/pu
 import 'package:watch_it/watch_it.dart';
 
 class BookPupilCard extends WatchingWidget {
-  final PupilBook passedPupilBook;
+  final PupilBorrowedBook passedPupilBook;
   const BookPupilCard({required this.passedPupilBook, super.key});
 
   @override

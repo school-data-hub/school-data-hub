@@ -4,7 +4,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:schuldaten_hub/common/domain/env_manager.dart';
 import 'package:schuldaten_hub/common/domain/models/enums.dart';
 import 'package:schuldaten_hub/common/services/api/api_settings.dart';
@@ -14,8 +14,8 @@ import 'package:schuldaten_hub/common/utils/custom_encrypter.dart';
 import 'package:schuldaten_hub/common/utils/extensions.dart';
 import 'package:schuldaten_hub/common/utils/logger.dart';
 import 'package:schuldaten_hub/common/utils/secure_storage.dart';
-import 'package:schuldaten_hub/common/utils/scanner.dart';
 import 'package:schuldaten_hub/features/main_menu/widgets/landing_bottom_nav_bar.dart';
+import 'package:schuldaten_hub/features/pupil/domain/filters/pupil_selector_filters.dart';
 import 'package:schuldaten_hub/features/pupil/domain/filters/pupils_filter.dart';
 import 'package:schuldaten_hub/features/pupil/domain/models/pupil_data.dart';
 import 'package:schuldaten_hub/features/pupil/domain/models/pupil_identity.dart';
@@ -26,10 +26,10 @@ import 'package:schuldaten_hub/features/pupil/domain/pupil_manager.dart';
 class PupilIdentityManager {
   Map<int, PupilIdentity> _pupilIdentities = {};
 
-  List<int> get availablePupilIds => _pupilIdentities.keys.toList();
+  final _groups = ValueNotifier<Set<String>>({});
+  ValueListenable<Set<String>> get groups => _groups;
 
-  Set<String> get availableGroups =>
-      _pupilIdentities.values.map((e) => e.group).toSet();
+  List<int> get availablePupilIds => _pupilIdentities.keys.toList();
 
   PupilIdentity getPupilIdentity(int pupilId) {
     if (_pupilIdentities.containsKey(pupilId) == false) {
@@ -71,21 +71,8 @@ class PupilIdentityManager {
 
     _pupilIdentities = pupilIdentities;
 
-    return;
-  }
+    _groups.value = _pupilIdentities.values.map((e) => e.group).toSet();
 
-  Future<void> scanNewPupilIdentities(BuildContext context) async {
-    final String? scanResult =
-        await scanner(context, 'Personenbezogene Informationen scannen');
-
-    if (scanResult != null) {
-      decryptCodesAndAddIdentities([scanResult]);
-    } else {
-      locator<NotificationService>()
-          .showSnackBar(NotificationType.warning, 'Scan abgebrochen');
-
-      return;
-    }
     return;
   }
 
@@ -110,16 +97,17 @@ class PupilIdentityManager {
         decryptedIdentitiesAsString.split('\n');
     // The properties are separated by commas, let's build the PupilIdentity objects with them
 
+    bool updateGroupFilters = false;
     for (String data in splittedPupilIdentities) {
       if (data != '') {
         List<String> pupilIdentityValues = data.split(',');
         final newPupilIdentity =
             PupilIdentityHelper.pupilIdentityFromString(pupilIdentityValues);
 
-        if (!PupilProxy.groupFilters.any((GroupFilter filter) =>
-                filter.name == newPupilIdentity.group) ==
+        if (!PupilProxy.groupFilters.any((filter) =>
+                (filter as GroupFilter).name == newPupilIdentity.group) ==
             false) {
-          // TODO: implement class filter dinamically and get rid of enums
+          updateGroupFilters = true;
         }
         //- add the new pupil to the pupilIdentities map
         _pupilIdentities[newPupilIdentity.id] = newPupilIdentity;
@@ -135,6 +123,12 @@ class PupilIdentityManager {
     }
 
     writePupilIdentitiesToStorage(envKey: locator<EnvManager>().defaultEnv);
+    if (updateGroupFilters) {
+      final availableGroups =
+          _pupilIdentities.values.map((e) => e.group).toSet();
+      _groups.value = availableGroups;
+      locator<PupilsFilter>().populateGroupFilters(availableGroups.toList());
+    }
 
     await locator<PupilManager>().fetchAllPupils();
     locator<MainMenuBottomNavManager>().setBottomNavPage(0);

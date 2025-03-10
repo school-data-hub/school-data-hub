@@ -9,10 +9,6 @@ import 'package:schuldaten_hub/common/theme/app_colors.dart';
 import 'package:schuldaten_hub/common/theme/styles.dart';
 import 'package:schuldaten_hub/common/utils/extensions.dart';
 import 'package:schuldaten_hub/common/widgets/custom_expansion_tile/custom_expansion_tile.dart';
-import 'package:schuldaten_hub/common/widgets/custom_expansion_tile/custom_expansion_tile_content.dart';
-import 'package:schuldaten_hub/common/widgets/custom_expansion_tile/custom_expansion_tile_switch.dart';
-import 'package:schuldaten_hub/common/widgets/dialogs/confirmation_dialog.dart';
-import 'package:schuldaten_hub/common/widgets/dialogs/information_dialog.dart';
 import 'package:schuldaten_hub/common/widgets/dialogs/long_textfield_dialog.dart';
 import 'package:schuldaten_hub/common/widgets/document_image.dart';
 import 'package:schuldaten_hub/common/widgets/unencrypted_image_in_card.dart';
@@ -21,34 +17,40 @@ import 'package:schuldaten_hub/features/books/data/book_api_service.dart';
 import 'package:schuldaten_hub/features/books/domain/book_helper.dart';
 import 'package:schuldaten_hub/features/books/domain/book_manager.dart';
 import 'package:schuldaten_hub/features/books/domain/models/book.dart';
-import 'package:schuldaten_hub/features/books/presentation/book_list_page/widgets/book_pupil_card.dart';
-import 'package:schuldaten_hub/features/books/presentation/new_book_page/new_book_controller.dart';
+import 'package:schuldaten_hub/features/books/domain/models/pupil_book.dart';
+import 'package:schuldaten_hub/features/books/presentation/book_list_page/widgets/library_book_card.dart';
 import 'package:watch_it/watch_it.dart';
 
 class BookCard extends WatchingWidget {
-  const BookCard({required this.book, super.key});
-  final Book book;
+  const BookCard({required this.isbn, super.key});
+  final int isbn;
+
+  List<PupilBorrowedBook> libraryBookPupilBooks(String bookId) {
+    return BookHelpers.pupilBooksLinkedToBook(bookId: bookId);
+  }
 
   @override
   Widget build(BuildContext context) {
+    final Map<int, List<BookProxy>> isbnBooks =
+        watchValue((BookManager x) => x.booksByIsbn);
+    final List<BookProxy> books = isbnBooks[isbn] ?? [];
     final tileController = createOnce<CustomExpansionTileController>(
         () => CustomExpansionTileController());
     final descriptionTileController = createOnce<ExpansionTileController>(
       () => ExpansionTileController(),
     );
+    final BookProxy book = books.first;
 
-    final bookPupilBooks =
-        BookHelpers.pupilBooksLinkedToBook(bookId: book.bookId);
-    BookBorrowStatus? bookBorrowStatus = bookPupilBooks.isEmpty
-        ? null
-        : BookHelpers.getBorrowedStatus(bookPupilBooks.first);
-    final Color borrowedColor = book.available
-        ? Colors.green
-        : bookBorrowStatus == BookBorrowStatus.since2Weeks
-            ? Colors.yellow
-            : bookBorrowStatus == BookBorrowStatus.since3Weeks
-                ? Colors.orange
-                : Colors.red;
+    // BookBorrowStatus? bookBorrowStatus = bookPupilBooks.isEmpty
+    //     ? null
+    //     : BookHelpers.getBorrowedStatus(bookPupilBooks.first);
+    // final Color borrowedColor = book.available
+    //     ? Colors.green
+    //     : bookBorrowStatus == BookBorrowStatus.since2Weeks
+    //         ? Colors.yellow
+    //         : bookBorrowStatus == BookBorrowStatus.since3Weeks
+    //             ? Colors.orange
+    //             : Colors.red;
     return ClipRRect(
       borderRadius: BorderRadius.circular(20),
       child: Card(
@@ -56,19 +58,19 @@ class BookCard extends WatchingWidget {
           surfaceTintColor: Colors.white,
           child: InkWell(
             onLongPress: () async {
-              if (!locator<SessionManager>().isAdmin.value) {
-                informationDialog(context, 'Keine Berechtigung',
-                    'Bücher können nur von Admins bearbeitet werden!');
-                return;
-              }
-              final bool? result = await confirmationDialog(
-                  context: context,
-                  title: 'Buch löschen',
-                  message:
-                      'Buch "${book.title}" wirklich löschen? ACHTUNG: Alle Ausleihen dieses Buchs werden werden ebenfalls gelöscht!');
-              if (result == true) {
-                await locator<BookManager>().deleteLibraryBook(book.bookId);
-              }
+              // if (!locator<SessionManager>().isAdmin.value) {
+              //   informationDialog(context, 'Keine Berechtigung',
+              //       'Bücher können nur von Admins bearbeitet werden!');
+              //   return;
+              // }
+              // final bool? result = await confirmationDialog(
+              //     context: context,
+              //     title: 'Buch löschen',
+              //     message:
+              //         'Buch "${book.title}" wirklich löschen? ACHTUNG: Alle Ausleihen dieses Buchs werden werden ebenfalls gelöscht!');
+              // if (result == true) {
+              //   await locator<BookManager>().deleteLibraryBook(book.bookId);
+              // }
             },
             child: Padding(
               padding: const EdgeInsets.only(top: 10, left: 15, right: 15),
@@ -81,19 +83,19 @@ class BookCard extends WatchingWidget {
                     child: InkWell(
                       onLongPress: (locator<SessionManager>().isAdmin.value)
                           ? () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                builder: (ctx) => NewBook(
-                                  isEdit: true,
-                                  bookAuthor: book.author,
-                                  bookId: book.bookId,
-                                  isbn: book.isbn,
-                                  bookReadingLevel: book.readingLevel,
-                                  bookTitle: book.title,
-                                  bookDescription: book.description,
-                                  bookImageId: book.imageId,
-                                  location: book.location,
-                                ),
-                              ));
+                              // Navigator.of(context).push(MaterialPageRoute(
+                              //   builder: (ctx) => NewBook(
+                              //     isEdit: true,
+                              //     bookAuthor: books.first.author,
+                              //     bookId: book.bookId,
+                              //     isbn: book.isbn,
+                              //     bookReadingLevel: book.readingLevel,
+                              //     bookTitle: book.title,
+                              //     bookDescription: book.description,
+                              //     bookImageId: book.imageId,
+                              //     location: book.location,
+                              //   ),
+                              // ));
                             }
                           : () {},
                       child: Row(
@@ -166,19 +168,6 @@ class BookCard extends WatchingWidget {
                                   ),
                                 ],
                               ),
-                              Row(children: [
-                                const Text('Buch-ID:'),
-                                const Gap(10),
-                                Text(
-                                  book.bookId,
-                                  overflow: TextOverflow.fade,
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                              ]),
                               Row(
                                 children: [
                                   const Text('LeseStufe:'),
@@ -194,40 +183,11 @@ class BookCard extends WatchingWidget {
                                   ),
                                 ],
                               ),
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text('Ablageort:'),
-                                  const Gap(10),
-                                  Text(
-                                    book.location,
-                                    overflow: TextOverflow.fade,
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                  const Spacer(),
-                                  CustomExpansionTileSwitch(
-                                    customExpansionTileController:
-                                        tileController,
-                                    expansionSwitchWidget: Container(
-                                      width: 25,
-                                      height: 25,
-                                      decoration: BoxDecoration(
-                                        color: borrowedColor,
-                                        shape: BoxShape.circle,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
                               Wrap(
                                 spacing: 2,
                                 children: [
                                   const Text('Tags: '),
-                                  for (final tag in book.bookTags!) ...[
+                                  for (final tag in book.bookTags) ...[
                                     const Gap(5),
                                     Chip(
                                       padding: const EdgeInsets.all(2),
@@ -266,7 +226,7 @@ class BookCard extends WatchingWidget {
                           final String? description = await longTextFieldDialog(
                               title: 'Beschreibung',
                               labelText: 'Beschreibung',
-                              textinField: book.description ?? '',
+                              textinField: book.description,
                               parentContext: context);
                           locator<BookManager>().updateBookProperty(
                             isbn: book.isbn,
@@ -274,7 +234,7 @@ class BookCard extends WatchingWidget {
                           );
                         },
                         child: Text(
-                          book.description ?? 'Keine Beschreibung',
+                          book.description,
                           style: const TextStyle(
                             fontSize: 14,
                             color: AppColors.interactiveColor,
@@ -283,14 +243,11 @@ class BookCard extends WatchingWidget {
                       ),
                     ],
                   ),
-                  CustomExpansionTileContent(
-                      title: null,
-                      tileController: tileController,
-                      widgetList: [
-                        ...bookPupilBooks.map((pupilBook) {
-                          return BookPupilCard(passedPupilBook: pupilBook);
-                        })
-                      ]),
+                  Column(
+                    children: books.map((book) {
+                      return LibraryBookCard(book: book);
+                    }).toList(),
+                  ),
                   const Gap(10),
                 ],
               ),

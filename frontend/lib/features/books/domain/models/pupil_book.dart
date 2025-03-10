@@ -5,7 +5,7 @@ import 'package:json_annotation/json_annotation.dart';
 part 'pupil_book.g.dart';
 
 @JsonSerializable()
-class PupilBook {
+class PupilBorrowedBook {
   @JsonKey(name: 'book_id')
   final String bookId;
   @JsonKey(name: 'lending_id')
@@ -23,7 +23,7 @@ class PupilBook {
   final String? state;
   final int? rating;
 
-  PupilBook(
+  PupilBorrowedBook(
       {required this.bookId,
       required this.lendingId,
       required this.lentAt,
@@ -34,7 +34,7 @@ class PupilBook {
       required this.state,
       required this.rating});
 
-  factory PupilBook.fromJson(Map<String, dynamic> json) =>
+  factory PupilBorrowedBook.fromJson(Map<String, dynamic> json) =>
       _$PupilBookFromJson(json);
 
   Map<String, dynamic> toJson() => _$PupilBookToJson(this);

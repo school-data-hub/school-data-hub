@@ -5,28 +5,28 @@ Env envFromJson(String str) => Env.fromJson(json.decode(str));
 String envToJson(Env data) => json.encode(data.toJson());
 
 class EnvsInStorage {
-  final String defalutEnv;
+  final String defaultEnv;
   final Map<String, Env> environmentsMap;
 
-  EnvsInStorage({required this.defalutEnv, required this.environmentsMap});
+  EnvsInStorage({required this.defaultEnv, required this.environmentsMap});
 
   EnvsInStorage copyWith({
-    String? defalutEnv,
+    String? defaultEnv,
     Map<String, Env>? environmentsMap,
   }) =>
       EnvsInStorage(
-        defalutEnv: defalutEnv ?? this.defalutEnv,
+        defaultEnv: defaultEnv ?? this.defaultEnv,
         environmentsMap: environmentsMap ?? this.environmentsMap,
       );
 
   factory EnvsInStorage.fromJson(Map<String, dynamic> json) => EnvsInStorage(
-        defalutEnv: json["defalutEnv"],
+        defaultEnv: json["defalutEnv"],
         environmentsMap: Map.from(json["environmentsMap"])
             .map((k, v) => MapEntry<String, Env>(k, Env.fromJson(v))),
       );
 
   Map<String, dynamic> toJson() => {
-        "defalutEnv": defalutEnv,
+        "defalutEnv": defaultEnv,
         "environmentsMap": environmentsMap,
       };
 }
@@ -44,19 +44,6 @@ class Env {
     required this.serverUrl,
   });
 
-  Env copyWith({
-    String? server,
-    String? key,
-    String? iv,
-    String? serverUrl,
-  }) =>
-      Env(
-        server: server ?? this.server,
-        key: key ?? this.key,
-        iv: iv ?? this.iv,
-        serverUrl: serverUrl ?? this.serverUrl,
-      );
-
   factory Env.fromJson(Map<String, dynamic> json) => Env(
         server: json["server"],
         key: json["key"],
@@ -70,4 +57,31 @@ class Env {
         "iv": iv,
         "server_url": serverUrl,
       };
+}
+
+class PopulatedEnvServerData {
+  final bool schoolSemester;
+  final bool schooldays;
+  final bool competences;
+  final bool supportCategories;
+
+  PopulatedEnvServerData({
+    required this.schoolSemester,
+    required this.schooldays,
+    required this.competences,
+    required this.supportCategories,
+  });
+
+  copyWith({
+    bool? schoolSemester,
+    bool? schooldays,
+    bool? competences,
+    bool? supportCategories,
+  }) =>
+      PopulatedEnvServerData(
+        schoolSemester: schoolSemester ?? this.schoolSemester,
+        schooldays: schooldays ?? this.schooldays,
+        competences: competences ?? this.competences,
+        supportCategories: supportCategories ?? this.supportCategories,
+      );
 }

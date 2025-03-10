@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/domain/env_manager.dart';
+import 'package:schuldaten_hub/common/domain/session_manager.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/theme/app_colors.dart';
 import 'package:schuldaten_hub/common/theme/styles.dart';
@@ -54,12 +55,12 @@ class NewBookPage extends StatelessWidget {
                                   borderRadius: BorderRadius.circular(10.0),
                                   child: UnencryptedImageInCard(
                                     documentImageData: DocumentImageData(
-                                        documentTag: controller.bookImageId!,
-                                        documentUrl:
-                                            '${locator<EnvManager>().env!.serverUrl}${BookApiService.getBookImageUrl(controller.widget.isbn)}',
-                                        size: 140),
+                                      documentTag: controller.bookImageId!,
+                                      documentUrl:
+                                          '${locator<EnvManager>().env!.serverUrl}${BookApiService.getBookImageUrl(controller.widget.isbn)}',
+                                      size: 220,
+                                    ),
                                   )),
-                              const Gap(20),
                             ],
                           ),
                         ),
@@ -103,13 +104,31 @@ class NewBookPage extends StatelessWidget {
                                 onChanged: (value) => controller
                                     .onChangedReadingLevelDropDown(value)),
                             const Gap(20),
-                            DropdownButtonFormField<String>(
-                              decoration: AppStyles.textFieldDecoration(
-                                  labelText: 'Ablageort'),
-                              items: controller.locationDropdownItems,
-                              value: controller.lastLocationValue,
-                              onChanged: (value) =>
-                                  controller.onChangedLocationDropDown(value!),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: DropdownButtonFormField<String>(
+                                    decoration: AppStyles.textFieldDecoration(
+                                        labelText: 'Ablageort'),
+                                    items: controller.locationDropdownItems,
+                                    value: controller.lastLocationValue,
+                                    onChanged: (value) => controller
+                                        .onChangedLocationDropDown(value!),
+                                  ),
+                                ),
+                                if (locator<SessionManager>()
+                                    .isAdmin
+                                    .value) ...[
+                                  const Gap(10),
+                                  InkWell(
+                                    onTap: () => controller.addLocation(),
+                                    child: const Icon(
+                                      Icons.add,
+                                      color: AppColors.interactiveColor,
+                                    ),
+                                  ),
+                                ]
+                              ],
                             ),
                           ],
                         ),

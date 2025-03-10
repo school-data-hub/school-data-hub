@@ -138,13 +138,15 @@ class BookApiService {
     return bookLocations;
   }
 
+  final _newBookLocationUrl = '/library_books/locations/new';
+
   Future<List<String>> postBookLocation(String location) async {
     final data = jsonEncode({"location": location});
 
     _notificationService.apiRunning(true);
 
     final Response response = await _client.post(
-      '${_baseUrl()}$_bookLocationsUrl',
+      '${_baseUrl()}$_newBookLocationUrl',
       data: data,
       options: _client.hubOptions,
     );
@@ -158,8 +160,9 @@ class BookApiService {
       throw ApiException('Failed to post book location', response.statusCode);
     }
 
-    final List<String> bookLocations =
-        (response.data as List).map((e) => e.toString()).toList();
+    final List<String> bookLocations = (response.data as List)
+        .map((e) => (e as Map<String, dynamic>)['location'].toString())
+        .toList();
 
     return bookLocations;
   }
@@ -194,7 +197,7 @@ class BookApiService {
 
   final _getBooksUrl = '/library_books/all';
 
-  Future<List<Book>> getLibraryBooks() async {
+  Future<List<BookProxy>> getLibraryBooks() async {
     _notificationService.apiRunning(true);
 
     final Response response = await _client.get(
@@ -213,8 +216,8 @@ class BookApiService {
     if (response.data == []) {
       return [];
     }
-    final List<Book> books =
-        (response.data as List).map((e) => Book.fromJson(e)).toList();
+    final List<BookProxy> books =
+        (response.data as List).map((e) => BookProxy.fromJson(e)).toList();
 
     return books;
   }
@@ -245,7 +248,7 @@ class BookApiService {
 
   static const _postLibraryBookUrl = '/library_books/new';
 
-  Future<Book> postLibraryBook({
+  Future<BookProxy> postLibraryBook({
     required int isbn,
     required String bookId,
     required String location,
@@ -272,7 +275,7 @@ class BookApiService {
       throw ApiException('Failed to post book', response.statusCode);
     }
 
-    Book newBook = Book.fromJson(response.data);
+    BookProxy newBook = BookProxy.fromJson(response.data);
 
     return newBook;
   }
@@ -281,7 +284,7 @@ class BookApiService {
     return '/books/$bookId';
   }
 
-  Future<Book> patchBookData({
+  Future<BookProxy> patchBookData({
     required int isbn,
     String? title,
     String? author,
@@ -316,7 +319,7 @@ class BookApiService {
       throw ApiException('Failed to update a book', response.statusCode);
     }
 
-    final Book updatedBook = Book.fromJson(response.data);
+    final BookProxy updatedBook = BookProxy.fromJson(response.data);
 
     return updatedBook;
   }
@@ -327,7 +330,7 @@ class BookApiService {
     return '/books/$isbn/file';
   }
 
-  Future<Book> patchBookImage(File imageFile, int isbn) async {
+  Future<BookProxy> patchBookImage(File imageFile, int isbn) async {
     final encryptedFile = await customEncrypter.encryptFile(imageFile);
 
     String fileName = encryptedFile.path.split('/').last;
@@ -355,7 +358,7 @@ class BookApiService {
       throw ApiException('Failed to upload book image', response.statusCode);
     }
 
-    final Book book = Book.fromJson(response.data);
+    final BookProxy book = BookProxy.fromJson(response.data);
 
     return book;
   }
@@ -422,7 +425,7 @@ class BookApiService {
     return '/books/$bookId';
   }
 
-  Future<Book> getLibraryBookById(String bookId) async {
+  Future<BookProxy> getLibraryBookById(String bookId) async {
     _notificationService.apiRunning(true);
 
     final Response response = await _client.get(
@@ -438,7 +441,7 @@ class BookApiService {
       throw ApiException('Failed to fetch a book', response.statusCode);
     }
 
-    final Book book = Book.fromJson(response.data);
+    final BookProxy book = BookProxy.fromJson(response.data);
 
     return book;
   }

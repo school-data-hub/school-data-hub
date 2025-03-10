@@ -5,12 +5,13 @@ import 'package:schuldaten_hub/features/pupil/domain/pupil_manager.dart';
 enum BookBorrowStatus { since2Weeks, since3Weeks, since5weeks }
 
 class BookHelpers {
-  static List<PupilBook> pupilBooksLinkedToBook({required String bookId}) {
+  static List<PupilBorrowedBook> pupilBooksLinkedToBook(
+      {required String bookId}) {
     // returned starting with the most recent
     final pupilBooks = locator<PupilManager>()
         .allPupils
         .map((pupil) => pupil.pupilBooks)
-        .expand((element) => element as Iterable<PupilBook>)
+        .expand((element) => element as Iterable<PupilBorrowedBook>)
         .where((pupilBook) => pupilBook.bookId.contains(bookId))
         .toList();
 
@@ -18,7 +19,7 @@ class BookHelpers {
     return pupilBooks;
   }
 
-  static BookBorrowStatus getBorrowedStatus(PupilBook book) {
+  static BookBorrowStatus getBorrowedStatus(PupilBorrowedBook book) {
     final DateTime now = DateTime.now();
     final Duration difference = now.difference(book.lentAt);
     if (difference.inDays < 21) {

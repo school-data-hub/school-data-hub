@@ -8,7 +8,7 @@ import 'package:schuldaten_hub/common/domain/session_helper_functions.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/theme/app_colors.dart';
 import 'package:schuldaten_hub/common/utils/extensions.dart';
-import 'package:schuldaten_hub/common/widgets/dialogs/date_picker.dart';
+import 'package:schuldaten_hub/common/widgets/dialogs/schoolday_date_picker.dart';
 import 'package:schuldaten_hub/common/widgets/dialogs/confirmation_dialog.dart';
 import 'package:schuldaten_hub/common/widgets/dialogs/information_dialog.dart';
 import 'package:schuldaten_hub/common/widgets/dialogs/long_textfield_dialog.dart';

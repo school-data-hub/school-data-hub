@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/utils/extensions.dart';
-import 'package:schuldaten_hub/common/widgets/dialogs/date_picker.dart';
+import 'package:schuldaten_hub/common/widgets/dialogs/schoolday_date_picker.dart';
 import 'package:schuldaten_hub/features/attendance/domain/attendance_manager.dart';
 import 'package:schuldaten_hub/features/pupil/domain/models/pupil_proxy.dart';
 import 'package:schuldaten_hub/features/pupil/domain/pupil_manager.dart';

@@ -21,12 +21,12 @@ import 'package:schuldaten_hub/features/pupil/domain/pupil_manager.dart';
 class PupilBookCard extends StatelessWidget {
   const PupilBookCard(
       {required this.pupilBook, required this.pupilId, super.key});
-  final PupilBook pupilBook;
+  final PupilBorrowedBook pupilBook;
   final int pupilId;
 
   @override
   Widget build(BuildContext context) {
-    final Book book =
+    final BookProxy book =
         locator<BookManager>().getLibraryBookByBookId(pupilBook.bookId)!;
     updatepupilBookRating(int rating) {
       locator<PupilManager>()

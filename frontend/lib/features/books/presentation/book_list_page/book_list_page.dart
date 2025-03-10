@@ -19,10 +19,13 @@ class BookListPage extends WatchingWidget {
   @override
   Widget build(BuildContext context) {
     bool filtersOn = watchValue((FiltersStateManager x) => x.filtersActive);
+    final Map<int, List<BookProxy>> isbnBooks =
+        watchValue((BookManager x) => x.booksByIsbn);
 
-    //Session session = watchValue((SessionManager x) => x.credentials);
-    List<Book> books = watchValue((BookManager x) => x.books);
-    callOnce((context) => locator<BookManager>().getLibraryBooks());
+    //List<Book> books = watchValue((BookManager x) => x.books);
+    callOnce((context) async {
+      await locator<BookManager>().getLibraryBooks();
+    });
     return Scaffold(
       backgroundColor: AppColors.canvasColor,
       appBar: AppBar(
@@ -47,7 +50,7 @@ class BookListPage extends WatchingWidget {
       ),
       body: RefreshIndicator(
         onRefresh: () async => locator<BookManager>().getLibraryBooks(),
-        child: books.isEmpty
+        child: isbnBooks.isEmpty
             ? const Center(
                 child: Padding(
                   padding: EdgeInsets.all(30.0),
@@ -76,7 +79,7 @@ class BookListPage extends WatchingWidget {
                             ),
                             const Gap(10),
                             Text(
-                              books.length.toString(),
+                              isbnBooks.length.toString(),
                               style: const TextStyle(
                                 color: Colors.black,
                                 fontWeight: FontWeight.bold,
@@ -118,7 +121,7 @@ class BookListPage extends WatchingWidget {
                           ],
                         ),
                       ),
-                      books.isEmpty
+                      isbnBooks.isEmpty
                           ? const Center(
                               child: Padding(
                                 padding: EdgeInsets.all(8.0),
@@ -130,9 +133,11 @@ class BookListPage extends WatchingWidget {
                             )
                           : Expanded(
                               child: ListView.builder(
-                                itemCount: books.length,
+                                itemCount: isbnBooks.keys.length,
                                 itemBuilder: (BuildContext context, int index) {
-                                  return BookCard(book: books[index]);
+                                  final isbn = isbnBooks.keys.elementAt(index);
+
+                                  return BookCard(isbn: isbn);
                                 },
                               ),
                             ),

@@ -91,7 +91,7 @@ class PupilData {
   @JsonKey(name: 'pupil_schoolday_events')
   final List<SchooldayEvent> schooldayEvents;
   @JsonKey(name: 'pupil_books')
-  final List<PupilBook> pupilBooks;
+  final List<PupilBorrowedBook> pupilBooks;
 
   @JsonKey(name: 'support_goals')
   final List<SupportGoal> supportGoals;
@@ -140,7 +140,7 @@ class PupilData {
     bool? emergencyCare,
     List<SupportCategoryStatus>? supportCategoryStatuses,
     List<SchooldayEvent>? schooldayEvents,
-    List<PupilBook>? pupilBooks,
+    List<PupilBorrowedBook>? pupilBooks,
     List<SupportGoal>? supportGoals,
     List<MissedClass>? pupilMissedClasses,
     List<PupilWorkbook>? pupilWorkbooks,

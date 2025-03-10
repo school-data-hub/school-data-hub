@@ -53,12 +53,12 @@ class SettingsPage extends WatchingWidget {
                   SettingsTile(
                     leading: const Icon(Icons.perm_device_info_rounded),
                     title: Text(
-                        'Versionsnummer: ${locator<EnvManager>().packageInfo.value.version}'),
+                        'Versionsnummer: ${locator<EnvManager>().packageInfo.version}'),
                   ),
                   SettingsTile(
                     leading: const Icon(Icons.build_rounded),
                     title: Text(
-                        'Build: ${locator<EnvManager>().packageInfo.value.buildNumber}'),
+                        'Build: ${locator<EnvManager>().packageInfo.buildNumber}'),
                   ),
                   SettingsTile.navigation(
                     leading: const Icon(Icons.info_rounded),
@@ -74,8 +74,8 @@ class SettingsPage extends WatchingWidget {
                         ),
                         applicationName: 'Schuldaten App',
                         applicationVersion:
-                            locator<EnvManager>().packageInfo.value.version,
-                        applicationLegalese: '© 2024 Schuldaten Hub'),
+                            locator<EnvManager>().packageInfo.version,
+                        applicationLegalese: '© 2025 Schuldaten Hub'),
                   )
                 ],
               ),

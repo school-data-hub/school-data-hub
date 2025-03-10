@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -84,7 +86,32 @@ class MainMenuBottomNavigation extends WatchingWidget {
         handler: (context, value, cancel) {
           value ? showHeavyLoadingOverlay(context) : hideLoadingOverlay();
         });
+    callOnce((context) async {
+      final envDataIncomplete =
+          locator<EnvManager>().anyPopulatedEnvServerDataIsFalse();
+      if (envDataIncomplete) {
+        final serverDataStatus = locator<EnvManager>().populatedEnvServerData;
+        final List<String> missingFields = [];
+        if (!serverDataStatus.schoolSemester) {
+          missingFields.add('Schulhalbjahr');
+        }
+        if (!serverDataStatus.schooldays) {
+          missingFields.add('Schultage');
+        }
+        if (!serverDataStatus.competences) {
+          missingFields.add('Kompetenzen');
+        }
+        if (!serverDataStatus.supportCategories) {
+          missingFields.add('Förderkategorien');
+        }
+        final String missingData = missingFields.join('\n');
 
+        unawaited(Future<void>.delayed(const Duration(milliseconds: 500), () {
+          locator<NotificationService>().showInformationDialog(
+              'Es fehlen noch diese Daten im Server:\n\n$missingData');
+        }));
+      }
+    });
     return Scaffold(
       backgroundColor: AppColors.canvasColor,
       body: PageView(

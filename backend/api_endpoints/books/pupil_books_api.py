@@ -99,7 +99,7 @@ def update_PupilBook(current_user: User, lending_id, json_data):
             case "rating":
                 pupil_book.rating = json_data[key]
             case "returned_at":
-                borrowed_book: Optional[Book] = Book.query.filter_by(
+                borrowed_book: Optional[LibraryBook] = LibraryBook.query.filter_by(
                     book_id=pupil_book.book_id
                 ).first()
 

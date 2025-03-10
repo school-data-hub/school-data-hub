@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
 import 'package:schuldaten_hub/common/theme/app_colors.dart';
 import 'package:schuldaten_hub/features/pupil/domain/models/pupil_proxy.dart';
 import 'package:schuldaten_hub/features/pupil/domain/pupil_manager.dart';
+import 'package:schuldaten_hub/features/pupil/presentation/pupil_profile_page/widgets/dialogs/language_dialog_dropdown.dart';
 
 // based on https://mobikul.com/creating-stateful-dialog-form-in-flutter/
 
@@ -26,309 +26,35 @@ Future<void> languageDialog(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        children: [
-                          const Row(
-                            children: [
-                              Icon(Icons.hearing),
-                              Gap(5),
-                              Text(
-                                "Versteht: ",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18,
-                                ),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              DropdownButtonHideUnderline(
-                                child: DropdownButton<String>(
-                                    onTap: () {
-                                      FocusManager.instance.primaryFocus!
-                                          .unfocus();
-                                    },
-                                    value: dropdownUnderstandValue,
-                                    items: const [
-                                      DropdownMenuItem(
-                                          value: '0',
-                                          child: Center(
-                                            child: Text("nicht",
-                                                textAlign: TextAlign.center,
-                                                style: TextStyle(
-                                                  color: AppColors
-                                                      .interactiveColor,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 18,
-                                                )),
-                                          )),
-                                      DropdownMenuItem(
-                                          value: '1',
-                                          child: Center(
-                                            child: Text("einfache Anliegen",
-                                                textAlign: TextAlign.center,
-                                                style: TextStyle(
-                                                  color: AppColors
-                                                      .interactiveColor,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 18,
-                                                )),
-                                          )),
-                                      DropdownMenuItem(
-                                          value: '2',
-                                          child: Center(
-                                            child: Text(
-                                                "komplexere Informationen",
-                                                textAlign: TextAlign.center,
-                                                style: TextStyle(
-                                                  color: AppColors
-                                                      .interactiveColor,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 18,
-                                                )),
-                                          )),
-                                      DropdownMenuItem(
-                                          value: '3',
-                                          child: Center(
-                                            child: Text("ohne Probleme",
-                                                textAlign: TextAlign.center,
-                                                style: TextStyle(
-                                                  color: AppColors
-                                                      .interactiveColor,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 18,
-                                                )),
-                                          )),
-                                      DropdownMenuItem(
-                                          value: '4',
-                                          child: Center(
-                                            child: Text("unbekannt",
-                                                textAlign: TextAlign.center,
-                                                style: TextStyle(
-                                                  color: AppColors
-                                                      .interactiveColor,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 18,
-                                                )),
-                                          )),
-                                    ],
-                                    onChanged: (newvalue) {
-                                      setState(() {
-                                        dropdownUnderstandValue = newvalue!;
-                                      });
-                                    }),
-                              ),
-                            ],
-                          )
-                        ],
-                      ),
+                    LanguageDialogDropdown(
+                      value: dropdownUnderstandValue,
+                      onChanged: (newValue) {
+                        setState(() {
+                          dropdownUnderstandValue = newValue!;
+                        });
+                      },
+                      label: "Versteht",
+                      icon: Icons.hearing,
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        children: [
-                          const Row(
-                            children: [
-                              Icon(Icons.chat_bubble_outline_rounded),
-                              Gap(5),
-                              Text("spricht: ",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 18,
-                                  )),
-                            ],
-                          ),
-                          const Gap(10),
-                          Row(
-                            children: [
-                              DropdownButtonHideUnderline(
-                                child: DropdownButton<String>(
-                                    onTap: () {
-                                      FocusManager.instance.primaryFocus!
-                                          .unfocus();
-                                    },
-                                    value: dropdownSpeakValue,
-                                    items: const [
-                                      DropdownMenuItem(
-                                          value: '0',
-                                          child: Center(
-                                            child: Text("nicht",
-                                                textAlign: TextAlign.center,
-                                                style: TextStyle(
-                                                  color: AppColors
-                                                      .interactiveColor,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 18,
-                                                )),
-                                          )),
-                                      DropdownMenuItem(
-                                          value: '1',
-                                          child: Center(
-                                            child: Text("einfache Anliegen",
-                                                textAlign: TextAlign.center,
-                                                style: TextStyle(
-                                                  color: AppColors
-                                                      .interactiveColor,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 18,
-                                                )),
-                                          )),
-                                      DropdownMenuItem(
-                                          value: '2',
-                                          child: Center(
-                                            child: Text(
-                                                "komplexere Informationen",
-                                                textAlign: TextAlign.center,
-                                                style: TextStyle(
-                                                  color: AppColors
-                                                      .interactiveColor,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 18,
-                                                )),
-                                          )),
-                                      DropdownMenuItem(
-                                          value: '3',
-                                          child: Center(
-                                            child: Text("ohne Probleme",
-                                                textAlign: TextAlign.center,
-                                                style: TextStyle(
-                                                  color: AppColors
-                                                      .interactiveColor,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 18,
-                                                )),
-                                          )),
-                                      DropdownMenuItem(
-                                          value: '4',
-                                          child: Center(
-                                            child: Text("unbekannt",
-                                                textAlign: TextAlign.center,
-                                                style: TextStyle(
-                                                  color: AppColors
-                                                      .interactiveColor,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 18,
-                                                )),
-                                          )),
-                                    ],
-                                    onChanged: (newvalue) {
-                                      setState(() {
-                                        dropdownSpeakValue = newvalue!;
-                                      });
-                                    }),
-                              ),
-                            ],
-                          )
-                        ],
-                      ),
+                    LanguageDialogDropdown(
+                      value: dropdownSpeakValue,
+                      onChanged: (newValue) {
+                        setState(() {
+                          dropdownSpeakValue = newValue!;
+                        });
+                      },
+                      label: "spricht",
+                      icon: Icons.chat_bubble_outline_rounded,
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        children: [
-                          const Row(
-                            children: [
-                              Icon(Icons.book),
-                              Gap(5),
-                              Text("liest: ",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 18,
-                                  )),
-                              Gap(5),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              DropdownButtonHideUnderline(
-                                child: DropdownButton<String>(
-                                    onTap: () {
-                                      FocusManager.instance.primaryFocus!
-                                          .unfocus();
-                                    },
-                                    value: dropdownReadValue,
-                                    items: const [
-                                      DropdownMenuItem(
-                                          value: '0',
-                                          child: Center(
-                                            child: Text("nicht",
-                                                textAlign: TextAlign.center,
-                                                style: TextStyle(
-                                                  color: AppColors
-                                                      .interactiveColor,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 18,
-                                                )),
-                                          )),
-                                      DropdownMenuItem(
-                                          value: '1',
-                                          child: Center(
-                                            child: Text("einfache Anliegen",
-                                                textAlign: TextAlign.center,
-                                                style: TextStyle(
-                                                  color: AppColors
-                                                      .interactiveColor,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 18,
-                                                )),
-                                          )),
-                                      DropdownMenuItem(
-                                          value: '2',
-                                          child: Center(
-                                            child: Text(
-                                                "komplexere Informationen",
-                                                textAlign: TextAlign.center,
-                                                style: TextStyle(
-                                                  color: AppColors
-                                                      .interactiveColor,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 18,
-                                                )),
-                                          )),
-                                      DropdownMenuItem(
-                                          value: '3',
-                                          child: Center(
-                                            child: Text("ohne Probleme",
-                                                textAlign: TextAlign.center,
-                                                style: TextStyle(
-                                                  color: AppColors
-                                                      .interactiveColor,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 18,
-                                                )),
-                                          )),
-                                      DropdownMenuItem(
-                                          value: '4',
-                                          child: Center(
-                                            child: Text("unbekannt",
-                                                textAlign: TextAlign.center,
-                                                style: TextStyle(
-                                                  color: AppColors
-                                                      .interactiveColor,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 18,
-                                                )),
-                                          )),
-                                    ],
-                                    onChanged: (newvalue) {
-                                      setState(() {
-                                        dropdownReadValue = newvalue!;
-                                      });
-                                    }),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
+                    LanguageDialogDropdown(
+                      value: dropdownReadValue,
+                      onChanged: (newValue) {
+                        setState(() {
+                          dropdownReadValue = newValue!;
+                        });
+                      },
+                      label: "liest",
+                      icon: Icons.book,
                     ),
                   ],
                 )),

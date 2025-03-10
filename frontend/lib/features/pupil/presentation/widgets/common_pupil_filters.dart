@@ -40,6 +40,7 @@ class CommonPupilFiltersWidget extends WatchingWidget {
   Widget build(BuildContext context) {
     final schoolGradeFilters = locator<PupilsFilter>().schoolGradeFilters;
     final groupFilters = locator<PupilsFilter>().groupFilters;
+
     final genderFilters = locator<PupilsFilter>().genderFilters;
 
     return Column(

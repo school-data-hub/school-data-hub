@@ -56,7 +56,7 @@ PupilData _$PupilDataFromJson(Map<String, dynamic> json) => PupilData(
           .map((e) => SchooldayEvent.fromJson(e as Map<String, dynamic>))
           .toList(),
       pupilBooks: (json['pupil_books'] as List<dynamic>)
-          .map((e) => PupilBook.fromJson(e as Map<String, dynamic>))
+          .map((e) => PupilBorrowedBook.fromJson(e as Map<String, dynamic>))
           .toList(),
       supportGoals: (json['support_goals'] as List<dynamic>)
           .map((e) => SupportGoal.fromJson(e as Map<String, dynamic>))

@@ -12,7 +12,7 @@ import 'package:schuldaten_hub/features/attendance/domain/models/missed_class.da
 import 'package:schuldaten_hub/features/pupil/domain/models/pupil_data.dart';
 import 'package:schuldaten_hub/features/pupil/domain/models/pupil_proxy.dart';
 import 'package:schuldaten_hub/features/pupil/domain/pupil_manager.dart';
-import 'package:schuldaten_hub/features/schooldays/domain/models/schoolday.dart';
+import 'package:schuldaten_hub/features/schooldays/domain/models/school_semester.dart';
 import 'package:schuldaten_hub/features/schooldays/domain/schoolday_manager.dart';
 
 enum MissedType {
