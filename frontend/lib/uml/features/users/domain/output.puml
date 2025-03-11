@@ -1,0 +1,54 @@
+@startuml
+
+skinparam backgroundColor #000000
+
+skinparam {
+    ClassStereotypeFontColor #FFD700
+    ClassStereotypeFontSize 12
+    ClassStereotypeFontStyle bold
+}
+skinparam class {
+    BackgroundColor #333333
+    BorderColor #000000
+    ArrowColor #FFFFFF
+    FontColor #D3D3D3
+}
+skinparam classAttribute {
+    FontColor #D3D3D
+}
+class User {
++admin: <font color=#faff00>bool</font>
++publicId: <font color=#faff00>String</font>
++name: <font color=#faff00>String</font>
++role: <font color=#faff00>String</font>
++tutoring: <font color=#faff00>String?</font>
++credit: <font color=#faff00>int</font>
++timeUnits: <font color=#faff00>int</font>
++contact: <font color=#faff00>String?</font>
+---
++<font color=#6fa8dc>toJson(</font><font color=#6fa8dc>):</font> <font color=#faff00>Map<String, dynamic></font>
+}
+class UserManager {
+-_users: <font color=#ffd700>ValueNotifier<List<User>>([])</font>
++userApiService: <font color=#faff00>UserApiService()</font>
++notificationService: <font color=#faff00>locator<NotificationService>()</font>
+---
++<font color=#c36dfd>get</font> <font color=#6fa8dc>users</font> => <font color=#ffd700>ValueListenable<List<User>></font>
++<font color=#6fa8dc>init(</font><font color=#6fa8dc>):</font> <font color=#faff00>Future<UserManager></font>
++<font color=#6fa8dc>fetchUsers(</font><font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>createUser(</font><font color=#faff00>String</font> <font color=#f4665b>name</font>, <font color=#faff00>String</font> <font color=#f4665b>password</font>, <font color=#faff00>bool</font> <font color=#f4665b>isAdmin</font>, <font color=#faff00>int</font> <font color=#f4665b>timeUnits</font>, <font color=#faff00>int</font> <font color=#f4665b>credit</font>, <font color=#faff00>String</font> <font color=#f4665b>contact</font>, <font color=#faff00>String?</font> <font color=#f4665b>role</font>, <font color=#faff00>String?</font> <font color=#f4665b>tutoring</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>changePassword(</font><font color=#faff00>String</font> <font color=#f4665b>oldPassword</font>, <font color=#faff00>String</font> <font color=#f4665b>newPassword</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>updateUserProperties(</font><font color=#faff00>User</font> <font color=#f4665b>user</font>, <font color=#faff00>bool?</font> <font color=#f4665b>admin</font>, <font color=#faff00>String?</font> <font color=#f4665b>contact</font>, <font color=#faff00>int?</font> <font color=#f4665b>credit</font>, <font color=#faff00>String?</font> <font color=#f4665b>name</font>, <font color=#faff00>String?</font> <font color=#f4665b>role</font>, <font color=#faff00>int?</font> <font color=#f4665b>timeUnits</font>, <font color=#faff00>String?</font> <font color=#f4665b>tutoring</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>deleteUser(</font><font color=#faff00>User</font> <font color=#f4665b>user</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>setUsers(</font><font color=#faff00>List<User></font> <font color=#f4665b>users</font>, <font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#6fa8dc>addUser(</font><font color=#faff00>User</font> <font color=#f4665b>user</font>, <font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#6fa8dc>removeUser(</font><font color=#faff00>User</font> <font color=#f4665b>user</font>, <font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#6fa8dc>updateUser(</font><font color=#faff00>User</font> <font color=#f4665b>user</font>, <font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#6fa8dc>clearUsers(</font><font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#6fa8dc>removeUsers(</font><font color=#faff00>List<User></font> <font color=#f4665b>users</font>, <font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#6fa8dc>addUsers(</font><font color=#faff00>List<User></font> <font color=#f4665b>users</font>, <font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#6fa8dc>updateUsers(</font><font color=#faff00>List<User></font> <font color=#f4665b>users</font>, <font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#6fa8dc>addOrUpdateUser(</font><font color=#faff00>User</font> <font color=#f4665b>user</font>, <font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#6fa8dc>increaseUsersCredit(</font><font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
+}
+@enduml

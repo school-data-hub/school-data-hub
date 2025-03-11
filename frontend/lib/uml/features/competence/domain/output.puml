@@ -1,0 +1,134 @@
+@startuml
+
+skinparam backgroundColor #000000
+
+skinparam {
+    ClassStereotypeFontColor #FFD700
+    ClassStereotypeFontSize 12
+    ClassStereotypeFontStyle bold
+}
+skinparam class {
+    BackgroundColor #333333
+    BorderColor #000000
+    ArrowColor #FFFFFF
+    FontColor #D3D3D3
+}
+skinparam classAttribute {
+    FontColor #D3D3D
+}
+class CompetenceHelper {
+---
++<font color=#6fa8dc>sortCompetences(</font><font color=#faff00>List<Competence></font> <font color=#f4665b>competences</font>, <font color=#6fa8dc>):</font> <font color=#faff00>List<Competence></font>
++<font color=#6fa8dc>getLastCompetenceCheckOfCompetence(</font><font color=#faff00>PupilProxy</font> <font color=#f4665b>pupil</font>, <font color=#faff00>int</font> <font color=#f4665b>competenceId</font>, <font color=#6fa8dc>):</font> <font color=#faff00>CompetenceCheck?</font>
++<font color=#6fa8dc>getGroupCompetenceCheckFromPupil(</font><font color=#faff00>PupilProxy</font> <font color=#f4665b>pupil</font>, <font color=#faff00>String</font> <font color=#f4665b>groupId</font>, <font color=#6fa8dc>):</font> <font color=#faff00>CompetenceCheck?</font>
++<font color=#6fa8dc>generateRootCompetencesMap(</font><font color=#faff00>List<Competence></font> <font color=#f4665b>competences</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Map<int, int></font>
++<font color=#6fa8dc>getCompetenceColor(</font><font color=#faff00>int</font> <font color=#f4665b>competenceId</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Color</font>
++<font color=#6fa8dc>getRootCompetenceColor(</font><font color=#faff00>RootCompetenceType</font> <font color=#f4665b>rootCompetenceType</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Color</font>
++<font color=#6fa8dc>getCompetenceCheckSymbol(</font><font color=#faff00>int</font> <font color=#f4665b>status</font>, <font color=#faff00>double</font> <font color=#f4665b>size</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Widget</font>
++<font color=#6fa8dc>getLastCompetenceCheckSymbol(</font><font color=#faff00>PupilProxy</font> <font color=#f4665b>pupil</font>, <font color=#faff00>int</font> <font color=#f4665b>competenceId</font>, <font color=#faff00>double</font> <font color=#f4665b>size</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Widget</font>
++<font color=#6fa8dc>getCompetenceChecksMappedToCompetenceIdsForThisPupil(</font><font color=#faff00>int</font> <font color=#f4665b>pupilId</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Map<int, List<CompetenceCheck>></font>
++<font color=#6fa8dc>getAllowedCompetencesForThisPupil(</font><font color=#faff00>PupilProxy</font> <font color=#f4665b>pupil</font>, <font color=#6fa8dc>):</font> <font color=#faff00>List<Competence></font>
++<font color=#6fa8dc>competenceChecksStats(</font><font color=#faff00>PupilProxy</font> <font color=#f4665b>pupil</font>, <font color=#6fa8dc>):</font> <font color=#faff00>({int total, int checked})</font>
++<font color=#6fa8dc>getFilteredPupilsByCompetence(</font><font color=#faff00>Competence</font> <font color=#f4665b>competence</font>, <font color=#6fa8dc>):</font> <font color=#faff00>List<PupilProxy></font>
+}
+class CompetenceManager {
+-_competences: <font color=#ffd700>ValueNotifier<List<Competence>>([])</font>
+-_isRunning: <font color=#ffd700>ValueNotifier<bool>(false)</font>
+-_rootCompetencesMap: <font color=#faff00>Map<int, int></font>
++notificationService: <font color=#faff00>locator<NotificationService>()</font>
+-_competenceApiService: <font color=#faff00>CompetenceApiService()</font>
+-_competenceCheckApiService: <font color=#faff00>CompetenceCheckApiService()</font>
+---
++<font color=#c36dfd>get</font> <font color=#6fa8dc>competences</font> => <font color=#ffd700>ValueListenable<List<Competence>></font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>isRunning</font> => <font color=#ffd700>ValueListenable<bool></font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>rootCompetencesMap</font> => <font color=#faff00>Map<int, int></font>
++<font color=#6fa8dc>getCompetenceById(</font><font color=#faff00>int</font> <font color=#f4665b>competenceId</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Competence</font>
++<font color=#6fa8dc>init(</font><font color=#6fa8dc>):</font> <font color=#faff00>Future<CompetenceManager></font>
++<font color=#6fa8dc>clearData(</font><font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#6fa8dc>firstFetchCompetences(</font><font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>fetchCompetences(</font><font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>postNewCompetence(</font><font color=#faff00>int?</font> <font color=#f4665b>parentCompetence</font>, <font color=#faff00>String</font> <font color=#f4665b>competenceName</font>, <font color=#faff00>String</font> <font color=#f4665b>competenceLevel</font>, <font color=#faff00>String</font> <font color=#f4665b>indicators</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>updateCompetenceProperty(</font><font color=#faff00>int</font> <font color=#f4665b>competenceId</font>, <font color=#faff00>String?</font> <font color=#f4665b>competenceName</font>, <font color=#faff00>String?</font> <font color=#f4665b>competenceLevel</font>, <font color=#faff00>String?</font> <font color=#f4665b>indicators</font>, <font color=#faff00>int?</font> <font color=#f4665b>order</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>deleteCompetence(</font><font color=#faff00>int</font> <font color=#f4665b>competenceId</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>postCompetenceCheck(</font><font color=#faff00>int</font> <font color=#f4665b>pupilId</font>, <font color=#faff00>int</font> <font color=#f4665b>competenceId</font>, <font color=#faff00>int</font> <font color=#f4665b>competenceStatus</font>, <font color=#faff00>String</font> <font color=#f4665b>competenceComment</font>, <font color=#faff00>String?</font> <font color=#f4665b>groupId</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>postCompetenceCheckWithFile(</font><font color=#faff00>int</font> <font color=#f4665b>pupilId</font>, <font color=#faff00>int</font> <font color=#f4665b>competenceId</font>, <font color=#faff00>int</font> <font color=#f4665b>competenceStatus</font>, <font color=#faff00>String</font> <font color=#f4665b>competenceComment</font>, <font color=#faff00>String?</font> <font color=#f4665b>groupId</font>, <font color=#faff00>File</font> <font color=#f4665b>file</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>updateCompetenceCheck(</font><font color=#faff00>String</font> <font color=#f4665b>competenceCheckId</font>, <font color=#faff00>int?</font> <font color=#f4665b>competenceStatus</font>, <font color=#faff00>String?</font> <font color=#f4665b>competenceComment</font>, <font color=#faff00>DateTime?</font> <font color=#f4665b>createdAt</font>, <font color=#faff00>String?</font> <font color=#f4665b>createdBy</font>, <font color=#faff00>bool?</font> <font color=#f4665b>isReport</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>deleteCompetenceCheck(</font><font color=#faff00>String</font> <font color=#f4665b>competenceCheckId</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>postCompetenceCheckFile(</font><font color=#faff00>String</font> <font color=#f4665b>competenceCheckId</font>, <font color=#faff00>File</font> <font color=#f4665b>file</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>deleteCompetenceCheckFile(</font><font color=#faff00>String</font> <font color=#f4665b>competenceCheckId</font>, <font color=#faff00>String</font> <font color=#f4665b>fileId</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>findCompetenceById(</font><font color=#faff00>int</font> <font color=#f4665b>competenceId</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Competence</font>
++<font color=#6fa8dc>findRootCompetence(</font><font color=#faff00>Competence</font> <font color=#f4665b>competence</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Competence</font>
++<font color=#6fa8dc>findRootCompetenceById(</font><font color=#faff00>int</font> <font color=#f4665b>competenceId</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Competence</font>
++<font color=#6fa8dc>isCompetenceWithChildren(</font><font color=#faff00>Competence</font> <font color=#f4665b>competence</font>, <font color=#6fa8dc>):</font> <font color=#faff00>bool</font>
+}
+class CompetenceFilterManager {
+-_filterState: <font color=#ffd700>ValueNotifier<Map<CompetenceFilter, bool>>(initialCompetenceFilterValues)</font>
+-_filteredCompetences: <font color=#ffd700>ValueNotifier<List<Competence>>(locator<CompetenceManager>().competences.value)</font>
+-_filtersOn: <font color=#ffd700>ValueNotifier<bool>(false)</font>
+---
++<font color=#c36dfd>get</font> <font color=#6fa8dc>filterState</font> => <font color=#ffd700>ValueListenable<Map<CompetenceFilter, bool>></font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>filteredCompetences</font> => <font color=#ffd700>ValueListenable<List<Competence>></font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>filtersOn</font> => <font color=#ffd700>ValueListenable<bool></font>
++<font color=#6fa8dc>refreshFilteredCompetences(</font><font color=#faff00>List<Competence></font> <font color=#f4665b>competences</font>, <font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#6fa8dc>resetFilters(</font><font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#6fa8dc>setFilter(</font><font color=#faff00>CompetenceFilter</font> <font color=#f4665b>filter</font>, <font color=#faff00>bool</font> <font color=#f4665b>isActive</font>, <font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#6fa8dc>filterCompetences(</font><font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
+}
+class Competence {
++competenceId: <font color=#faff00>int</font>
++competenceLevel: <font color=#faff00>String?</font>
++competenceName: <font color=#faff00>String</font>
++parentCompetence: <font color=#faff00>int?</font>
++indicators: <font color=#faff00>String?</font>
++order: <font color=#faff00>int?</font>
+---
++<font color=#6fa8dc>toJson(</font><font color=#6fa8dc>):</font> <font color=#faff00>Map<String, dynamic></font>
+}
+class CompetenceCheck {
++checkId: <font color=#faff00>String</font>
++comment: <font color=#faff00>String</font>
++competenceId: <font color=#faff00>int</font>
++competenceStatus: <font color=#faff00>int</font>
++createdAt: <font color=#faff00>DateTime</font>
++createdBy: <font color=#faff00>String</font>
++pupilId: <font color=#faff00>int</font>
++valueFactor: <font color=#faff00>double?</font>
++groupName: <font color=#faff00>String?</font>
++groupId: <font color=#faff00>String?</font>
++competenceCheckFiles: <font color=#faff00>List<CompetenceCheckFile>?</font>
+---
++<font color=#6fa8dc>toJson(</font><font color=#6fa8dc>):</font> <font color=#faff00>Map<String, dynamic></font>
+}
+CompetenceCheck ..> DateTime
+class CompetenceCheckFile {
++checkId: <font color=#faff00>String</font>
++fileId: <font color=#faff00>String</font>
+---
++<font color=#6fa8dc>toJson(</font><font color=#6fa8dc>):</font> <font color=#faff00>Map<String, dynamic></font>
+}
+class CompetenceGoal {
++competenceId: <font color=#faff00>int</font>
++competenceGoalId: <font color=#faff00>String</font>
++createdAt: <font color=#faff00>DateTime</font>
++createdBy: <font color=#faff00>String</font>
++pupilId: <font color=#faff00>int</font>
++description: <font color=#faff00>String</font>
++strategies: <font color=#faff00>String</font>
++achieved: <font color=#faff00>int?</font>
++achievedAt: <font color=#faff00>DateTime?</font>
++modifiedBy: <font color=#faff00>String?</font>
+---
++<font color=#6fa8dc>toJson(</font><font color=#6fa8dc>):</font> <font color=#faff00>Map<String, dynamic></font>
+}
+CompetenceGoal ..> DateTime
+class CompetenceReport {
++reportId: <font color=#faff00>String</font>
++createdBy: <font color=#faff00>String</font>
++createdAt: <font color=#faff00>DateTime</font>
++pupilId: <font color=#faff00>int</font>
++schoolSemesterId: <font color=#faff00>int</font>
+---
++<font color=#6fa8dc>toJson(</font><font color=#6fa8dc>):</font> <font color=#faff00>Map<String, dynamic></font>
+}
+CompetenceReport ..> DateTime
+@enduml

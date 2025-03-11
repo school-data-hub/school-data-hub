@@ -1,0 +1,109 @@
+@startuml
+
+skinparam backgroundColor #000000
+
+skinparam {
+    ClassStereotypeFontColor #FFD700
+    ClassStereotypeFontSize 12
+    ClassStereotypeFontStyle bold
+}
+skinparam class {
+    BackgroundColor #333333
+    BorderColor #000000
+    ArrowColor #FFFFFF
+    FontColor #D3D3D3
+}
+skinparam classAttribute {
+    FontColor #D3D3D
+}
+class AttendanceValues {
++missedTypeValue: <font color=#faff00>MissedType</font>
++contactedTypeValue: <font color=#faff00>ContactedType</font>
++createdOrModifiedByValue: <font color=#faff00>String?</font>
++unexcusedValue: <font color=#faff00>bool</font>
++returnedValue: <font color=#faff00>bool</font>
++returnedTimeValue: <font color=#faff00>String?</font>
++commentValue: <font color=#faff00>String?</font>
+---
+}
+AttendanceValues ..> MissedType
+AttendanceValues ..> ContactedType
+class AttendanceHelper {
+---
++<font color=#6fa8dc>getMissedClassIndex(</font><font color=#faff00>PupilProxy</font> <font color=#f4665b>pupil</font>, <font color=#faff00>DateTime</font> <font color=#f4665b>date</font>, <font color=#6fa8dc>):</font> <font color=#faff00>int?</font>
++<font color=#6fa8dc>missedGlobalSum(</font><font color=#6fa8dc>):</font> <font color=#faff00>int</font>
++<font color=#6fa8dc>unexcusedGlobalSum(</font><font color=#6fa8dc>):</font> <font color=#faff00>int</font>
++<font color=#6fa8dc>lateGlobalSum(</font><font color=#6fa8dc>):</font> <font color=#faff00>int</font>
++<font color=#6fa8dc>contactedGlobalSum(</font><font color=#6fa8dc>):</font> <font color=#faff00>int</font>
++<font color=#6fa8dc>pickedUpGlobalSum(</font><font color=#6fa8dc>):</font> <font color=#faff00>int</font>
++<font color=#6fa8dc>missedPupilsSum(</font><font color=#faff00>List<PupilProxy></font> <font color=#f4665b>filteredPupils</font>, <font color=#faff00>DateTime</font> <font color=#f4665b>thisDate</font>, <font color=#6fa8dc>):</font> <font color=#faff00>int</font>
++<font color=#6fa8dc>missedAndUnexcusedPupilsSum(</font><font color=#faff00>List<PupilProxy></font> <font color=#f4665b>filteredPupils</font>, <font color=#faff00>DateTime</font> <font color=#f4665b>thisDate</font>, <font color=#6fa8dc>):</font> <font color=#faff00>int</font>
++<font color=#6fa8dc>pupilListMissedclassSum(</font><font color=#faff00>List<PupilProxy></font> <font color=#f4665b>filteredPupils</font>, <font color=#6fa8dc>):</font> <font color=#faff00>int</font>
++<font color=#6fa8dc>pupilListUnexcusedSum(</font><font color=#faff00>List<PupilProxy></font> <font color=#f4665b>filteredPupils</font>, <font color=#6fa8dc>):</font> <font color=#faff00>int</font>
++<font color=#6fa8dc>pupilListLateSum(</font><font color=#faff00>List<PupilProxy></font> <font color=#f4665b>filteredPupils</font>, <font color=#6fa8dc>):</font> <font color=#faff00>int</font>
++<font color=#6fa8dc>pupilListContactedSum(</font><font color=#faff00>List<PupilProxy></font> <font color=#f4665b>filteredPupils</font>, <font color=#6fa8dc>):</font> <font color=#faff00>int</font>
++<font color=#6fa8dc>pupilListPickedUpSum(</font><font color=#faff00>List<PupilProxy></font> <font color=#f4665b>filteredPupils</font>, <font color=#6fa8dc>):</font> <font color=#faff00>int</font>
++<font color=#6fa8dc>missedclassSum(</font><font color=#faff00>PupilProxy</font> <font color=#f4665b>pupil</font>, <font color=#6fa8dc>):</font> <font color=#faff00>int</font>
++<font color=#6fa8dc>missedclassUnexcusedSum(</font><font color=#faff00>PupilProxy</font> <font color=#f4665b>pupil</font>, <font color=#6fa8dc>):</font> <font color=#faff00>int</font>
++<font color=#6fa8dc>lateSum(</font><font color=#faff00>PupilProxy</font> <font color=#f4665b>pupil</font>, <font color=#6fa8dc>):</font> <font color=#faff00>int</font>
++<font color=#6fa8dc>lateUnexcusedSum(</font><font color=#faff00>PupilProxy</font> <font color=#f4665b>pupil</font>, <font color=#6fa8dc>):</font> <font color=#faff00>int</font>
++<font color=#6fa8dc>contactedSum(</font><font color=#faff00>PupilProxy</font> <font color=#f4665b>pupil</font>, <font color=#6fa8dc>):</font> <font color=#faff00>int</font>
++<font color=#6fa8dc>goneHomeSum(</font><font color=#faff00>PupilProxy</font> <font color=#f4665b>pupil</font>, <font color=#6fa8dc>):</font> <font color=#faff00>int</font>
++<font color=#6fa8dc>pupilIsMissedToday(</font><font color=#faff00>PupilProxy</font> <font color=#f4665b>pupil</font>, <font color=#6fa8dc>):</font> <font color=#faff00>bool</font>
++<font color=#6fa8dc>schooldayIsToday(</font><font color=#faff00>DateTime</font> <font color=#f4665b>schoolday</font>, <font color=#6fa8dc>):</font> <font color=#faff00>bool</font>
++<font color=#6fa8dc>setAttendanceValues(</font><font color=#faff00>int</font> <font color=#f4665b>pupilId</font>, <font color=#faff00>DateTime</font> <font color=#f4665b>date</font>, <font color=#6fa8dc>):</font> <font color=#faff00>AttendanceValues</font>
++<font color=#6fa8dc>setThisDate(</font><font color=#faff00>BuildContext</font> <font color=#f4665b>context</font>, <font color=#faff00>DateTime</font> <font color=#f4665b>thisDate</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>thisDateAsString(</font><font color=#faff00>BuildContext</font> <font color=#f4665b>context</font>, <font color=#faff00>DateTime</font> <font color=#f4665b>thisDate</font>, <font color=#6fa8dc>):</font> <font color=#faff00>String</font>
+}
+class AttendanceManager {
++pupilManager: <font color=#faff00>locator<PupilManager>()</font>
++schooldayManager: <font color=#faff00>locator<SchooldayManager>()</font>
++notificationService: <font color=#faff00>locator<NotificationService>()</font>
++apiAttendanceService: <font color=#faff00>AttendanceApiService()</font>
+-_missedClasses: <font color=#ffd700>ValueNotifier<List<MissedClass>></font>
+---
++<font color=#c36dfd>get</font> <font color=#6fa8dc>missedClasses</font> => <font color=#ffd700>ValueListenable<List<MissedClass>></font>
++<font color=#6fa8dc>init(</font><font color=#6fa8dc>):</font> <font color=#faff00>Future</font>
++<font color=#6fa8dc>addAllPupilMissedClasses(</font><font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#6fa8dc>getMissedClassesOnADay(</font><font color=#faff00>DateTime</font> <font color=#f4665b>date</font>, <font color=#6fa8dc>):</font> <font color=#faff00>List<MissedClass></font>
++<font color=#6fa8dc>fetchMissedClassesOnASchoolday(</font><font color=#faff00>DateTime</font> <font color=#f4665b>schoolday</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>isMissedClassinSemester(</font><font color=#faff00>MissedClass</font> <font color=#f4665b>missedClass</font>, <font color=#faff00>SchoolSemester</font> <font color=#f4665b>schoolSemester</font>, <font color=#6fa8dc>):</font> <font color=#faff00>bool</font>
++<font color=#6fa8dc>missedHoursforSemesterOrSchoolyear(</font><font color=#faff00>PupilProxy</font> <font color=#f4665b>pupil</font>, <font color=#6fa8dc>):</font> <font color=#faff00>List<int></font>
++<font color=#6fa8dc>changeExcusedValue(</font><font color=#faff00>int</font> <font color=#f4665b>pupilId</font>, <font color=#faff00>DateTime</font> <font color=#f4665b>date</font>, <font color=#faff00>bool</font> <font color=#f4665b>newValue</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>deleteMissedClass(</font><font color=#faff00>int</font> <font color=#f4665b>pupilId</font>, <font color=#faff00>DateTime</font> <font color=#f4665b>date</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>changeReturnedValue(</font><font color=#faff00>int</font> <font color=#f4665b>pupilId</font>, <font color=#faff00>bool</font> <font color=#f4665b>newValue</font>, <font color=#faff00>DateTime</font> <font color=#f4665b>date</font>, <font color=#faff00>String?</font> <font color=#f4665b>time</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>changeLateTypeValue(</font><font color=#faff00>int</font> <font color=#f4665b>pupilId</font>, <font color=#faff00>MissedType</font> <font color=#f4665b>dropdownValue</font>, <font color=#faff00>DateTime</font> <font color=#f4665b>date</font>, <font color=#faff00>int</font> <font color=#f4665b>minutesLate</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>changeCommentValue(</font><font color=#faff00>int</font> <font color=#f4665b>pupilId</font>, <font color=#faff00>String?</font> <font color=#f4665b>comment</font>, <font color=#faff00>DateTime</font> <font color=#f4665b>date</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>createManyMissedClasses(</font>unknown <font color=#f4665b>id</font>, unknown <font color=#f4665b>startdate</font>, unknown <font color=#f4665b>enddate</font>, unknown <font color=#f4665b>missedType</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>changeMissedTypeValue(</font><font color=#faff00>int</font> <font color=#f4665b>pupilId</font>, <font color=#faff00>MissedType</font> <font color=#f4665b>missedType</font>, <font color=#faff00>DateTime</font> <font color=#f4665b>date</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>changeContactedValue(</font><font color=#faff00>int</font> <font color=#f4665b>pupilId</font>, <font color=#faff00>ContactedType</font> <font color=#f4665b>contactedType</font>, <font color=#faff00>DateTime</font> <font color=#f4665b>date</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
+}
+AttendanceManager ..> ValueNotifier
+class AttendancePupilFilterManager {
+-_attendancePupilFilterState: <font color=#ffd700>ValueNotifier<Map<AttendancePupilFilter, bool>>(initialAttendancePupilFilterValues)</font>
+---
++<font color=#c36dfd>get</font> <font color=#6fa8dc>attendancePupilFilterState</font> => <font color=#ffd700>ValueListenable<Map<AttendancePupilFilter, bool>></font>
++<font color=#6fa8dc>setAttendancePupilFilter(</font><font color=#faff00>List<AttendancePupilFilterRecord></font> <font color=#f4665b>attendancePupilFilterRecords</font>, <font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#6fa8dc>resetFilters(</font><font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#6fa8dc>isMatchedByAttendanceFilters(</font><font color=#faff00>PupilProxy</font> <font color=#f4665b>pupil</font>, <font color=#6fa8dc>):</font> <font color=#faff00>bool</font>
+}
+class MissedClass {
++contacted: <font color=#faff00>String?</font>
++createdBy: <font color=#faff00>String</font>
++unexcused: <font color=#faff00>bool</font>
++minutesLate: <font color=#faff00>int?</font>
++missedDay: <font color=#faff00>DateTime</font>
++missedPupilId: <font color=#faff00>int</font>
++missedType: <font color=#faff00>String</font>
++modifiedBy: <font color=#faff00>String?</font>
++backHome: <font color=#faff00>bool?</font>
++backHomeAt: <font color=#faff00>String?</font>
++writtenExcuse: <font color=#faff00>bool?</font>
++comment: <font color=#faff00>String?</font>
+---
++<font color=#6fa8dc>==(</font><font color=#faff00>Object</font> <font color=#f4665b>other</font>, <font color=#6fa8dc>):</font> <font color=#faff00>bool</font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>hashCode</font> => <font color=#faff00>int</font>
++<font color=#6fa8dc>toJson(</font><font color=#6fa8dc>):</font> <font color=#faff00>Map<String, dynamic></font>
+}
+MissedClass ..> DateTime
+@enduml

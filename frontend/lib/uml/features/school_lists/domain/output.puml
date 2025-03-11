@@ -1,0 +1,89 @@
+@startuml
+
+skinparam backgroundColor #000000
+
+skinparam {
+    ClassStereotypeFontColor #FFD700
+    ClassStereotypeFontSize 12
+    ClassStereotypeFontStyle bold
+}
+skinparam class {
+    BackgroundColor #333333
+    BorderColor #000000
+    ArrowColor #FFFFFF
+    FontColor #D3D3D3
+}
+skinparam classAttribute {
+    FontColor #D3D3D
+}
+class SchoolListFilterManager {
+-_filteredSchoolLists: <font color=#ffd700>ValueNotifier<List<SchoolList>>([])</font>
+-_filterState: <font color=#ffd700>ValueNotifier<bool>(false)</font>
++oldFilterManager: <font color=#faff00>locator<PupilFilterManager>()</font>
+---
++<font color=#c36dfd>get</font> <font color=#6fa8dc>filteredSchoolLists</font> => <font color=#ffd700>ValueListenable<List<SchoolList>></font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>filterState</font> => <font color=#ffd700>ValueListenable<bool></font>
++<font color=#6fa8dc>updateFilteredSchoolLists(</font><font color=#faff00>List<SchoolList></font> <font color=#f4665b>schoolLists</font>, <font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#6fa8dc>resetFilters(</font><font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#6fa8dc>onSearchEnter(</font><font color=#faff00>String</font> <font color=#f4665b>text</font>, <font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#6fa8dc>addPupilListFiltersToFilteredPupils(</font><font color=#faff00>List<PupilList></font> <font color=#f4665b>pupilLists</font>, <font color=#6fa8dc>):</font> <font color=#faff00>List<PupilList></font>
+}
+class PupilList {
++listedPupilId: <font color=#faff00>int</font>
++originList: <font color=#faff00>String</font>
++pupilListComment: <font color=#faff00>String?</font>
++pupilListEntryBy: <font color=#faff00>String?</font>
++pupilListStatus: <font color=#faff00>bool?</font>
+---
++<font color=#6fa8dc>toJson(</font><font color=#6fa8dc>):</font> <font color=#faff00>Map<String, dynamic></font>
+}
+class SchoolList {
++createdBy: <font color=#faff00>String</font>
++listDescription: <font color=#faff00>String</font>
++listId: <font color=#faff00>String</font>
++listName: <font color=#faff00>String</font>
++authorizedUsers: <font color=#faff00>String?</font>
++visibility: <font color=#faff00>String</font>
++pupilLists: <font color=#faff00>List<PupilList></font>
+---
++<font color=#6fa8dc>toJson(</font><font color=#6fa8dc>):</font> <font color=#faff00>Map<String, dynamic></font>
+}
+class SchoolListHelper {
+---
++<font color=#6fa8dc>listOwner(</font><font color=#faff00>String</font> <font color=#f4665b>listId</font>, <font color=#6fa8dc>):</font> <font color=#faff00>String</font>
++<font color=#6fa8dc>listOwners(</font><font color=#faff00>SchoolList</font> <font color=#f4665b>schoolList</font>, <font color=#6fa8dc>):</font> <font color=#faff00>String</font>
++<font color=#6fa8dc>shareList(</font><font color=#faff00>String</font> <font color=#f4665b>teacher</font>, <font color=#faff00>SchoolList</font> <font color=#f4665b>schoolList</font>, <font color=#6fa8dc>):</font> <font color=#faff00>String</font>
++<font color=#6fa8dc>schoolListStats(</font><font color=#faff00>SchoolList</font> <font color=#f4665b>schoolList</font>, <font color=#faff00>List<PupilProxy></font> <font color=#f4665b>pupilsInList</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Map<String, int></font>
+}
+class SchoolListManager {
+-_pupilSchoolLists: <font color=#ffd700>ValueNotifier<List<PupilList>>([])</font>
+-_schoolLists: <font color=#ffd700>ValueNotifier<List<SchoolList>>([])</font>
+-_schoolListMap: <font color=#faff00>Map<String, SchoolList></font>
+-_pupilListMap: <font color=#ffd700>ValueNotifier<Map<int, List<PupilList>>>({})</font>
++notificationService: <font color=#faff00>locator<NotificationService>()</font>
++apiSchoolListService: <font color=#faff00>SchoolListApiService</font>
++schoolListFilterManager: <font color=#faff00>SchoolListFilterManager</font>
+---
++<font color=#c36dfd>get</font> <font color=#6fa8dc>schoolLists</font> => <font color=#ffd700>ValueListenable<List<SchoolList>></font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>pupilSchoolLists</font> => <font color=#ffd700>ValueListenable<List<PupilList>></font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>pupilListMap</font> => <font color=#ffd700>ValueListenable<Map<int, List<PupilList>>></font>
++<font color=#6fa8dc>clearData(</font><font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#6fa8dc>init(</font><font color=#6fa8dc>):</font> <font color=#faff00>Future<SchoolListManager></font>
++<font color=#6fa8dc>getSchoolListById(</font><font color=#faff00>String</font> <font color=#f4665b>listId</font>, <font color=#6fa8dc>):</font> <font color=#faff00>SchoolList</font>
++<font color=#6fa8dc>getPupilListsFromPupilByPupilId(</font><font color=#faff00>int</font> <font color=#f4665b>pupilId</font>, <font color=#6fa8dc>):</font> <font color=#faff00>List<PupilList></font>
++<font color=#6fa8dc>getPupilSchoolListEntry(</font><font color=#faff00>int</font> <font color=#f4665b>pupilId</font>, <font color=#faff00>String</font> <font color=#f4665b>listId</font>, <font color=#6fa8dc>):</font> <font color=#faff00>PupilList?</font>
++<font color=#6fa8dc>getPupilsinSchoolList(</font><font color=#faff00>String</font> <font color=#f4665b>listId</font>, <font color=#6fa8dc>):</font> <font color=#faff00>List<PupilProxy></font>
++<font color=#6fa8dc>pupilsInSchoolList(</font><font color=#faff00>String</font> <font color=#f4665b>listId</font>, <font color=#faff00>List<PupilProxy></font> <font color=#f4665b>pupils</font>, <font color=#6fa8dc>):</font> <font color=#faff00>List<PupilProxy></font>
+-<font color=#6fa8dc>_updatePupilListsFromSchoolList(</font><font color=#faff00>SchoolList</font> <font color=#f4665b>schoolList</font>, <font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#6fa8dc>fetchSchoolLists(</font><font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>updateSchoolListProperty(</font><font color=#faff00>String</font> <font color=#f4665b>listId</font>, <font color=#faff00>String?</font> <font color=#f4665b>name</font>, <font color=#faff00>String?</font> <font color=#f4665b>description</font>, <font color=#faff00>String?</font> <font color=#f4665b>visibility</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future</font>
++<font color=#6fa8dc>deleteSchoolList(</font><font color=#faff00>String</font> <font color=#f4665b>listId</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>postSchoolListWithGroup(</font><font color=#faff00>String</font> <font color=#f4665b>name</font>, <font color=#faff00>String</font> <font color=#f4665b>description</font>, <font color=#faff00>List<int></font> <font color=#f4665b>pupilIds</font>, <font color=#faff00>String</font> <font color=#f4665b>visibility</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>addPupilsToSchoolList(</font><font color=#faff00>String</font> <font color=#f4665b>listId</font>, <font color=#faff00>List<int></font> <font color=#f4665b>pupilIds</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>deletePupilsFromSchoolList(</font><font color=#faff00>List<int></font> <font color=#f4665b>pupilIds</font>, <font color=#faff00>String</font> <font color=#f4665b>listId</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>patchPupilList(</font><font color=#faff00>int</font> <font color=#f4665b>pupilId</font>, <font color=#faff00>String</font> <font color=#f4665b>listId</font>, <font color=#faff00>bool?</font> <font color=#f4665b>value</font>, <font color=#faff00>String?</font> <font color=#f4665b>comment</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
+-<font color=#6fa8dc>_updateRepositories(</font><font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
+}
+SchoolListManager ..> SchoolListApiService
+SchoolListManager ..> SchoolListFilterManager
+@enduml

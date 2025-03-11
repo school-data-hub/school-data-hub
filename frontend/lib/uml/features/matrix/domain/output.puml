@@ -1,0 +1,192 @@
+@startuml
+
+skinparam backgroundColor #000000
+
+skinparam {
+    ClassStereotypeFontColor #FFD700
+    ClassStereotypeFontSize 12
+    ClassStereotypeFontStyle bold
+}
+skinparam class {
+    BackgroundColor #333333
+    BorderColor #000000
+    ArrowColor #FFFFFF
+    FontColor #D3D3D3
+}
+skinparam classAttribute {
+    FontColor #D3D3D
+}
+class MatrixPolicyFilterManager {
+-_filtersOn: <font color=#ffd700>ValueNotifier<bool>(false)</font>
+-_filteredMatrixUsers: <font color=#ffd700>ValueNotifier<List<MatrixUser>>(locator<MatrixPolicyManager>().matrixUsers.value)</font>
+-_filteredMatrixRooms: <font color=#ffd700>ValueNotifier<List<MatrixRoom>>(locator<MatrixPolicyManager>().matrixRooms.value)</font>
+-_searchText: <font color=#ffd700>ValueNotifier<String>('')</font>
+-_searchController: <font color=#ffd700>ValueNotifier<TextEditingController>(TextEditingController())</font>
+-_policyManager: <font color=#faff00>MatrixPolicyManager</font>
+---
++<font color=#c36dfd>get</font> <font color=#6fa8dc>filtersOn</font> => <font color=#ffd700>ValueListenable<bool></font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>filteredMatrixUsers</font> => <font color=#ffd700>ValueListenable<List<MatrixUser>></font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>filteredMatrixRooms</font> => <font color=#ffd700>ValueListenable<List<MatrixRoom>></font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>searchText</font> => <font color=#ffd700>ValueListenable<String></font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>searchController</font> => <font color=#ffd700>ValueListenable<TextEditingController></font>
++<font color=#6fa8dc>dispose(</font><font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#6fa8dc>resetAllMatrixFilters(</font><font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#6fa8dc>refreshFilteredMatrixUsers(</font><font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#6fa8dc>setUsersFilterText(</font><font color=#faff00>String</font> <font color=#f4665b>text</font>, <font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#6fa8dc>setRoomsFilterText(</font><font color=#faff00>String</font> <font color=#f4665b>text</font>, <font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
+}
+MatrixPolicyFilterManager ..> MatrixPolicyManager
+class MatrixPolicyHelper {
+---
++<font color=#6fa8dc>generatePolicyJsonFile(</font><font color=#6fa8dc>):</font> <font color=#faff00>Future<File></font>
++<font color=#6fa8dc>refreshMatrixPolicy(</font><font color=#6fa8dc>):</font> <font color=#faff00>Policy</font>
++<font color=#6fa8dc>generateMatrixId(</font>unknown <font color=#f4665b>isParent</font>, <font color=#6fa8dc>):</font> <font color=#faff00>String</font>
++<font color=#6fa8dc>generatePassword(</font><font color=#6fa8dc>):</font> <font color=#faff00>String</font>
++<font color=#6fa8dc>launchMatrixUrl(</font><font color=#faff00>BuildContext</font> <font color=#f4665b>context</font>, <font color=#faff00>String</font> <font color=#f4665b>contact</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
+}
+class MatrixPolicyManager <<ChangeNotifier>> {
+-_matrixUrl: <font color=#faff00>String</font>
+-_matrixAdminId: <font color=#faff00>String?</font>
+-_matrixToken: <font color=#faff00>String</font>
+-_corporalToken: <font color=#faff00>String</font>
+-_compulsoryRooms: <font color=#faff00>List<String></font>
+-_matrixPolicy: <font color=#faff00>Policy?</font>
+-_matrixUsers: <font color=#ffd700>ValueNotifier<List<MatrixUser>>([])</font>
+-_matrixRooms: <font color=#ffd700>ValueNotifier<List<MatrixRoom>>([])</font>
+-_policyPendingChanges: <font color=#ffd700>ValueNotifier<bool>(false)</font>
+-_matrixApiService: <font color=#faff00>MatrixApiService</font>
+-_notificationService: <font color=#faff00>locator<NotificationService>()</font>
+---
++<font color=#c36dfd>get</font> <font color=#6fa8dc>matrixUrl</font> => <font color=#faff00>String</font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>matrixAdmin</font> => <font color=#faff00>String?</font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>matrixToken</font> => <font color=#faff00>String</font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>corporalToken</font> => <font color=#faff00>String</font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>compulsoryRooms</font> => <font color=#faff00>List<String></font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>matrixPolicy</font> => <font color=#faff00>Policy?</font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>isMatrixPolicyLoaded</font> => <font color=#faff00>bool</font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>matrixUsers</font> => <font color=#ffd700>ValueListenable<List<MatrixUser>></font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>matrixRooms</font> => <font color=#ffd700>ValueListenable<List<MatrixRoom>></font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>pendingChanges</font> => <font color=#ffd700>ValueListenable<bool></font>
++<font color=#6fa8dc>init(</font><font color=#6fa8dc>):</font> <font color=#faff00>Future<MatrixPolicyManager></font>
++<font color=#6fa8dc>pendingChangesHandler(</font><font color=#faff00>bool</font> <font color=#f4665b>newValue</font>, <font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#6fa8dc>getUserById(</font><font color=#faff00>String</font> <font color=#f4665b>userId</font>, <font color=#6fa8dc>):</font> <font color=#faff00>MatrixUser</font>
++<font color=#6fa8dc>setMatrixEnvironmentValues(</font><font color=#faff00>String</font> <font color=#f4665b>url</font>, <font color=#faff00>String</font> <font color=#f4665b>policyToken</font>, <font color=#faff00>String</font> <font color=#f4665b>matrixToken</font>, <font color=#faff00>List<String></font> <font color=#f4665b>compulsoryRooms</font>, <font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#6fa8dc>deleteAndDeregisterMatrixPolicyManager(</font><font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>fetchMatrixPolicy(</font><font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>applyPolicyChanges(</font><font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>getRoomById(</font><font color=#faff00>String</font> <font color=#f4665b>roomId</font>, <font color=#6fa8dc>):</font> <font color=#faff00>MatrixRoom</font>
++<font color=#6fa8dc>createNewRoom(</font><font color=#faff00>String</font> <font color=#f4665b>name</font>, <font color=#faff00>String</font> <font color=#f4665b>topic</font>, <font color=#faff00>String?</font> <font color=#f4665b>aliasName</font>, <font color=#faff00>ChatTypePreset</font> <font color=#f4665b>chatTypePreset</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>addManagedRoom(</font><font color=#faff00>MatrixRoom</font> <font color=#f4665b>newRoom</font>, <font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#6fa8dc>changeRoomPowerLevels(</font><font color=#faff00>String</font> <font color=#f4665b>roomId</font>, <font color=#faff00>RoomAdmin?</font> <font color=#f4665b>roomAdmin</font>, <font color=#faff00>String?</font> <font color=#f4665b>removeAdminWithId</font>, <font color=#faff00>int?</font> <font color=#f4665b>eventsDefault</font>, <font color=#faff00>int?</font> <font color=#f4665b>reactions</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>createNewMatrixUser(</font><font color=#faff00>String</font> <font color=#f4665b>matrixId</font>, <font color=#faff00>String</font> <font color=#f4665b>displayName</font>, <font color=#faff00>bool</font> <font color=#f4665b>isStaff</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<File?></font>
++<font color=#6fa8dc>deleteUser(</font><font color=#faff00>String</font> <font color=#f4665b>userId</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>resetPassword(</font><font color=#faff00>MatrixUser</font> <font color=#f4665b>user</font>, <font color=#faff00>bool?</font> <font color=#f4665b>logoutDevices</font>, <font color=#faff00>bool</font> <font color=#f4665b>isStaff</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<File?></font>
++<font color=#6fa8dc>addMatrixUserToRooms(</font><font color=#faff00>String</font> <font color=#f4665b>matrixUserId</font>, <font color=#faff00>List<String></font> <font color=#f4665b>roomIds</font>, <font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
+}
+ChangeNotifier <|-- MatrixPolicyManager
+MatrixPolicyManager ..> Policy
+MatrixPolicyManager ..> MatrixApiService
+class MatrixRoomHelper {
+---
++<font color=#6fa8dc>usersInRoom(</font><font color=#faff00>String</font> <font color=#f4665b>roomId</font>, <font color=#6fa8dc>):</font> <font color=#faff00>List<MatrixUser></font>
++<font color=#6fa8dc>powerLevelInRoom(</font><font color=#faff00>MatrixRoom</font> <font color=#f4665b>room</font>, <font color=#faff00>String</font> <font color=#f4665b>userId</font>, <font color=#6fa8dc>):</font> <font color=#faff00>int?</font>
++<font color=#6fa8dc>roomsFromRoomIds(</font><font color=#faff00>List<String></font> <font color=#f4665b>roomIds</font>, <font color=#6fa8dc>):</font> <font color=#faff00>List<MatrixRoom></font>
++<font color=#6fa8dc>restOfRooms(</font><font color=#faff00>List<String></font> <font color=#f4665b>roomIds</font>, <font color=#6fa8dc>):</font> <font color=#faff00>List<String></font>
++<font color=#6fa8dc>roomIdsForPupilOrParent(</font><font color=#faff00>String</font> <font color=#f4665b>displayName</font>, <font color=#faff00>bool?</font> <font color=#f4665b>isParent</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Set<String></font>
+}
+class MatrixUserHelper {
+---
++<font color=#6fa8dc>usersFromUserIds(</font><font color=#faff00>List<String></font> <font color=#f4665b>userIds</font>, <font color=#6fa8dc>):</font> <font color=#faff00>List<MatrixUser></font>
++<font color=#6fa8dc>userIdsFromUsers(</font><font color=#faff00>List<MatrixUser></font> <font color=#f4665b>users</font>, <font color=#6fa8dc>):</font> <font color=#faff00>List<String></font>
++<font color=#6fa8dc>restOfUsers(</font><font color=#faff00>List<String></font> <font color=#f4665b>userIds</font>, <font color=#6fa8dc>):</font> <font color=#faff00>List<String></font>
++<font color=#6fa8dc>getUserRelationship(</font><font color=#faff00>MatrixUser</font> <font color=#f4665b>user</font>, <font color=#6fa8dc>):</font> <font color=#faff00>MatrixUserRelationship?</font>
+}
+class MatrixUserRelationship {
++pupil: <font color=#faff00>PupilProxy?</font>
++familyPupils: <font color=#faff00>List<PupilProxy>?</font>
++isTeacher: <font color=#faff00>bool</font>
+---
++<font color=#c36dfd>get</font> <font color=#6fa8dc>isLinked</font> => <font color=#faff00>bool</font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>isParent</font> => <font color=#faff00>bool</font>
+}
+MatrixUserRelationship ..> PupilProxy
+class Flags {
++allowCustomUserDisplayNames: <font color=#faff00>bool?</font>
++allowCustomUserAvatars: <font color=#faff00>bool?</font>
++allowCustomPassthroughUserPasswords: <font color=#faff00>bool?</font>
++allowUnauthenticatedPasswordResets: <font color=#faff00>bool?</font>
++forbidRoomCreation: <font color=#faff00>bool?</font>
++forbidEncryptedRoomCreation: <font color=#faff00>bool?</font>
++forbidUnencryptedRoomCreation: <font color=#faff00>bool?</font>
++allow3pidLogin: <font color=#faff00>bool?</font>
+---
++<font color=#6fa8dc>toJson(</font><font color=#6fa8dc>):</font> <font color=#faff00>Map<String, dynamic></font>
+}
+class MatrixCredentials {
++url: <font color=#faff00>String</font>
++matrixToken: <font color=#faff00>String</font>
++policyToken: <font color=#faff00>String</font>
++compulsoryRooms: <font color=#faff00>List<String>?</font>
+---
++<font color=#6fa8dc>toJson(</font><font color=#6fa8dc>):</font> <font color=#faff00>Map<String, dynamic></font>
+}
+class MatrixRoom <<ChangeNotifier>> {
++id: <font color=#faff00>String</font>
+-_name: <font color=#faff00>String?</font>
+-_powerLevelReactions: <font color=#faff00>int?</font>
+-_eventsDefault: <font color=#faff00>int?</font>
+-_roomAdmins: <font color=#faff00>List<RoomAdmin>?</font>
+---
++<font color=#c36dfd>get</font> <font color=#6fa8dc>name</font> => <font color=#faff00>String?</font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>powerLevelReactions</font> => <font color=#faff00>int?</font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>eventsDefault</font> => <font color=#faff00>int?</font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>roomAdmins</font> => <font color=#faff00>List<RoomAdmin>?</font>
++<font color=#c36dfd>set</font> <font color=#6fa8dc>name</font> => <font color=#c36dfd>void</font>
++<font color=#c36dfd>set</font> <font color=#6fa8dc>powerLevelReactions</font> => <font color=#c36dfd>void</font>
++<font color=#c36dfd>set</font> <font color=#6fa8dc>eventsDefault</font> => <font color=#c36dfd>void</font>
++<font color=#c36dfd>set</font> <font color=#6fa8dc>roomAdmins</font> => <font color=#c36dfd>void</font>
++<font color=#6fa8dc>toJson(</font><font color=#6fa8dc>):</font> <font color=#faff00>Map<String, dynamic></font>
+}
+ChangeNotifier <|-- MatrixRoom
+class RoomAdmin {
++id: <font color=#faff00>String</font>
++powerLevel: <font color=#faff00>int</font>
+---
++<font color=#6fa8dc>toJson(</font><font color=#6fa8dc>):</font> <font color=#faff00>Map<String, dynamic></font>
+}
+class MatrixUser <<ChangeNotifier>> {
+-_id: <font color=#faff00>String?</font>
+-_active: <font color=#faff00>bool?</font>
+-_authType: <font color=#faff00>String?</font>
+-_displayName: <font color=#faff00>String</font>
+-_joinedRoomIds: <font color=#faff00>List<String></font>
+-_matrixRooms: <font color=#faff00>List<MatrixRoom></font>
+---
++<font color=#c36dfd>get</font> <font color=#6fa8dc>id</font> => <font color=#faff00>String?</font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>active</font> => <font color=#faff00>bool?</font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>authType</font> => <font color=#faff00>String?</font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>displayName</font> => <font color=#faff00>String</font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>joinedRoomIds</font> => <font color=#faff00>List<String></font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>matrixRooms</font> => <font color=#faff00>List<MatrixRoom></font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>isParent</font> => <font color=#faff00>bool</font>
++<font color=#c36dfd>set</font> <font color=#6fa8dc>displayName</font> => <font color=#c36dfd>void</font>
++<font color=#6fa8dc>joinRooms(</font><font color=#faff00>List<String></font> <font color=#f4665b>roomIds</font>, <font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#6fa8dc>joinRoom(</font><font color=#faff00>MatrixRoom</font> <font color=#f4665b>room</font>, <font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#6fa8dc>leaveRoom(</font><font color=#faff00>MatrixRoom</font> <font color=#f4665b>room</font>, <font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#c36dfd>set</font> <font color=#6fa8dc>joinedRoomIds</font> => <font color=#c36dfd>void</font>
++<font color=#6fa8dc>toJson(</font><font color=#6fa8dc>):</font> <font color=#faff00>Map<String, dynamic></font>
+}
+ChangeNotifier <|-- MatrixUser
+class Policy {
++schemaVersion: <font color=#faff00>int</font>
++identificationStamp: <font color=#faff00>dynamic</font>
++flags: <font color=#faff00>Flags</font>
++hooks: <font color=#faff00>dynamic</font>
++managedRoomIds: <font color=#faff00>List<String></font>
++matrixUsers: <font color=#faff00>List<MatrixUser>?</font>
+---
++<font color=#6fa8dc>toJson(</font><font color=#6fa8dc>):</font> <font color=#faff00>Map<String, dynamic></font>
++<font color=#6fa8dc>copyWith(</font><font color=#faff00>int?</font> <font color=#f4665b>schemaVersion</font>, <font color=#faff00>dynamic</font> <font color=#f4665b>identificationStamp</font>, <font color=#faff00>Flags?</font> <font color=#f4665b>flags</font>, <font color=#faff00>dynamic</font> <font color=#f4665b>hooks</font>, <font color=#faff00>List<String>?</font> <font color=#f4665b>managedRoomIds</font>, <font color=#faff00>List<MatrixUser>?</font> <font color=#f4665b>matrixUsers</font>, <font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
+}
+Policy ..> Flags
+@enduml

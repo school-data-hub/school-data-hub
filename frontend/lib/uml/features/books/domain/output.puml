@@ -1,0 +1,117 @@
+@startuml
+
+skinparam backgroundColor #000000
+
+skinparam {
+    ClassStereotypeFontColor #FFD700
+    ClassStereotypeFontSize 12
+    ClassStereotypeFontStyle bold
+}
+skinparam class {
+    BackgroundColor #333333
+    BorderColor #000000
+    ArrowColor #FFFFFF
+    FontColor #D3D3D3
+}
+skinparam classAttribute {
+    FontColor #D3D3D
+}
+class BookHelpers {
+---
++<font color=#6fa8dc>pupilBooksLinkedToBook(</font><font color=#faff00>String</font> <font color=#f4665b>bookId</font>, <font color=#6fa8dc>):</font> <font color=#faff00>List<PupilBorrowedBook></font>
++<font color=#6fa8dc>getBorrowedStatus(</font><font color=#faff00>PupilBorrowedBook</font> <font color=#f4665b>book</font>, <font color=#6fa8dc>):</font> <font color=#faff00>BookBorrowStatus</font>
+}
+class BookManager {
+-_books: <font color=#ffd700>ValueNotifier<List<BookProxy>>([])</font>
+-_isbnBooks: <font color=#ffd700>ValueNotifier<Map<int, List<BookProxy>>>({})</font>
+-_locations: <font color=#ffd700>ValueNotifier<List<String>>([])</font>
+-_bookTags: <font color=#ffd700>ValueNotifier<List<BookTag>>([])</font>
+-_lastSelectedLocation: <font color=#ffd700>ValueNotifier<String>('Bitte auswählen')</font>
++session: <font color=#faff00>locator.get<SessionManager>().credentials.value</font>
++pupilBookApiService: <font color=#faff00>PupilBookApiService()</font>
++bookApiService: <font color=#faff00>BookApiService()</font>
++notificationService: <font color=#faff00>locator<NotificationService>()</font>
++pupilManager: <font color=#faff00>locator<PupilManager>()</font>
+---
++<font color=#c36dfd>get</font> <font color=#6fa8dc>books</font> => <font color=#ffd700>ValueListenable<List<BookProxy>></font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>booksByIsbn</font> => <font color=#ffd700>ValueListenable<Map<int, List<BookProxy>>></font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>locations</font> => <font color=#ffd700>ValueListenable<List<String>></font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>bookTags</font> => <font color=#ffd700>ValueListenable<List<BookTag>></font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>lastLocationValue</font> => <font color=#ffd700>ValueListenable<String></font>
++<font color=#6fa8dc>init(</font><font color=#6fa8dc>):</font> <font color=#faff00>Future<BookManager></font>
++<font color=#6fa8dc>clearData(</font><font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
+-<font color=#6fa8dc>_refreshIsbnBooksMap(</font><font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#6fa8dc>getBookTags(</font><font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>addBookTag(</font><font color=#faff00>String</font> <font color=#f4665b>tag</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>deleteBookTag(</font><font color=#faff00>String</font> <font color=#f4665b>tag</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>getLocations(</font><font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>addLocation(</font><font color=#faff00>String</font> <font color=#f4665b>location</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>deleteLocation(</font><font color=#faff00>String</font> <font color=#f4665b>location</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>setLastLocationValue(</font><font color=#faff00>String</font> <font color=#f4665b>location</font>, <font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#6fa8dc>getLibraryBooks(</font><font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>postLibraryBook(</font><font color=#faff00>int</font> <font color=#f4665b>isbn</font>, <font color=#faff00>String</font> <font color=#f4665b>bookId</font>, <font color=#faff00>String</font> <font color=#f4665b>location</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>updateBookProperty(</font><font color=#faff00>int</font> <font color=#f4665b>isbn</font>, <font color=#faff00>String?</font> <font color=#f4665b>title</font>, <font color=#faff00>String?</font> <font color=#f4665b>author</font>, <font color=#faff00>String?</font> <font color=#f4665b>description</font>, <font color=#faff00>String?</font> <font color=#f4665b>readingLevel</font>, <font color=#faff00>List<BookTag>?</font> <font color=#f4665b>tags</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>patchBookImage(</font><font color=#faff00>File</font> <font color=#f4665b>imageFile</font>, <font color=#faff00>int</font> <font color=#f4665b>isbn</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>deleteLibraryBook(</font><font color=#faff00>String</font> <font color=#f4665b>bookId</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>getLibraryBooksByIsbn(</font><font color=#faff00>int</font> <font color=#f4665b>isbn</font>, <font color=#6fa8dc>):</font> <font color=#faff00>List<BookProxy></font>
++<font color=#6fa8dc>getLibraryBookByBookId(</font><font color=#faff00>String?</font> <font color=#f4665b>bookId</font>, <font color=#6fa8dc>):</font> <font color=#faff00>BookProxy?</font>
++<font color=#6fa8dc>updateBookStateWithResponse(</font><font color=#faff00>BookProxy</font> <font color=#f4665b>book</font>, <font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#6fa8dc>deletebook(</font><font color=#faff00>int</font> <font color=#f4665b>isbn</font>, <font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
+}
+class BookProxy {
++isbn: <font color=#faff00>int</font>
++bookId: <font color=#faff00>String</font>
++title: <font color=#faff00>String</font>
++author: <font color=#faff00>String</font>
++description: <font color=#faff00>String</font>
++readingLevel: <font color=#faff00>String</font>
++imageId: <font color=#faff00>String</font>
++available: <font color=#faff00>bool</font>
++location: <font color=#faff00>String</font>
++bookTags: <font color=#faff00>List<BookTag></font>
+---
+}
+class BookTag {
++name: <font color=#faff00>String</font>
+---
++<font color=#6fa8dc>toJson(</font><font color=#6fa8dc>):</font> <font color=#faff00>Map<String, dynamic></font>
+}
+class BookTag {
++name: <font color=#faff00>String</font>
+---
++<font color=#6fa8dc>toJson(</font><font color=#6fa8dc>):</font> <font color=#faff00>Map<String, dynamic></font>
+}
+class BookDTO {
++isbn: <font color=#faff00>int</font>
++title: <font color=#faff00>String</font>
++author: <font color=#faff00>String</font>
++description: <font color=#faff00>String?</font>
++imageId: <font color=#faff00>String?</font>
++readingLevel: <font color=#faff00>String</font>
++bookTags: <font color=#faff00>List<BookTag>?</font>
+---
++<font color=#6fa8dc>toJson(</font><font color=#6fa8dc>):</font> <font color=#faff00>Map<String, dynamic></font>
+}
+class LibraryBookDTO {
++bookId: <font color=#faff00>String</font>
++isbn: <font color=#faff00>int</font>
++location: <font color=#faff00>String</font>
++available: <font color=#faff00>bool</font>
+---
++<font color=#6fa8dc>toJson(</font><font color=#6fa8dc>):</font> <font color=#faff00>Map<String, dynamic></font>
+}
+class PupilBorrowedBook {
++bookId: <font color=#faff00>String</font>
++lendingId: <font color=#faff00>String</font>
++lentAt: <font color=#faff00>DateTime</font>
++lentBy: <font color=#faff00>String</font>
++pupilId: <font color=#faff00>int</font>
++receivedBy: <font color=#faff00>String?</font>
++returnedAt: <font color=#faff00>DateTime?</font>
++state: <font color=#faff00>String?</font>
++rating: <font color=#faff00>int?</font>
+---
++<font color=#6fa8dc>toJson(</font><font color=#6fa8dc>):</font> <font color=#faff00>Map<String, dynamic></font>
+}
+PupilBorrowedBook ..> DateTime
+@enduml

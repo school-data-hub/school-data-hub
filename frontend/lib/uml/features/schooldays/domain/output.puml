@@ -1,0 +1,67 @@
+@startuml
+
+skinparam backgroundColor #000000
+
+skinparam {
+    ClassStereotypeFontColor #FFD700
+    ClassStereotypeFontSize 12
+    ClassStereotypeFontStyle bold
+}
+skinparam class {
+    BackgroundColor #333333
+    BorderColor #000000
+    ArrowColor #FFFFFF
+    FontColor #D3D3D3
+}
+skinparam classAttribute {
+    FontColor #D3D3D
+}
+class Schoolday {
++schoolday: <font color=#faff00>DateTime</font>
+---
++<font color=#6fa8dc>toJson(</font><font color=#6fa8dc>):</font> <font color=#faff00>Map<String, dynamic></font>
+}
+Schoolday ..> DateTime
+class SchoolSemester {
++startDate: <font color=#faff00>DateTime</font>
++endDate: <font color=#faff00>DateTime</font>
++classConferenceDate: <font color=#faff00>DateTime?</font>
++reportConferenceDate: <font color=#faff00>DateTime?</font>
++isFirst: <font color=#faff00>bool</font>
+---
++<font color=#6fa8dc>toJson(</font><font color=#6fa8dc>):</font> <font color=#faff00>Map<String, dynamic></font>
+}
+SchoolSemester ..> DateTime
+class SchooldayManager {
+-_schooldays: <font color=#ffd700>ValueNotifier<List<Schoolday>>([])</font>
+-_availableDates: <font color=#ffd700>ValueNotifier<List<DateTime>>([])</font>
+-_thisDate: <font color=#ffd700>ValueNotifier<DateTime>(DateTime.now())</font>
+-_startDate: <font color=#ffd700>ValueNotifier<DateTime>(DateTime.now())</font>
+-_endDate: <font color=#ffd700>ValueNotifier<DateTime>(DateTime.now())</font>
+-_schoolSemesters: <font color=#ffd700>ValueNotifier<List<SchoolSemester>>([])</font>
++session: <font color=#faff00>locator.get<SessionManager>().credentials.value</font>
++apiSchooldayService: <font color=#faff00>SchooldayApiService()</font>
+---
++<font color=#c36dfd>get</font> <font color=#6fa8dc>schooldays</font> => <font color=#ffd700>ValueNotifier<List<Schoolday>></font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>availableDates</font> => <font color=#ffd700>ValueListenable<List<DateTime>></font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>thisDate</font> => <font color=#ffd700>ValueListenable<DateTime></font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>startDate</font> => <font color=#ffd700>ValueListenable<DateTime></font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>endDate</font> => <font color=#ffd700>ValueListenable<DateTime></font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>schoolSemesters</font> => <font color=#ffd700>ValueListenable<List<SchoolSemester>></font>
++<font color=#6fa8dc>init(</font><font color=#6fa8dc>):</font> <font color=#faff00>Future<SchooldayManager></font>
++<font color=#6fa8dc>clearData(</font><font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#6fa8dc>getSchooldayByDate(</font><font color=#faff00>DateTime</font> <font color=#f4665b>date</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Schoolday?</font>
++<font color=#6fa8dc>getSchooldays(</font><font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>postSchoolday(</font><font color=#faff00>DateTime</font> <font color=#f4665b>schoolday</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>postMultipleSchooldays(</font><font color=#faff00>List<DateTime></font> <font color=#f4665b>dates</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>deleteSchoolday(</font><font color=#faff00>DateTime</font> <font color=#f4665b>date</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>getSchoolSemesters(</font><font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>postSchoolSemester(</font><font color=#faff00>DateTime</font> <font color=#f4665b>startDate</font>, <font color=#faff00>DateTime</font> <font color=#f4665b>endDate</font>, <font color=#faff00>bool</font> <font color=#f4665b>isFirst</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>getCurrentSchoolSemester(</font><font color=#6fa8dc>):</font> <font color=#faff00>SchoolSemester?</font>
++<font color=#6fa8dc>setAvailableDates(</font><font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#6fa8dc>getThisDate(</font><font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#6fa8dc>setThisDate(</font><font color=#faff00>DateTime</font> <font color=#f4665b>date</font>, <font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#6fa8dc>setStartDate(</font><font color=#faff00>DateTime</font> <font color=#f4665b>date</font>, <font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#6fa8dc>setEndDate(</font><font color=#faff00>DateTime</font> <font color=#f4665b>date</font>, <font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
+}
+@enduml

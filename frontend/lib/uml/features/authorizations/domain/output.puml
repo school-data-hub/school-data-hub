@@ -1,0 +1,82 @@
+@startuml
+
+skinparam backgroundColor #000000
+
+skinparam {
+    ClassStereotypeFontColor #FFD700
+    ClassStereotypeFontSize 12
+    ClassStereotypeFontStyle bold
+}
+skinparam class {
+    BackgroundColor #333333
+    BorderColor #000000
+    ArrowColor #FFFFFF
+    FontColor #D3D3D3
+}
+skinparam classAttribute {
+    FontColor #D3D3D
+}
+class AuthorizationHelper {
+---
++<font color=#6fa8dc>authorizationStats(</font><font color=#faff00>Authorization</font> <font color=#f4665b>authorization</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Map<String, int></font>
+}
+class AuthorizationManager {
+-_authorizations: <font color=#ffd700>ValueNotifier<List<Authorization>>([])</font>
+-_authorizationsMap: <font color=#faff00>Map<String, Authorization></font>
++notificationService: <font color=#faff00>locator<NotificationService>()</font>
++authorizationApiService: <font color=#faff00>AuthorizationApiService()</font>
+---
++<font color=#c36dfd>get</font> <font color=#6fa8dc>authorizations</font> => <font color=#ffd700>ValueListenable<List<Authorization>></font>
++<font color=#6fa8dc>init(</font><font color=#6fa8dc>):</font> <font color=#faff00>Future<AuthorizationManager></font>
++<font color=#6fa8dc>clearData(</font><font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#6fa8dc>fetchAuthorizations(</font><font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>postAuthorizationWithPupils(</font><font color=#faff00>String</font> <font color=#f4665b>name</font>, <font color=#faff00>String</font> <font color=#f4665b>description</font>, <font color=#faff00>List<int></font> <font color=#f4665b>pupilIds</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>deleteAuthorization(</font><font color=#faff00>String</font> <font color=#f4665b>authId</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>postPupilAuthorization(</font><font color=#faff00>int</font> <font color=#f4665b>pupilId</font>, <font color=#faff00>String</font> <font color=#f4665b>authId</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>postPupilAuthorizations(</font><font color=#faff00>List<int></font> <font color=#f4665b>pupilIds</font>, <font color=#faff00>String</font> <font color=#f4665b>authId</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>deletePupilAuthorization(</font><font color=#faff00>int</font> <font color=#f4665b>pupilId</font>, <font color=#faff00>String</font> <font color=#f4665b>authId</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>updatePupilAuthorizationProperty(</font><font color=#faff00>int</font> <font color=#f4665b>pupilId</font>, <font color=#faff00>String</font> <font color=#f4665b>listId</font>, <font color=#faff00>bool?</font> <font color=#f4665b>value</font>, <font color=#faff00>String?</font> <font color=#f4665b>comment</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>postAuthorizationFile(</font><font color=#faff00>File</font> <font color=#f4665b>file</font>, <font color=#faff00>int</font> <font color=#f4665b>pupilId</font>, <font color=#faff00>String</font> <font color=#f4665b>authId</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>deleteAuthorizationFile(</font><font color=#faff00>int</font> <font color=#f4665b>pupilId</font>, <font color=#faff00>String</font> <font color=#f4665b>authId</font>, <font color=#faff00>String</font> <font color=#f4665b>cacheKey</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>getAuthorization(</font><font color=#faff00>String</font> <font color=#f4665b>authId</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Authorization</font>
++<font color=#6fa8dc>getListedPupilsInAuthorization(</font><font color=#faff00>String</font> <font color=#f4665b>authorizationId</font>, <font color=#faff00>List<PupilProxy></font> <font color=#f4665b>filteredPupils</font>, <font color=#6fa8dc>):</font> <font color=#faff00>List<PupilProxy></font>
+}
+class AuthorizationFilterManager {
+-_filteredAuthorizations: <font color=#ffd700>ValueNotifier<List<Authorization>></font>
+-_filterState: <font color=#ffd700>ValueNotifier<bool>(false)</font>
+---
++<font color=#c36dfd>get</font> <font color=#6fa8dc>filteredAuthorizations</font> => <font color=#ffd700>ValueListenable<List<Authorization>></font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>filterState</font> => <font color=#ffd700>ValueListenable<bool></font>
++<font color=#6fa8dc>init(</font><font color=#6fa8dc>):</font> <font color=#faff00>AuthorizationFilterManager</font>
++<font color=#6fa8dc>resetFilters(</font><font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#6fa8dc>onSearchText(</font><font color=#faff00>String</font> <font color=#f4665b>text</font>, <font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
+}
+AuthorizationFilterManager ..> ValueNotifier
+class PupilAuthorizationFilterManager {
+-_pupilAuthorizationFilterState: <font color=#ffd700>ValueNotifier<Map<AuthorizationFilter, bool>>(initialPupilAuthorizationFilterValues)</font>
+---
++<font color=#c36dfd>get</font> <font color=#6fa8dc>authorizationFilterState</font> => <font color=#ffd700>ValueListenable<Map<AuthorizationFilter, bool>></font>
++<font color=#6fa8dc>resetFilters(</font><font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#6fa8dc>setFilter(</font><font color=#faff00>List<AuthorizationFilterRecord></font> <font color=#f4665b>authorizationFilters</font>, <font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#6fa8dc>applyAuthorizationFiltersToPupilAuthorizations(</font><font color=#faff00>List<PupilAuthorization></font> <font color=#f4665b>pupilAuthorizations</font>, <font color=#6fa8dc>):</font> <font color=#faff00>List<PupilAuthorization></font>
+}
+class Authorization {
++authorizationDescription: <font color=#faff00>String</font>
++authorizationId: <font color=#faff00>String</font>
++authorizationName: <font color=#faff00>String</font>
++createdBy: <font color=#faff00>String?</font>
++authorizedPupils: <font color=#faff00>List<PupilAuthorization></font>
+---
++<font color=#6fa8dc>toJson(</font><font color=#6fa8dc>):</font> <font color=#faff00>Map<String, dynamic></font>
+}
+class PupilAuthorization {
++comment: <font color=#faff00>String?</font>
++createdBy: <font color=#faff00>String?</font>
++fileId: <font color=#faff00>String?</font>
++originAuthorization: <font color=#faff00>String</font>
++pupilId: <font color=#faff00>int</font>
++status: <font color=#faff00>bool?</font>
+---
++<font color=#6fa8dc>toJson(</font><font color=#6fa8dc>):</font> <font color=#faff00>Map<String, dynamic></font>
+}
+@enduml

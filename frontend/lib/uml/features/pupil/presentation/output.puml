@@ -1,0 +1,345 @@
+@startuml
+
+skinparam backgroundColor #000000
+
+skinparam {
+    ClassStereotypeFontColor #FFD700
+    ClassStereotypeFontSize 12
+    ClassStereotypeFontStyle bold
+}
+skinparam class {
+    BackgroundColor #333333
+    BorderColor #000000
+    ArrowColor #FFFFFF
+    FontColor #D3D3D3
+}
+skinparam classAttribute {
+    FontColor #D3D3D
+}
+class BirthdaysView <<WatchingWidget>> {
++selectedDate: DateTime
+---
++build(): Widget
+}
+WatchingWidget <|-- BirthdaysView
+BirthdaysView ..> DateTime
+class CreditHelper {
+---
++totalFluidCredit(): int
++totalGeneratedCredit(): int
+}
+class CreditListPage <<WatchingWidget>> {
+---
++build(): Widget
+}
+WatchingWidget <|-- CreditListPage
+class CreditFilterBottomSheet <<WatchingWidget>> {
+---
++build(): Widget
+}
+WatchingWidget <|-- CreditFilterBottomSheet
+class CreditListCard <<WatchingStatefulWidget>> {
++passedPupil: PupilProxy
+---
++createState(): State<CreditListCard>
+}
+WatchingStatefulWidget <|-- CreditListCard
+CreditListCard ..> PupilProxy
+class _CreditListCardState <<State>> {
+-_tileController: CustomExpansionTileController
+---
++initState(): <font color=#c36dfd>void</font>
++build(): Widget
+}
+State <|-- _CreditListCardState
+_CreditListCardState ..> CustomExpansionTileController
+class CreditListPageBottomNavBar <<WatchingWidget>> {
+---
++build(): Widget
+}
+WatchingWidget <|-- CreditListPageBottomNavBar
+class CreditListSearchBar <<WatchingWidget>> {
++pupils: List<PupilProxy>
+---
++build(): Widget
+}
+WatchingWidget <|-- CreditListSearchBar
+class PupilProfilePage <<WatchingWidget>> {
++pupil: PupilProxy
+---
++build(): Widget
+}
+WatchingWidget <|-- PupilProfilePage
+PupilProfilePage ..> PupilProxy
+class LanguageDialogDropdown <<StatelessWidget>> {
++value: String
++onChanged: ValueChanged<String?>
++label: String
++icon: IconData
+---
++build(): Widget
+}
+StatelessWidget <|-- LanguageDialogDropdown
+LanguageDialogDropdown ..> ValueChanged
+LanguageDialogDropdown ..> IconData
+class PupilProfileBottomNavBar <<StatelessWidget>> {
+---
++build(): Widget
+}
+StatelessWidget <|-- PupilProfileBottomNavBar
+class PupilProfileHeadWidget <<WatchingWidget>> {
++passedPupil: PupilProxy
+---
++build(): Widget
+}
+WatchingWidget <|-- PupilProfileHeadWidget
+PupilProfileHeadWidget ..> PupilProxy
+class PupilProfileNavigation <<WatchingStatefulWidget>> {
++boxWidth: double
+---
++createState(): State<PupilProfileNavigation>
+}
+WatchingStatefulWidget <|-- PupilProfileNavigation
+class _PupilProfileNavigationState <<State>> {
++navigationBackgroundActive: Color
++navigationIconInactive: Color
++navigationIconActive: Color
+---
++navigationBackgroundColor(): Color
++build(): Widget
+}
+State <|-- _PupilProfileNavigationState
+_PupilProfileNavigationState ..> Color
+class PupilProfilePageContent <<WatchingWidget>> {
++pupil: PupilProxy
+---
++build(): Widget
+}
+WatchingWidget <|-- PupilProfilePageContent
+PupilProfilePageContent ..> PupilProxy
+class PupilOgsContent <<StatelessWidget>> {
++pupil: PupilProxy
+---
++build(): Widget
+}
+StatelessWidget <|-- PupilOgsContent
+PupilOgsContent ..> PupilProxy
+class PupilAttendanceContent <<StatelessWidget>> {
++pupil: PupilProxy
+---
++build(): Widget
+}
+StatelessWidget <|-- PupilAttendanceContent
+PupilAttendanceContent ..> PupilProxy
+class PupilAuthorizationsContent <<StatelessWidget>> {
++pupil: PupilProxy
+---
++build(): Widget
+}
+StatelessWidget <|-- PupilAuthorizationsContent
+PupilAuthorizationsContent ..> PupilProxy
+class PupilCommunicationContent <<StatelessWidget>> {
++pupil: PupilProxy
+---
++build(): Widget
+}
+StatelessWidget <|-- PupilCommunicationContent
+PupilCommunicationContent ..> PupilProxy
+class PupilCreditContent <<StatelessWidget>> {
++pupil: PupilProxy
+---
++build(): Widget
+}
+StatelessWidget <|-- PupilCreditContent
+PupilCreditContent ..> PupilProxy
+class PupilInfosContent <<StatelessWidget>> {
++pupil: PupilProxy
+---
++createController(): TextEditingController
++build(): Widget
+}
+StatelessWidget <|-- PupilInfosContent
+PupilInfosContent ..> PupilProxy
+class PupilLearningContent <<StatelessWidget>> {
++pupil: PupilProxy
+---
++build(): Widget
+}
+StatelessWidget <|-- PupilLearningContent
+PupilLearningContent ..> PupilProxy
+class PupilLearningSupportContent <<StatelessWidget>> {
++pupil: PupilProxy
+---
++build(): Widget
+}
+StatelessWidget <|-- PupilLearningSupportContent
+PupilLearningSupportContent ..> PupilProxy
+class IndividualDevelopmentPlanExpansionTile <<StatefulWidget>> {
++pupil: PupilProxy
+---
++createState(): State<IndividualDevelopmentPlanExpansionTile>
+}
+StatefulWidget <|-- IndividualDevelopmentPlanExpansionTile
+IndividualDevelopmentPlanExpansionTile ..> PupilProxy
+class _IndividualDevelopmentPlanExpansionTileState <<State>> {
+-_tileController: ExpansionTileController
+---
++initState(): <font color=#c36dfd>void</font>
++build(): Widget
+}
+State <|-- _IndividualDevelopmentPlanExpansionTileState
+_IndividualDevelopmentPlanExpansionTileState ..> ExpansionTileController
+class PupilSchooldayEventsContent <<StatelessWidget>> {
++pupil: PupilProxy
+---
++build(): Widget
+}
+StatelessWidget <|-- PupilSchooldayEventsContent
+PupilSchooldayEventsContent ..> PupilProxy
+class PupilSchoolListsContent <<StatelessWidget>> {
++pupil: PupilProxy
+---
++build(): Widget
+}
+StatelessWidget <|-- PupilSchoolListsContent
+PupilSchoolListsContent ..> PupilProxy
+class PupilSchoolListContentList <<WatchingWidget>> {
++pupil: PupilProxy
+---
++build(): Widget
+}
+WatchingWidget <|-- PupilSchoolListContentList
+PupilSchoolListContentList ..> PupilProxy
+class CropAvatarView <<StatefulWidget>> {
++image: XFile
+---
++createState(): State<CropAvatarView>
+}
+StatefulWidget <|-- CropAvatarView
+CropAvatarView ..> XFile
+class _CropAvatarState <<State>> {
++controller: CropController(aspectRatio: 1, defaultCrop: const Rect.fromLTRB(0.1, 0.1, 0.9, 0.9))
+---
++build(): Widget
+-_buildButtons(): Widget
+-_rotateLeft(): void>
+-_rotateRight(): void>
+-_finished(): void>
++imageToFile(): File>
+}
+State <|-- _CropAvatarState
+class SelectPupilsListPage <<WatchingStatefulWidget>> {
++selectablePupils: List<PupilProxy>?
+---
++createState(): State<SelectPupilsListPage>
+}
+WatchingStatefulWidget <|-- SelectPupilsListPage
+class _SelectPupilsListPageState <<State>> {
++pupils: List<PupilProxy>?
++inheritedFilters: Map<PupilFilter, bool>?
++selectedPupilIds: List<int>
++isSelectAllMode: bool
++isSelectMode: bool
+---
++initState(): <font color=#c36dfd>void</font>
++cancelSelect(): <font color=#c36dfd>void</font>
++onCardPress(): <font color=#c36dfd>void</font>
++clearAll(): <font color=#c36dfd>void</font>
++toggleSelectAll(): <font color=#c36dfd>void</font>
++getSelectedPupilIds(): List<int>
++build(): Widget
+}
+State <|-- _SelectPupilsListPageState
+class SelectPupilsFilterBottomSheet <<WatchingWidget>> {
+---
++build(): Widget
+}
+WatchingWidget <|-- SelectPupilsFilterBottomSheet
+class SelectPupilListCard <<WatchingWidget>> {
++passedPupil: PupilProxy
++onCardPress: OnCardPressCallback
++isSelectMode: bool
++isSelected: bool
+---
++build(): Widget
+}
+WatchingWidget <|-- SelectPupilListCard
+SelectPupilListCard ..> PupilProxy
+SelectPupilListCard ..> OnCardPressCallback
+class SelectPupilsSearchBar <<WatchingWidget>> {
++selectablePupils: List<PupilProxy>
++selectedPupils: List<PupilProxy>?
+---
++build(): Widget
+}
+WatchingWidget <|-- SelectPupilsSearchBar
+class SelectPupilsPageBottomNavBar <<StatelessWidget>> {
++filtersOn: bool
++isSelectMode: bool
++isSelectAllMode: bool
++selectedPupilIds: List<int>
++cancelSelect: Function
++toggleSelectAll: Function
+---
++build(): Widget
+}
+StatelessWidget <|-- SelectPupilsPageBottomNavBar
+SelectPupilsPageBottomNavBar ..> Function
+class SpecialInfoListPage <<WatchingWidget>> {
+---
++build(): Widget
+}
+WatchingWidget <|-- SpecialInfoListPage
+class SpecialInfoCard <<WatchingWidget>> {
++pupil: PupilProxy
+---
++build(): Widget
+}
+WatchingWidget <|-- SpecialInfoCard
+SpecialInfoCard ..> PupilProxy
+class SpecialInfoFilterBottomSheet <<WatchingWidget>> {
+---
++build(): Widget
+}
+WatchingWidget <|-- SpecialInfoFilterBottomSheet
+class SpecialInfoListPageBottomNavBar <<WatchingWidget>> {
+---
++build(): Widget
+}
+WatchingWidget <|-- SpecialInfoListPageBottomNavBar
+class SpecialInfoListSearchBar <<WatchingWidget>> {
++pupils: List<PupilProxy>
+---
++build(): Widget
+}
+WatchingWidget <|-- SpecialInfoListSearchBar
+class FilterHeading <<StatelessWidget>> {
+---
++build(): Widget
+}
+StatelessWidget <|-- FilterHeading
+class CommonPupilFiltersWidget <<WatchingWidget>> {
+---
++build(): Widget
+}
+WatchingWidget <|-- CommonPupilFiltersWidget
+class PupilSearchTextField <<WatchingStatefulWidget>> {
++searchType: SearchType
++hintText: String
++refreshFunction: Function
+---
++createState(): State<PupilSearchTextField>
+}
+WatchingStatefulWidget <|-- PupilSearchTextField
+PupilSearchTextField ..> SearchType
+PupilSearchTextField ..> Function
+class _SearchTextFieldState <<State>> {
++pupilsFilter: locator<PupilsFilter>()
++focusNode: FocusNode
++textEditingController: TextEditingController()
+---
++build(): Widget
+}
+State <|-- _SearchTextFieldState
+_SearchTextFieldState ..> FocusNode
+@enduml

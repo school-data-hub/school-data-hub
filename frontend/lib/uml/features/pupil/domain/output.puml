@@ -1,0 +1,322 @@
+@startuml
+
+skinparam backgroundColor #000000
+
+skinparam {
+    ClassStereotypeFontColor #FFD700
+    ClassStereotypeFontSize 12
+    ClassStereotypeFontStyle bold
+}
+skinparam class {
+    BackgroundColor #333333
+    BorderColor #000000
+    ArrowColor #FFFFFF
+    FontColor #D3D3D3
+}
+skinparam classAttribute {
+    FontColor #D3D3D
+}
+class RadioButtonFilter <<Filter>> {
+-_isActive1: <font color=#faff00>bool</font>
+-_isActive2: <font color=#faff00>bool</font>
+---
++<font color=#c36dfd>get</font> <font color=#6fa8dc>isActive1</font> => <font color=#faff00>bool</font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>isActive2</font> => <font color=#faff00>bool</font>
++<font color=#6fa8dc>toggle1(</font><font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#6fa8dc>toggle2(</font><font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#6fa8dc>reset(</font><font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#6fa8dc>matches(</font><font color=#faff00>PupilProxy</font> <font color=#f4665b>item</font>, <font color=#6fa8dc>):</font> <font color=#faff00>bool</font>
+}
+Filter <|-- RadioButtonFilter
+abstract class PupilsFilter <<[Listenable]>> {
+---
++<font color=#c36dfd>get</font> <font color=#6fa8dc>filteredPupils</font> => <font color=#ffd700>ValueListenable<List<PupilProxy>></font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>filteredPupilIds</font> => <font color=#ffd700>ValueListenable<List<int>></font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>groupFilters</font> => <font color=#faff00>List<Filter></font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>sortMode</font> => <font color=#ffd700>ValueListenable<PupilSortMode></font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>schoolGradeFilters</font> => <font color=#faff00>List<Filter></font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>genderFilters</font> => <font color=#faff00>List<Filter></font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>textFilter</font> => <font color=#faff00>PupilTextFilter</font>
++<font color=#6fa8dc>dispose(</font><font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#6fa8dc>refreshs(</font><font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#6fa8dc>clearFilteredPupils(</font><font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#6fa8dc>resetFilters(</font><font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#6fa8dc>setSortMode(</font><font color=#faff00>PupilSortMode</font> <font color=#f4665b>sortMode</font>, <font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#6fa8dc>sortPupils(</font><font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#6fa8dc>setTextFilter(</font><font color=#faff00>String?</font> <font color=#f4665b>text</font>, <font color=#faff00>bool</font> <font color=#f4665b>refresh</font>, <font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#6fa8dc>populateGroupFilters(</font><font color=#faff00>List<String></font> <font color=#f4665b>groupIds</font>, <font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
+}
+PupilsFilter ..|> Listenable
+class PupilsFilterImplementation <<[PupilsFilter]>> {
+-_pupilsManager: <font color=#faff00>PupilManager</font>
+-_filteredPupils: <font color=#ffd700>ValueNotifier<List<PupilProxy>></font>
+-_filteredPupilIds: <font color=#ffd700>ValueNotifier<List<int>></font>
+-_groupFilters: <font color=#faff00>List<Filter></font>
+-_sortMode: <font color=#ffd700>ValueNotifier<PupilSortMode>(PupilSortMode.sortByName)</font>
+-_textFilter: <font color=#faff00>PupilTextFilter</font>
++allFilters: <font color=#faff00>List<Filter></font>
+---
++<font color=#6fa8dc>dispose(</font><font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#6fa8dc>clearFilteredPupils(</font><font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>filteredPupils</font> => <font color=#ffd700>ValueListenable<List<PupilProxy>></font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>filteredPupilIds</font> => <font color=#ffd700>ValueListenable<List<int>></font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>groupFilters</font> => <font color=#faff00>List<Filter></font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>sortMode</font> => <font color=#ffd700>ValueListenable<PupilSortMode></font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>textFilter</font> => <font color=#faff00>PupilTextFilter</font>
++<font color=#6fa8dc>resetFilters(</font><font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#6fa8dc>refreshs(</font><font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#6fa8dc>setSortMode(</font><font color=#faff00>PupilSortMode</font> <font color=#f4665b>sortMode</font>, <font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#6fa8dc>sortPupils(</font><font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#6fa8dc>setTextFilter(</font><font color=#faff00>String?</font> <font color=#f4665b>text</font>, <font color=#faff00>bool</font> <font color=#f4665b>refresh</font>, <font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>schoolGradeFilters</font> => <font color=#faff00>List<Filter></font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>genderFilters</font> => <font color=#faff00>List<Filter></font>
++<font color=#6fa8dc>populateGroupFilters(</font><font color=#faff00>List<String></font> <font color=#f4665b>groupIds</font>, <font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
+}
+PupilsFilterImplementation ..> PupilManager
+PupilsFilterImplementation ..> ValueNotifier
+PupilsFilterImplementation ..> PupilTextFilter
+PupilsFilterImplementation ..|> PupilsFilter
+class PupilFilterManager {
+-_searchText: <font color=#ffd700>ValueNotifier<String>('')</font>
+-_pupilFilterState: <font color=#ffd700>ValueNotifier<Map<PupilFilter, bool>>(initialPupilFilterValues)</font>
+-_sortMode: <font color=#ffd700>ValueNotifier<Map<PupilSortMode, bool>>(initialSortModeValues)</font>
+-_filteredPupils: <font color=#ffd700>ValueNotifier<List<PupilProxy>>(locator<PupilManager>().allPupils)</font>
+---
++<font color=#c36dfd>get</font> <font color=#6fa8dc>searchText</font> => <font color=#ffd700>ValueListenable<String></font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>pupilFilterState</font> => <font color=#ffd700>ValueListenable<Map<PupilFilter, bool>></font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>sortMode</font> => <font color=#ffd700>ValueListenable<Map<PupilSortMode, bool>></font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>filteredPupils</font> => <font color=#ffd700>ValueListenable<List<PupilProxy>></font>
++<font color=#6fa8dc>resetFilters(</font><font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#6fa8dc>setPupilFilter(</font><font color=#faff00>List<PupilFilterRecord></font> <font color=#f4665b>pupilFilterRecords</font>, <font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#6fa8dc>comparePupilsByAdmonishedDate(</font><font color=#faff00>PupilProxy</font> <font color=#f4665b>a</font>, <font color=#faff00>PupilProxy</font> <font color=#f4665b>b</font>, <font color=#6fa8dc>):</font> <font color=#faff00>int</font>
++<font color=#6fa8dc>comparePupilsByLastNonProcessedSchooldayEvent(</font><font color=#faff00>PupilProxy</font> <font color=#f4665b>a</font>, <font color=#faff00>PupilProxy</font> <font color=#f4665b>b</font>, <font color=#6fa8dc>):</font> <font color=#faff00>int</font>
++<font color=#6fa8dc>compareLastAdmonishedDates(</font><font color=#faff00>PupilProxy</font> <font color=#f4665b>a</font>, <font color=#faff00>PupilProxy</font> <font color=#f4665b>b</font>, <font color=#6fa8dc>):</font> <font color=#faff00>int</font>
+}
+class SchoolGradeFilter <<SelectorFilter>> {
+---
++<font color=#6fa8dc>matches(</font><font color=#faff00>PupilProxy</font> <font color=#f4665b>item</font>, <font color=#6fa8dc>):</font> <font color=#faff00>bool</font>
+}
+SelectorFilter <|-- SchoolGradeFilter
+class GroupFilter <<SelectorFilter>> {
+---
++<font color=#6fa8dc>matches(</font><font color=#faff00>PupilProxy</font> <font color=#f4665b>item</font>, <font color=#6fa8dc>):</font> <font color=#faff00>bool</font>
+}
+SelectorFilter <|-- GroupFilter
+class GenderFilter <<SelectorFilter>> {
+---
++<font color=#6fa8dc>matches(</font><font color=#faff00>PupilProxy</font> <font color=#f4665b>item</font>, <font color=#6fa8dc>):</font> <font color=#faff00>bool</font>
+}
+SelectorFilter <|-- GenderFilter
+class PupilTextFilter <<Filter>> {
+-_text: <font color=#faff00>String</font>
+---
++<font color=#c36dfd>get</font> <font color=#6fa8dc>text</font> => <font color=#faff00>String</font>
++<font color=#6fa8dc>setFilterText(</font><font color=#faff00>String</font> <font color=#f4665b>text</font>, <font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#6fa8dc>reset(</font><font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#6fa8dc>matches(</font><font color=#faff00>PupilProxy</font> <font color=#f4665b>item</font>, <font color=#6fa8dc>):</font> <font color=#faff00>bool</font>
+}
+Filter <|-- PupilTextFilter
+class CreditHistoryLog {
++createdAt: <font color=#faff00>DateTime</font>
++createdBy: <font color=#faff00>String</font>
++credit: <font color=#faff00>int</font>
++operation: <font color=#faff00>int</font>
+---
++<font color=#6fa8dc>toJson(</font><font color=#6fa8dc>):</font> <font color=#faff00>Map<String, dynamic></font>
+}
+CreditHistoryLog ..> DateTime
+class SupportLevel {
++supportLevelId: <font color=#faff00>String</font>
++level: <font color=#faff00>int</font>
++comment: <font color=#faff00>String</font>
++createdAt: <font color=#faff00>DateTime</font>
++createdBy: <font color=#faff00>String</font>
+---
++<font color=#6fa8dc>toJson(</font><font color=#6fa8dc>):</font> <font color=#faff00>Map<String, dynamic></font>
+}
+SupportLevel ..> DateTime
+class PupilData {
++avatarId: <font color=#faff00>String?</font>
++avatarAuth: <font color=#faff00>bool</font>
++avatarAuthId: <font color=#faff00>String?</font>
++publicMediaAuth: <font color=#faff00>int</font>
++publicMediaAuthId: <font color=#faff00>String?</font>
++communicationPupil: <font color=#faff00>String?</font>
++communicationTutor1: <font color=#faff00>String?</font>
++communicationTutor2: <font color=#faff00>String?</font>
++contact: <font color=#faff00>String?</font>
++parentsContact: <font color=#faff00>String?</font>
++credit: <font color=#faff00>int</font>
++creditEarned: <font color=#faff00>int</font>
++fiveYears: <font color=#faff00>DateTime?</font>
++latestSupportLevel: <font color=#faff00>int</font>
++internalId: <font color=#faff00>int</font>
++ogs: <font color=#faff00>bool</font>
++ogsInfo: <font color=#faff00>String?</font>
++pickUpTime: <font color=#faff00>String?</font>
++preschoolRevision: <font color=#faff00>int?</font>
++preschoolAttendance: <font color=#faff00>String?</font>
++specialInformation: <font color=#faff00>String?</font>
++emergencyCare: <font color=#faff00>bool?</font>
++competenceChecks: <font color=#faff00>List<CompetenceCheck></font>
++supportCategoryStatuses: <font color=#faff00>List<SupportCategoryStatus></font>
++schooldayEvents: <font color=#faff00>List<SchooldayEvent></font>
++pupilBooks: <font color=#faff00>List<PupilBorrowedBook></font>
++supportGoals: <font color=#faff00>List<SupportGoal></font>
++pupilMissedClasses: <font color=#faff00>List<MissedClass></font>
++pupilWorkbooks: <font color=#faff00>List<PupilWorkbook></font>
++creditHistoryLogs: <font color=#faff00>List<CreditHistoryLog></font>
++competenceGoals: <font color=#faff00>List<CompetenceGoal></font>
++supportLevelHistory: <font color=#faff00>List<SupportLevel></font>
++competenceReports: <font color=#faff00>List<CompetenceReport></font>
+---
++<font color=#6fa8dc>copyWith(</font><font color=#faff00>String?</font> <font color=#f4665b>avatarId</font>, <font color=#faff00>bool?</font> <font color=#f4665b>avatarAuth</font>, <font color=#faff00>{String? value}?</font> <font color=#f4665b>avatarAuthId</font>, <font color=#faff00>int?</font> <font color=#f4665b>publicMediaAuth</font>, <font color=#faff00>{String? value}?</font> <font color=#f4665b>publicMediaAuthId</font>, <font color=#faff00>String?</font> <font color=#f4665b>communicationPupil</font>, <font color=#faff00>String?</font> <font color=#f4665b>communicationTutor1</font>, <font color=#faff00>String?</font> <font color=#f4665b>communicationTutor2</font>, <font color=#faff00>String?</font> <font color=#f4665b>contact</font>, <font color=#faff00>String?</font> <font color=#f4665b>parentsContact</font>, <font color=#faff00>int?</font> <font color=#f4665b>credit</font>, <font color=#faff00>int?</font> <font color=#f4665b>creditEarned</font>, <font color=#faff00>DateTime?</font> <font color=#f4665b>fiveYears</font>, <font color=#faff00>int?</font> <font color=#f4665b>latestSupportLevel</font>, <font color=#faff00>int?</font> <font color=#f4665b>internalId</font>, <font color=#faff00>bool?</font> <font color=#f4665b>ogs</font>, <font color=#faff00>String?</font> <font color=#f4665b>ogsInfo</font>, <font color=#faff00>String?</font> <font color=#f4665b>pickUpTime</font>, <font color=#faff00>String?</font> <font color=#f4665b>specialInformation</font>, <font color=#faff00>int?</font> <font color=#f4665b>preschoolRevision</font>, <font color=#faff00>String?</font> <font color=#f4665b>preschoolAttendance</font>, <font color=#faff00>bool?</font> <font color=#f4665b>emergencyCare</font>, <font color=#faff00>List<SupportCategoryStatus>?</font> <font color=#f4665b>supportCategoryStatuses</font>, <font color=#faff00>List<SchooldayEvent>?</font> <font color=#f4665b>schooldayEvents</font>, <font color=#faff00>List<PupilBorrowedBook>?</font> <font color=#f4665b>pupilBooks</font>, <font color=#faff00>List<SupportGoal>?</font> <font color=#f4665b>supportGoals</font>, <font color=#faff00>List<MissedClass>?</font> <font color=#f4665b>pupilMissedClasses</font>, <font color=#faff00>List<PupilWorkbook>?</font> <font color=#f4665b>pupilWorkbooks</font>, <font color=#faff00>List<CreditHistoryLog>?</font> <font color=#f4665b>creditHistoryLogs</font>, <font color=#faff00>List<CompetenceGoal>?</font> <font color=#f4665b>competenceGoals</font>, <font color=#faff00>List<CompetenceCheck>?</font> <font color=#f4665b>competenceChecks</font>, <font color=#faff00>List<SupportLevel>?</font> <font color=#f4665b>supportLevelHistory</font>, <font color=#faff00>List<CompetenceReport>?</font> <font color=#f4665b>competenceReports</font>, <font color=#6fa8dc>):</font> <font color=#faff00>PupilData</font>
++<font color=#6fa8dc>toJson(</font><font color=#6fa8dc>):</font> <font color=#faff00>Map<String, dynamic></font>
+}
+PupilData ..> DateTime
+class PupilIdentity {
++id: <font color=#faff00>int</font>
++firstName: <font color=#faff00>String</font>
++lastName: <font color=#faff00>String</font>
++group: <font color=#faff00>String</font>
++schoolGrade: <font color=#faff00>String</font>
++specialNeeds: <font color=#faff00>String?</font>
++gender: <font color=#faff00>String</font>
++language: <font color=#faff00>String</font>
++family: <font color=#faff00>String?</font>
++birthday: <font color=#faff00>DateTime</font>
++migrationSupportEnds: <font color=#faff00>DateTime?</font>
++pupilSince: <font color=#faff00>DateTime</font>
+---
++<font color=#6fa8dc>toJson(</font><font color=#6fa8dc>):</font> <font color=#faff00>Map<String, dynamic></font>
+}
+PupilIdentity ..> DateTime
+class PupilProxy {
++groupFilters: <font color=#faff00>List<Filter<Object>></font>
++schoolGradeFilters: <font color=#faff00>List<SchoolGradeFilter></font>
++genderFilters: <font color=#faff00>List<GenderFilter></font>
+-_pupilData: <font color=#faff00>PupilData</font>
+-_pupilIdentity: <font color=#faff00>PupilIdentity</font>
++pupilIsDirty: <font color=#faff00>bool</font>
+-_avatarIdOverride: <font color=#faff00>String?</font>
+-_avatarUpdated: <font color=#faff00>bool</font>
+-_missedClasses: <font color=#faff00>Map<DateTime, MissedClass></font>
+---
++<font color=#6fa8dc>updatePupil(</font><font color=#faff00>PupilData</font> <font color=#f4665b>pupilData</font>, <font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#6fa8dc>updatePupilIdentity(</font><font color=#faff00>PupilIdentity</font> <font color=#f4665b>pupilIdentity</font>, <font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#6fa8dc>deleteAvatarAuthId(</font><font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#6fa8dc>deletePublicMediaAuthId(</font><font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#6fa8dc>updatePupilIdentityFromMoreRecentSource(</font><font color=#faff00>PupilIdentity</font> <font color=#f4665b>pupilIdentity</font>, <font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#6fa8dc>clearAvatar(</font><font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#6fa8dc>updateFromMissedClassesOnASchoolday(</font><font color=#faff00>List<MissedClass></font> <font color=#f4665b>allMissedClassesThisDay</font>, <font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>firstName</font> => <font color=#faff00>String</font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>lastName</font> => <font color=#faff00>String</font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>group</font> => <font color=#faff00>String</font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>groupId</font> => <font color=#faff00>String</font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>schoolGrade</font> => <font color=#faff00>SchoolGrade</font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>schoolyear</font> => <font color=#faff00>String</font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>specialNeeds</font> => <font color=#faff00>String?</font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>gender</font> => <font color=#faff00>String</font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>language</font> => <font color=#faff00>String</font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>family</font> => <font color=#faff00>String?</font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>birthday</font> => <font color=#faff00>DateTime</font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>age</font> => <font color=#faff00>int</font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>migrationSupportEnds</font> => <font color=#faff00>DateTime?</font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>pupilSince</font> => <font color=#faff00>DateTime</font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>avatarId</font> => <font color=#faff00>String?</font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>avatarAuth</font> => <font color=#faff00>bool</font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>avatarAuthId</font> => <font color=#faff00>String?</font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>publicMediaAuth</font> => <font color=#faff00>int</font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>publicMediaAuthId</font> => <font color=#faff00>String?</font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>communicationPupil</font> => <font color=#faff00>String?</font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>communicationTutor1</font> => <font color=#faff00>String?</font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>communicationTutor2</font> => <font color=#faff00>String?</font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>contact</font> => <font color=#faff00>String?</font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>parentsContact</font> => <font color=#faff00>String?</font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>credit</font> => <font color=#faff00>int</font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>creditEarned</font> => <font color=#faff00>int</font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>fiveYears</font> => <font color=#faff00>DateTime?</font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>supportLevel</font> => <font color=#faff00>int</font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>supportLevelHistory</font> => <font color=#faff00>List<SupportLevel></font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>internalId</font> => <font color=#faff00>int</font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>ogs</font> => <font color=#faff00>bool</font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>ogsInfo</font> => <font color=#faff00>String?</font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>pickUpTime</font> => <font color=#faff00>String?</font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>preschoolRevision</font> => <font color=#faff00>int?</font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>specialInformation</font> => <font color=#faff00>String?</font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>emergencyCare</font> => <font color=#faff00>bool?</font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>competenceChecks</font> => <font color=#faff00>List<CompetenceCheck>?</font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>supportCategoryStatuses</font> => <font color=#faff00>List<SupportCategoryStatus>?</font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>schooldayEvents</font> => <font color=#faff00>List<SchooldayEvent>?</font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>pupilBooks</font> => <font color=#faff00>List<PupilBorrowedBook>?</font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>supportGoals</font> => <font color=#faff00>List<SupportGoal>?</font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>missedClasses</font> => <font color=#faff00>List<MissedClass>?</font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>pupilWorkbooks</font> => <font color=#faff00>List<PupilWorkbook>?</font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>creditHistoryLogs</font> => <font color=#faff00>List<CreditHistoryLog>?</font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>competenceGoals</font> => <font color=#faff00>List<CompetenceGoal>?</font>
+}
+PupilProxy ..> PupilData
+PupilProxy ..> PupilIdentity
+class PupilIdentityHelper {
+---
++<font color=#6fa8dc>readPupilIdentitiesFromStorage(</font><font color=#faff00>String</font> <font color=#f4665b>envKey</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<Map<int, PupilIdentity>></font>
++<font color=#6fa8dc>deletePupilIdentitiesForEnv(</font><font color=#faff00>String</font> <font color=#f4665b>envKey</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>pupilIdentityFromString(</font><font color=#faff00>List<String></font> <font color=#f4665b>pupilIdentityStringItems</font>, <font color=#6fa8dc>):</font> <font color=#faff00>PupilIdentity</font>
+}
+class PupilIdentityManager {
+-_pupilIdentities: <font color=#faff00>Map<int, PupilIdentity></font>
+-_groups: <font color=#ffd700>ValueNotifier<Set<String>>({})</font>
+---
++<font color=#c36dfd>get</font> <font color=#6fa8dc>groups</font> => <font color=#ffd700>ValueListenable<Set<String>></font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>availablePupilIds</font> => <font color=#faff00>List<int></font>
++<font color=#6fa8dc>getPupilIdentity(</font><font color=#faff00>int</font> <font color=#f4665b>pupilId</font>, <font color=#6fa8dc>):</font> <font color=#faff00>PupilIdentity</font>
++<font color=#6fa8dc>init(</font><font color=#6fa8dc>):</font> <font color=#faff00>Future<PupilIdentityManager></font>
++<font color=#6fa8dc>deleteAllPupilIdentities(</font><font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>clearPupilIdentities(</font><font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#6fa8dc>getPupilIdentitiesForEnv(</font><font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>decryptCodesAndAddIdentities(</font><font color=#faff00>List<String></font> <font color=#f4665b>codes</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>addOrUpdateNewPupilIdentities(</font><font color=#faff00>String</font> <font color=#f4665b>identitiesInStringLines</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>writePupilIdentitiesToStorage(</font><font color=#faff00>String</font> <font color=#f4665b>envKey</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>updateBackendPupilsFromSchoolPupilIdentitySource(</font><font color=#faff00>String</font> <font color=#f4665b>textFileContent</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>generatePupilIdentitiesQrData(</font><font color=#faff00>List<int></font> <font color=#f4665b>pupilIds</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<String></font>
++<font color=#6fa8dc>generateAllPupilIdentitiesQrData(</font><font color=#faff00>int</font> <font color=#f4665b>pupilsPerCode</font>, <font color=#6fa8dc>):</font> <font color=#faff00>List<Map<String, Object>></font>
++<font color=#6fa8dc>deletePupilIdentities(</font><font color=#faff00>List<int></font> <font color=#f4665b>toBeDeletedPupilIds</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<String></font>
+}
+class PupilManager <<ChangeNotifier>> {
+-_pupils: <font color=#faff00><int, PupilProxy>{}</font>
++pupilDataApiService: <font color=#faff00>PupilDataApiService()</font>
++notificationService: <font color=#faff00>locator<NotificationService>()</font>
+---
++<font color=#c36dfd>get</font> <font color=#6fa8dc>allPupils</font> => <font color=#faff00>List<PupilProxy></font>
++<font color=#6fa8dc>clearData(</font><font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#6fa8dc>getPupilById(</font><font color=#faff00>int</font> <font color=#f4665b>id</font>, <font color=#6fa8dc>):</font> <font color=#faff00>PupilProxy?</font>
++<font color=#6fa8dc>pupilsFromPupilIds(</font><font color=#faff00>List<int></font> <font color=#f4665b>pupilIds</font>, <font color=#6fa8dc>):</font> <font color=#faff00>List<PupilProxy></font>
++<font color=#6fa8dc>pupilIdsFromPupils(</font><font color=#faff00>List<PupilProxy></font> <font color=#f4665b>pupils</font>, <font color=#6fa8dc>):</font> <font color=#faff00>List<int></font>
++<font color=#6fa8dc>pupilsNotListed(</font><font color=#faff00>List<int></font> <font color=#f4665b>pupilIds</font>, <font color=#6fa8dc>):</font> <font color=#faff00>List<PupilProxy></font>
++<font color=#6fa8dc>siblings(</font><font color=#faff00>PupilProxy</font> <font color=#f4665b>pupil</font>, <font color=#6fa8dc>):</font> <font color=#faff00>List<PupilProxy></font>
++<font color=#6fa8dc>pupilsWithBirthdaySinceDate(</font><font color=#faff00>DateTime</font> <font color=#f4665b>date</font>, <font color=#6fa8dc>):</font> <font color=#faff00>List<PupilProxy></font>
++<font color=#6fa8dc>fetchAllPupils(</font><font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>cleanPupilsAvatarIds(</font><font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>init(</font><font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>updatePupilList(</font><font color=#faff00>List<PupilProxy></font> <font color=#f4665b>pupils</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>fetchPupilsByInternalId(</font><font color=#faff00>List<int></font> <font color=#f4665b>internalPupilIds</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>updatePupilProxyWithPupilData(</font><font color=#faff00>PupilData</font> <font color=#f4665b>pupilData</font>, <font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#6fa8dc>updatePupilProxiesWithPupilData(</font><font color=#faff00>List<PupilData></font> <font color=#f4665b>pupils</font>, <font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#6fa8dc>updatePupilsFromMissedClassesOnASchoolday(</font><font color=#faff00>List<MissedClass></font> <font color=#f4665b>allMissedClasses</font>, <font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#6fa8dc>postAvatarImage(</font><font color=#faff00>File</font> <font color=#f4665b>imageFile</font>, <font color=#faff00>PupilProxy</font> <font color=#f4665b>pupilProxy</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>postAvatarAuthImage(</font><font color=#faff00>File</font> <font color=#f4665b>imageFile</font>, <font color=#faff00>PupilProxy</font> <font color=#f4665b>pupilProxy</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>postPublicMediaAuthImage(</font><font color=#faff00>File</font> <font color=#f4665b>imageFile</font>, <font color=#faff00>PupilProxy</font> <font color=#f4665b>pupilProxy</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>deleteAvatarImage(</font><font color=#faff00>int</font> <font color=#f4665b>pupilId</font>, <font color=#faff00>String</font> <font color=#f4665b>cacheKey</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>deleteAvatarAuthImage(</font><font color=#faff00>int</font> <font color=#f4665b>pupilId</font>, <font color=#faff00>String</font> <font color=#f4665b>cacheKey</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>deletePublicMediaAuthImage(</font><font color=#faff00>int</font> <font color=#f4665b>pupilId</font>, <font color=#faff00>String</font> <font color=#f4665b>cacheKey</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>patchOnePupilProperty(</font><font color=#faff00>int</font> <font color=#f4665b>pupilId</font>, <font color=#faff00>String</font> <font color=#f4665b>jsonKey</font>, <font color=#faff00>dynamic</font> <font color=#f4665b>value</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>patchPupilWithNewSupportLevel(</font><font color=#faff00>int</font> <font color=#f4665b>pupilId</font>, <font color=#faff00>int</font> <font color=#f4665b>level</font>, <font color=#faff00>DateTime</font> <font color=#f4665b>createdAt</font>, <font color=#faff00>String</font> <font color=#f4665b>createdBy</font>, <font color=#faff00>String</font> <font color=#f4665b>comment</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>deleteSupportLevelHistoryItem(</font><font color=#faff00>int</font> <font color=#f4665b>pupilId</font>, <font color=#faff00>String</font> <font color=#f4665b>supportLevelId</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>getPupilFilter(</font><font color=#6fa8dc>):</font> <font color=#faff00>PupilsFilter</font>
++<font color=#6fa8dc>borrowBook(</font><font color=#faff00>int</font> <font color=#f4665b>pupilId</font>, <font color=#faff00>String</font> <font color=#f4665b>bookId</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>deletePupilBook(</font><font color=#faff00>String</font> <font color=#f4665b>lendingId</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>returnBook(</font><font color=#faff00>String</font> <font color=#f4665b>lendingId</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>patchPupilBook(</font><font color=#faff00>String</font> <font color=#f4665b>lendingId</font>, <font color=#faff00>DateTime?</font> <font color=#f4665b>lentAt</font>, <font color=#faff00>String?</font> <font color=#f4665b>lentBy</font>, <font color=#faff00>String?</font> <font color=#f4665b>comment</font>, <font color=#faff00>int?</font> <font color=#f4665b>rating</font>, <font color=#faff00>DateTime?</font> <font color=#f4665b>returnedAt</font>, <font color=#faff00>String?</font> <font color=#f4665b>receivedBy</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
+}
+ChangeNotifier <|-- PupilManager
+@enduml

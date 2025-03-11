@@ -1,0 +1,63 @@
+@startuml
+
+skinparam backgroundColor #000000
+
+skinparam {
+    ClassStereotypeFontColor #FFD700
+    ClassStereotypeFontSize 12
+    ClassStereotypeFontStyle bold
+}
+skinparam class {
+    BackgroundColor #333333
+    BorderColor #000000
+    ArrowColor #FFFFFF
+    FontColor #D3D3D3
+}
+skinparam classAttribute {
+    FontColor #D3D3D
+}
+class PupilWorkbook {
++createdAt: <font color=#faff00>DateTime</font>
++createdBy: <font color=#faff00>String</font>
++comment: <font color=#faff00>String?</font>
++status: <font color=#faff00>int?</font>
++workbookIsbn: <font color=#faff00>int</font>
++finishedAt: <font color=#faff00>DateTime?</font>
+---
++<font color=#6fa8dc>toJson(</font><font color=#6fa8dc>):</font> <font color=#faff00>Map<String, dynamic></font>
+}
+PupilWorkbook ..> DateTime
+class Workbook {
++isbn: <font color=#faff00>int</font>
++name: <font color=#faff00>String</font>
++subject: <font color=#faff00>String?</font>
++level: <font color=#faff00>String?</font>
++amount: <font color=#faff00>int</font>
++imageUrl: <font color=#faff00>String?</font>
+---
++<font color=#6fa8dc>toJson(</font><font color=#6fa8dc>):</font> <font color=#faff00>Map<String, dynamic></font>
+}
+class WorkbookManager {
+-_workbooks: <font color=#ffd700>ValueNotifier<List<Workbook>>([])</font>
++session: <font color=#faff00>locator.get<SessionManager>().credentials.value</font>
++apiPupilWorkbookService: <font color=#faff00>PupilWorkbookApiService()</font>
++apiWorkbookService: <font color=#faff00>WorkbookApiService()</font>
++notificationService: <font color=#faff00>locator<NotificationService>()</font>
++pupilManager: <font color=#faff00>locator<PupilManager>()</font>
+---
++<font color=#c36dfd>get</font> <font color=#6fa8dc>workbooks</font> => <font color=#ffd700>ValueListenable<List<Workbook>></font>
++<font color=#6fa8dc>init(</font><font color=#6fa8dc>):</font> <font color=#faff00>Future<WorkbookManager></font>
++<font color=#6fa8dc>clearData(</font><font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#6fa8dc>getWorkbooks(</font><font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>postWorkbook(</font><font color=#faff00>String</font> <font color=#f4665b>name</font>, <font color=#faff00>int</font> <font color=#f4665b>isbn</font>, <font color=#faff00>String</font> <font color=#f4665b>subject</font>, <font color=#faff00>String</font> <font color=#f4665b>level</font>, <font color=#faff00>int</font> <font color=#f4665b>amount</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>updateWorkbookProperty(</font>unknown <font color=#f4665b>name</font>, unknown <font color=#f4665b>isbn</font>, unknown <font color=#f4665b>subject</font>, unknown <font color=#f4665b>level</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>postWorkbookFile(</font><font color=#faff00>File</font> <font color=#f4665b>imageFile</font>, <font color=#faff00>int</font> <font color=#f4665b>isbn</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>deleteWorkbook(</font><font color=#faff00>int</font> <font color=#f4665b>isbn</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>deleteWorkbookFile(</font><font color=#faff00>int</font> <font color=#f4665b>isbn</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>newPupilWorkbook(</font><font color=#faff00>int</font> <font color=#f4665b>pupilId</font>, <font color=#faff00>int</font> <font color=#f4665b>isbn</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>updatePupilWorkbook(</font><font color=#faff00>int</font> <font color=#f4665b>pupilId</font>, <font color=#faff00>int</font> <font color=#f4665b>isbn</font>, <font color=#faff00>String?</font> <font color=#f4665b>comment</font>, <font color=#faff00>int?</font> <font color=#f4665b>status</font>, <font color=#faff00>String?</font> <font color=#f4665b>createdBy</font>, <font color=#faff00>DateTime?</font> <font color=#f4665b>createdAt</font>, <font color=#faff00>DateTime?</font> <font color=#f4665b>finishedAt</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>deletePupilWorkbook(</font><font color=#faff00>int</font> <font color=#f4665b>pupilId</font>, <font color=#faff00>int</font> <font color=#f4665b>isbn</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>getWorkbookByIsbn(</font><font color=#faff00>int?</font> <font color=#f4665b>isbn</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Workbook?</font>
++<font color=#6fa8dc>updateWorkbookInRepositoryWithResponse(</font><font color=#faff00>Workbook</font> <font color=#f4665b>workbook</font>, <font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
+}
+@enduml

@@ -1,0 +1,93 @@
+@startuml
+
+skinparam backgroundColor #000000
+
+skinparam {
+    ClassStereotypeFontColor #FFD700
+    ClassStereotypeFontSize 12
+    ClassStereotypeFontStyle bold
+}
+skinparam class {
+    BackgroundColor #333333
+    BorderColor #000000
+    ArrowColor #FFFFFF
+    FontColor #D3D3D3
+}
+skinparam classAttribute {
+    FontColor #D3D3D
+}
+class SchooldayEventFilterManager {
+-_schooldayEventsFilterState: <font color=#ffd700>ValueNotifier<Map<SchooldayEventFilter, bool>>(initialSchooldayEventFilterValues)</font>
++filtersStateManager: <font color=#faff00>locator<FiltersStateManager>()</font>
+---
++<font color=#c36dfd>get</font> <font color=#6fa8dc>schooldayEventsFilterState</font> => <font color=#ffd700>ValueListenable<Map<SchooldayEventFilter, bool>></font>
++<font color=#6fa8dc>resetFilters(</font><font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#6fa8dc>setFilter(</font><font color=#faff00>List<SchooldayEventFilterRecord></font> <font color=#f4665b>schooldayEventFilters</font>, <font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#6fa8dc>filteredSchooldayEvents(</font><font color=#faff00>PupilProxy</font> <font color=#f4665b>pupil</font>, <font color=#6fa8dc>):</font> <font color=#faff00>List<SchooldayEvent></font>
++<font color=#6fa8dc>filterBySevenDays(</font><font color=#faff00>SchooldayEvent</font> <font color=#f4665b>schooldayEvent</font>, <font color=#6fa8dc>):</font> <font color=#faff00>bool</font>
++<font color=#6fa8dc>filterByProcessed(</font><font color=#faff00>SchooldayEvent</font> <font color=#f4665b>schooldayEvent</font>, <font color=#6fa8dc>):</font> <font color=#faff00>bool</font>
++<font color=#6fa8dc>filterByAdmonition(</font><font color=#faff00>SchooldayEvent</font> <font color=#f4665b>schooldayEvent</font>, <font color=#6fa8dc>):</font> <font color=#faff00>bool</font>
++<font color=#6fa8dc>filterByAfternoonCareAdmonition(</font><font color=#faff00>SchooldayEvent</font> <font color=#f4665b>schooldayEvent</font>, <font color=#6fa8dc>):</font> <font color=#faff00>bool</font>
++<font color=#6fa8dc>filterByAdmonitionAndBanned(</font><font color=#faff00>SchooldayEvent</font> <font color=#f4665b>schooldayEvent</font>, <font color=#6fa8dc>):</font> <font color=#faff00>bool</font>
++<font color=#6fa8dc>filterByOtherEvent(</font><font color=#faff00>SchooldayEvent</font> <font color=#f4665b>schooldayEvent</font>, <font color=#6fa8dc>):</font> <font color=#faff00>bool</font>
++<font color=#6fa8dc>filterByParentsMeeting(</font><font color=#faff00>SchooldayEvent</font> <font color=#f4665b>schooldayEvent</font>, <font color=#6fa8dc>):</font> <font color=#faff00>bool</font>
+}
+class SchooldayEvent {
++schooldayEventId: <font color=#faff00>String</font>
++schooldayEventType: <font color=#faff00>String</font>
++schooldayEventReason: <font color=#faff00>String</font>
++createdBy: <font color=#faff00>String</font>
++processed: <font color=#faff00>bool</font>
++processedBy: <font color=#faff00>String?</font>
++processedAt: <font color=#faff00>DateTime?</font>
++fileId: <font color=#faff00>String?</font>
++processedFileId: <font color=#faff00>String?</font>
++schooldayEventDate: <font color=#faff00>DateTime</font>
++admonishedPupilId: <font color=#faff00>int</font>
+---
++<font color=#6fa8dc>toJson(</font><font color=#6fa8dc>):</font> <font color=#faff00>Map<String, dynamic></font>
+}
+SchooldayEvent ..> DateTime
+class SchooldayEventsCounts {
++totalSchooldayEvents: <font color=#faff00>int</font>
++totalLessonSchooldayEvents: <font color=#faff00>int</font>
++totalOgsSchooldayEvents: <font color=#faff00>int</font>
++totalSentHomeSchooldayEvents: <font color=#faff00>int</font>
++totalParentsMeetingSchooldayEvents: <font color=#faff00>int</font>
+---
+}
+class SchoolDayEventHelper {
+---
++<font color=#6fa8dc>pupilsWithSchoolDayEvents(</font><font color=#6fa8dc>):</font> <font color=#faff00>int</font>
++<font color=#6fa8dc>schooldayEventSum(</font><font color=#faff00>PupilProxy</font> <font color=#f4665b>pupil</font>, <font color=#6fa8dc>):</font> <font color=#faff00>int</font>
++<font color=#6fa8dc>isAuthorizedToChangeStatus(</font><font color=#faff00>SchooldayEvent</font> <font color=#f4665b>schooldayEvent</font>, <font color=#6fa8dc>):</font> <font color=#faff00>bool</font>
++<font color=#6fa8dc>getPupilLastSchooldayEventDate(</font><font color=#faff00>PupilProxy</font> <font color=#f4665b>pupil</font>, <font color=#6fa8dc>):</font> <font color=#faff00>DateTime</font>
++<font color=#6fa8dc>findSchooldayEventIndex(</font><font color=#faff00>PupilProxy</font> <font color=#f4665b>pupil</font>, <font color=#faff00>DateTime</font> <font color=#f4665b>date</font>, <font color=#6fa8dc>):</font> <font color=#faff00>int?</font>
++<font color=#6fa8dc>pupilIsAdmonishedToday(</font><font color=#faff00>PupilProxy</font> <font color=#f4665b>pupil</font>, <font color=#6fa8dc>):</font> <font color=#faff00>bool</font>
++<font color=#6fa8dc>getSchooldayEventsCounts(</font><font color=#faff00>List<PupilProxy></font> <font color=#f4665b>pupils</font>, <font color=#6fa8dc>):</font> <font color=#faff00>SchooldayEventsCounts</font>
++<font color=#6fa8dc>getLastSchoolEventDate(</font><font color=#faff00>List<SchooldayEvent></font> <font color=#f4665b>schooldayEvents</font>, <font color=#6fa8dc>):</font> <font color=#faff00>DateTime</font>
++<font color=#6fa8dc>getOgsSchooldayEventCount(</font><font color=#faff00>List<PupilProxy></font> <font color=#f4665b>pupils</font>, <font color=#6fa8dc>):</font> <font color=#faff00>int</font>
++<font color=#6fa8dc>getSchooldayEventTypeText(</font><font color=#faff00>String</font> <font color=#f4665b>value</font>, <font color=#6fa8dc>):</font> <font color=#faff00>String</font>
++<font color=#6fa8dc>getSchooldayEventReasonText(</font><font color=#faff00>String</font> <font color=#f4665b>value</font>, <font color=#6fa8dc>):</font> <font color=#faff00>String</font>
++<font color=#6fa8dc>comparePupilsBySchooldayEventDate(</font><font color=#faff00>PupilProxy</font> <font color=#f4665b>a</font>, <font color=#faff00>PupilProxy</font> <font color=#f4665b>b</font>, <font color=#6fa8dc>):</font> <font color=#faff00>int</font>
++<font color=#6fa8dc>comparePupilsByLastNonProcessedSchooldayEvent(</font><font color=#faff00>PupilProxy</font> <font color=#f4665b>a</font>, <font color=#faff00>PupilProxy</font> <font color=#f4665b>b</font>, <font color=#6fa8dc>):</font> <font color=#faff00>int</font>
++<font color=#6fa8dc>compareLastSchooldayEventDates(</font><font color=#faff00>PupilProxy</font> <font color=#f4665b>a</font>, <font color=#faff00>PupilProxy</font> <font color=#f4665b>b</font>, <font color=#6fa8dc>):</font> <font color=#faff00>int</font>
+}
+class SchooldayEventManager {
++pupilManager: <font color=#faff00>locator<PupilManager>()</font>
++schooldayManager: <font color=#faff00>locator<SchooldayManager>()</font>
++apiSchooldayEventService: <font color=#faff00>SchooldayEventApiService()</font>
++notificationService: <font color=#faff00>locator<NotificationService>()</font>
+---
++<font color=#6fa8dc>postSchooldayEvent(</font><font color=#faff00>int</font> <font color=#f4665b>pupilId</font>, <font color=#faff00>DateTime</font> <font color=#f4665b>date</font>, <font color=#faff00>String</font> <font color=#f4665b>type</font>, <font color=#faff00>String</font> <font color=#f4665b>reason</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>patchSchooldayEvent(</font><font color=#faff00>String</font> <font color=#f4665b>schooldayEventId</font>, <font color=#faff00>String?</font> <font color=#f4665b>createdBy</font>, <font color=#faff00>String?</font> <font color=#f4665b>reason</font>, <font color=#faff00>bool?</font> <font color=#f4665b>processed</font>, <font color=#faff00>String?</font> <font color=#f4665b>processedBy</font>, <font color=#faff00>DateTime?</font> <font color=#f4665b>processedAt</font>, <font color=#faff00>DateTime?</font> <font color=#f4665b>schoolEventDay</font>, <font color=#faff00>String?</font> <font color=#f4665b>schoolEventType</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>patchSchooldayEventWithFile(</font><font color=#faff00>File</font> <font color=#f4665b>imageFile</font>, <font color=#faff00>String</font> <font color=#f4665b>schooldayEventId</font>, <font color=#faff00>bool</font> <font color=#f4665b>isProcessed</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>deleteSchooldayEventFile(</font><font color=#faff00>String</font> <font color=#f4665b>schooldayEventId</font>, <font color=#faff00>String</font> <font color=#f4665b>cacheKey</font>, <font color=#faff00>bool</font> <font color=#f4665b>isProcessed</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>deleteSchooldayEvent(</font><font color=#faff00>String</font> <font color=#f4665b>schooldayEventId</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
+}
+class DropdownNotifier <<StateNotifier>> {
+---
++<font color=#6fa8dc>selectEventType(</font><font color=#faff00>SchooldayEventType?</font> <font color=#f4665b>newValue</font>, <font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
+}
+StateNotifier <|-- DropdownNotifier
+@enduml

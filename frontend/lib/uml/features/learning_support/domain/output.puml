@@ -1,0 +1,118 @@
+@startuml
+
+skinparam backgroundColor #000000
+
+skinparam {
+    ClassStereotypeFontColor #FFD700
+    ClassStereotypeFontSize 12
+    ClassStereotypeFontStyle bold
+}
+skinparam class {
+    BackgroundColor #333333
+    BorderColor #000000
+    ArrowColor #FFFFFF
+    FontColor #D3D3D3
+}
+skinparam classAttribute {
+    FontColor #D3D3D
+}
+class LearningSupportFilterManager {
+-_supportLevelFilterState: <font color=#ffd700>ValueNotifier<Map<SupportLevel, bool>>(initialSupportLevelFilterValues)</font>
+-_supportAreaFiltersState: <font color=#ffd700>ValueNotifier<Map<SupportArea, bool>>(initialSupportAreaFilterValues)</font>
+---
++<font color=#c36dfd>get</font> <font color=#6fa8dc>supportLevelFilterState</font> => <font color=#ffd700>ValueListenable<Map<SupportLevel, bool>></font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>supportAreaFilterState</font> => <font color=#ffd700>ValueListenable<Map<SupportArea, bool>></font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>supportLevelFiltersActive</font> => <font color=#faff00>bool</font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>supportAreaFiltersActive</font> => <font color=#faff00>bool</font>
++<font color=#6fa8dc>setSupportLevelFilter(</font><font color=#faff00>List<SupportLevelFilterRecord></font> <font color=#f4665b>supportLevelFilterRecords</font>, <font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#6fa8dc>setSupportAreaFilter(</font><font color=#faff00>List<SupportAreaFilterRecord></font> <font color=#f4665b>supportAreaFilterRecords</font>, <font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#6fa8dc>resetFilters(</font><font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#6fa8dc>supportLevelFilters(</font><font color=#faff00>PupilProxy</font> <font color=#f4665b>pupil</font>, <font color=#6fa8dc>):</font> <font color=#faff00>bool</font>
++<font color=#6fa8dc>supportAreaFilters(</font><font color=#faff00>PupilProxy</font> <font color=#f4665b>pupil</font>, <font color=#6fa8dc>):</font> <font color=#faff00>bool</font>
+}
+class LearningSupportHelper {
+---
++<font color=#6fa8dc>developmentPlan1Pupils(</font><font color=#faff00>List<PupilProxy></font> <font color=#f4665b>filteredPupils</font>, <font color=#6fa8dc>):</font> <font color=#faff00>int</font>
++<font color=#6fa8dc>developmentPlan2Pupils(</font><font color=#faff00>List<PupilProxy></font> <font color=#f4665b>filteredPupils</font>, <font color=#6fa8dc>):</font> <font color=#faff00>int</font>
++<font color=#6fa8dc>developmentPlan3Pupils(</font><font color=#faff00>List<PupilProxy></font> <font color=#f4665b>filteredPupils</font>, <font color=#6fa8dc>):</font> <font color=#faff00>int</font>
++<font color=#6fa8dc>preschoolRevision(</font><font color=#faff00>int</font> <font color=#f4665b>value</font>, <font color=#6fa8dc>):</font> <font color=#faff00>String</font>
++<font color=#6fa8dc>getGoalsForCategory(</font><font color=#faff00>PupilProxy</font> <font color=#f4665b>pupil</font>, <font color=#faff00>int</font> <font color=#f4665b>categoryId</font>, <font color=#6fa8dc>):</font> <font color=#faff00>List<SupportGoal></font>
++<font color=#6fa8dc>getGoalForCategory(</font><font color=#faff00>PupilProxy</font> <font color=#f4665b>pupil</font>, <font color=#faff00>int</font> <font color=#f4665b>goalCategoryId</font>, <font color=#6fa8dc>):</font> <font color=#faff00>SupportGoal?</font>
++<font color=#6fa8dc>getCategoryStatus(</font><font color=#faff00>PupilProxy</font> <font color=#f4665b>pupil</font>, <font color=#faff00>int</font> <font color=#f4665b>goalCategoryId</font>, <font color=#6fa8dc>):</font> <font color=#faff00>SupportCategoryStatus?</font>
++<font color=#6fa8dc>isAuthorizedToChangeStatus(</font><font color=#faff00>SupportCategoryStatus</font> <font color=#f4665b>status</font>, <font color=#6fa8dc>):</font> <font color=#faff00>bool</font>
++<font color=#6fa8dc>generateRootCategoryMap(</font><font color=#faff00>List<SupportCategory></font> <font color=#f4665b>categories</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Map<int, int></font>
++<font color=#6fa8dc>getRootSupportCategoryColor(</font><font color=#faff00>SupportCategory</font> <font color=#f4665b>goalCategory</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Color</font>
+}
+class LearningSupportManager {
+-_supportCategories: <font color=#ffd700>ValueNotifier<List<SupportCategory>>([])</font>
+-_isRunning: <font color=#ffd700>ValueNotifier<bool>(false)</font>
+-_rootCategoriesMap: <font color=#faff00>Map<int, int></font>
++notificationService: <font color=#faff00>locator<NotificationService>()</font>
+-_learningSupportApiService: <font color=#faff00>LearningSupportApiService()</font>
+---
++<font color=#c36dfd>get</font> <font color=#6fa8dc>goalCategories</font> => <font color=#ffd700>ValueListenable<List<SupportCategory>></font>
++<font color=#c36dfd>get</font> <font color=#6fa8dc>isRunning</font> => <font color=#ffd700>ValueListenable<bool></font>
++<font color=#6fa8dc>init(</font><font color=#6fa8dc>):</font> <font color=#faff00>Future<LearningSupportManager></font>
++<font color=#6fa8dc>clearData(</font><font color=#6fa8dc>):</font> <font color=#c36dfd>void</font>
++<font color=#6fa8dc>fetchSupportCategories(</font><font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>getGoalsForSupportCategory(</font><font color=#faff00>int</font> <font color=#f4665b>categoryId</font>, <font color=#6fa8dc>):</font> <font color=#faff00>List<SupportGoal></font>
++<font color=#6fa8dc>postSupportCategoryStatus(</font><font color=#faff00>PupilProxy</font> <font color=#f4665b>pupil</font>, <font color=#faff00>int</font> <font color=#f4665b>goalCategoryId</font>, <font color=#faff00>String</font> <font color=#f4665b>state</font>, <font color=#faff00>String</font> <font color=#f4665b>comment</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>updateSupportCategoryStatusProperty(</font><font color=#faff00>PupilProxy</font> <font color=#f4665b>pupil</font>, <font color=#faff00>String</font> <font color=#f4665b>statusId</font>, <font color=#faff00>String?</font> <font color=#f4665b>state</font>, <font color=#faff00>String?</font> <font color=#f4665b>comment</font>, <font color=#faff00>String?</font> <font color=#f4665b>createdBy</font>, <font color=#faff00>String?</font> <font color=#f4665b>createdAt</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>deleteSupportCategoryStatus(</font><font color=#faff00>String</font> <font color=#f4665b>statusId</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future<</font><font color=#c36dfd>void</font><font color=#faff00>></font>
++<font color=#6fa8dc>postNewSupportCategoryGoal(</font><font color=#faff00>int</font> <font color=#f4665b>goalCategoryId</font>, <font color=#faff00>int</font> <font color=#f4665b>pupilId</font>, <font color=#faff00>String</font> <font color=#f4665b>description</font>, <font color=#faff00>String</font> <font color=#f4665b>strategies</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future</font>
++<font color=#6fa8dc>deleteGoal(</font><font color=#faff00>String</font> <font color=#f4665b>goalId</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Future</font>
++<font color=#6fa8dc>getSupportCategory(</font><font color=#faff00>int</font> <font color=#f4665b>categoryId</font>, <font color=#6fa8dc>):</font> <font color=#faff00>SupportCategory</font>
++<font color=#6fa8dc>getRootSupportCategory(</font><font color=#faff00>int</font> <font color=#f4665b>categoryId</font>, <font color=#6fa8dc>):</font> <font color=#faff00>SupportCategory</font>
++<font color=#6fa8dc>getRootSupportCategoryId(</font><font color=#faff00>int</font> <font color=#f4665b>categoryId</font>, <font color=#6fa8dc>):</font> <font color=#faff00>int</font>
++<font color=#6fa8dc>getCategoryColor(</font><font color=#faff00>int</font> <font color=#f4665b>categoryId</font>, <font color=#6fa8dc>):</font> <font color=#faff00>Color</font>
+}
+class SupportCategory {
++categoryId: <font color=#faff00>int</font>
++categoryName: <font color=#faff00>String</font>
++parentCategory: <font color=#faff00>int?</font>
+---
++<font color=#6fa8dc>toJson(</font><font color=#6fa8dc>):</font> <font color=#faff00>Map<String, dynamic></font>
+}
+class SupportCategoryStatus {
++comment: <font color=#faff00>String</font>
++fileId: <font color=#faff00>String?</font>
++supportCategoryId: <font color=#faff00>int</font>
++statusId: <font color=#faff00>String</font>
++createdAt: <font color=#faff00>DateTime</font>
++createdBy: <font color=#faff00>String</font>
++state: <font color=#faff00>String</font>
+---
++<font color=#6fa8dc>toJson(</font><font color=#6fa8dc>):</font> <font color=#faff00>Map<String, dynamic></font>
+}
+SupportCategoryStatus ..> DateTime
+class SupportGoal {
++achieved: <font color=#faff00>int?</font>
++achievedAt: <font color=#faff00>DateTime?</font>
++createdAt: <font color=#faff00>DateTime</font>
++createdBy: <font color=#faff00>String</font>
++description: <font color=#faff00>String?</font>
++supportCategoryId: <font color=#faff00>int</font>
++goalChecks: <font color=#faff00>List<SupportGoalCheck>?</font>
++goalId: <font color=#faff00>String</font>
++strategies: <font color=#faff00>String?</font>
+---
++<font color=#6fa8dc>toJson(</font><font color=#6fa8dc>):</font> <font color=#faff00>Map<String, dynamic></font>
+}
+SupportGoal ..> DateTime
+class SupportGoalCheckFile {
++fileId: <font color=#faff00>String</font>
++checkId: <font color=#faff00>String</font>
+---
++<font color=#6fa8dc>toJson(</font><font color=#6fa8dc>):</font> <font color=#faff00>Map<String, dynamic></font>
+}
+class SupportGoalCheck {
++comment: <font color=#faff00>String</font>
++createdAt: <font color=#faff00>DateTime</font>
++createdBy: <font color=#faff00>String</font>
++achieved: <font color=#faff00>int</font>
++supportGoalCheckFiles: <font color=#faff00>List<SupportGoalCheckFile></font>
+---
++<font color=#6fa8dc>toJson(</font><font color=#6fa8dc>):</font> <font color=#faff00>Map<String, dynamic></font>
+}
+SupportGoalCheck ..> DateTime
+@enduml

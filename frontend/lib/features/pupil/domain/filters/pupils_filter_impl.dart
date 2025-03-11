@@ -28,6 +28,7 @@ class PupilsFilterImplementation with ChangeNotifier implements PupilsFilter {
     // }
   ) : _pupilsManager = pupilsManager {
     log('PupilsFilterImplementation created');
+    // We need to populate the group filters with the available groups
     final availableGroups = locator<PupilIdentityManager>().groups.value;
     populateGroupFilters(availableGroups.toList());
     refreshs();
