@@ -1,24 +1,28 @@
+# pylint: disable=missing-module-docstring, missing-function-docstring, missing-class-docstring
+
 import os
 import uuid
-from typing import List
+from typing import List, Optional
 
+import requests
 from apiflask import APIBlueprint, abort
 from flask import current_app, jsonify, request, send_file
 
 from auth_middleware import token_required
-from helpers.db_helpers import (
-    get_book_by_isbn,
-    get_library_book_by_id,
-    get_workbook_by_isbn,
-)
+from helpers.db_helpers import get_book_by_isbn
 from helpers.isbn_data import get_isbn_api_data
 from helpers.log_entries import create_log_entry
 from models.book import Book, BookTag
 from models.shared import db
 from models.user import User
-from schemas.book_schemas import *
+from schemas.book_schemas import (
+    book_flat_schema,
+    book_patch_schema,
+    book_tag_schema,
+    book_tags_out_schema,
+    books_flat_schema,
+)
 from schemas.log_entry_schemas import ApiFileSchema
-from schemas.pupil_book_schemas import *
 
 book_api = APIBlueprint("book_api", __name__, url_prefix="/api/books")
 
@@ -41,9 +45,9 @@ book_api = APIBlueprint("book_api", __name__, url_prefix="/api/books")
     summary="Get book by ISBN",
 )
 @token_required
-def get_book(current_user, isbn):
-    isbn = isbn.replace("-", "")
-    book = get_book_by_isbn(isbn)
+def get_book(isbn: str):
+    isbn_int = int(isbn.replace("-", ""))
+    book = get_book_by_isbn(isbn_int)
     if book is not None:
         return book
 
@@ -51,7 +55,8 @@ def get_book(current_user, isbn):
         isbn_data = get_isbn_api_data(isbn)
         if isbn_data is None:
             abort(404, "This book is not available through the API!")
-    except Exception as e:
+
+    except (requests.exceptions.RequestException, ValueError) as e:
         abort(404, f"Error: {e}")
 
     file = isbn_data.image
@@ -87,9 +92,9 @@ def get_book(current_user, isbn):
     summary="get all books without library books",
 )
 @token_required
-def get_books_flat(current_user):
+def get_books_flat():
 
-    all_books = Book.query.all()
+    all_books: List[Book] = Book.query.all()
 
     return all_books
 
@@ -103,27 +108,26 @@ def get_books_flat(current_user):
 @book_api.output(book_flat_schema)
 @book_api.doc(security="ApiKeyAuth", tags=["Books"], summary="Patch an existing book")
 @token_required
-def patch_book(current_user, isbn, json_data):
-    book: Book = db.session.query(Book).filter_by(isbn=isbn).scalar()
+def patch_book(current_user: User, isbn: int, json_data):
+    book = get_book_by_isbn(isbn)
 
     if book is None:
         abort(404, "This book does not exist!")
 
-    data = json_data
-    for key in data:
+    for key in json_data:
         match key:
             case "title":
-                book.title = data["title"]
+                book.title = json_data["title"]
             case "author":
-                book.author = data["author"]
+                book.author = json_data["author"]
             case "description":
-                book.description = data["description"]
+                book.description = json_data["description"]
             case "reading_level":
-                book.reading_level = data["reading_level"]
+                book.reading_level = json_data["reading_level"]
             # If there are book tags in the request, delete the old ones
             # and add the new ones
             case "book_tags":
-                book_tags = data["book_tags"]
+                book_tags = json_data["book_tags"]
                 book.book_tags = []
                 for tag_data in book_tags:
                     tag_name = tag_data["name"]
@@ -134,7 +138,7 @@ def patch_book(current_user, isbn, json_data):
 
     # - LOG ENTRY
 
-    create_log_entry(current_user, request, data)
+    create_log_entry(current_user, request, json_data)
 
     db.session.commit()
 
@@ -152,8 +156,8 @@ def patch_book(current_user, isbn, json_data):
     security="ApiKeyAuth", tags=["Books"], summary="PATCH-POST a file for a given book"
 )
 @token_required
-def upload_book_image(current_user, isbn: int, files_data):
-    book: Book = db.session.query(Book).filter_by(isbn=isbn).scalar()
+def upload_book_image(current_user: User, isbn: int, files_data: dict):
+    book = get_book_by_isbn(isbn)
     if book is None:
         abort(404, "Das Buch existiert nicht!")
 
@@ -184,7 +188,7 @@ def upload_book_image(current_user, isbn: int, files_data):
 @book_api.output(ApiFileSchema, content_type="image/jpeg")
 @book_api.doc(security="ApiKeyAuth", tags=["Books"], summary="Get book image")
 @token_required
-def get_book_image(current_user: User, isbn: int):
+def get_book_image(isbn: int):
     book = get_book_by_isbn(isbn=isbn)
     if book is None:
         abort(404, "Das Buch existiert nicht!")
@@ -201,13 +205,13 @@ def get_book_image(current_user: User, isbn: int):
 @book_api.route("/<isbn>", methods=["DELETE"])
 @book_api.doc(security="ApiKeyAuth", tags=["Books"])
 @token_required
-def delete_book(current_user, isbn):
-    this_book: Book = Book.query.filter_by(isbn=isbn).first()
-    if this_book == None:
+def delete_book(current_user: User, isbn: int):
+    this_book = get_book_by_isbn(isbn)
+    if this_book is None:
         abort(404, "This book does not exist!")
 
-    if not current_user.admin or current_user.name != this_book.created_by:
-        abort(403, "Keine Berechtigung!")
+    # if not current_user.admin:
+    #     abort(403, "Keine Berechtigung!")
 
     if len(str(this_book.image_url)) > 4:
         os.remove(str(this_book.image_url))
@@ -227,7 +231,7 @@ def delete_book(current_user, isbn):
 @book_api.output(book_tags_out_schema)
 @book_api.doc(security="ApiKeyAuth", tags=["Book Tags"], summary="Get all book tags")
 @token_required
-def get_book_tags(current_user):
+def get_book_tags():
     tags = BookTag.query.all()
     return tags
 
@@ -240,9 +244,10 @@ def get_book_tags(current_user):
 @book_api.output(book_tags_out_schema)
 @book_api.doc(security="ApiKeyAuth", tags=["Book Tags"], summary="Add a new book tag")
 @token_required
-def add_book_tag(current_user, json_data):
+def add_book_tag(json_data: dict):
     tag_name = json_data["name"]
     created_by = json_data["created_by"]
+
     if db.session.query(BookTag).filter_by(name=tag_name).scalar() is not None:
         abort(400, "This tag already exists!")
     new_tag = BookTag(name=tag_name, created_by=created_by)
@@ -259,16 +264,15 @@ def add_book_tag(current_user, json_data):
 @book_api.output(book_tags_out_schema)
 @book_api.doc(security="ApiKeyAuth", tags=["Book Tags"], summary="Patch a book tag")
 @token_required
-def patch_book_tag(current_user, tag_name, json_data):
-    this_tag = BookTag.query.filter_by(name=tag_name).first()
-    if this_tag == None:
+def patch_book_tag(tag_name: str, json_data: dict):
+    this_tag: Optional[BookTag] = BookTag.query.filter_by(name=tag_name).first()
+    if this_tag is None:
         abort(404, "This tag does not exist!")
 
-    data = json_data
-    for key in data:
+    for key in json_data:
         match key:
             case "name":
-                this_tag.name = data["name"]
+                this_tag.name = json_data["name"]
 
     db.session.commit()
     return BookTag.query.all()
@@ -281,9 +285,9 @@ def patch_book_tag(current_user, tag_name, json_data):
 @book_api.output(book_tags_out_schema)
 @book_api.doc(security="ApiKeyAuth", tags=["Book Tags"], summary="Delete a book tag")
 @token_required
-def delete_book_tag(current_user, tag_name):
-    this_tag = BookTag.query.filter_by(name=tag_name).first()
-    if this_tag == None:
+def delete_book_tag(current_user: User, tag_name: str):
+    this_tag: Optional[BookTag] = BookTag.query.filter_by(name=tag_name).first()
+    if this_tag is None:
         abort(404, "This tag does not exist!")
 
     if not current_user.admin or current_user.name != this_tag.created_by:

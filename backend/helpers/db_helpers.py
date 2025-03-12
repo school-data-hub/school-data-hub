@@ -1,10 +1,14 @@
+# pylint: disable=missing-module-docstring
+# pylint: disable=missing-class-docstring
+# pylint: disable=missing-function-docstring
+
 from datetime import datetime
 from typing import List, Optional
 
 from sqlalchemy import or_
 
-from models.authorization import Authorization
-from models.book import Book, LibraryBook
+from models.authorization import Authorization, PupilAuthorization
+from models.book import Book, LibraryBook, PupilBook
 from models.pupil import Pupil
 from models.school_list import SchoolList
 from models.schoolday import MissedClass, Schoolday, SchooldayEvent
@@ -40,6 +44,39 @@ def get_authorization_by_name(authorization_name: str) -> Optional[Authorization
         .filter_by(authorization_name=authorization_name)
         .scalar()
     )
+
+
+def get_pupil_authorization(pupil_id: int, auth_id: str) -> PupilAuthorization | None:
+    """
+    Get a pupil authorization for a given pupil and a given authorization.
+    """
+    return (
+        db.session.query(PupilAuthorization)
+        .filter(
+            PupilAuthorization.origin_authorization == auth_id,
+            PupilAuthorization.pupil_id == pupil_id,
+        )
+        .first()
+    )
+
+
+## Books
+
+
+def get_book_by_isbn(isbn: int) -> Optional[Book]:
+    return db.session.query(Book).filter_by(isbn=isbn).scalar()
+
+
+def get_library_book_by_id(book_id: str) -> Optional[LibraryBook]:
+    return db.session.query(LibraryBook).filter_by(book_id=book_id).scalar()
+
+
+def get_library_book_by_isbn(isbn: int) -> Optional[LibraryBook]:
+    return db.session.query(LibraryBook).filter_by(book_isbn=isbn).scalar()
+
+
+def get_pupil_book_by_lending_id(lending_id: str) -> Optional[PupilBook]:
+    return db.session.query(PupilBook).filter_by(lending_id=lending_id).first()
 
 
 ## Support goals
@@ -115,14 +152,3 @@ def get_authorized_school_lists(user_name: str) -> Optional[List[SchoolList]]:
 
 def get_workbook_by_isbn(isbn: int) -> Optional[Workbook]:
     return db.session.query(Workbook).filter(Workbook.isbn == isbn).first()
-
-
-## Books
-
-
-def get_book_by_isbn(isbn: int) -> Optional[Book]:
-    return db.session.query(Book).filter_by(isbn=isbn).scalar()
-
-
-def get_library_book_by_id(book_id: str) -> Optional[LibraryBook]:
-    return db.session.query(LibraryBook).filter_by(book_id=book_id).scalar()

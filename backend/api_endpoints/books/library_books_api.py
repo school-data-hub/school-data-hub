@@ -1,15 +1,23 @@
-from typing import List
+# pylint: disable=missing-module-docstring, missing-function-docstring, missing-class-docstring
+
+from typing import List, Optional
 
 from apiflask import APIBlueprint, abort
-from flask import current_app, jsonify, request, send_file
+from flask import request
 
 from auth_middleware import token_required
+from helpers.db_helpers import get_book_by_isbn, get_library_book_by_isbn
 from helpers.log_entries import create_log_entry
-from models.book import Book, LibraryBook, LibraryBookLocation
+from models.book import LibraryBook, LibraryBookLocation
 from models.shared import db
-from schemas.book_schemas import *
-from schemas.log_entry_schemas import ApiFileSchema
-from schemas.pupil_book_schemas import *
+from models.user import User
+from schemas.book_schemas import (
+    book_location_schema,
+    book_locations_schema,
+    library_book_out_schema,
+    library_books_out_schema,
+    new_library_book_schema,
+)
 
 library_book_api = APIBlueprint(
     "library_book_api", __name__, url_prefix="/api/library_books"
@@ -26,7 +34,7 @@ library_book_api = APIBlueprint(
     summary="Get all library book locations",
 )
 @token_required
-def get_book_locations(current_user):
+def get_book_locations():
     locations: List[LibraryBookLocation] = LibraryBookLocation.query.all()
     return locations
 
@@ -43,7 +51,7 @@ def get_book_locations(current_user):
     summary="Add a new book location",
 )
 @token_required
-def add_book_location(current_user, json_data):
+def add_book_location(json_data: dict):
     location = json_data["location"]
     if (
         db.session.query(LibraryBookLocation).filter_by(location=location).scalar()
@@ -70,7 +78,7 @@ def add_book_location(current_user, json_data):
 def delete_book_location(current_user, location):
 
     this_location = LibraryBookLocation.query.filter_by(location=location).first()
-    if this_location == None:
+    if this_location is None:
         abort(404, "This location does not exist!")
 
     if not current_user.admin or current_user.name != this_location.created_by:
@@ -92,7 +100,7 @@ def delete_book_location(current_user, location):
     summary="get all library books including respective book data",
 )
 @token_required
-def get_library_books(current_user):
+def get_library_books():
 
     all_books = LibraryBook.query.all()
 
@@ -110,10 +118,10 @@ def get_library_books(current_user):
     summary="Get a library book by id",
 )
 @token_required
-def get_library_book_by_id(current_user, book_id):
+def fetch_library_book_by_id(book_id: str):
 
     this_book = LibraryBook.query.filter_by(book_id=book_id).first()
-    if this_book == None:
+    if this_book is None:
         abort(404, "This book does not exist!")
 
     return this_book
@@ -131,7 +139,7 @@ def get_library_book_by_id(current_user, book_id):
     summary="Add a new library book to the library",
 )
 @token_required
-def new_library_book(current_user, json_data):
+def post_library_book(current_user, json_data):
     book_id = json_data["book_id"]
     if db.session.query(LibraryBook).filter_by(book_id=book_id).scalar() is not None:
         abort(400, "This book already exists!")
@@ -164,9 +172,11 @@ def new_library_book(current_user, json_data):
     security="ApiKeyAuth", tags=["Library Books"], summary="Patch a library book"
 )
 @token_required
-def patch_library_book(current_user, book_id, json_data):
-    this_book = LibraryBook.query.filter_by(book_id=book_id).first()
-    if this_book == None:
+def patch_library_book(book_id, json_data):
+    this_book: Optional[LibraryBook] = LibraryBook.query.filter_by(
+        book_id=book_id
+    ).first()
+    if this_book is None:
         abort(404, "This library book does not exist!")
 
     for key in json_data:
@@ -191,18 +201,20 @@ def patch_library_book(current_user, book_id, json_data):
     summary="Delete a library book",
 )
 @token_required
-def delete_library_book(current_user, book_id):
+def delete_library_book(current_user: User, book_id):
 
     this_book: LibraryBook = LibraryBook.query.filter_by(book_id=book_id).first()
-    if this_book == None:
+    if this_book is None:
         abort(404, "This book does not exist!")
 
     isbn = this_book.book_isbn
 
     db.session.delete(this_book)
     # if this was the last library book of this book, delete the book
-    if db.session.query(LibraryBook).filter_by(book_isbn=isbn).scalar() is None:
-        orphan_book = db.session.query(Book).filter_by(isbn=isbn).first()
+    library_book_same_isbn = get_library_book_by_isbn(isbn)
+    if library_book_same_isbn is None:
+
+        orphan_book = get_book_by_isbn(isbn)
         db.session.delete(orphan_book)
 
     # - Log entry

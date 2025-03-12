@@ -1,18 +1,31 @@
+# pylint: disable=missing-module-docstring
+# pylint: disable=missing-class-docstring
+# pylint: disable=missing-function-docstring
 import os
 import uuid
 from datetime import datetime
+from typing import List
 
 from apiflask import APIBlueprint, FileSchema, abort
 from flask import current_app, request, send_file
+from werkzeug.datastructures import FileStorage
 
 from auth_middleware import token_required
-from models.authorization import Authorization, PupilAuthorization
+from helpers.db_helpers import (
+    get_authorization_by_id,
+    get_pupil_authorization,
+    get_pupil_by_id,
+)
+from models.authorization import PupilAuthorization
 from models.log_entry import LogEntry
-from models.pupil import Pupil
 from models.shared import db
-from schemas.authorization_schemas import *
+from models.user import User
+from schemas.authorization_schemas import (
+    authorization_schema,
+    pupil_authorization_in_schema,
+)
 from schemas.log_entry_schemas import ApiFileSchema
-from schemas.pupil_schemas import *
+from schemas.pupil_schemas import pupil_id_list_schema
 
 pupil_authorization_api = APIBlueprint(
     "pupil_authorizations", __name__, url_prefix="/api/pupil_authorizations"
@@ -21,36 +34,34 @@ pupil_authorization_api = APIBlueprint(
 
 # -POST PUPIL AUTHORIZATION
 #############################
-@pupil_authorization_api.route("/<internal_id>/<auth_id>/new", methods=["POST"])
+@pupil_authorization_api.route("/<pupil_id>/<auth_id>/new", methods=["POST"])
 @pupil_authorization_api.output(authorization_schema)
 @pupil_authorization_api.doc(
     security="ApiKeyAuth",
     tags=["Pupil Authorizations"],
-    summary="Post authorization for a given pupil",
+    summary="Post authorization for a given pupil and a given authorization",
 )
 @token_required
-def post_pupil_authorization(current_user, internal_id, auth_id):
-    pupil = db.session.query(Pupil).filter(Pupil.internal_id == internal_id).first()
-    if pupil == None:
+def post_pupil_authorization(pupil_id: int, auth_id: str):
+    """
+    Post a new pupil authorization for a given pupil and a given authorization.
+
+    """
+
+    pupil = get_pupil_by_id(pupil_id)
+    if pupil is None:
         abort(400, message="This pupil does not exist!")
 
-    origin_authorization = (
-        db.session.query(Authorization)
-        .filter(Authorization.authorization_id == auth_id)
-        .first()
-    )
-    duplicate = (
-        db.session.query(PupilAuthorization)
-        .filter(
-            PupilAuthorization.pupil_id == internal_id,
-            PupilAuthorization.origin_authorization == auth_id,
-        )
-        .first()
-    )
-    if duplicate != None:
+    origin_authorization = get_authorization_by_id(auth_id)
+    if origin_authorization is None:
+        abort(400, message="This authorization does not exist!")
+
+    duplicate = get_pupil_authorization(pupil_id, auth_id)
+
+    if duplicate is not None:
         abort(400, message="This pupil authorization already exists!")
 
-    # - HACKY FIX - this should be a nullable modified_by
+    # - TO DO: check this HACKY FIX - this should be a nullable modified_by
     created_by = ""
     pupil_authorization = PupilAuthorization(
         status=None,
@@ -59,7 +70,7 @@ def post_pupil_authorization(current_user, internal_id, auth_id):
         file_id=None,
         file_url=None,
         origin_authorization=auth_id,
-        pupil_id=internal_id,
+        pupil_id=pupil_id,
     )
     db.session.add(pupil_authorization)
     db.session.commit()
@@ -77,42 +88,41 @@ def post_pupil_authorization(current_user, internal_id, auth_id):
     summary="Add pupils to an existing authorization",
 )
 @token_required
-def add_pupils_to_authorization(current_user, auth_id, json_data):
-    data = json_data
-    existing_authorization = Authorization.query.filter_by(
-        authorization_id=auth_id
-    ).first()
+def add_pupils_to_authorization(auth_id: str, json_data: dict):
+    """
+    Add pupils to an existing authorization.
+    """
+    existing_authorization = get_authorization_by_id(auth_id)
+
     if existing_authorization is None:
         abort(404, message="Diese Einwilligung existiert nicht!")
-    pupil_id_list = data["pupils"]
+
+    pupil_id_list: List[int] = json_data["pupils"]
+
     if pupil_id_list == []:
         abort(404, message="Keine Schueler angegeben!")
+
     added_pupils = []
-    for item in pupil_id_list:
-        pupil = Pupil.query.filter_by(internal_id=item).first()
+
+    for pupil_id in pupil_id_list:
+        pupil = get_pupil_by_id(pupil_id)
+
         if pupil is None:
             abort(404, message="Dieser Schueler existiert nicht!")
 
-        duplicate = (
-            db.session.query(PupilAuthorization)
-            .filter(
-                PupilAuthorization.pupil_id == item,
-                PupilAuthorization.origin_authorization == auth_id,
-            )
-            .first()
-        )
-        if duplicate != None:
+        duplicate = get_pupil_authorization(pupil_id, auth_id)
+
+        if duplicate is not None:
             abort(400, message="This pupil authorization already exists!")
 
-        origin_authorization = (
-            db.session.query(Authorization)
-            .filter(Authorization.authorization_id == auth_id)
-            .first()
-        )
-        pupil_id = item
+        origin_authorization = get_authorization_by_id(auth_id)
+
         status = None
+
         comment = None
+
         # - HACKY FIX - this should be a nullable modified_by
+        # - this created_by is not relevant, the first entry later on is
         created_by = ""
         new_pupil_authorization = PupilAuthorization(
             origin_authorization=auth_id,
@@ -131,64 +141,36 @@ def add_pupils_to_authorization(current_user, auth_id, json_data):
 
 # - DELETE PUPIL AUTHORIZATION
 #############################
-@pupil_authorization_api.route("/<internal_id>/<auth_id>", methods=["DELETE"])
+@pupil_authorization_api.route("/<pupil_id>/<auth_id>", methods=["DELETE"])
 @pupil_authorization_api.output(authorization_schema)
 @pupil_authorization_api.doc(
     security="ApiKeyAuth",
     tags=["Pupil Authorizations"],
-    summary="Delete an authorization for a given pupil",
+    summary="Delete a given authorization for a given pupil",
 )
 @token_required
-def delete_pupil_authorization(current_user, internal_id, auth_id):
-    pupil = db.session.query(Pupil).filter(Pupil.internal_id == internal_id).first()
-    if pupil == None:
+def delete_pupil_authorization(pupil_id: int, auth_id: str):
+    """
+    Delete a given authorization for a given pupil.
+    """
+    pupil = get_pupil_by_id(pupil_id)
+    if pupil is None:
         abort(400, message="This pupil does not exist!")
-    authorization = (
-        db.session.query(PupilAuthorization)
-        .filter(
-            PupilAuthorization.pupil_id == internal_id,
-            PupilAuthorization.origin_authorization == auth_id,
-        )
-        .first()
-    )
-    if authorization == None:
+
+    authorization = get_pupil_authorization(pupil_id, auth_id)
+    if authorization is None:
         abort(400, message="This pupil authorization does not exist!")
+
+    # if there is a linked file, delete it
+    if len(str(authorization.file_url)) > 4:
+        os.remove(str(authorization.file_url))
+
     db.session.delete(authorization)
-    origin_authorization = (
-        db.session.query(Authorization)
-        .filter(Authorization.authorization_id == auth_id)
-        .first()
-    )
     db.session.commit()
+
+    origin_authorization = get_authorization_by_id(auth_id)
+
     return origin_authorization
-
-
-# - PATCH PUPIL AUTHORIZATION FILE
-#################################
-
-# @pupil_authorization_api.route('/api/authorization/<authorization_id>/<pupil_id>/file', methods=['PATCH'])
-# @pupil_authorization_api.input(ApiFileSchema, location='files')
-# @pupil_authorization_api.output(pupil_schema)
-# @pupil_authorization_api.doc(security='ApiKeyAuth',tags=['Pupil Authorizations'], summary='PATCH-POST a file to document a given pupil authorization')
-# @token_required
-# def upload_authorization_file(current_user, authorization_id, pupil_id, files_data):
-#     authorization = db.session.query(PupilAuthorization).filter(PupilAuthorization.authorization_id == authorization_id and PupilAuthorization.authorized_pupil == pupil_id ).first()
-#     if authorization is None:
-#         return jsonify( {"message": "An authorization with this date and this student does not exist!"}), 404
-#     if 'file' not in files_data:
-#         abort(400, message="Keine Datei angegeben!")
-
-#     file = files_data['file']
-#     filename = str(uuid.uuid4().hex) + '.jpg'
-#     file_url = app.config['UPLOAD_FOLDER'] + '/auth/' + filename
-#     file.save(file_url)
-#     if len(str(authorization.file_url)) > 4:
-#         os.remove(str(authorization.file_url))
-#     authorization.file_url = file_url
-#     db.session.commit()
-
-#     pupil = Pupil.query.filter_by(internal_id = pupil_id).first()
-#     return pupil
 
 
 # - PATCH PUPIL AUTHORIZATION
@@ -202,32 +184,32 @@ def delete_pupil_authorization(current_user, internal_id, auth_id):
     summary="Patch an authorization for a given pupil",
 )
 @token_required
-def patch_pupil_authorization(current_user, pupil_id, auth_id, json_data):
-    pupil_authorization = (
-        db.session.query(PupilAuthorization)
-        .filter(
-            PupilAuthorization.origin_authorization == auth_id,
-            PupilAuthorization.pupil_id == pupil_id,
-        )
-        .first()
-    )
-    if pupil_authorization == None:
+def patch_pupil_authorization(
+    current_user: User,
+    pupil_id: int,
+    auth_id: str,
+    json_data: dict,
+):
+    """ "
+    Patch an authorization for a given pupil.
+    """
+    pupil_authorization = get_pupil_authorization(pupil_id, auth_id)
+
+    if pupil_authorization is None:
         abort(404, message="Diese Einwilligung existiert nicht!")
-    data = json_data
-    for key in data:
+
+    for key in json_data:
         match key:
             case "comment":
-                pupil_authorization.comment = data[key]
+                pupil_authorization.comment = json_data[key]
             case "status":
-                pupil_authorization.status = data[key]
+                pupil_authorization.status = json_data[key]
     # - HACKY FIX - it should be a nullable modified_by
     pupil_authorization.created_by = current_user.name
     db.session.commit()
-    origin_authorization = (
-        db.session.query(Authorization)
-        .filter(Authorization.authorization_id == auth_id)
-        .first()
-    )
+
+    origin_authorization = get_authorization_by_id(auth_id)
+
     return origin_authorization
 
 
@@ -242,40 +224,42 @@ def patch_pupil_authorization(current_user, pupil_id, auth_id, json_data):
     summary="PATCH-POST a file to document a given pupil authorization",
 )
 @token_required
-def upload_pupil_authorization_file(current_user, pupil_id, origin_auth_id, files_data):
-    pupil_authorization = (
-        db.session.query(PupilAuthorization)
-        .filter(
-            PupilAuthorization.origin_authorization == origin_auth_id,
-            PupilAuthorization.pupil_id == pupil_id,
-        )
-        .first()
-    )
-    origin_authorization = (
-        db.session.query(Authorization)
-        .filter(Authorization.authorization_id == origin_auth_id)
-        .first()
-    )
-    if pupil_authorization == None:
+def upload_pupil_authorization_file(
+    current_user: User,
+    pupil_id: int,
+    origin_auth_id: str,
+    files_data: dict,
+):
+    """
+    Patch a file to document a given pupil authorization.
+    """
+    pupil_authorization = get_pupil_authorization(pupil_id, origin_auth_id)
+    origin_authorization = get_authorization_by_id(origin_auth_id)
+    if pupil_authorization is None:
         abort(404, message="Diese Einwilligung existiert nicht!")
+
     if "file" not in files_data:
         # this means the user wants to delete the file
         if len(str(pupil_authorization.file_url)) > 4:
             os.remove(str(pupil_authorization.file_url))
+
         return origin_authorization
-        # return jsonify({'error': 'No file attached!'}), 400
-    file = files_data["file"]
+
+    file: FileStorage = files_data["file"]
     filename = file.filename
     if filename != "":
         file_ext = os.path.splitext(filename)[1]
         if file_ext not in current_app.config["UPLOAD_EXTENSIONS"]:
             abort(400, message="Filetype not allowed!")
     file_id = str(uuid.uuid4().hex)
-    filename = file_id + ".jpg"
+    filename = file_id + file_ext
     file_url = current_app.config["UPLOAD_FOLDER"] + "/auth/" + filename
     file.save(file_url)
+
+    # - if there is a previous linked file, delete it
     if len(str(pupil_authorization.file_url)) > 4:
         os.remove(str(pupil_authorization.file_url))
+    # assign new file to pupil authorization
     pupil_authorization.file_url = file_url
     pupil_authorization.file_id = file_id
     # - HACKY FIX - it should be a nullable modified_by
@@ -294,19 +278,18 @@ def upload_pupil_authorization_file(current_user, pupil_id, origin_auth_id, file
     summary="Get file of a given pupil authorization",
 )
 @token_required
-def download_pupil_authorization_file(current_user, pupil_id, origin_auth_id):
-    pupil_authorization = (
-        db.session.query(PupilAuthorization)
-        .filter(
-            PupilAuthorization.origin_authorization == origin_auth_id,
-            PupilAuthorization.pupil_id == pupil_id,
-        )
-        .first()
-    )
-    if pupil_authorization == None:
+def download_pupil_authorization_file(pupil_id: int, origin_auth_id: str):
+    """ "
+    Get file of a given pupil authorization.
+    """
+    pupil_authorization = get_pupil_authorization(pupil_id, origin_auth_id)
+
+    if pupil_authorization is None:
         abort(404, message="Diese Einwilligung existiert nicht!")
+
     if len(str(pupil_authorization.file_url)) < 5:
         abort(404, message="Diese Einwilligung hat keine Datei!")
+
     url_path = pupil_authorization.file_url
     return send_file(url_path, mimetype="image/jpg")
 
@@ -323,17 +306,13 @@ def download_pupil_authorization_file(current_user, pupil_id, origin_auth_id):
     summary="Delete file of a given pupil authorization",
 )
 @token_required
-def delete_pupil_authorization_file(current_user, pupil_id, auth_id):
+def delete_pupil_authorization_file(current_user: User, pupil_id: int, auth_id: str):
+    """ "
+    Delete file of a given pupil authorization.
+    """
+    pupil_authorization = get_pupil_authorization(pupil_id, auth_id)
 
-    pupil_authorization = (
-        db.session.query(PupilAuthorization)
-        .filter(
-            PupilAuthorization.origin_authorization == auth_id,
-            PupilAuthorization.pupil_id == pupil_id,
-        )
-        .first()
-    )
-    if pupil_authorization == None:
+    if pupil_authorization is None:
         abort(404, message="Diese Einwilligung existiert nicht!")
     if len(str(pupil_authorization.file_url)) < 5:
         pupil_authorization.file_url = None
@@ -352,10 +331,6 @@ def delete_pupil_authorization_file(current_user, pupil_id, auth_id):
         datetime=log_datetime, user=user, endpoint=endpoint, payload=payload
     )
     db.session.add(new_log_entry)
-    origin_authorization = (
-        db.session.query(Authorization)
-        .filter(Authorization.authorization_id == auth_id)
-        .first()
-    )
+    origin_authorization = get_authorization_by_id(auth_id)
     db.session.commit()
     return origin_authorization

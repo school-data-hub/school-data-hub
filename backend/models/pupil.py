@@ -99,8 +99,8 @@ class ProspectivePupil(db.Model):
 
 
 class Pupil(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    internal_id = db.Column(db.Integer, nullable=False, unique=True)
+    id: int = db.Column(db.Integer, primary_key=True)
+    internal_id: int = db.Column(db.Integer, nullable=False, unique=True)
     contact = db.Column(db.String(50), nullable=True, unique=True)
     parents_contact = db.Column(db.String(50), nullable=True, unique=False)
     credit = db.Column(db.Integer, default=0)
@@ -176,8 +176,8 @@ class Pupil(db.Model):
 
     def __init__(
         self,
-        internal_id,
-        contact,
+        internal_id: int,
+        contact: str,
         parents_contact,
         credit,
         credit_earned,

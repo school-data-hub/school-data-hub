@@ -1,3 +1,4 @@
+# pylint: disable=missing-module-docstring, missing-function-docstring, missing-class-docstring
 from typing import Optional
 
 import requests
@@ -22,11 +23,11 @@ class IsbnApiData:
         self.description: str = description
 
 
-def get_isbn_api_data(clean_isbn) -> Optional[IsbnApiData]:
+def get_isbn_api_data(clean_isbn: int) -> Optional[IsbnApiData]:
 
     image_url = f"https://buch.isbn.de/cover/{clean_isbn}.jpg"
     url = f"https://www.isbn.de/buch/{clean_isbn}"
-    response = requests.get(url)
+    response = requests.get(url, timeout=10)
 
     if response.status_code != 200:
         return None
@@ -57,7 +58,7 @@ def get_isbn_api_data(clean_isbn) -> Optional[IsbnApiData]:
         )
         description = " ".join(description.split())
 
-    image_response = requests.get(image_url)
+    image_response = requests.get(image_url, timeout=10)
     if image_response.status_code != 200:
         return IsbnApiData(
             isbn=clean_isbn,
