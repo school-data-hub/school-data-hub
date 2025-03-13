@@ -71,49 +71,45 @@ class _BookSearchPageState extends State<BookSearchPage> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child:
-        Column(children:[
+        child: Column(children: [
           BookSearchTextField(
-            hintText:'Buch suchen',
-            refreshFunction : () {
-              performSearch(searchController.text);
-            },
-              controller : searchController
-          ),
-          const SizedBox(height :20),
-        Wrap(
-          spacing: 5,
-          runSpacing: 5,
-          children:
-          bookManager.bookTags.value.map((tag) => ThemedFilterChip(
-            label: tag.name,
-            selected: bookManager.selectedTags.contains(tag),
-            onSelected:(bool selected) {
-              setState(() {
-                if (selected) {
-                  bookManager.selectedTags.add(tag);
-                } else {
-                  bookManager.selectedTags.remove(tag);
-                }
+              hintText: 'Buch suchen',
+              refreshFunction: () {
                 performSearch(searchController.text);
-              });
-            },
-          )).toList(),
-        ),
+              },
+              controller: searchController),
+          const SizedBox(height: 20),
+          Wrap(
+            spacing: 5,
+            runSpacing: 5,
+            children: bookManager.bookTags.value
+                .map((tag) => ThemedFilterChip(
+                      label: tag.name,
+                      selected: bookManager.selectedTags.contains(tag),
+                      onSelected: (bool selected) {
+                        setState(() {
+                          if (selected) {
+                            bookManager.selectedTags.add(tag);
+                          } else {
+                            bookManager.selectedTags.remove(tag);
+                          }
+                          performSearch(searchController.text);
+                        });
+                      },
+                    ))
+                .toList(),
           ),
-          const SizedBox(height :20),
-
+          const SizedBox(height: 20),
           Expanded(
-              child:
-              bookManager.searchResults.value.isEmpty
-                  ? const Center(child : Text('Keine Ergebnisse', style : TextStyle(fontSize :18)))
-                  : ListView.builder (
-                itemCount : bookManager.searchResults.value.length ,
-                itemBuilder :(context , index ) =>
-                    BookCard(isbn : bookManager.searchResults.value[index].isbn),
-              )
-          ),
-
+              child: bookManager.searchResults.value.isEmpty
+                  ? const Center(
+                      child: Text('Keine Ergebnisse',
+                          style: TextStyle(fontSize: 18)))
+                  : ListView.builder(
+                      itemCount: bookManager.searchResults.value.length,
+                      itemBuilder: (context, index) => BookCard(
+                          isbn: bookManager.searchResults.value[index].isbn),
+                    )),
         ]),
       ),
     );
