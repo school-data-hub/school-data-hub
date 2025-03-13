@@ -11,6 +11,8 @@ import 'package:schuldaten_hub/features/books/data/pupil_book_api_service.dart';
 import 'package:schuldaten_hub/features/books/domain/models/book.dart';
 import 'package:schuldaten_hub/features/pupil/domain/pupil_manager.dart';
 
+import '../../../common/utils/logger.dart';
+
 class BookManager {
   final _books = ValueNotifier<List<BookProxy>>([]);
   ValueListenable<List<BookProxy>> get books => _books;
@@ -24,8 +26,12 @@ class BookManager {
   final _bookTags = ValueNotifier<List<BookTag>>([]);
   ValueListenable<List<BookTag>> get bookTags => _bookTags;
 
+  List<BookTag> selectedTags = []; // Liste für ausgewählte Buch-Tags
+
   final _lastSelectedLocation = ValueNotifier<String>('Bitte auswählen');
   ValueListenable<String> get lastLocationValue => _lastSelectedLocation;
+
+  final searchResults = ValueNotifier<List<BookProxy>>([]);
 
   BookManager();
 
@@ -253,4 +259,21 @@ class BookManager {
   }
 
   deletebook(int isbn) {}
+
+  void searchBooks(String query) {
+    if (query.isEmpty && selectedTags.isEmpty) {
+      searchResults.value.clear();
+    } else {
+      final uniqueIsbns = <int>{};
+
+      searchResults.value = _books.value.where((book) {
+        bool matches = book.title.toLowerCase().contains(query.toLowerCase()) ||
+            book.author.toLowerCase().contains(query.toLowerCase());
+        if (matches && uniqueIsbns.add(book.isbn)) {
+        return true;
+        }
+        return false;
+      }).toList();
+    }
+  }
 }
