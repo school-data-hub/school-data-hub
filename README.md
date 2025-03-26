@@ -97,6 +97,8 @@ There are also a couple of models in the backend that are not implemented in the
 
 ## Setup
 
+You will need a school key - if you don't have one yet, you can generate one with the client.
+
 Format for the keys is:
 
 ```
@@ -104,9 +106,17 @@ Format for the keys is:
 "server": "{Name of your server}",
 "key": "{your encryption key}",
 "iv": "{your initialization vector}",
-"server_url": "{for instance: http://127.0.0.1:5000/api}"
+"server_url": "{$your_instance_url/api}"
 }
 ```
+
+### Url for a local development instance
+
+If you are setting up a local development environment, the `server_url` will depend on which platform you are using for the client:
+
+- if you are using windows, it will be: `http://127.0.0.1:5000/api`
+- if you are using an android simulator, you need to use `http://10.0.2.2:5000/api`
+  
 ### TO-DO:
 
 #### Code quality / architecture
