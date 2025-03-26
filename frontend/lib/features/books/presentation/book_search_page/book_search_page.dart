@@ -7,7 +7,6 @@ import 'package:schuldaten_hub/features/books/presentation/book_list_page/widget
 
 import '../../../../common/theme/styles.dart';
 import '../../../../common/widgets/themed_filter_chip.dart';
-import '../widgets/book_search_text_field.dart';
 
 class BookSearchPage extends StatefulWidget {
   const BookSearchPage({super.key});
@@ -22,7 +21,7 @@ class _BookSearchPageState extends State<BookSearchPage> {
   @override
   void initState() {
     super.initState();
-    locator<BookManager>().getLibraryBooks();
+    //locator<BookManager>().getLibraryBooks();
 
     searchController.addListener(() {
       if (searchController.text.length >= 3) {
@@ -72,13 +71,6 @@ class _BookSearchPageState extends State<BookSearchPage> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(children: [
-          BookSearchTextField(
-              hintText: 'Buch suchen',
-              refreshFunction: () {
-                performSearch(searchController.text);
-              },
-              controller: searchController),
-          const SizedBox(height: 20),
           Wrap(
             spacing: 5,
             runSpacing: 5,
@@ -103,7 +95,8 @@ class _BookSearchPageState extends State<BookSearchPage> {
           Expanded(
               child: bookManager.searchResults.value.isEmpty
                   ? const Center(
-                      child: Text('Keine Ergebnisse',
+                      child: Text(
+                          'Hier soll eine Suchmaske mit folgenden Kriterien: \n Titel, Autor, ISBN, Schlagwörter, ... \n verfügbar..',
                           style: TextStyle(fontSize: 18)))
                   : ListView.builder(
                       itemCount: bookManager.searchResults.value.length,

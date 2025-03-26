@@ -107,6 +107,36 @@ def get_library_books():
     return all_books
 
 
+
+# - GET LIBRARY BOOKS MATCHING QUERY
+#- TODO: Implement this function
+@library_book_api.route("/search", methods=["GET"])
+@library_book_api.output(library_books_out_schema)
+@library_book_api.doc(
+    security="ApiKeyAuth",
+    tags=["Library Books"],
+    summary="get all library books matching query",
+    description="This function is not yet implemented"
+)
+@token_required
+def get_library_books_matching_query():
+    #- json_data should provide query parameters
+    #- endpoint should return all library books matching the query
+    #- query parameters should include:
+    #-- title
+    #-- author
+    #-- isbn
+    #-- location
+    #-- available
+
+    #- caution: for consistency, all library books with the same isbn
+    #- should be served in one batch
+    # - that means isbn should have priority for batching
+
+    #- with pagination (50 books per page)
+
+    abort(501, "This function is not yet implemented")
+
 # - GET LIBRARY BOOK BY ID
 
 

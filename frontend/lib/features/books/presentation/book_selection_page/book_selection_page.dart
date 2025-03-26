@@ -1,15 +1,14 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:gap/gap.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:schuldaten_hub/features/books/presentation/book_search_page/book_search_page.dart';
+import 'package:gap/gap.dart';
+import 'package:schuldaten_hub/features/books/presentation/book_search_form/book_search_form_page.dart';
 
 import '../../../../common/theme/app_colors.dart';
 import '../../../../common/theme/styles.dart';
 import '../../../../common/utils/scanner.dart';
 import '../../../../common/widgets/dialogs/short_textfield_dialog.dart';
-import '../../../competence/presentation/competence_list_page/competence_list_page.dart';
 import '../book_list_page/book_list_page.dart';
 import '../new_book_page/new_book_controller.dart';
 
@@ -66,7 +65,7 @@ class BookSelectionPage extends StatelessWidget {
               const SizedBox(height: 20),
               _buildButton(context, "Bücher suchen", () {
                 Navigator.of(context).push(MaterialPageRoute(
-                  builder: (ctx) => const BookSearchPage(),
+                  builder: (ctx) => const BookSearchFormPage(),
                 ));
               }),
             ],
@@ -93,8 +92,7 @@ class BookSelectionPage extends StatelessWidget {
                 style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
-                    fontSize:
-                        18)),
+                    fontSize: 18)),
           ),
         ),
       ),
