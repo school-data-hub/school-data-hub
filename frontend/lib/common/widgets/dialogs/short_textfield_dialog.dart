@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:schuldaten_hub/common/theme/app_colors.dart';
 import 'package:schuldaten_hub/common/theme/styles.dart';
 
-shortTextfieldDialog(
+Future<String?> shortTextfieldDialog(
     {required BuildContext context,
     required String title,
     required String labelText,
     String? textinField,
     required String hintText,
-    bool? obscureText}) {
-  TextEditingController textEditingController = TextEditingController();
+    bool? obscureText}) async {
+  final TextEditingController textEditingController = TextEditingController();
   textEditingController.text = textinField ?? '';
-  return showDialog<String?>(
+  final result = await showDialog<String?>(
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
@@ -53,7 +53,6 @@ shortTextfieldDialog(
               ),
               onPressed: () {
                 Navigator.of(context).pop();
-                textEditingController.dispose();
               },
             ),
           ),
@@ -67,7 +66,6 @@ shortTextfieldDialog(
               ),
               onPressed: () {
                 Navigator.of(context).pop(textEditingController.text);
-                textEditingController.dispose();
               },
             ),
           ),
@@ -75,4 +73,6 @@ shortTextfieldDialog(
       );
     },
   );
+  textEditingController.dispose();
+  return result;
 }

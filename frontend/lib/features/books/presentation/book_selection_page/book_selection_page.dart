@@ -59,7 +59,7 @@ class BookSelectionPage extends StatelessWidget {
                 ));
               }),
               const SizedBox(height: 20),
-              _buildButton(context, "Buch erstellen", () async {
+              _buildButton(context, "Buch erfassen", () async {
                 await _showNewBookDialog(context);
               }),
               const SizedBox(height: 20),
