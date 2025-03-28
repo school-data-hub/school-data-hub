@@ -1,4 +1,6 @@
 from apiflask import Schema, fields
+from marshmallow import EXCLUDE
+
 
 # - BOOK TAGS SCHEMAS
 ####################
@@ -189,3 +191,18 @@ class NewLibraryBookSchema(Schema):
 
 new_library_book_schema = NewLibraryBookSchema()
 new_library_books_schema = NewLibraryBookSchema(many=True)
+
+
+
+class LibraryBooksSearchSchema(Schema):
+    title = fields.String(load_default=None)
+    author = fields.String(load_default=None)
+    location = fields.String(load_default=None)
+    keywords = fields.String(load_default=None)
+    reading_level = fields.String(load_default=None)
+    borrow_status = fields.String(load_default=None)
+
+    class Meta:
+        unknown = EXCLUDE
+
+library_books_search_schema = LibraryBooksSearchSchema()

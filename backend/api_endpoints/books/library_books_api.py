@@ -1,6 +1,6 @@
 # pylint: disable=missing-module-docstring, missing-function-docstring, missing-class-docstring
-
-from typing import List, Optional
+from itertools import chain
+from typing import List, Optional, Dict
 
 from apiflask import APIBlueprint, abort
 from flask import request
@@ -17,6 +17,7 @@ from schemas.book_schemas import (
     library_book_out_schema,
     library_books_out_schema,
     new_library_book_schema,
+    library_books_search_schema,
 )
 
 library_book_api = APIBlueprint(
@@ -109,36 +110,68 @@ def get_library_books():
 
 
 # - GET LIBRARY BOOKS MATCHING QUERY
-#- TODO: Implement this function
 @library_book_api.route("/search", methods=["GET"])
 @library_book_api.output(library_books_out_schema)
 @library_book_api.doc(
     security="ApiKeyAuth",
     tags=["Library Books"],
     summary="get all library books matching query",
-    description="This function is not yet implemented"
+    description="Returns all library books that match the given search parameters."
 )
 @token_required
 def get_library_books_matching_query():
-    #- json_data should provide query parameters
-    #- endpoint should return all library books matching the query
-    #- query parameters should include:
-    #-- title
-    #-- author
-    #-- isbn
-    #-- location
-    #-- available
+    query_data = request.args.to_dict()
+    try:
+        data = library_books_search_schema.load(query_data)
+    except Exception as err:
+        abort(400, f"Invalid input: {err}")
 
-    #- caution: for consistency, all library books with the same isbn
-    #- should be served in one batch
-    # - that means isbn should have priority for batching
+    title = data.get("title")
+    author = data.get("author")
+    location = data.get("location")
+    keywords = data.get("keywords")
+    reading_level = data.get("reading_level")
+    borrow_status = data.get("borrow_status")
 
-    #- with pagination (50 books per page)
+    query = LibraryBook.query
 
-    abort(501, "This function is not yet implemented")
+    if location:
+        query = query.filter(LibraryBook.location.ilike(f"%{location}%"))
 
-# - GET LIBRARY BOOK BY ID
+    if borrow_status and borrow_status != "all":
+        bs = borrow_status.lower().strip()
+        if bs == "available":
+            query = query.filter(LibraryBook.available == True)
+        else:
+            query = query.filter(LibraryBook.available == False)
 
+    books: List[LibraryBook] = query.all()
+
+    if any([title, author, keywords, reading_level]):
+        filtered_books: List[LibraryBook] = []
+        for book in books:
+            try:
+                book_data = get_book_by_isbn(book.book_isbn)
+            except Exception:
+                continue
+            if title and title.lower() not in book_data.title.lower():
+                continue
+            if author and author.lower() not in book_data.author.lower():
+                continue
+            if keywords and keywords.lower() not in book_data.description.lower():
+                continue
+            if reading_level and reading_level.lower() not in book_data.reading_level.lower():
+                continue
+            filtered_books.append(book)
+        books = filtered_books
+
+    grouped: Dict[int, List[LibraryBook]] = {}
+    for book in books:
+        grouped.setdefault(book.book_isbn, []).append(book)
+    groups: List[List[LibraryBook]] = list(grouped.values())
+
+    flat_results = list(chain.from_iterable(groups))
+    return flat_results
 
 @library_book_api.route("/<book_id>", methods=["GET"])
 @library_book_api.output(library_book_out_schema)
