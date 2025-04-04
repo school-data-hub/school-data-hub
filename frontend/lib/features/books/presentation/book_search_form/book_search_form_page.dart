@@ -192,7 +192,13 @@ class BookSearchFormPage extends WatchingWidget {
                       borrowStatus: selectedBorrowStatus,
                     );
                     Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => const BookSearchResultsPage(),
+                      builder: (context) => BookSearchResultsPage(
+                          title: title,
+                          author: author,
+                          keywords: keywords,
+                          location: selectedLocation == "Alle Räume" ? "" : selectedLocation!,
+                          readingLevel: readingLevel,
+                          borrowStatus: selectedBorrowStatus),
                     ));
                   },
                   child: const Text(
