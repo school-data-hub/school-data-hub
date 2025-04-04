@@ -8,7 +8,7 @@ from flask import request
 from auth_middleware import token_required
 from helpers.db_helpers import get_book_by_isbn, get_library_book_by_isbn
 from helpers.log_entries import create_log_entry
-from models.book import LibraryBook, LibraryBookLocation
+from models.book import LibraryBook, LibraryBookLocation, Book
 from models.shared import db
 from models.user import User
 from schemas.book_schemas import (
@@ -132,46 +132,39 @@ def get_library_books_matching_query():
     keywords = data.get("keywords")
     reading_level = data.get("reading_level")
     borrow_status = data.get("borrow_status")
+    page = data.get("page", 1)
+    per_page = data.get("per_page", 50)
 
-    query = LibraryBook.query
-
+    query = (
+        db.session.query(LibraryBook)
+        .join(Book, LibraryBook.book_isbn == Book.isbn)   )
     if location:
         query = query.filter(LibraryBook.location.ilike(f"%{location}%"))
 
-    if borrow_status and borrow_status != "all":
+    if borrow_status and borrow_status.lower().strip() != "all":
         bs = borrow_status.lower().strip()
         if bs == "available":
-            query = query.filter(LibraryBook.available == True)
+            query = query.filter(LibraryBook.available.is_(True))
         else:
-            query = query.filter(LibraryBook.available == False)
+            query = query.filter(LibraryBook.available.is_(False))
 
-    books: List[LibraryBook] = query.all()
+    if title:
+        query = query.filter(Book.title.ilike(f"%{title}%"))
+    if author:
+        query = query.filter(Book.author.ilike(f"%{author}%"))
+    if keywords:
+        query = query.filter(Book.description.ilike(f"%{keywords}%"))
+    if reading_level:
+        query = query.filter(Book.reading_level.ilike(f"%{reading_level}%"))
 
-    if any([title, author, keywords, reading_level]):
-        filtered_books: List[LibraryBook] = []
-        for book in books:
-            try:
-                book_data = get_book_by_isbn(book.book_isbn)
-            except Exception:
-                continue
-            if title and title.lower() not in book_data.title.lower():
-                continue
-            if author and author.lower() not in book_data.author.lower():
-                continue
-            if keywords and keywords.lower() not in book_data.description.lower():
-                continue
-            if reading_level and reading_level.lower() not in book_data.reading_level.lower():
-                continue
-            filtered_books.append(book)
-        books = filtered_books
+    pagination = query.paginate(page=page, per_page=per_page, error_out=False)
 
-    grouped: Dict[int, List[LibraryBook]] = {}
-    for book in books:
-        grouped.setdefault(book.book_isbn, []).append(book)
-    groups: List[List[LibraryBook]] = list(grouped.values())
+    grouped_books: Dict[int, List[LibraryBook]] = {}
+    for library_book in pagination.items:
+        grouped_books.setdefault(library_book.book_isbn, []).append(library_book)
 
-    flat_results = list(chain.from_iterable(groups))
-    return flat_results
+    groups: List[List[LibraryBook]] = list(grouped_books.values())
+    return list(chain.from_iterable(groups))
 
 @library_book_api.route("/<book_id>", methods=["GET"])
 @library_book_api.output(library_book_out_schema)

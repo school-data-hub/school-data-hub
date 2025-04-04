@@ -1,52 +1,96 @@
 import 'package:flutter/material.dart';
-import 'package:collection/collection.dart'; // For groupBy
-import 'package:schuldaten_hub/features/books/domain/models/book.dart';
+import 'package:collection/collection.dart';
 import 'package:schuldaten_hub/features/books/domain/book_manager.dart';
 import 'package:schuldaten_hub/common/services/locator.dart';
-import 'package:schuldaten_hub/features/books/presentation/book_list_page/widgets/book_list_bottom_navbar.dart';
+import '../../../../common/widgets/list_view_components/generic_app_bar.dart';
+import '../../domain/models/book.dart';
+import '../book_list_page/widgets/book_list_bottom_navbar.dart';
+import 'book_search_result_card.dart';
 import 'package:watch_it/watch_it.dart';
 
-import '../../../../common/widgets/list_view_components/generic_app_bar.dart';
-import 'book_search_result_card.dart';
-
 class BookSearchResultsPage extends WatchingWidget {
-  const BookSearchResultsPage({Key? key}) : super(key: key);
+  final String? title;
+  final String? author;
+  final String? keywords;
+  final String? location;
+  final String? readingLevel;
+  final String? borrowStatus;
+
+  const BookSearchResultsPage({
+    super.key,
+    this.title,
+    this.author,
+    this.keywords,
+    this.location,
+    this.readingLevel,
+    this.borrowStatus,
+  });
 
   @override
   Widget build(BuildContext context) {
-    // Hole den BookManager aus dem locator.
     final bookManager = locator<BookManager>();
+    final ScrollController scrollController = ScrollController();
+
+    scrollController.addListener(() {
+      if (scrollController.position.pixels >=
+          scrollController.position.maxScrollExtent - 300 && !bookManager.isLoadingMore) {
+        bookManager.loadNextPage(
+          title: title,
+          author: author,
+          keywords: keywords,
+          location: location,
+          readingLevel: readingLevel,
+          borrowStatus: borrowStatus,
+        );
+      }
+    });
 
     return Scaffold(
-      appBar: const GenericAppBar(iconData: Icons.search, title: 'Suchergebnisse'),
+      appBar:
+      const GenericAppBar(iconData: Icons.search, title: 'Suchergebnisse'),
       body: ValueListenableBuilder<List<BookProxy>>(
         valueListenable: bookManager.searchResults,
         builder: (context, searchResults, _) {
-          final groupedMap =
-          groupBy(searchResults, (BookProxy book) => book.isbn);
-
-          if (groupedMap.isEmpty) {
+          if (searchResults.isEmpty) {
             return const Center(child: Text("Keine Ergebnisse"));
           }
 
+          final groupedMap =
+          groupBy(searchResults, (BookProxy book) => book.isbn);
           final groups = groupedMap.values.toList();
 
           return Center(
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 800),
               child: ListView.builder(
-                itemCount: groups.length,
+                controller: scrollController,
+                itemCount: groups.length + (bookManager.hasMorePages ? 1 : 0),
                 itemBuilder: (context, index) {
-                  final group = groups[index];
-                  if (group.isEmpty) return const SizedBox.shrink();
-                  return SearchResultBookCard(group: group);
+                  if (index < groups.length) {
+                    final group = groups[index];
+                    if (group.isEmpty) {
+                      return const SizedBox.shrink();
+                    }
+                    return SearchResultBookCard(group: group);
+                  } else {
+                    if (bookManager.hasMorePages && bookManager.isLoadingMore) {
+                      return const Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child:
+                        Center(child: CircularProgressIndicator()),
+                      );
+                    } else {
+                      return const SizedBox.shrink();
+                    }
+                  }
                 },
               ),
             ),
           );
         },
       ),
-      bottomNavigationBar: const BookListBottomNavBar(),
+      bottomNavigationBar:
+      const BookListBottomNavBar(),
     );
   }
 }

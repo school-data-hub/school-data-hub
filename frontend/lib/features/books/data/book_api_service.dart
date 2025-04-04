@@ -454,6 +454,8 @@ class BookApiService {
     String? location,
     String? readingLevel,
     String? borrowStatus,
+    int? page,
+    int? perPage,
   }) async {
     final Map<String, dynamic> queryParams = {};
     if (title?.isNotEmpty == true) queryParams['title'] = title;
@@ -462,6 +464,8 @@ class BookApiService {
     if (location?.isNotEmpty == true) queryParams['location'] = location;
     if (readingLevel?.isNotEmpty == true) queryParams['reading_level'] = readingLevel;
     if (borrowStatus?.isNotEmpty == true) queryParams['borrow_status'] = borrowStatus;
+    queryParams['page'] = page;
+    queryParams['per_page'] = perPage;
 
     final String searchUrl = '${_baseUrl()}/library_books/search';
 

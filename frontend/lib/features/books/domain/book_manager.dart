@@ -45,6 +45,15 @@ class BookManager {
 
   final pupilManager = locator<PupilManager>();
 
+  int _currentPage = 1;
+  final int _perPage = 30;
+  bool _isLoadingMore = false;
+  bool _hasMorePages = true;
+
+  bool get hasMorePages => _hasMorePages;
+
+  bool get isLoadingMore => _isLoadingMore;
+
   Future<BookManager> init() async {
     // await getLibraryBooks();
     await getLocations();
@@ -227,6 +236,9 @@ class BookManager {
     String? readingLevel,
     String? borrowStatus,
   }) async {
+    _currentPage = 1;
+    _isLoadingMore = false;
+    _hasMorePages = true;
     try {
       final List<BookProxy> results = await bookApiService.searchBooks(
         title: title?.isNotEmpty == true ? title : null,
@@ -236,6 +248,8 @@ class BookManager {
         readingLevel:
         readingLevel?.isNotEmpty == true ? readingLevel : null,
         borrowStatus: borrowStatus?.isNotEmpty == true ? borrowStatus : null,
+        page: _currentPage,
+        perPage: _perPage,
       );
       searchResults.value = results;
       notificationService.showSnackBar(
@@ -243,6 +257,52 @@ class BookManager {
     } catch (e, s) {
       notificationService.showSnackBar(
           NotificationType.error, 'Fehler bei der Suche: $e');
+    }
+  }
+
+  Future<void> loadNextPage({
+    String? title,
+    String? author,
+    String? keywords,
+    String? location,
+    String? readingLevel,
+    String? borrowStatus,
+  }) async {
+    if (_isLoadingMore) return;
+    if (!_hasMorePages) return;
+    _isLoadingMore = true;
+
+    try {
+      _currentPage++;
+
+      final newPageResults = await bookApiService.searchBooks(
+        title: title?.isNotEmpty == true ? title : null,
+        author: author?.isNotEmpty == true ? author : null,
+        keywords: keywords?.isNotEmpty == true ? keywords : null,
+        location: location?.isNotEmpty == true ? location : null,
+        readingLevel:
+        readingLevel?.isNotEmpty == true ? readingLevel : null,
+        borrowStatus: borrowStatus?.isNotEmpty == true ? borrowStatus : null,
+        page: _currentPage,
+        perPage: _perPage,
+      );
+
+      if (newPageResults.isEmpty) {
+        _hasMorePages = false;
+      } else {
+        final List<BookProxy> oldList = searchResults.value;
+        searchResults.value = [...oldList, ...newPageResults];
+        if (newPageResults.length < _perPage) {
+          _hasMorePages = false;
+        }
+      }
+    } catch (e) {
+      notificationService.showSnackBar(
+        NotificationType.error,
+        'Fehler beim Laden weiterer Ergebnisse: $e',
+      );
+    } finally {
+      _isLoadingMore = false;
     }
   }
 }

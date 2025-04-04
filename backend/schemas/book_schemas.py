@@ -201,8 +201,10 @@ class LibraryBooksSearchSchema(Schema):
     keywords = fields.String(load_default=None)
     reading_level = fields.String(load_default=None)
     borrow_status = fields.String(load_default=None)
+    page = fields.Integer(required=False)
+    per_page = fields.Integer(required=False)
 
-    class Meta:
+class Meta:
         unknown = EXCLUDE
 
 library_books_search_schema = LibraryBooksSearchSchema()
