@@ -103,7 +103,7 @@ def delete_book_location(current_user, location):
 @token_required
 def get_library_books():
 
-    all_books = LibraryBook.query.all()
+    all_books = LibraryBook.query.filter_by(available=0).all()
 
     return all_books
 

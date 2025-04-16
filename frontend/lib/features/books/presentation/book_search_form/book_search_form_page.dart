@@ -107,7 +107,7 @@ class BookSearchFormPage extends WatchingWidget {
                           borderSide: BorderSide.none,
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        labelText: 'Status',
+                        labelText: 'Ablageort',
                       ),
                         value: selectedLocation,
                         items: locationItems
