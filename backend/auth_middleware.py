@@ -1,9 +1,10 @@
 from datetime import datetime, timedelta
 from functools import wraps
+from inspect import signature
 
 import jwt
 from flask import abort, current_app, jsonify, request
-from werkzeug.exceptions import Unauthorized
+
 
 from models.user import User
 
@@ -40,9 +41,14 @@ def token_required(f):
                     abort(401, "Konto existiert nicht oder wurde gelöscht!")
                 current_app.cache.set(data["public_id"], current_user, timeout=60 * 60)
 
-        except:
+        except jwt.ExpiredSignatureError:
+            abort(401, "Token ist abgelaufen!")
+        except jwt.InvalidTokenError:
             abort(401, "Token nicht (mehr) gültig!")
 
-        return f(current_user, *args, **kwargs)
+        if "current_user" in signature(f).parameters:
+            kwargs["current_user"] = current_user
+
+        return f(*args, **kwargs)
 
     return decorated

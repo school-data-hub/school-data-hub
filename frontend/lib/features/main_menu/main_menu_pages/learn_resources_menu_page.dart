@@ -3,7 +3,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gap/gap.dart';
 import 'package:schuldaten_hub/common/theme/app_colors.dart';
 import 'package:schuldaten_hub/common/theme/styles.dart';
-import 'package:schuldaten_hub/features/books/presentation/book_list_page/book_list_page.dart';
+import 'package:schuldaten_hub/features/books/presentation/book_selection_page/book_selection_page.dart';
 import 'package:schuldaten_hub/features/competence/presentation/competence_list_page/competence_list_page.dart';
 import 'package:schuldaten_hub/features/learning_support/presentation/support_category_list_page/controller/category_list_controller.dart';
 import 'package:schuldaten_hub/features/workbooks/presentation/workbook_list_page/controller/workbook_list_view_model.dart';
@@ -141,7 +141,7 @@ class LearnResourcesMenuPage extends WatchingWidget {
                   child: InkWell(
                     onTap: () {
                       Navigator.of(context).push(MaterialPageRoute(
-                        builder: (ctx) => const BookListPage(),
+                        builder: (ctx) => const BookSelectionPage(),
                       ));
                     },
                     child: Column(

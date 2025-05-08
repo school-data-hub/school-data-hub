@@ -445,4 +445,52 @@ class BookApiService {
 
     return book;
   }
+
+
+  Future<List<BookProxy>> searchBooks({
+    String? title,
+    String? author,
+    String? keywords,
+    String? location,
+    String? readingLevel,
+    String? borrowStatus,
+    int? page,
+    int? perPage,
+  }) async {
+    final Map<String, dynamic> queryParams = {};
+    if (title?.isNotEmpty == true) queryParams['title'] = title;
+    if (author?.isNotEmpty == true) queryParams['author'] = author;
+    if (keywords?.isNotEmpty == true) queryParams['keywords'] = keywords;
+    if (location?.isNotEmpty == true) queryParams['location'] = location;
+    if (readingLevel?.isNotEmpty == true) queryParams['reading_level'] = readingLevel;
+    if (borrowStatus?.isNotEmpty == true) queryParams['borrow_status'] = borrowStatus;
+    queryParams['page'] = page;
+    queryParams['per_page'] = perPage;
+
+    final String searchUrl = '${_baseUrl()}/library_books/search';
+
+    _notificationService.apiRunning(true);
+    final Response response = await _client.get(
+      searchUrl,
+      queryParameters: queryParams,
+      options: _client.hubOptions,
+    );
+    _notificationService.apiRunning(false);
+
+    if (response.statusCode != 200) {
+      _notificationService.showSnackBar(
+          NotificationType.error,
+          'Fehler bei der Suche'
+      );
+      throw ApiException('Failed to search books', response.statusCode);
+    }
+
+    final List<BookProxy> books = (response.data as List)
+        .map((e) => BookProxy.fromJson(e))
+        .toList();
+
+    return books;
+  }
 }
+
+

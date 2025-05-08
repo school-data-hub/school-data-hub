@@ -11,6 +11,8 @@ import 'package:schuldaten_hub/features/books/data/pupil_book_api_service.dart';
 import 'package:schuldaten_hub/features/books/domain/models/book.dart';
 import 'package:schuldaten_hub/features/pupil/domain/pupil_manager.dart';
 
+import '../../../common/utils/logger.dart';
+
 class BookManager {
   final _books = ValueNotifier<List<BookProxy>>([]);
   ValueListenable<List<BookProxy>> get books => _books;
@@ -24,8 +26,12 @@ class BookManager {
   final _bookTags = ValueNotifier<List<BookTag>>([]);
   ValueListenable<List<BookTag>> get bookTags => _bookTags;
 
+  List<BookTag> selectedTags = []; // Liste für ausgewählte Buch-Tags
+
   final _lastSelectedLocation = ValueNotifier<String>('Bitte auswählen');
   ValueListenable<String> get lastLocationValue => _lastSelectedLocation;
+
+  final searchResults = ValueNotifier<List<BookProxy>>([]);
 
   BookManager();
 
@@ -39,6 +45,15 @@ class BookManager {
 
   final pupilManager = locator<PupilManager>();
 
+  int _currentPage = 1;
+  final int _perPage = 30;
+  bool _isLoadingMore = false;
+  bool _hasMorePages = true;
+
+  bool get hasMorePages => _hasMorePages;
+
+  bool get isLoadingMore => _isLoadingMore;
+
   Future<BookManager> init() async {
     // await getLibraryBooks();
     await getLocations();
@@ -49,16 +64,13 @@ class BookManager {
 
   void clearData() {
     _books.value = [];
-
     _locations.value = [];
     _bookTags.value = [];
     _lastSelectedLocation.value = 'Bitte auswählen';
   }
 
   void _refreshIsbnBooksMap() {
-    final Map<int, List<BookProxy>> isbnBooks =
-        Map<int, List<BookProxy>>.from({});
-
+    final Map<int, List<BookProxy>> isbnBooks = <int, List<BookProxy>>{};
     for (final book in _books.value) {
       if (isbnBooks.containsKey(book.isbn)) {
         isbnBooks[book.isbn]!.add(book);
@@ -67,7 +79,6 @@ class BookManager {
       }
     }
     _isbnBooks.value = isbnBooks;
-    return;
   }
 
   //- BOOK TAGS
@@ -79,47 +90,32 @@ class BookManager {
 
   Future<void> addBookTag(String tag) async {
     final List<BookTag> responseTags = await bookApiService.postBookTag(tag);
-
     _bookTags.value = responseTags;
-
-    return;
   }
 
   Future<void> deleteBookTag(String tag) async {
     final List<BookTag> responseTags = await bookApiService.deleteBookTag(tag);
-
     _bookTags.value = responseTags;
-
-    return;
   }
 
   //- BOOK LOCATIONS
 
   Future<void> getLocations() async {
     final List<String> responseLocations =
-        await bookApiService.getBookLocations();
-
+    await bookApiService.getBookLocations();
     _locations.value = responseLocations;
-
-    return;
   }
 
   Future<void> addLocation(String location) async {
     final List<String> responseLocations =
-        await bookApiService.postBookLocation(location);
-
+    await bookApiService.postBookLocation(location);
     _locations.value = responseLocations;
-
-    return;
   }
 
   Future<void> deleteLocation(String location) async {
     final List<String> responseLocations =
-        await bookApiService.deleteBookLocation(location);
-
+    await bookApiService.deleteBookLocation(location);
     _locations.value = responseLocations;
-
-    return;
   }
 
   void setLastLocationValue(String location) {
@@ -130,9 +126,8 @@ class BookManager {
 
   Future<void> getLibraryBooks() async {
     final List<BookProxy> responseBooks =
-        await bookApiService.getLibraryBooks();
+    await bookApiService.getLibraryBooks();
 
-    // sort books by name
     if (responseBooks.isNotEmpty) {
       responseBooks.sort((a, b) => a.title.compareTo(b.title));
       _books.value = responseBooks;
@@ -140,10 +135,6 @@ class BookManager {
     _refreshIsbnBooksMap();
     notificationService.showSnackBar(
         NotificationType.success, 'Bücher erfolgreich geladen');
-
-    //  _libraryBooks.value = responseBooks;
-
-    return;
   }
 
   Future<void> postLibraryBook({
@@ -161,8 +152,6 @@ class BookManager {
 
     notificationService.showSnackBar(
         NotificationType.success, 'Arbeitsheft erfolgreich erstellt');
-
-    return;
   }
 
   Future<void> updateBookProperty({
@@ -184,27 +173,21 @@ class BookManager {
 
     List<BookProxy> books = List.from(_books.value);
     int index = books.indexWhere((item) => item.bookId == updatedbook.bookId);
-
     books[index] = updatedbook;
-
     _books.value = books;
 
     notificationService.showSnackBar(
         NotificationType.success, 'Arbeitsheft erfolgreich aktualisiert');
-
-    return;
   }
 
   Future<void> patchBookImage(File imageFile, int isbn) async {
     final BookProxy responsebook =
-        await bookApiService.patchBookImage(imageFile, isbn);
+    await bookApiService.patchBookImage(imageFile, isbn);
 
     updateBookStateWithResponse(responsebook);
 
     notificationService.showSnackBar(
         NotificationType.success, 'Bild erfolgreich hochgeladen');
-
-    return;
   }
 
   Future<void> deleteLibraryBook(String bookId) async {
@@ -213,18 +196,13 @@ class BookManager {
     if (success) {
       List<BookProxy> books = List.from(_books.value);
       books.removeWhere((item) => item.bookId == bookId);
-
       _books.value = books;
       notificationService.showSnackBar(
           NotificationType.success, 'Arbeitsheft erfolgreich gelöscht');
     }
-
-    //- TODO: delete all pupilbooks with this isbn in memory
-
-    return;
   }
 
-  //- PUPIL bookS
+  //- PUPIL BOOKS
 
   List<BookProxy> getLibraryBooksByIsbn(int isbn) {
     List<BookProxy> books = [];
@@ -239,9 +217,7 @@ class BookManager {
   //- helper function
   BookProxy? getLibraryBookByBookId(String? bookId) {
     if (bookId == null) return null;
-    final BookProxy? book =
-        _books.value.firstWhereOrNull((element) => element.bookId == bookId);
-    return book;
+    return _books.value.firstWhereOrNull((element) => element.bookId == bookId);
   }
 
   //- helper function
@@ -252,5 +228,81 @@ class BookManager {
     _books.value = books;
   }
 
-  deletebook(int isbn) {}
+  Future<void> searchBooks({
+    String? title,
+    String? author,
+    String? keywords,
+    String? location,
+    String? readingLevel,
+    String? borrowStatus,
+  }) async {
+    _currentPage = 1;
+    _isLoadingMore = false;
+    _hasMorePages = true;
+    try {
+      final List<BookProxy> results = await bookApiService.searchBooks(
+        title: title?.isNotEmpty == true ? title : null,
+        author: author?.isNotEmpty == true ? author : null,
+        keywords: keywords?.isNotEmpty == true ? keywords : null,
+        location: location?.isNotEmpty == true ? location : null,
+        readingLevel:
+        readingLevel?.isNotEmpty == true ? readingLevel : null,
+        borrowStatus: borrowStatus?.isNotEmpty == true ? borrowStatus : null,
+        page: _currentPage,
+        perPage: _perPage,
+      );
+      searchResults.value = results;
+      notificationService.showSnackBar(
+          NotificationType.success, 'Suchergebnisse aktualisiert');
+    } catch (e, s) {
+      notificationService.showSnackBar(
+          NotificationType.error, 'Fehler bei der Suche: $e');
+    }
+  }
+
+  Future<void> loadNextPage({
+    String? title,
+    String? author,
+    String? keywords,
+    String? location,
+    String? readingLevel,
+    String? borrowStatus,
+  }) async {
+    if (_isLoadingMore) return;
+    if (!_hasMorePages) return;
+    _isLoadingMore = true;
+
+    try {
+      _currentPage++;
+
+      final newPageResults = await bookApiService.searchBooks(
+        title: title?.isNotEmpty == true ? title : null,
+        author: author?.isNotEmpty == true ? author : null,
+        keywords: keywords?.isNotEmpty == true ? keywords : null,
+        location: location?.isNotEmpty == true ? location : null,
+        readingLevel:
+        readingLevel?.isNotEmpty == true ? readingLevel : null,
+        borrowStatus: borrowStatus?.isNotEmpty == true ? borrowStatus : null,
+        page: _currentPage,
+        perPage: _perPage,
+      );
+
+      if (newPageResults.isEmpty) {
+        _hasMorePages = false;
+      } else {
+        final List<BookProxy> oldList = searchResults.value;
+        searchResults.value = [...oldList, ...newPageResults];
+        if (newPageResults.length < _perPage) {
+          _hasMorePages = false;
+        }
+      }
+    } catch (e) {
+      notificationService.showSnackBar(
+        NotificationType.error,
+        'Fehler beim Laden weiterer Ergebnisse: $e',
+      );
+    } finally {
+      _isLoadingMore = false;
+    }
+  }
 }
